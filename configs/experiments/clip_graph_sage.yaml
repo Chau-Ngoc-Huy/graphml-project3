@@ -1,0 +1,3 @@
+extends: clip_graph.yaml
+gnn: {kind: sage}
+paper: {table: main, row: CLIP+Graph (SAGE)}

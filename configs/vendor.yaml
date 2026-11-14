@@ -1,3 +1,4 @@
+# Project này KHÔNG có repo paper gốc (code của nhóm nằm trong src/mmxai). Chỉ dùng `pip` + `kaggle_datasets`.
 # Repo gốc của paper. scaffold.py điền; make_kernel.py đọc để clone/cài trên Kaggle.
 name:                  # thư mục vendor/<name>
 url:                    # git URL; rỗng nếu chỉ có bản chép tay
@@ -6,9 +7,9 @@ mode: copy
 # Cài đặt trên Kaggle/Colab sau khi clone (chạy trong thư mục vendor). Để [] nếu không cần.
 install: []
 # Thư viện cài thêm trước `install` (Kaggle đã có torch/transformers; thiếu bitsandbytes, peft...)
-pip: []
+pip: [torch_geometric]
 # Thư viện cần ghi phiên bản vào metrics.json ngoài danh sách mặc định của core/env.py
-track_packages: []
+track_packages: [torch_geometric, open_clip_torch, faiss-cpu]
 # Dataset Kaggle (owner/slug) kernel cần gắn — ghi đè DATASET trong local.mk nếu khác rỗng
 kaggle_datasets: []
 # Kaggle Models (owner/slug/framework/instance/version) kernel cần gắn

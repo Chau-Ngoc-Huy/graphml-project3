@@ -1,0 +1,24 @@
+# CLIP + Graph (Nhiệm vụ 2, cấp 1). Thí nghiệm chính; các ablation_* và clip_graph_* kế thừa file này.
+extends: clip_baseline.yaml
+seeds: [0, 1, 2]          # đề: tối thiểu 3 seed, báo cáo mean ± std. --seed N để chạy 1 seed
+graph:
+  variant: full           # full | no_rel | no_concept | no_edge | shuffle | random
+  min_rel_count: 1        # cạnh quan hệ scene graph cần xuất hiện ≥ n lần trong ảnh TRAIN
+gnn:
+  kind: gat               # gcn | gat | sage
+  hidden: 256
+  layers: 2
+  heads: 4                # chỉ GAT
+  dropout: 0.1
+train:
+  epochs: 30
+  patience: 8             # early stopping theo MRR(graph) trên VAL
+  batch_size: 64          # dữ liệu giả nhỏ; VG thật (vài trăm nghìn caption): --set train.batch_size=512
+  lr: 0.001
+  weight_decay: 0.0001
+  tau: 0.05
+alpha_step: 0.1           # lưới α ∈ [0,1], chọn trên VAL
+n_explain: 10             # số truy vấn test được giải thích + đo fidelity
+explain_top_m: 3
+save_model: true
+paper: {table: main, row: CLIP+Graph (GAT)}

@@ -46,7 +46,7 @@ BUNDLED_VENDOR = {bundled_vendor!r}
 WORK = Path("/kaggle/working") if Path("/kaggle/working").exists() else Path.cwd()
 INPUT = Path(os.environ.get("KAGGLE_INPUT_DIR", "/kaggle/input"))
 CODE = WORK / "_code"
-VENDOR_DIR = WORK / "vendor" / VENDOR["name"]
+VENDOR_DIR = WORK / "vendor" / (VENDOR.get("name") or "_none")
 
 
 def sh(cmd, cwd=None, check=True):
@@ -88,6 +88,8 @@ def main():
     except FileNotFoundError:
         print("Không có GPU (nvidia-smi không tồn tại)")
 
+    if VENDOR.get("pip"):  # thư viện project cần (vd. torch_geometric), cài cả khi không có repo vendor
+        sh(f"{{sys.executable}} -m pip install -q " + " ".join(repr(p) for p in VENDOR["pip"]))
     if VENDOR.get("name"):
         VENDOR_DIR.parent.mkdir(parents=True, exist_ok=True)
         if BUNDLED_VENDOR:
@@ -99,8 +101,6 @@ def main():
             if VENDOR.get("commit"):
                 sh(f"git checkout -q {{VENDOR['commit']}}", cwd=VENDOR_DIR)
                 os.environ["LAB_VENDOR_COMMIT"] = VENDOR["commit"]
-        if VENDOR.get("pip"):
-            sh(f"{{sys.executable}} -m pip install -q " + " ".join(repr(p) for p in VENDOR["pip"]))
         for cmd in VENDOR.get("install") or []:
             sh(cmd, cwd=VENDOR_DIR)
 
@@ -181,8 +181,8 @@ def main(argv: list[str]) -> None:
 
     vendor = yaml.safe_load((ROOT / "configs" / "vendor.yaml").read_text(encoding="utf-8")) or {}
     vendor = {k: vendor.get(k) for k in ("name", "url", "commit", "install", "pip", "mode")}
-    if vendor["name"] in (None, "VENDOR_NAME"):
-        vendor = {"name": None}
+    if vendor["name"] in (None, "VENDOR_NAME", ""):
+        vendor = {"name": None, "pip": vendor.get("pip") or []}
     if vendor.get("name") and not opts.bundle_vendor and not vendor.get("url"):
         print("CẢNH BÁO: vendor không có url → dùng --bundle-vendor để đóng gói kèm")
     vcfg_full = yaml.safe_load((ROOT / "configs" / "vendor.yaml").read_text(encoding="utf-8")) or {}

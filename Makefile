@@ -11,7 +11,7 @@ export PYTHONPATH := src
 export LAB_USER KAGGLE_USER DATASET PROJECT
 KERNEL = $(shell $(PY) -c "import sys; sys.path.insert(0,'tools'); from make_kernel import kernel_id; print(kernel_id('$(EXP)'))")
 
-.PHONY: help test local dry push kernel status wait logs pull queue summary compare tex vendor vendor-update colab check import
+.PHONY: table ablations help test local dry push kernel status wait logs pull queue summary compare tex vendor vendor-update colab check import
 
 help:                ## liệt kê lệnh
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | column -t -s $$'\t'
@@ -75,3 +75,9 @@ colab:               ## in hướng dẫn chạy trên Colab (dự phòng khi h�
 	@echo "1. Mở colab/run.ipynb trên Google Colab (File → Upload notebook), chọn runtime GPU."
 	@echo "2. Điền EXP/ARGS ở ô đầu, chạy hết; kết quả nằm ở Drive: paper-lab/$(PROJECT)/runs/."
 	@echo "3. Tải runs.zip về rồi: make import SRC=~/Downloads/runs.zip"
+
+table:               ## bảng kết quả (Markdown + LaTeX) từ lượt đầy đủ mới nhất: results/tables/
+	$(PY) tools/report_table.py $(ARGS)
+
+ablations:           ## chạy mọi ablation tuần tự trên Kaggle: make ablations ARGS="--set data=mmxai-vg"
+	tools/run_queue.sh "ablation_no_rel ablation_no_concept ablation_no_edge ablation_shuffle ablation_random" "$(ARGS)"

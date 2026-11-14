@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 # Thư viện ghi phiên bản vào metrics.json; thêm thư viện riêng của paper vào configs/vendor.yaml: track_packages
-PACKAGES = ["torch", "transformers", "accelerate", "peft", "bitsandbytes", "datasets", "numpy", "pyyaml"]
+PACKAGES = ["torch", "numpy", "pyyaml"]
 
 
 def set_seed(seed: int) -> None:

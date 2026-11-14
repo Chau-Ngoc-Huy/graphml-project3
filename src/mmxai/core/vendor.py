@@ -77,7 +77,7 @@ def last_json(text: str) -> dict | None:
 
 
 def grep_metrics(text: str, patterns: dict[str, str]) -> dict:
-    """Bắt số trong log theo regex: {"acc": r"accuracy[:=]\s*([\d.]+)"} → {"acc": 0.87} (lấy lần cuối)."""
+    r"""Bắt số trong log theo regex: {"acc": r"accuracy[:=]\s*([\d.]+)"} → {"acc": 0.87} (lấy lần cuối)."""
     out = {}
     for key, pat in patterns.items():
         hits = re.findall(pat, text, flags=re.IGNORECASE)
