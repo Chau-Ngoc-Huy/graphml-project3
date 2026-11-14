@@ -45,7 +45,7 @@ with gzip.open(a.assertions, "rt", encoding="utf-8") as f:
         parts = line.rstrip("\n").split("\t")
         if len(parts) < 5:
             continue
-        rel = parts[1].rsplit("/", 1)[-1]
+        rel = parts[1].strip("/").split("/")[-1]
         if rel not in rels:
             continue
         h, t = term(parts[2]), term(parts[3])
