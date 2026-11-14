@@ -1,6 +1,6 @@
 # MMXAI — Nhiệm vụ 1: Truy vấn đa phương thức & đánh giá chuẩn
 
-Project 3 *Truy vấn đa phương thức có giải thích bằng đồ thị* (môn Học máy với dữ liệu đồ thị) — phần việc của Thắng:
+Project 3 *Truy vấn đa phương thức có giải thích bằng đồ thị* (môn Học máy với dữ liệu đồ thị):
 trích đặc trưng OpenCLIP đóng băng + FAISS, cài metric (Recall@1/5/10, MRR, nDCG),
 baseline CLIP thuần ≥3 seed (mean ± std), **module đánh giá dùng chung** cho mọi mô hình của nhóm,
 mở rộng image→text và đánh giá theo nhóm truy vấn.
