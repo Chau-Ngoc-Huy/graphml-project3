@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mmxai-lab"
+version = "0.1.0"
+description = "Thực nghiệm paper: Project 3 - Truy vấn đa phương thức có giải thích bằng đồ thị (Graph ML)"
+requires-python = ">=3.10"
+dependencies = ["pyyaml"]
+
+[project.optional-dependencies]
+dev = ["pytest", "kaggle"]
+api = ["anthropic", "openai"]
+gpu = ["torch", "transformers", "accelerate", "peft", "bitsandbytes", "datasets"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

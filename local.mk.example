@@ -1,0 +1,7 @@
+# Chép thành local.mk (không commit). Đừng đặt comment cùng dòng với giá trị.
+# Tên ngắn trong run_id: <thời gian>_<LAB_USER>_<exp>[-tag]
+LAB_USER = huy
+# Username Kaggle; kernel = <KAGGLE_USER>/mmxai-lab-<exp>
+KAGGLE_USER = huychau
+# Dataset Kaggle gắn vào kernel (owner/slug, nhiều cái ngăn bằng dấu phẩy). Trong ARGS: --set data=<chuỗi con tên dataset>
+DATASET =

@@ -1,0 +1,8 @@
+# Thí nghiệm khói: chạy được ở mọi nơi trong vài giây.
+n: 100
+noise: 0.1
+seed: 42
+data: null          # đường dẫn dữ liệu; trên Kaggle truyền --set data=<chuỗi con tên dataset>, kernel tự đổi thành /kaggle/input/...
+paper:              # ô trong paper mà thí nghiệm này tái lập (tools/compare.py dùng docs/paper_numbers.yaml, mục này chỉ để nhớ)
+  table: null
+  row: null

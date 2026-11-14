@@ -1,0 +1,27 @@
+{
+  "project_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/mmxai-lab",
+  "project": "mmxai-lab",
+  "package": "mmxai",
+  "paper": {
+    "title": "Project 3 - Truy vấn đa phương thức có giải thích bằng đồ thị (Graph ML)",
+    "url": "",
+    "authors": "Nhóm: Yến, Thắng, Huy, Khánh, Dương",
+    "year": 2026
+  },
+  "vendor": {
+    "name": "",
+    "url": "",
+    "mode": "copy",
+    "install": [],
+    "pip": []
+  },
+  "user": "huy",
+  "kaggle_user": "huychau",
+  "git_init": true,
+  "github": {
+    "create": false,
+    "private": true,
+    "name": ""
+  },
+  "team": true
+}
