@@ -1,4 +1,4 @@
-"""mmxai_eval — module đánh giá dùng chung cho Project 3 (Nhiệm vụ 1: truy vấn & đánh giá chuẩn — Thắng).
+"""mmxai_eval — module đánh giá dùng chung cho Project 3 (Nhiệm vụ 1: truy vấn & đánh giá chuẩn).
 
 Mọi phương pháp (CLIP thuần, CLIP + Graph của Huy, phương pháp mới của Khánh) đều đi qua CÙNG MỘT
 giao thức: cùng file split, cùng gallery / fold theo seed, cùng top-K ứng viên CLIP, cùng hàm metric.
