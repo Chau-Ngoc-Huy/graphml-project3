@@ -1,6 +1,6 @@
 # Dữ liệu, model, kết quả thô — để trên Kaggle/Drive, KHÔNG commit
-data/
-**/data/
+/data/
+/*/data/
 runs/
 cache/
 build/
