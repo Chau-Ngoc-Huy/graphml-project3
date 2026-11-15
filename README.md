@@ -30,7 +30,7 @@ Giai đoạn 2 (tuần 3–4): gộp thành một pipeline chung (xem cuối fil
 ## Bắt đầu (lần đầu)
 
 ```bash
-git clone https://github.com/<owner>/graphml-project3.git
+git clone https://github.com/Chau-Ngoc-Huy/graphml-project3.git
 cd graphml-project3/<folder-của-bạn>
 # làm việc, rồi:
 git add .
