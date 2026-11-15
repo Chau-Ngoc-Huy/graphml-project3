@@ -15,7 +15,7 @@ mở rộng image→text và đánh giá theo nhóm truy vấn.
 | `mmxai_eval.py` | Module đánh giá dùng chung (metric, giao thức split/fold/seed, top-K, fuse α, kiểm định). Notebook nhúng đúng file này trong ô `%%writefile`; khi sửa module, sửa cả ô đó để hai bản giống nhau |
 | `requirements.txt` | Thư viện cần thêm ngoài môi trường Kaggle |
 | `kernel-metadata.json` | Cấu hình để đẩy notebook lên Kaggle bằng `kaggle kernels push` (sửa `KAGGLE_USERNAME`) |
-| `kaggle_results/` | Kết quả bản full trên Kaggle: split cố định, bảng baseline, hạng từng truy vấn, biểu đồ, phân tích lỗi |
+| `kaggle_results/` | Kết quả bản full trên Kaggle: split cố định, bảng baseline, biểu đồ, phân tích lỗi (file hạng `ranks_clip_*.npz` không commit theo quy ước repo nhóm, lấy từ Output của notebook) |
 | `web/` | Trang web tĩnh tổng hợp kết quả (mở `web/index.html`) |
 
 ## Chạy trên Kaggle
@@ -110,6 +110,7 @@ Trang tĩnh HTML/CSS/JS thuần, không cần server hay thư viện ngoài (ch�
 ```bash
 cd web
 python build_site.py ../kaggle_results     # sinh data.js từ results/ + split/ (sau mỗi lần chạy lại notebook)
+# cần results/ranks_clip_t2i_test.npz: giải nén từ task1_bundle.zip (Output Kaggle) vào kaggle_results/ trước khi chạy
 xdg-open index.html                        # hoặc double-click index.html
 ```
 
