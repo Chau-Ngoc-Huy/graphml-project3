@@ -1,0 +1,6 @@
+# Ablation: xáo trộn đầu mút cạnh, giữ bậc
+extends: clip_graph.yaml
+graph: {variant: shuffle}
+n_explain: 0
+save_model: false
+paper: {table: ablation, row: shuffle}

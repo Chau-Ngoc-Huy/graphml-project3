@@ -1,0 +1,15 @@
+{
+  "id": "<sinh tự động: KAGGLE_USER/PROJECT-exp>",
+  "title": "<sinh tự động>",
+  "code_file": "run.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": [],
+  "machine_shape": "NvidiaTeslaT4"
+}

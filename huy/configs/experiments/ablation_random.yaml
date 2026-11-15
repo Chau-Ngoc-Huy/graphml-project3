@@ -1,0 +1,6 @@
+# Ablation: đồ thị ngẫu nhiên cùng số cạnh mỗi loại
+extends: clip_graph.yaml
+graph: {variant: random}
+n_explain: 0
+save_model: false
+paper: {table: ablation, row: random}

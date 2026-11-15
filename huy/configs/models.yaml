@@ -1,0 +1,14 @@
+# Danh sách model dùng trong project (tùy chọn). Ghim revision (commit HF) để chạy lại được.
+# Adapter đọc bằng: from mmxai.core.config import load_yaml; load_yaml(ctx.root / "configs/models.yaml")["models"][key]
+models:
+  # qwen-coder-7b:
+  #   hf_id: Qwen/Qwen2.5-Coder-7B-Instruct
+  #   revision: c03e6d358207e414f1eca0bb1891e29f1db0e242
+  #   load_in_4bit: true
+  # claude:
+  #   provider: anthropic
+  #   model: claude-opus-5-5
+  #   price_per_mtok: {input: 4.0, output: 20.0}
+generation:
+  do_sample: false
+  seed: 42

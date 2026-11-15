@@ -1,0 +1,6 @@
+# Ablation: bỏ mọi cạnh: chỉ còn lớp chiếu học được, tách tác dụng của đồ thị
+extends: clip_graph.yaml
+graph: {variant: no_edge}
+n_explain: 0
+save_model: false
+paper: {table: ablation, row: no_edge}

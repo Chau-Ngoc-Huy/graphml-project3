@@ -1,0 +1,6 @@
+# Ablation: bỏ cạnh quan hệ (scene graph + khái niệm), chỉ giữ ảnh-chứa-nhãn
+extends: clip_graph.yaml
+graph: {variant: no_rel}
+n_explain: 0
+save_model: false
+paper: {table: ablation, row: no_rel}
