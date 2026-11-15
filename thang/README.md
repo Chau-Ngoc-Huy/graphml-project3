@@ -64,6 +64,23 @@ print(paired_bootstrap(base["full"]["ranks"], ours["full"]["ranks"]))  # kiểm 
 Hard negative cho huấn luyện GNN: `candidates/train_galleries.npz` (train chia thành gallery 1 000 ảnh, ảnh đúng luôn nằm trong top-K).
 Bộ ≥20 truy vấn nhiều ảnh liên quan: dùng `multi_relevant_metrics(order, relevant_set)`.
 
+## Xuất cho pipeline của nhóm (`shared/data-contract.md`)
+
+Mục §9 của notebook ghi thư mục `/kaggle/working/mmxai_vg_contract/` mà `mmxai.data.contract.load()` (code của Huy) đọc được ngay:
+
+```
+features/image_emb.npy + image_ids.json       CLIP ảnh float32 [N_img, 512], chuẩn hoá L2, id = id ảnh Visual Genome
+features/caption_emb.npy + caption_ids.json   CLIP caption float32 [N_cap, 512], caption_id = "<vg_id>_<k>"
+features/label_emb.npy + labels.json          CLIP text "a photo of a {nhãn}" cho mọi tên đối tượng trong vg/objects.json
+features/clip_model.json                      {model, pretrained, prompt}
+captions.json                                 [{caption_id, image_id, text, group}]
+splits.json, vg/objects.json, vg/relationships.json   bản tạm cho đúng tập ảnh này (Yến chốt bản chính thức)
+```
+
+Ô ngay sau đó tự kiểm tra thư mục theo đúng điều kiện của `load()` (dtype, chiều, chuẩn hoá, id khớp, split không giao nhau)
+và dừng notebook nếu có lỗi. Notebook khác dùng thư mục này qua *Add Input → Notebook output*, hoặc tạo dataset bằng
+`kaggle datasets create -p mmxai_vg_contract`.
+
 ## Đầu ra của notebook (`WORK/`)
 
 ```
