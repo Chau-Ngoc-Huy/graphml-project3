@@ -1,0 +1,15 @@
+{
+  "id": "KAGGLE_USERNAME/mmxai-task1-clip-baseline",
+  "title": "mmxai-task1-clip-baseline",
+  "code_file": "task1_clip_baseline_kaggle.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_tpu": "false",
+  "enable_internet": "true",
+  "dataset_sources": ["yenphamnhu/visual-genome"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
