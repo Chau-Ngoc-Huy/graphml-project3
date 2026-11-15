@@ -47,7 +47,7 @@ src/mmxai/graph/      build.py (đồ thị + biến thể ablation) · gnn.py (
 src/mmxai/retrieval/  core.py (top-k CLIP, rerank, R@K/MRR/nDCG, chọn α trên val) — dùng chung cho mọi mô hình
 src/mmxai/experiments/ clip_baseline, clip_graph(+_gcn, _sage), ablation_*  ·  configs/experiments/*.yaml
 tools/                make_split, fetch_conceptnet, extract_clip, report_table · make_kernel/pull_kernel (Kaggle)
-docs/                 plan.md, data-contract.md, paper_src/ (đề bài)  ·  results/JOURNAL.md
+docs/                 plan.md, data-contract.md (bản chung: ../shared/) · đề bài: ../shared/  ·  results/JOURNAL.md
 ```
 
 Harness dựng bằng skill `paper-lab` (run_id, metrics.json kèm môi trường + commit, Kaggle từ terminal).

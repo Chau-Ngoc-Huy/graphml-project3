@@ -1,6 +1,6 @@
 # Kế hoạch — Nhiệm vụ 2 cấp 1 (Huy): đồ thị, GNN, xếp hạng lại
 
-Đề: `docs/paper_src/Project03_Multimodal_XAI.pdf` (mục 4.2, 5, 6, 7). Phân công: `../project3.docx`.
+Đề: `../shared/Project03_Multimodal_XAI.pdf` (mục 4.2, 5, 6, 7). Phân công: `../shared/phan-cong.docx`. Hợp đồng dữ liệu chung: `../shared/data-contract.md`.
 Trạng thái: ⬜ chưa · 🔶 đang · ✅ xong.
 
 ## Tuần 1 — Thiết kế + pipeline trên dữ liệu giả ✅

@@ -3,7 +3,7 @@
 Project 3 (Graph ML): truy vấn text→image có giải thích bằng đồ thị. Repo này là phần **Nhiệm vụ 2 cấp 1 của Huy**
 (đồ thị, GNN, rerank, ablation) và là pipeline đánh giá dùng chung. Không có repo paper gốc (`vendor/` không dùng).
 
-Đọc trước: `docs/paper_src/Project03_Multimodal_XAI.pdf` (đề), `docs/plan.md` (tuần, trạng thái, hạn chế),
+Đọc trước: `../shared/Project03_Multimodal_XAI.pdf` (đề), `docs/plan.md` (tuần, trạng thái, hạn chế),
 `docs/data-contract.md` (định dạng dữ liệu), `results/JOURNAL.md` (lượt mới nhất ở trên).
 
 ## Vòng lặp
