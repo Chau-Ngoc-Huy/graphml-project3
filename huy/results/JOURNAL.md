@@ -15,6 +15,24 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #2 · 2026-11-15 · 20261115-082025_huy-chau_t1_graph-seed0-dau-tien — dữ liệu THẬT, 1 seed (chưa phải số báo cáo)
+
+- **Mục đích:** lượt CLIP+Graph đầu tiên trên bundle Nhiệm vụ 1 của Thắng (VG∩COCO, Karpathy split, train 15k ảnh /
+  75k caption, val 2126, test 2138), đánh giá bằng `mmxai_eval.Protocol` của Thắng (gallery 1000 theo seed + full pool,
+  `fuse` z-score, `tune_alpha` trên val bước 0.05).
+- **Kiểm tra trước:** `t1_clip` khớp tuyệt đối baseline của Thắng (R@1 57.36, MRR 69.23 mean 3 gallery; full 48.31 / 60.40);
+  `t1_untrained` (GNN khởi tạo đơn vị) cho đúng số CLIP → đường dữ liệu đúng.
+- **Cấu hình:** GAT 2 tầng, hidden 256, 4 head; đồ thị 19 264 ảnh + 2 000 nhãn (`object_vocab_train`), 334k cạnh contains,
+  98.8k cạnh sg_rel (train, `min_rel_count=1`), CHƯA có ConceptNet. batch 512, lr 1e-3, tau 0.05, patience 4. CPU 4 luồng.
+- **Kết quả test (seed 0):** gallery 1000: CLIP R@1 58.17 / MRR 69.79 → **60.45 / 72.15** (+2.3 / +2.4);
+  full pool: 48.31 / 60.40 → **50.94 / 63.19** (+2.6 / +2.8). α = 0.35. Nhóm direct / indirect (định nghĩa của Thắng):
+  MRR 72.84 / 71.99.
+- **Nhận xét:** cải thiện thật trên dữ liệu thật. MRR val (graph) đạt đỉnh ở epoch 1 rồi giảm → quá khớp sớm; còn chỗ dò
+  lr/dropout/weight decay. CHƯA biết phần cải thiện đến từ cấu trúc đồ thị hay từ lớp chiếu học được → bắt buộc chạy
+  `no_edge` và `shuffle` trên dữ liệu thật. 27 phút/seed trên CPU (≈4.4 phút/epoch).
+- **Tiếp theo:** ablation no_edge + shuffle (seed 0), ConceptNet (A3), rồi 3 seed.
+- **Output:** `runs/t1_graph/20261115-082025_huy-chau_t1_graph-seed0-dau-tien/`
+
 ## #1 · 2026-11-14 · kiểm tra pipeline trên dữ liệu GIẢ (local CPU, 1 seed, chưa phải kết quả báo cáo)
 
 - **Mục đích:** xác nhận pipeline phát hiện được đóng góp của cấu trúc đồ thị trước khi tốn GPU cho VG thật.

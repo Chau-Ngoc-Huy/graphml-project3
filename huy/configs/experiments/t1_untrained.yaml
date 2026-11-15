@@ -1,0 +1,3 @@
+# Kiểm tra: t1_graph với mode=untrained
+extends: t1_graph.yaml
+mode: untrained

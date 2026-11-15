@@ -1,0 +1,14 @@
+# CLIP + Graph trên bundle Nhiệm vụ 1 (Thắng), đánh giá bằng mmxai_eval.Protocol.
+# Local: data trỏ tới bản chép bundle; Kaggle: --set data=<tên dataset chứa bundle>
+extends: clip_graph.yaml
+data: data/task1_bundle
+extra: null               # null → <data>/huy_extra (label_emb, labels, conceptnet.tsv)
+mode: graph               # clip | untrained | graph
+seeds: [0, 1, 2]          # seed s = gallery s của Thắng + khởi tạo GNN s
+alpha_step: 0.05          # giống tune_alpha của Thắng
+train:
+  batch_size: 512
+  epochs: 20
+  patience: 4
+n_explain: 0
+paper: {table: main, row: CLIP+Graph (GAT) — VG∩COCO}

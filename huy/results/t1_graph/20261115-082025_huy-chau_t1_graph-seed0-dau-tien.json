@@ -1,0 +1,374 @@
+{
+ "metrics": {
+  "test": {
+   "seed": {
+    "mean": 0.0,
+    "std": 0.0,
+    "values": [
+     0.0
+    ]
+   },
+   "gallery_size": {
+    "mean": 1000.0,
+    "std": 0.0,
+    "values": [
+     1000.0
+    ]
+   },
+   "R@1": {
+    "mean": 60.44791041791642,
+    "std": 0.0,
+    "values": [
+     60.44791041791642
+    ]
+   },
+   "R@5": {
+    "mean": 86.80263947210558,
+    "std": 0.0,
+    "values": [
+     86.80263947210558
+    ]
+   },
+   "R@10": {
+    "mean": 93.52129574085183,
+    "std": 0.0,
+    "values": [
+     93.52129574085183
+    ]
+   },
+   "MRR": {
+    "mean": 72.15442439086091,
+    "std": 0.0,
+    "values": [
+     72.15442439086091
+    ]
+   },
+   "nDCG@10": {
+    "mean": 77.0685899724738,
+    "std": 0.0,
+    "values": [
+     77.0685899724738
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "n": 5001
+  },
+  "test_full": {
+   "gallery_size": {
+    "mean": 2138.0,
+    "std": 0.0,
+    "values": [
+     2138.0
+    ]
+   },
+   "R@1": {
+    "mean": 50.944278234854146,
+    "std": 0.0,
+    "values": [
+     50.944278234854146
+    ]
+   },
+   "R@5": {
+    "mean": 78.38444278234854,
+    "std": 0.0,
+    "values": [
+     78.38444278234854
+    ]
+   },
+   "R@10": {
+    "mean": 87.18212415856395,
+    "std": 0.0,
+    "values": [
+     87.18212415856395
+    ]
+   },
+   "MRR": {
+    "mean": 63.19446995750785,
+    "std": 0.0,
+    "values": [
+     63.19446995750785
+    ]
+   },
+   "nDCG@10": {
+    "mean": 68.47998527410925,
+    "std": 0.0,
+    "values": [
+     68.47998527410925
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "n": 10696
+  },
+  "by_group": {
+   "direct": {
+    "R@1": {
+     "mean": 61.259338313767344,
+     "std": 0.0,
+     "values": [
+      61.259338313767344
+     ]
+    },
+    "R@5": {
+     "mean": 87.62006403415154,
+     "std": 0.0,
+     "values": [
+      87.62006403415154
+     ]
+    },
+    "R@10": {
+     "mean": 93.91675560298826,
+     "std": 0.0,
+     "values": [
+      93.91675560298826
+     ]
+    },
+    "MRR": {
+     "mean": 72.84309133877802,
+     "std": 0.0,
+     "values": [
+      72.84309133877802
+     ]
+    },
+    "nDCG@10": {
+     "mean": 77.71058617960843,
+     "std": 0.0,
+     "values": [
+      77.71058617960843
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 937
+   },
+   "indirect": {
+    "R@1": {
+     "mean": 60.25166543301258,
+     "std": 0.0,
+     "values": [
+      60.25166543301258
+     ]
+    },
+    "R@5": {
+     "mean": 86.62718973599802,
+     "std": 0.0,
+     "values": [
+      86.62718973599802
+     ]
+    },
+    "R@10": {
+     "mean": 93.46163335800641,
+     "std": 0.0,
+     "values": [
+      93.46163335800641
+     ]
+    },
+    "MRR": {
+     "mean": 71.99353893451429,
+     "std": 0.0,
+     "values": [
+      71.99353893451429
+     ]
+    },
+    "nDCG@10": {
+     "mean": 76.92549056287542,
+     "std": 0.0,
+     "values": [
+      76.92549056287542
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 4053
+   },
+   "no_concept": {
+    "R@1": {
+     "mean": 63.63636363636363,
+     "std": 0.0,
+     "values": [
+      63.63636363636363
+     ]
+    },
+    "R@5": {
+     "mean": 81.81818181818183,
+     "std": 0.0,
+     "values": [
+      81.81818181818183
+     ]
+    },
+    "R@10": {
+     "mean": 81.81818181818183,
+     "std": 0.0,
+     "values": [
+      81.81818181818183
+     ]
+    },
+    "MRR": {
+     "mean": 72.77149933399933,
+     "std": 0.0,
+     "values": [
+      72.77149933399933
+     ]
+    },
+    "nDCG@10": {
+     "mean": 75.10781370129924,
+     "std": 0.0,
+     "values": [
+      75.10781370129924
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 11
+   }
+  },
+  "alpha": {
+   "mean": 0.35,
+   "values": [
+    0.35
+   ]
+  }
+ },
+ "n": 10696,
+ "paper": {
+  "table": "main",
+  "row": "CLIP+Graph (GAT) — VG∩COCO"
+ },
+ "run": {
+  "exp": "t1_graph",
+  "run_id": "20261115-082025_huy-chau_t1_graph-seed0-dau-tien",
+  "tag": "seed0-dau-tien",
+  "user": "huy-chau",
+  "args": {
+   "exp": "t1_graph",
+   "config": null,
+   "config_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/configs",
+   "set": [],
+   "limit": null,
+   "seed": 0,
+   "tag": "seed0-dau-tien",
+   "runs_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/runs",
+   "run_id": null,
+   "no_publish": false,
+   "dry_run": false
+  },
+  "config": {
+   "data": "data/task1_bundle",
+   "fake": {},
+   "max_images": null,
+   "topk": 100,
+   "seed": 0,
+   "paper": {
+    "table": "main",
+    "row": "CLIP+Graph (GAT) — VG∩COCO"
+   },
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "graph": {
+    "variant": "full",
+    "min_rel_count": 1
+   },
+   "gnn": {
+    "kind": "gat",
+    "hidden": 256,
+    "layers": 2,
+    "heads": 4,
+    "dropout": 0.1
+   },
+   "train": {
+    "epochs": 20,
+    "patience": 4,
+    "batch_size": 512,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "tau": 0.05
+   },
+   "alpha_step": 0.05,
+   "n_explain": 0,
+   "explain_top_m": 3,
+   "save_model": true,
+   "extra": null,
+   "mode": "graph",
+   "exp": "t1_graph"
+  },
+  "started_at": "2026-11-15T08:20:25+00:00",
+  "finished_at": "2026-11-15T08:47:13+00:00",
+  "wall_time_s": 1607.75,
+  "sec_per_sample": 0.15,
+  "peak_vram_gb": null,
+  "error": null,
+  "extra": {
+   "mode": "graph",
+   "seeds": [
+    0
+   ],
+   "graph": {
+    "n_img": 19264,
+    "n_label": 2000,
+    "variant": "full",
+    "E_contains": 334297,
+    "E_sg_rel": 98780,
+    "E_concept": 0,
+    "missing_labels": 23913,
+    "missing_top": [
+     "overall",
+     "ski goggle",
+     "destination",
+     "wire fence",
+     "waterway",
+     "spotlight",
+     "fire extinguisher",
+     "little boy",
+     "life preserver",
+     "parade"
+    ]
+   },
+   "device": "cpu"
+  }
+ },
+ "environment": {
+  "python": "3.12.3",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.39",
+  "compute": "local",
+  "gpu": null,
+  "packages": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.5.4",
+   "pyyaml": "6.0.3",
+   "torch_geometric": "2.8.1",
+   "open_clip_torch": "4.2.2",
+   "faiss-cpu": null
+  },
+  "git_commit": "e4c44a06b438a9fa3dad5303778f85d91500c607",
+  "vendor_commit": null
+ }
+}
