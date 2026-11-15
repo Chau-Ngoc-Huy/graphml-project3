@@ -1,0 +1,51 @@
+# Dữ liệu, model, kết quả thô — để trên Kaggle/Drive, KHÔNG commit
+data/
+**/data/
+runs/
+cache/
+build/
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.h5
+*.pkl
+*.parquet
+*.zip
+*.tar
+*.tar.gz
+*.gz
+*.jpg
+*.jpeg
+*.png
+!**/figures/*.png
+*.mp4
+**/vg/*.json
+scene_graphs.json
+objects.json
+relationships.json
+
+# Token, cấu hình riêng
+.env
+local.mk
+kaggle.json
+access_token
+*token*.json
+*credentials*.json
+
+# Python / notebook
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
