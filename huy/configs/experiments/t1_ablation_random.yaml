@@ -1,0 +1,5 @@
+# Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): cạnh ngẫu nhiên cùng số lượng
+extends: t1_graph.yaml
+graph: {variant: random}
+save_model: false
+paper: {table: ablation, row: random — VG∩COCO}

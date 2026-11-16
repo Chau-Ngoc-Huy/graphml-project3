@@ -15,6 +15,21 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #3 · 2026-11-16 · t1_ablation_no_edge / t1_ablation_shuffle (`--seed 0 --tag seed0`) — đồ thị CHƯA đóng góp
+
+- **Mục đích:** kiểm tra phần tăng của lượt #2 đến từ cấu trúc đồ thị hay từ lớp chiếu học được.
+- **Cấu hình:** giống #2 (GAT, chưa ConceptNet), chỉ đổi `graph.variant`. Chạy song song 2 lượt trên CPU (4 luồng mỗi lượt).
+- **Kết quả test seed 0 (R@1 / MRR):** gallery 1000 — CLIP 58.17 / 69.79 · full 60.45 / 72.15 · **no_edge 60.87 / 72.36** ·
+  **shuffle 61.15 / 72.48**. Toàn pool — CLIP 48.31 / 60.40 · full 50.94 / 63.19 · no_edge 50.90 / 63.14 · shuffle 51.00 / 63.17.
+  α = 0.35 / 0.30 / 0.35. Val MRR(graph) của cả ba đều đỉnh ở epoch 0–1 (≈0.728–0.730).
+- **Nhận xét:** bỏ hết cạnh hay xáo cạnh cho cùng mức tăng → **toàn bộ +2.8 MRR là của adapter** (q_proj, skip, và GAT
+  self-loop biến đổi chính đặc trưng ảnh = MLP), không phải tri thức đồ thị. Baseline đúng để so phải là "CLIP + adapter"
+  (no_edge), không phải CLIP thô. Số của #2 KHÔNG được báo cáo là đóng góp của đồ thị.
+- **Tiếp theo:** sửa mô hình để nhánh GNN chỉ nhận tin từ nhãn/khái niệm (ảnh không self-loop trong GNN), tách adapter
+  thành thành phần riêng; thêm ConceptNet; chạy lại full vs no_edge vs shuffle.
+- **Output:** `runs/t1_ablation_no_edge/20261116-150308_huy_t1_ablation_no_edge-seed0/`,
+  `runs/t1_ablation_shuffle/20261116-150308_huy_t1_ablation_shuffle-seed0/`
+
 ## #2 · 2026-11-15 · 20261115-082025_huy-chau_t1_graph-seed0-dau-tien — dữ liệu THẬT, 1 seed (chưa phải số báo cáo)
 
 - **Mục đích:** lượt CLIP+Graph đầu tiên trên bundle Nhiệm vụ 1 của Thắng (VG∩COCO, Karpathy split, train 15k ảnh /
