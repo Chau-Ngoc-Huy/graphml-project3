@@ -4,6 +4,9 @@ extends: clip_graph.yaml
 data: data/task1_bundle
 extra: null               # null → <data>/huy_extra (label_emb, labels, conceptnet.tsv)
 mode: graph               # clip | untrained | graph
+gnn:
+  arch: split             # adapter + đồ thị tách rời (JOURNAL #3: legacy không dùng đồ thị)
+  adapter: true           # false: P=S=I cố định → đồ thị trên nền CLIP thô
 seeds: [0, 1, 2]          # seed s = gallery s của Thắng + khởi tạo GNN s
 alpha_step: 0.05          # giống tune_alpha của Thắng
 train:

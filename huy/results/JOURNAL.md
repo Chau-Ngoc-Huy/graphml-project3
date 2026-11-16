@@ -15,6 +15,27 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #4 · 2026-11-17 · kiến trúc `split` (adapter + đồ thị tách rời), seed 0 (`--tag split-seed0`)
+
+- **Mục đích:** sửa lỗi của #3. Nhánh đồ thị chỉ tổng hợp từ láng giềng (ảnh không self-loop), điểm = cos(Pq,Sx) + w·cos(Gq,g_i).
+  Test mới: no_edge ⇒ thứ hạng ≡ adapter; GCN/SAGE: g_i không phụ thuộc đặc trưng ảnh. Dữ liệu giả xác nhận kiến trúc dùng
+  được đồ thị: MRR CLIP 0.321 · no_edge 0.337 · shuffle 0.334 · **full 0.384** (indirect 0.103 → 0.215).
+- **Cấu hình:** như #2 (GAT, chưa ConceptNet), `gnn.arch=split`; 4 lượt song song trên CPU.
+- **Kết quả test seed 0, R@1 / MRR (gallery 1000 · toàn pool):**
+  CLIP 58.17 / 69.79 · 48.31 / 60.40 —
+  **CLIP+Adapter (no_edge)** 60.99 / 72.40 · 51.22 / 63.35 —
+  **+Graph (full)** 60.95 / 72.48 · 50.97 / 63.25 —
+  +Graph shuffle 60.41 / 72.10 · 50.90 / 63.17 —
+  **Graph trên CLIP thô (adapter=false)** 58.87 / 70.37 · 48.64 / 60.83 (α = 0.7).
+  MRR direct/indirect: no_edge 73.34/72.17 · full 73.79/72.18 · shuffle 73.30/71.83.
+- **Nhận xét:** kiến trúc đã đúng (dữ liệu giả) nhưng trên dữ liệu thật **đồ thị nhãn VG (chưa ConceptNet) không thêm gì
+  trên adapter** (chênh ≤ 0.1 MRR, trong nhiễu 1 seed); trên CLIP thô chỉ +0.4 MRR toàn pool — dưới cả baseline khớp tên
+  của Khánh (+1.06). Giả thuyết: g_i gộp ~17 nhãn của ảnh thành MỘT vector không phụ thuộc truy vấn → mất thông tin
+  "nhãn nào khớp khái niệm nào của câu", thứ mà khớp tên khai thác được; CLIP ảnh vốn đã mã hóa "túi đối tượng".
+- **Tiếp theo:** điểm đồ thị phụ thuộc truy vấn (khái niệm của caption `concepts` ↔ nhãn của ảnh qua đường đi trong đồ thị),
+  thêm ConceptNet; cùng bộ ablation.
+- **Output:** `runs/t1_*/2026111[67]-*split*`
+
 ## #3 · 2026-11-16 · t1_ablation_no_edge / t1_ablation_shuffle (`--seed 0 --tag seed0`) — đồ thị CHƯA đóng góp
 
 - **Mục đích:** kiểm tra phần tăng của lượt #2 đến từ cấu trúc đồ thị hay từ lớp chiếu học được.

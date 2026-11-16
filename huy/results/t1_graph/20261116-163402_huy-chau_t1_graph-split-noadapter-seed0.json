@@ -1,0 +1,378 @@
+{
+ "metrics": {
+  "test": {
+   "seed": {
+    "mean": 0.0,
+    "std": 0.0,
+    "values": [
+     0.0
+    ]
+   },
+   "gallery_size": {
+    "mean": 1000.0,
+    "std": 0.0,
+    "values": [
+     1000.0
+    ]
+   },
+   "R@1": {
+    "mean": 58.86822635472906,
+    "std": 0.0,
+    "values": [
+     58.86822635472906
+    ]
+   },
+   "R@5": {
+    "mean": 84.48310337932413,
+    "std": 0.0,
+    "values": [
+     84.48310337932413
+    ]
+   },
+   "R@10": {
+    "mean": 91.64167166566686,
+    "std": 0.0,
+    "values": [
+     91.64167166566686
+    ]
+   },
+   "MRR": {
+    "mean": 70.36969133128272,
+    "std": 0.0,
+    "values": [
+     70.36969133128272
+    ]
+   },
+   "nDCG@10": {
+    "mean": 75.15248196044016,
+    "std": 0.0,
+    "values": [
+     75.15248196044016
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "n": 5001
+  },
+  "test_full": {
+   "gallery_size": {
+    "mean": 2138.0,
+    "std": 0.0,
+    "values": [
+     2138.0
+    ]
+   },
+   "R@1": {
+    "mean": 48.635003739715785,
+    "std": 0.0,
+    "values": [
+     48.635003739715785
+    ]
+   },
+   "R@5": {
+    "mean": 75.6544502617801,
+    "std": 0.0,
+    "values": [
+     75.6544502617801
+    ]
+   },
+   "R@10": {
+    "mean": 84.3773373223635,
+    "std": 0.0,
+    "values": [
+     84.3773373223635
+    ]
+   },
+   "MRR": {
+    "mean": 60.82762283851181,
+    "std": 0.0,
+    "values": [
+     60.82762283851181
+    ]
+   },
+   "nDCG@10": {
+    "mean": 65.91377354542922,
+    "std": 0.0,
+    "values": [
+     65.91377354542922
+    ]
+   },
+   "MedR": {
+    "mean": 2.0,
+    "std": 0.0,
+    "values": [
+     2.0
+    ]
+   },
+   "n": 10696
+  },
+  "by_group": {
+   "direct": {
+    "R@1": {
+     "mean": 60.08537886872999,
+     "std": 0.0,
+     "values": [
+      60.08537886872999
+     ]
+    },
+    "R@5": {
+     "mean": 86.65955176093917,
+     "std": 0.0,
+     "values": [
+      86.65955176093917
+     ]
+    },
+    "R@10": {
+     "mean": 93.81003201707577,
+     "std": 0.0,
+     "values": [
+      93.81003201707577
+     ]
+    },
+    "MRR": {
+     "mean": 71.76876997328313,
+     "std": 0.0,
+     "values": [
+      71.76876997328313
+     ]
+    },
+    "nDCG@10": {
+     "mean": 76.84713591968678,
+     "std": 0.0,
+     "values": [
+      76.84713591968678
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 937
+   },
+   "indirect": {
+    "R@1": {
+     "mean": 58.57389587959536,
+     "std": 0.0,
+     "values": [
+      58.57389587959536
+     ]
+    },
+    "R@5": {
+     "mean": 83.98716999753269,
+     "std": 0.0,
+     "values": [
+      83.98716999753269
+     ]
+    },
+    "R@10": {
+     "mean": 91.16703676289168,
+     "std": 0.0,
+     "values": [
+      91.16703676289168
+     ]
+    },
+    "MRR": {
+     "mean": 70.04383643147578,
+     "std": 0.0,
+     "values": [
+      70.04383643147578
+     ]
+    },
+    "nDCG@10": {
+     "mean": 74.76405204837346,
+     "std": 0.0,
+     "values": [
+      74.76405204837346
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 4053
+   },
+   "no_concept": {
+    "R@1": {
+     "mean": 63.63636363636363,
+     "std": 0.0,
+     "values": [
+      63.63636363636363
+     ]
+    },
+    "R@5": {
+     "mean": 81.81818181818183,
+     "std": 0.0,
+     "values": [
+      81.81818181818183
+     ]
+    },
+    "R@10": {
+     "mean": 81.81818181818183,
+     "std": 0.0,
+     "values": [
+      81.81818181818183
+     ]
+    },
+    "MRR": {
+     "mean": 71.25634781884781,
+     "std": 0.0,
+     "values": [
+      71.25634781884781
+     ]
+    },
+    "nDCG@10": {
+     "mean": 73.91754321428597,
+     "std": 0.0,
+     "values": [
+      73.91754321428597
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 11
+   }
+  },
+  "alpha": {
+   "mean": 0.7,
+   "values": [
+    0.7
+   ]
+  }
+ },
+ "n": 10696,
+ "paper": {
+  "table": "main",
+  "row": "CLIP+Graph (GAT) — VG∩COCO"
+ },
+ "run": {
+  "exp": "t1_graph",
+  "run_id": "20261116-163402_huy-chau_t1_graph-split-noadapter-seed0",
+  "tag": "split-noadapter-seed0",
+  "user": "huy-chau",
+  "args": {
+   "exp": "t1_graph",
+   "config": null,
+   "config_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/configs",
+   "set": [
+    "gnn.adapter=false"
+   ],
+   "limit": null,
+   "seed": 0,
+   "tag": "split-noadapter-seed0",
+   "runs_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/runs",
+   "run_id": null,
+   "no_publish": false,
+   "dry_run": false
+  },
+  "config": {
+   "data": "data/task1_bundle",
+   "fake": {},
+   "max_images": null,
+   "topk": 100,
+   "seed": 0,
+   "paper": {
+    "table": "main",
+    "row": "CLIP+Graph (GAT) — VG∩COCO"
+   },
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "graph": {
+    "variant": "full",
+    "min_rel_count": 1
+   },
+   "gnn": {
+    "kind": "gat",
+    "hidden": 256,
+    "layers": 2,
+    "heads": 4,
+    "dropout": 0.1,
+    "arch": "split",
+    "adapter": false
+   },
+   "train": {
+    "epochs": 20,
+    "patience": 4,
+    "batch_size": 512,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "tau": 0.05
+   },
+   "alpha_step": 0.05,
+   "n_explain": 0,
+   "explain_top_m": 3,
+   "save_model": true,
+   "extra": null,
+   "mode": "graph",
+   "exp": "t1_graph"
+  },
+  "started_at": "2026-11-16T16:34:02+00:00",
+  "finished_at": "2026-11-16T17:14:22+00:00",
+  "wall_time_s": 2420.19,
+  "sec_per_sample": 0.226,
+  "peak_vram_gb": null,
+  "error": null,
+  "extra": {
+   "mode": "graph",
+   "seeds": [
+    0
+   ],
+   "graph": {
+    "n_img": 19264,
+    "n_label": 2000,
+    "variant": "full",
+    "E_contains": 334297,
+    "E_sg_rel": 98780,
+    "E_concept": 0,
+    "missing_labels": 23913,
+    "missing_top": [
+     "overall",
+     "ski goggle",
+     "destination",
+     "wire fence",
+     "waterway",
+     "spotlight",
+     "fire extinguisher",
+     "little boy",
+     "life preserver",
+     "parade"
+    ]
+   },
+   "device": "cpu"
+  }
+ },
+ "environment": {
+  "python": "3.12.3",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.39",
+  "compute": "local",
+  "gpu": null,
+  "packages": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.5.4",
+   "pyyaml": "6.0.3",
+   "torch_geometric": "2.8.1",
+   "open_clip_torch": "4.2.2",
+   "faiss-cpu": null
+  },
+  "git_commit": "7de3bc0136a83d57f431796209f1f729810b505c",
+  "vendor_commit": null
+ }
+}

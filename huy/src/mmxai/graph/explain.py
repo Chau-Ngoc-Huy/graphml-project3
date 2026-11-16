@@ -17,9 +17,9 @@ import torch.nn.functional as F
 from .build import TYPE_NAMES
 
 
-def _edge_weights(model, x, ei, n):
+def _edge_weights(model, x, ei, n, mask):
     """Trọng số cạnh (src,dst) mỗi tầng. GAT: attention thật; GCN/SAGE: 1/bậc vào (cách gộp trung bình)."""
-    model(x, ei, keep_attention=True)
+    model(x, ei, mask, keep_attention=True)
     if model.last_attention:
         return [{(int(s), int(d)): float(a) for s, d, a in zip(e[0], e[1], att)} for e, att in model.last_attention]
     deg = torch.bincount(ei[1], minlength=n).clamp(min=1).float()
@@ -39,14 +39,17 @@ def explain(model, g, q: np.ndarray, img_row: int, top_m: int = 3, n_random: int
     x = g.data.x[subset].to(device)
     sub_ei = sub_ei.to(device)
     etype = g.data.edge_type[emask]
-    qz = model.query(torch.from_numpy(q[None]).to(device))[0]
+    q_t = torch.from_numpy(q[None]).to(device)
+    qz = model.query(q_t)[0]
+    mask = torch.zeros(len(subset), dtype=torch.bool, device=device)
+    mask[c] = True  # trong đồ thị con k bước của một ảnh, ảnh duy nhất là chính nó (ảnh không gửi tin)
 
     def score(ei):
-        return float(qz @ model(x, ei)[c])
+        return float(qz @ model(x, ei, mask)[c])
 
     base = score(sub_ei)
-    W = _edge_weights(model, x, sub_ei, len(subset))
-    sim = (F.normalize(x, dim=-1) @ qz).cpu().numpy()
+    W = _edge_weights(model, x, sub_ei, len(subset), mask)
+    sim = (F.normalize(x, dim=-1) @ model.graph_query(q_t)[0]).cpu().numpy()
     eidx = {(int(s), int(d)): k for k, (s, d) in enumerate(sub_ei.T.tolist())}
     into_c = [(s, d) for (s, d) in eidx if d == c and s != c]
     paths = []

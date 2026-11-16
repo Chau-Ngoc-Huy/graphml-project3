@@ -91,6 +91,7 @@ def build_graph(b: Bundle, variant: str = "full", min_rel_count: int = 1, seed: 
 
     x = torch.from_numpy(np.concatenate([b.image_emb, b.label_emb], 0))
     data = Data(x=x, edge_index=ei, edge_type=et, num_nodes=x.shape[0])
+    data.img_mask = torch.arange(x.shape[0]) < n_img
     stats = {"n_img": n_img, "n_label": len(b.labels), "variant": variant,
              **{f"E_{TYPE_NAMES[t]}": int((et == t).sum()) for t in TYPE_NAMES},
              "missing_labels": len(missing), "missing_top": [l for l, _ in missing.most_common(10)]}

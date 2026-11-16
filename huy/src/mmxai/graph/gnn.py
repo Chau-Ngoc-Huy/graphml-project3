@@ -1,7 +1,17 @@
 """GNN (GCN / GAT / GraphSAGE) tạo nhúng ảnh có thông tin đồ thị + huấn luyện tương phản với caption TRAIN.
 
-graph_score(q, ảnh i) = cos(P·q, z_i), z_i = normalize(S·x_i + GNN(x)_i). P, S khởi tạo bằng ma trận đơn vị nên
-trước khi học, graph_score ≈ cosine CLIP; GNN học thêm phần tri thức từ láng giềng (nhãn, khái niệm).
+Hai kiến trúc (`arch`):
+
+legacy  graph_score = cos(P·q, normalize(S·x_i + gate·GNN(x)_i)). Lượt #2–#3 (JOURNAL) cho thấy kiến trúc này KHÔNG dùng
+        đồ thị: P, S và self-loop của ảnh trong GNN là một adapter đủ mạnh, no_edge/shuffle cho cùng điểm. Giữ để tái lập.
+split   graph_score = cos(P·q, S·x_i) + w · cos(G·q, g_i)          (adapter + đồ thị, TÁCH RỜI)
+        g_i = GNN tổng hợp CHỈ từ láng giềng của ảnh: ảnh không có self-loop, nên đặc trưng của chính ảnh không đi vào g_i
+        (riêng GAT: đặc trưng ảnh chỉ quyết định trọng số attention giữa các nhãn láng giềng, g_i vẫn là tổ hợp lồi của chúng).
+        Đỉnh nhãn/khái niệm vẫn có self-loop. Hệ quả: no_edge ⇒ g_i là hằng (bias) với mọi ảnh ⇒ không đổi thứ hạng ⇒
+        no_edge ≡ CLIP + Adapter đúng nghĩa đen, và ablation đo đúng phần đóng góp của cấu trúc đồ thị.
+        `adapter: false` cố định P = S = I (không học) → đo đồ thị trên nền CLIP thô.
+Cài đặt split: z_i = [normalize(S·x_i) ; w·normalize(g_i)], q' = [normalize(P·q) ; normalize(G·q)] ⇒ q'·z_i đúng bằng
+công thức trên, nên graph_scores / info_nce / explain không phải đổi.
 
 Chống rò rỉ: chỉ caption của ảnh train làm truy vấn huấn luyện; early stopping và α chọn trên val; test chỉ dùng lúc đánh giá.
 """
@@ -17,20 +27,24 @@ import torch.nn.functional as F
 
 
 class GraphEncoder(nn.Module):
-    def __init__(self, dim: int, kind: str = "gat", hidden: int = 256, layers: int = 2, heads: int = 4, dropout: float = 0.1):
+    def __init__(self, dim: int, kind: str = "gat", hidden: int = 256, layers: int = 2, heads: int = 4, dropout: float = 0.1,
+                 arch: str = "legacy", adapter: bool = True, graph_weight: float = 0.5):
         super().__init__()
         from torch_geometric.nn import GATConv, GCNConv, SAGEConv
 
-        self.kind = kind
+        if arch not in ("legacy", "split"):
+            raise ValueError(f"gnn.arch phải là legacy|split, nhận {arch!r}")
+        self.kind, self.arch = kind, arch
+        loops = arch == "legacy"  # split: tự thêm self-loop cho đỉnh KHÔNG phải ảnh trong forward
         dims = [dim] + [hidden] * (layers - 1) + [dim]
         convs = []
         for a, b in zip(dims[:-1], dims[1:]):
             if kind == "gcn":
-                convs.append(GCNConv(a, b))
+                convs.append(GCNConv(a, b, add_self_loops=loops))
             elif kind == "sage":
-                convs.append(SAGEConv(a, b))
+                convs.append(SAGEConv(a, b, root_weight=loops))
             elif kind == "gat":
-                convs.append(GATConv(a, b, heads=heads, concat=False, dropout=dropout))
+                convs.append(GATConv(a, b, heads=heads, concat=False, dropout=dropout, add_self_loops=loops))
             else:
                 raise ValueError(f"gnn.kind phải là gcn|gat|sage, nhận {kind!r}")
         self.convs = nn.ModuleList(convs)
@@ -39,10 +53,23 @@ class GraphEncoder(nn.Module):
         self.q_proj = nn.Linear(dim, dim, bias=False)
         nn.init.eye_(self.skip.weight)
         nn.init.eye_(self.q_proj.weight)
-        self.gate = nn.Parameter(torch.tensor(0.1))  # GNN bắt đầu đóng góp nhỏ → ổn định
+        self.gate = nn.Parameter(torch.tensor(0.1))  # legacy: GNN bắt đầu đóng góp nhỏ → ổn định
+        if arch == "split":
+            self.g_proj = nn.Linear(dim, dim, bias=False)   # chiếu truy vấn sang không gian của nhánh đồ thị
+            nn.init.eye_(self.g_proj.weight)
+            self.w = nn.Parameter(torch.tensor(float(graph_weight)))
+            if not adapter:
+                self.skip.weight.requires_grad_(False)
+                self.q_proj.weight.requires_grad_(False)
         self.last_attention = None
 
-    def forward(self, x, edge_index, keep_attention: bool = False):
+    def forward(self, x, edge_index, img_mask=None, keep_attention: bool = False):
+        """img_mask [N] bool: đỉnh nào là ảnh (bắt buộc với arch=split để bỏ self-loop của ảnh)."""
+        if self.arch == "split":
+            if img_mask is None:
+                raise ValueError("arch=split cần img_mask")
+            other = torch.nonzero(~img_mask.to(x.device)).view(-1)
+            edge_index = torch.cat([edge_index, torch.stack([other, other])], 1)
         h = x
         att = []
         for i, conv in enumerate(self.convs):
@@ -54,10 +81,25 @@ class GraphEncoder(nn.Module):
             if i < len(self.convs) - 1:
                 h = F.dropout(F.elu(h), self.dropout, self.training)
         self.last_attention = att or None
+        if self.arch == "split":
+            return torch.cat([F.normalize(self.skip(x), dim=-1), self.w * F.normalize(h, dim=-1)], -1)
         return F.normalize(self.skip(x) + self.gate * h, dim=-1)
 
     def query(self, q):
+        if self.arch == "split":
+            return torch.cat([F.normalize(self.q_proj(q), dim=-1), F.normalize(self.g_proj(q), dim=-1)], -1)
         return F.normalize(self.q_proj(q), dim=-1)
+
+    def graph_query(self, q):
+        """Truy vấn trong không gian đặc trưng đỉnh (dùng để chấm đường đi khi giải thích)."""
+        return F.normalize((self.g_proj if self.arch == "split" else self.q_proj)(q), dim=-1)
+
+
+def img_mask_of(data, n_img: int | None = None):
+    m = getattr(data, "img_mask", None)
+    if m is None:
+        m = torch.arange(data.num_nodes) < n_img
+    return m
 
 
 def info_nce(qz, iz, img_ids, tau):
@@ -73,7 +115,7 @@ def info_nce(qz, iz, img_ids, tau):
 def graph_scores(model, data, q: np.ndarray, cand_rows: np.ndarray, device) -> np.ndarray:
     """Điểm đồ thị cho từng (truy vấn, ứng viên): q [Q,D], cand_rows [Q,k] chỉ số đỉnh ảnh → [Q,k]."""
     model.eval()
-    z = model(data.x.to(device), data.edge_index.to(device))
+    z = model(data.x.to(device), data.edge_index.to(device), img_mask_of(data).to(device))
     qz = model.query(torch.from_numpy(q).to(device))
     zc = z[torch.from_numpy(cand_rows).to(device)]           # [Q,k,D]
     return torch.einsum("qd,qkd->qk", qz, zc).cpu().numpy()
@@ -96,7 +138,7 @@ class BatchSubgraph:
         self.ptr = torch.searchsorted(self.c_dst, torch.arange(n_img + 1, device=device))
 
     def __call__(self, rows: torch.Tensor):
-        """rows: đỉnh ảnh (có thể lặp) → (x_sub, ei_sub, vị trí của rows trong đồ thị con)."""
+        """rows: đỉnh ảnh (có thể lặp) → (x_sub, ei_sub, vị trí của rows trong đồ thị con, img_mask của đồ thị con)."""
         uniq, inv = torch.unique(rows, return_inverse=True)
         n_lab = self.n - self.n_img
         # đánh số lại: nhãn → [0, n_lab), ảnh batch → [n_lab, n_lab + |uniq|)
@@ -109,7 +151,8 @@ class BatchSubgraph:
         src = torch.cat([self.ll[0], self.c_src[idx]])
         dst = torch.cat([self.ll[1], self.c_dst[idx]])
         x_sub = torch.cat([self.x[self.n_img:], self.x[uniq]])
-        return x_sub, torch.stack([remap[src], remap[dst]]), n_lab + inv
+        mask = torch.arange(len(x_sub), device=rows.device) >= n_lab
+        return x_sub, torch.stack([remap[src], remap[dst]]), n_lab + inv, mask
 
 
 def train(model, data, n_img: int, cap_emb: np.ndarray, cap_img_rows: np.ndarray, val_fn, cfg: dict, device,
@@ -117,7 +160,7 @@ def train(model, data, n_img: int, cap_emb: np.ndarray, cap_img_rows: np.ndarray
     """cap_emb/cap_img_rows: caption TRAIN và đỉnh ảnh tương ứng. val_fn(model) -> MRR trên val (early stopping)."""
     model.to(device)
     sub = BatchSubgraph(data, n_img, device)
-    opt = torch.optim.AdamW(model.parameters(), lr=cfg.get("lr", 1e-3), weight_decay=cfg.get("weight_decay", 1e-4))
+    opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=cfg.get("lr", 1e-3), weight_decay=cfg.get("weight_decay", 1e-4))
     Q = torch.from_numpy(cap_emb).to(device)
     R = torch.from_numpy(cap_img_rows).long().to(device)
     bs, tau = int(cfg.get("batch_size", 256)), float(cfg.get("tau", 0.05))
@@ -128,8 +171,8 @@ def train(model, data, n_img: int, cap_emb: np.ndarray, cap_img_rows: np.ndarray
         tot = 0.0
         for s in range(0, len(perm), bs):
             b = perm[s:s + bs]
-            xs, es, pos = sub(R[b])
-            z = model(xs, es)[pos]
+            xs, es, pos, mk = sub(R[b])
+            z = model(xs, es, mk)[pos]
             loss = info_nce(model.query(Q[b]), z, R[b], tau)
             opt.zero_grad(); loss.backward(); opt.step()
             tot += float(loss.detach()) * len(b)

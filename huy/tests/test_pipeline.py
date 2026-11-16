@@ -56,22 +56,70 @@ def test_images_never_send(bundle):
                                                               int((build_graph(bundle).data.edge_type == CONTAINS).sum()))
 
 
+@pytest.mark.parametrize("arch", ["legacy", "split"])
 @pytest.mark.parametrize("kind", ["gcn", "gat", "sage"])
-def test_batch_subgraph_exact(bundle, kind):
+def test_batch_subgraph_exact(bundle, kind, arch):
     g = build_graph(bundle, "full")
     torch.manual_seed(0)
-    m = GraphEncoder(bundle.image_emb.shape[1], kind).eval()
+    m = GraphEncoder(bundle.image_emb.shape[1], kind, arch=arch).eval()
     rows = torch.tensor([3, 1, 3, 50])
     with torch.no_grad():
-        full = m(g.data.x, g.data.edge_index)[rows]
-        xs, es, pos = BatchSubgraph(g.data, g.n_img, "cpu")(rows)
-        part = m(xs, es)[pos]
+        full = m(g.data.x, g.data.edge_index, g.data.img_mask)[rows]
+        xs, es, pos, mk = BatchSubgraph(g.data, g.n_img, "cpu")(rows)
+        part = m(xs, es, mk)[pos]
     assert torch.allclose(full, part, atol=1e-5)
+
+
+def _perturb_weights(m):
+    """Thoát khỏi khởi tạo đơn vị để kiểm tra trên mô hình 'đã học' bất kỳ."""
+    with torch.no_grad():
+        for prm in m.parameters():
+            prm.add_(0.05 * torch.randn_like(prm))
+
+
+@pytest.mark.parametrize("kind", ["gcn", "sage"])
+def test_split_graph_half_ignores_own_image_features(bundle, kind):
+    """split: nửa đồ thị của nhúng ảnh không phụ thuộc đặc trưng CLIP của chính ảnh (chỉ từ láng giềng).
+    GAT ngoại lệ có chủ ý: đặc trưng ảnh (đỉnh đích) chỉ chọn TRỌNG SỐ attention giữa các nhãn láng giềng; đầu ra vẫn là
+    tổ hợp lồi của tin nhắn từ nhãn → no_edge vẫn là hằng (test_split_no_edge_is_adapter_only phủ cả GAT)."""
+    g = build_graph(bundle, "full")
+    torch.manual_seed(0)
+    m = GraphEncoder(bundle.image_emb.shape[1], kind, arch="split").eval()
+    _perturb_weights(m)
+    x2 = g.data.x.clone()
+    x2[: g.n_img] = torch.randn_like(x2[: g.n_img])
+    d = bundle.image_emb.shape[1]
+    with torch.no_grad():
+        a = m(g.data.x, g.data.edge_index, g.data.img_mask)[: g.n_img, d:]
+        b = m(x2, g.data.edge_index, g.data.img_mask)[: g.n_img, d:]
+    assert torch.allclose(a, b, atol=1e-5)
+
+
+@pytest.mark.parametrize("kind", ["gcn", "gat", "sage"])
+def test_split_no_edge_is_adapter_only(bundle, kind):
+    """split + no_edge: điểm đồ thị là hằng theo ảnh → thứ hạng = thứ hạng của riêng adapter cos(Pq, Sx)."""
+    g = build_graph(bundle, "no_edge")
+    torch.manual_seed(0)
+    m = GraphEncoder(bundle.image_emb.shape[1], kind, arch="split").eval()
+    _perturb_weights(m)
+    q = torch.from_numpy(bundle.caption_emb[:20])
+    with torch.no_grad():
+        s = m.query(q) @ m(g.data.x, g.data.edge_index, g.data.img_mask)[: g.n_img].T
+        ad = torch.nn.functional.normalize(m.q_proj(q), dim=-1) @ \
+            torch.nn.functional.normalize(m.skip(g.data.x[: g.n_img]), dim=-1).T
+    diff = s - ad
+    assert torch.allclose(diff, diff[:, :1].expand_as(diff), atol=1e-5)
+
+
+def test_split_without_adapter_freezes_projections(bundle):
+    m = GraphEncoder(bundle.image_emb.shape[1], "gat", arch="split", adapter=False)
+    assert not m.skip.weight.requires_grad and not m.q_proj.weight.requires_grad and m.g_proj.weight.requires_grad
 
 
 def test_clip_graph_end_to_end(tmp_path):
     run_dir = main(["--exp", "clip_graph", "--limit", "5", "--runs-dir", str(tmp_path), "--no-publish",
-                    "--set", f"fake={json.dumps(SMALL)}", "--set", "n_explain=2", "--set", "gnn.kind=sage"])
+                    "--set", f"fake={json.dumps(SMALL)}", "--set", "n_explain=2", "--set", "gnn.kind=sage",
+                    "--set", "gnn.arch=split"])
     m = json.loads((run_dir / "metrics.json").read_text())
     assert m["run"]["error"] is None
     for key in ("clip", "clip_graph", "graph_only"):
