@@ -1,0 +1,199 @@
+AdaMF-MAT on the team protocol (Thang's mmxai_eval) report
+
+######## 1 locate Thang's WORK dir (data/images.jsonl, split/split.json, features/clip_*.npz) ########
+what is attached in /kaggle/input:
+/kaggle/input
+/kaggle/input/datasets
+/kaggle/input/datasets/dannywu375
+/kaggle/input/datasets/dannywu375/visualgenome
+/kaggle/input/datasets/dannywu375/visualgenome/attribute_synsets.json
+/kaggle/input/datasets/dannywu375/visualgenome/image_data.json
+/kaggle/input/datasets/dannywu375/visualgenome/images
+/kaggle/input/datasets/dannywu375/visualgenome/images2
+/kaggle/input/datasets/dannywu375/visualgenome/object_synsets.json
+/kaggle/input/datasets/dannywu375/visualgenome/objects_v1_2.json
+/kaggle/input/datasets/dannywu375/visualgenome/region_graphs.json
+/kaggle/input/datasets/dannywu375/visualgenome/synsets.json
+/kaggle/input/datasets/yenphamnhu
+/kaggle/input/datasets/yenphamnhu/visual-genome
+/kaggle/input/datasets/yenphamnhu/visual-genome/scene_graphs.json
+/kaggle/input/datasets/khnhnguyninhquang
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle/candidates
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle/data
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle/features
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle/mmxai_eval.py
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle/results
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle/split
+/kaggle/input/datasets/khnhnguyninhquang/adam-mat
+/kaggle/input/datasets/khnhnguyninhquang/adam-mat/AdaMF-MAT
+
+WORK = /kaggle/input/datasets/khnhnguyninhquang/task1-bundle
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle:
+candidates
+data
+features
+mmxai_eval.py
+results
+split
+
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle/features:
+clip_ViT-B-32_laion2b.npz
+faiss_test_gallery.json
+faiss_test.index
+meta.json
+
+/kaggle/input/datasets/khnhnguyninhquang/task1-bundle/split:
+split.json
+
+
+using the bundle's mmxai_eval.py
+-- 1 locate Thang's WORK dir (data/images.jsonl, split/split.json, features/clip_*.npz) took 1s
+
+######## 2 clone AdaMF-MAT ########
+
+1-1.txt
+1-n.txt
+entity2id.txt
+n-1.txt
+n-n.py
+n-n.txt
+relation2id.txt
+test2id_all.txt
+test2id.txt
+train2id.txt
+type_constrain.txt
+valid2id.txt
+
+-- 2 clone AdaMF-MAT took 1s
+
+######## 3 build the MMKG variants from the protocol (CLIP text features for concept names) ########
+[full] rc=0
+[    3.8s] Protocol: 19264 ảnh, 96381 caption, features clip_ViT-B-32_laion2b.npz (19264, 512), gallery=1000, K=100
+[COCO_full] 12264 entities (2000 concepts, 10264 images), 31 relations, 193962 train triples (176736 contains, 17226 concept relations), heldout valid/test 5823/5823
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+-- 3 build the MMKG variants from the protocol (CLIP text features for concept names) took 43s
+
+######## 4 speed test: 2 epochs on the full variant (also checks the repo accepts the files) ########
+COCO_full smoke: rc=0 time=263s
+--- log tail ---
+: Embedding(12264, 400)
+  (rel_embeddings): Embedding(31, 200)
+  (img_proj): Linear(in_features=512, out_features=400, bias=True)
+  (img_embeddings): Embedding(12264, 512)
+  (text_proj): Linear(in_features=512, out_features=400, bias=True)
+  (text_embeddings): Embedding(12264, 512)
+  (ent_attn): Linear(in_features=400, out_features=1, bias=False)
+)
+Learning Rate of D: 0.0001
+Learning Rate of G: 0.0001
+Finish initializing...
+
+Epoch 0 | D loss: 154.966980, G loss 375.056378:  50%|█████     | 1/2 [01:23<01:23, 83.61s/it]
+Epoch 1 | D loss: 114.537263, G loss 252.552981:  50%|█████     | 1/2 [02:51<01:23, 83.61s/it]
+Epoch 1 | D loss: 114.537263, G loss 252.552981: 100%|██████████| 2/2 [02:51<00:00, 86.16s/it]
+Epoch 1 | D loss: 114.537263, G loss 252.552981: 100%|██████████| 2/2 [02:51<00:00, 85.78s/it]
+Input Files Path : ./benchmarks/COCO_full/
+The toolkit is importing datasets.
+The total of relations is 31.
+The total of entities is 12264.
+The total of train triples is 193962.
+Input Files Path : ./benchmarks/COCO_full/
+The total of test triples is 5823.
+The total of valid triples is 5823.
+metric:			 MRR 		 MR 		 hit@10 	 hit@3  	 hit@1 
+l(filter):		 0.066182 	 307.375061 	 0.143225 	 0.059935 	 0.023184 
+r(filter):		 0.063738 	 276.960663 	 0.143912 	 0.053409 	 0.020951 
+averaged(filter):	 0.064960 	 292.167847 	 0.143569 	 0.056672 	 0.022068 
+
+
+
+0.143569
+
+85.8 s/epoch -> 104 epochs for EVERY variant (budget 2.5 h per phase)
+-- 4 speed test: 2 epochs on the full variant (also checks the repo accepts the files) took 263s
+
+######## 5 train AdaMF-MAT: phase A = full (GPU0) + shuffled edges (GPU1) in parallel; phase B = dropped edges ########
+COCO_full full: rc=0 time=9225s
+--- log tail ---
+:51, 87.83s/it]
+Epoch 100 | D loss: 55.091236, G loss 422.724779:  96%|█████████▌| 100/104 [2:27:49<05:51, 87.83s/it]
+Epoch 100 | D loss: 55.091236, G loss 422.724779:  97%|█████████▋| 101/104 [2:27:49<04:23, 87.82s/it]
+Epoch 101 | D loss: 55.080428, G loss 422.569395:  97%|█████████▋| 101/104 [2:29:17<04:23, 87.82s/it]
+Epoch 101 | D loss: 55.080428, G loss 422.569395:  98%|█████████▊| 102/104 [2:29:17<02:55, 87.80s/it]
+Epoch 102 | D loss: 55.010197, G loss 422.214455:  98%|█████████▊| 102/104 [2:30:45<02:55, 87.80s/it]
+Epoch 102 | D loss: 55.010197, G loss 422.214455:  99%|█████████▉| 103/104 [2:30:45<01:27, 87.85s/it]
+Epoch 103 | D loss: 54.967670, G loss 422.758166:  99%|█████████▉| 103/104 [2:32:13<01:27, 87.85s/it]
+Epoch 103 | D loss: 54.967670, G loss 422.758166: 100%|██████████| 104/104 [2:32:13<00:00, 87.89s/it]
+Epoch 103 | D loss: 54.967670, G loss 422.758166: 100%|██████████| 104/104 [2:32:13<00:00, 87.82s/it]
+Input Files Path : ./benchmarks/COCO_full/
+The toolkit is importing datasets.
+The total of relations is 31.
+The total of entities is 12264.
+The total of train triples is 193962.
+Input Files Path : ./benchmarks/COCO_full/
+The total of test triples is 5823.
+The total of valid triples is 5823.
+metric:			 MRR 		 MR 		 hit@10 	 hit@3  	 hit@1 
+l(filter):		 0.069803 	 163.099426 	 0.202129 	 0.076765 	 0.000000 
+r(filter):		 0.074099 	 152.693802 	 0.218616 	 0.078482 	 0.000172 
+averaged(filter):	 0.071951 	 157.896606 	 0.210373 	 0.077623 	 0.000086 
+
+
+
+0.210373
+
+-- 5 train AdaMF-MAT: phase A = full (GPU0) + shuffled edges (GPU1) in parallel; phase B = dropped edges took 9225s
+
+######## 6 evaluate each variant with the team protocol (3 folds + full pool, alpha tuned on val) ########
+== COCO_full: rc=0
+edR=1
+[   11.8s] CLIP+presence (no relations) (a=0.8) | test   full | gallery  2138 | R@1=49.18 R@5=76.34 R@10=85.28 MRR=61.46 nDCG@10=66.65 MedR=2
+[   31.9s]  CLIP+AdaMF-MAT (a=0.75) | test seed 0 | gallery  1000 | R@1=59.15 R@5=85.02 R@10=91.76 MRR=70.51 nDCG@10=75.30 MedR=1
+[   32.6s]  CLIP+AdaMF-MAT (a=0.75) | test seed 1 | gallery  1000 | R@1=56.56 R@5=84.15 R@10=92.24 MRR=68.76 nDCG@10=74.09 MedR=1
+[   33.0s]  CLIP+AdaMF-MAT (a=0.75) | test seed 2 | gallery  1000 | R@1=58.41 R@5=84.78 R@10=92.48 MRR=70.04 nDCG@10=75.13 MedR=1
+[   33.5s]  CLIP+AdaMF-MAT (a=0.75) | test   full | gallery  2138 | R@1=48.94 R@5=75.78 R@10=84.65 MRR=61.04 nDCG@10=66.16 MedR=2
+**text->image, test, 1K galleries, mean +- std over folds**
+
+| phương pháp | split | n truy vấn | R@1 | R@5 | R@10 | MRR | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| CLIP | test | 5001 | 57.36 ± 0.95 | 84.08 ± 0.24 | 91.76 ± 0.33 | 69.23 ± 0.68 | 74.32 ± 0.55 |
+| CLIP+presence (no relations) (a=0.8) | test | 5001 | 58.46 ± 1.35 | 84.92 ± 0.46 | 92.42 ± 0.23 | 70.21 ± 0.84 | 75.24 ± 0.61 |
+| CLIP+AdaMF-MAT (a=0.75) | test | 5001 | 58.04 ± 1.09 | 84.65 ± 0.37 | 92.16 ± 0.30 | 69.77 ± 0.74 | 74.84 ± 0.53 |
+**query group: direct**
+
+| phương pháp | split | n truy vấn | R@1 | R@5 | R@10 | MRR | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| CLIP - direct | test | 933 | 56.93 ± 0.79 | 84.69 ± 0.83 | 93.15 ± 0.40 | 69.33 ± 0.89 | 74.78 ± 0.79 |
+| CLIP+presence (no relations) (a=0.8) - direct | test | 933 | 67.37 ± 1.31 | 90.65 ± 0.72 | 96.36 ± 0.37 | 77.70 ± 0.96 | 82.10 ± 0.66 |
+| CLIP+AdaMF-MAT (a=0.75) - direct | test | 933 | 63.98 ± 1.22 | 89.76 ± 0.79 | 96.14 ± 0.38 | 75.17 ± 1.03 | 80.11 ± 0.79 |
+**query group: indirect**
+
+| phương pháp | split | n truy vấn | R@1 | R@5 | R@10 | MRR | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| CLIP - indirect | test | 4054 | 57.48 ± 1.02 | 83.99 ± 0.11 | 91.50 ± 0.38 | 69.24 ± 0.65 | 74.25 ± 0.52 |
+| CLIP+presence (no relations) (a=0.8) - indirect | test | 4054 | 56.44 ± 1.40 | 83.66 ± 0.41 | 91.57 ± 0.26 | 68.52 ± 0.84 | 73.71 ± 0.63 |
+| CLIP+AdaMF-MAT (a=0.75) - indirect | test | 4054 | 56.70 ± 1.11 | 83.52 ± 0.35 | 91.31 ± 0.32 | 68.56 ± 0.71 | 73.67 ± 0.51 |
+**query group: no_concept**
+
+| phương pháp | split | n truy vấn | R@1 | R@5 | R@10 | MRR | nDCG@10 |
+|---|---|---|---|---|---|---|---|
+| CLIP - no_concept | test | 13 | 51.35 ± 7.36 | 71.88 ± 9.64 | 73.84 ± 7.03 | 60.87 ± 8.27 | 64.08 ± 7.98 |
+| CLIP+presence (no relations) (a=0.8) - no_concept | test | 13 | 51.35 ± 7.36 | 71.88 ± 9.64 | 73.84 ± 7.03 | 60.87 ± 8.27 | 64.08 ± 7.98 |
+| CLIP+AdaMF-MAT (a=0.75) - no_concept | test | 13 | 51.35 ± 7.36 | 71.88 ± 9.64 | 73.84 ± 7.03 | 60.87 ± 8.27 | 64.08 ± 7.98 |
+CLIP+presence (no relations) bootstrap vs CLIP (full test pool): {"MRR": {"delta": 1.0640656492287144, "ci95": [0.7401275109371445, 1.373771472958955], "p_value": 0.0}, "R@1": {"delta": 0.8694839192221391, "ci95": [0.34592370979805537, 1.3836948391922215], "p_value": 0.003}, "R@10": {"delta": 1.206058339566193, "ci95": [0.8414360508601346, 1.5706806282722514], "p_value": 0.0}}
+CLIP+AdaMF-MAT bootstrap vs CLIP (full test pool): {"MRR": {"delta": 0.6444398690108997, "ci95": [0.32744735904113864, 0.9670969544685184], "p_value": 0.0}, "R@1": {"delta": 0.6357516828721017, "ci95": [0.14023934181002243, 1.149962602842184], "p_value": 0.013}, "R@10": {"delta": 0.5703066566940912, "ci95": [0.19633507853403143, 0.9445119670904999], "p_value": 0.002}}
+saved /kaggle/working/results_COCO_full.json
+
+-- 6 evaluate each variant with the team protocol (3 folds + full pool, alpha tuned on val) took 36s
+
+######## 7 summary ########
+[COCO_full]  test, 1K galleries, mean over folds (R@1 / R@10 / MRR) and by query group (MRR)
+   CLIP                               R@1 57.36  R@10 91.76  MRR 69.23  {'direct': 69.33, 'indirect': 69.24, 'no_concept': 60.87}
+   CLIP+presence (no relations)       R@1 58.46  R@10 92.42  MRR 70.21  {'direct': 77.7, 'indirect': 68.52, 'no_concept': 60.87}
+   CLIP+AdaMF-MAT                     R@1 58.04  R@10 92.16  MRR 69.77  {'direct': 75.17, 'indirect': 68.56, 'no_concept': 60.87}
+KGC on held-out concept relations [COCO_full]: averaged(filter):	 0.071951 	 157.896606 	 0.210373 	 0.077623 	 0.000086
+-- 7 summary took 0s
+
+DONE. Send me /kaggle/working/report_protocol.txt and results_COCO_*.json (small files).

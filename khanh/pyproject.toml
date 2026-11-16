@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mmxai-khanh"
+version = "0.1.0"
+description = "Project 3 (Graph ML), Nhiệm vụ 2 cấp 2: AdaMF-MAT trên giao thức chung + bộ truy vấn trực tiếp/gián tiếp"
+requires-python = ">=3.10"
+dependencies = ["numpy", "ijson", "torch", "open_clip_torch", "pillow"]
+
+[project.optional-dependencies]
+dev = ["pytest", "kaggle"]
+
+[tool.setuptools]
+py-modules = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "../thang"]
