@@ -88,7 +88,7 @@ class State:
             for line in f:
                 im = json.loads(line)
                 self.meta[im["idx"]] = {"url": im.get("url"), "coco_url": im.get("coco_url"), "split": im["split"],
-                                        "objects": im["objects"], "relations": im["relations"][:60]}
+                                        "objects": im["objects"], "relations": im["relations"]}
         self.row_of = {iid: r for r, iid in enumerate(b.image_ids)}
         self.pool = {s: np.array([self.row_of[i] for i in b.splits[s]]) for s in ("val", "test")}
         # cạnh nhãn–nhãn theo đỉnh (chỉ số trong không gian nhãn), để vẽ và tìm đường 2 bước
@@ -389,6 +389,100 @@ def _two_hop(c: int, target: int):
             return {"nodes": [{"idx": c, "name": name(c)}, {"idx": s, "name": name(s), "edge": TYPE_NAMES[t]},
                               {"idx": target, "name": name(target), "edge": TYPE_NAMES[into_t[s]]}]}
     return None
+
+
+# ---------------------------------------------------------------- graph builder: đầu vào → đầu ra của MỘT ảnh
+@app.get("/api/images")
+def images(split: str = "test", label: str = "", n: int = 24, seed: int = 0):
+    """Chọn ảnh để xem: lọc theo split và (tùy chọn) nhãn có trong ảnh."""
+    rows = [S.row_of[i] for i in S.b.splits.get(split, [])]
+    if label:
+        l = S.label_idx.get(normalize_label(label, {}))
+        if l is None:
+            raise HTTPException(404, f"Không có nhãn '{label}'")
+        rows = [r for r in rows if bool((S.qd.img_labels[r] == l).any())]
+    rng = np.random.default_rng(seed)
+    pick = rng.choice(len(rows), size=min(n, len(rows)), replace=False) if rows else []
+    return {"total": len(rows), "items": [S.img_card(int(rows[i])) for i in pick]}
+
+
+@app.get("/api/build/{row}")
+def build(row: int, two_hop: int = 0):
+    """Tái hiện build_graph cho một ảnh: objects/relations gốc → nhãn giữ/bỏ → cạnh contains, sg_rel, ConceptNet."""
+    if not 0 <= row < S.g.n_img:
+        raise HTTPException(404, "row ngoài phạm vi")
+    iid = S.b.image_ids[row]
+    m = S.meta[iid]
+    vocab = S.label_idx
+    n_img = S.g.n_img
+    is_train = m["split"] == "train"
+    # 1) đối tượng gốc → nhãn
+    objs = Counter(m["objects"])
+    objects = []
+    for o, c in objs.most_common():
+        nl = normalize_label(o, {})
+        objects.append({"raw": o, "norm": nl, "count": c, "kept": nl in vocab and S.label_idx[nl] < S.n_vocab,
+                        "images_with_label": S.img_count.get(vocab[nl], 0) if nl in vocab else 0})
+    labs = [l for l in S.qd.img_labels[row].tolist() if l >= 0]
+    labset = set(labs)
+    # 2) quan hệ gốc → có thành cạnh sg_rel không
+    rels = []
+    for s, p, o in m["relations"]:
+        ns, no = normalize_label(s, {}), normalize_label(o, {})
+        both = ns in vocab and no in vocab and ns != no
+        in_graph = both and (vocab[ns] + n_img, vocab[no] + n_img) in S.g.rel_name
+        why = ("dùng (ảnh train) — gộp với các ảnh train khác" if is_train and in_graph else
+               "ảnh không thuộc train → không đóng góp cạnh (chống rò rỉ)" if not is_train and both else
+               "một đầu không thuộc bộ nhãn → bỏ" if not both else "bị lọc bởi min_rel_count")
+        rels.append({"s": s, "p": p, "o": o, "used": bool(is_train and in_graph),
+                     "edge_exists": bool(in_graph), "graph_rel": S.g.rel_name.get((vocab[ns] + n_img, vocab[no] + n_img), "") if both else "",
+                     "why": why})
+    # 3) cạnh đầu ra quanh ảnh
+    nodes, edges, seen = {}, [], set()
+    img_id = f"img:{row}"
+    nodes[img_id] = {"id": img_id, "label": f"ảnh #{iid}", "kind": "image"}
+    contains = []
+    for l in labs:
+        nodes[f"lab:{l}"] = {"id": f"lab:{l}", "label": S.g.labels[l], "kind": "label"}
+        edges.append({"source": f"lab:{l}", "target": img_id, "kind": "contains"})
+        contains.append({"label": S.g.labels[l], "images_with_label": S.img_count.get(l, 0)})
+    among, concept, outside, seen_out = [], [], Counter(), set()
+    for l in labs:
+        for s, t in S.lab_nbrs.get(l, []):
+            key = (min(s, l), max(s, l), t)
+            if s in labset:
+                if key in seen:
+                    continue
+                seen.add(key)
+                rel = S.g.rel_name.get((s + n_img, l + n_img), "")
+                among.append({"a": S.g.labels[s], "b": S.g.labels[l], "type": TYPE_NAMES[t], "rel": rel})
+                edges.append({"source": f"lab:{s}", "target": f"lab:{l}", "kind": TYPE_NAMES[t], "rel": rel})
+            else:
+                if (s, t, l) not in seen_out:  # đếm số NHÃN của ảnh mà s nối tới (cạnh sg_rel có thể bị trùng)
+                    seen_out.add((s, t, l))
+                    outside[(s, t)] += 1
+                if t == CONCEPT and key not in seen:
+                    seen.add(key)
+                    concept.append({"label": S.g.labels[l], "rel": S.g.rel_name.get((s + n_img, l + n_img), ""),
+                                    "concept": S.g.labels[s]})
+    hop2 = [{"name": S.g.labels[s], "type": TYPE_NAMES[t], "links": c} for (s, t), c in outside.most_common(30)]
+    if two_hop:
+        for h in hop2[: int(two_hop)]:
+            s = S.label_idx[h["name"]]
+            nid = f"lab:{s}"
+            nodes[nid] = {"id": nid, "label": h["name"], "kind": "concept" if s >= S.n_vocab else "hop2"}
+            for l in labs:
+                if any(x == s for x, _ in S.lab_nbrs.get(l, [])):
+                    edges.append({"source": nid, "target": f"lab:{l}", "kind": h["type"]})
+    kept = sum(1 for o in objects if o["kept"])
+    return {"card": S.img_card(row), "is_train": is_train,
+            "stats": {"objects_raw": sum(objs.values()), "objects_unique": len(objs), "labels_kept": kept,
+                      "objects_dropped": len(objs) - kept, "relations_raw": len(rels),
+                      "relations_used": sum(r["used"] for r in rels), "contains": len(contains),
+                      "label_label_edges": len(among), "concept_edges": len(concept), "hop2_labels": len(outside)},
+            "objects": objects, "relations": rels, "contains": contains, "among": among, "concept": concept,
+            "hop2": hop2, "elements": {"nodes": list(nodes.values()), "edges": edges},
+            "min_rel_count": int(S.cfg.get("graph", {}).get("min_rel_count", 1))}
 
 
 # ---------------------------------------------------------------- khám phá một nhãn

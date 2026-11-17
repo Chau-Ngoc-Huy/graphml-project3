@@ -25,11 +25,12 @@ function toast(msg) {
 const loaded = {};
 function route() {
   const v = (location.hash || "#search").slice(1).split("?")[0];
-  const view = ["search", "data", "graph", "ablation"].includes(v) ? v : "search";
+  const view = ["search", "data", "builder", "graph", "ablation"].includes(v) ? v : "search";
   $$(".view").forEach((s) => (s.hidden = s.id !== `view-${view}`));
   $$(".nav a").forEach((a) => { if (a.dataset.view !== view) a.removeAttribute("aria-current"); else a.setAttribute("aria-current", "page"); });
   $("#main").focus({ preventScroll: true });
-  if (!loaded[view]) { loaded[view] = true; ({ search: initSearch, data: initData, graph: initGraph, ablation: initAblation })[view](); }
+  if (!loaded[view]) { loaded[view] = true; ({ search: initSearch, data: initData, builder: initBuilder, graph: initGraph, ablation: initAblation })[view](); }
+  else if (view === "builder") builderFromHash();
 }
 window.addEventListener("hashchange", route);
 window.addEventListener("DOMContentLoaded", () => {
@@ -161,8 +162,36 @@ async function openExplain(row) {
       ${m.top.map((t, i) => `<tr class="${i === 0 ? "hl" : ""}"><td>${esc(t.label)}</td><td class="num">${fmt(t.cos, 3)}</td><td class="num">${fmt(t.weight * 100, 1)}%</td></tr>`).join("")}
       </tbody></table></div>`).join("") : '<p class="small">Câu không có khái niệm nào trong bộ nhãn → điểm đồ thị = 0, chỉ còn CLIP + adapter.</p>';
     drawGraph("#cy", r.elements, "img:" + row);
-    $("#exEdges").innerHTML = edgeTable(r.elements);
+    $("#exEdges").innerHTML = imageEdgeTable(r, row);
+    $("#toBuilder").href = `#builder?row=${row}`;
   } catch (e) { $("#exMatches").innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+
+/* Cạnh nối với ảnh khi truy vấn: mọi cạnh contains của ảnh + cạnh nhãn–nhãn giữa chúng, đánh dấu cạnh mà truy vấn dùng. */
+function imageEdgeTable(r, row) {
+  const el = r.elements;
+  const name = Object.fromEntries(el.nodes.map((n) => [n.id, n.label]));
+  const kindOf = Object.fromEntries(el.nodes.map((n) => [n.id, n.kind]));
+  const usedBy = {};  // nhãn → các khái niệm khớp tốt nhất với nó
+  r.matches.forEach((m) => { const t = m.top[0]; if (t) (usedBy[t.label] = usedBy[t.label] || []).push(m.concept); });
+  const img = `img:${row}`;
+  const cont = el.edges.filter((e) => e.kind === "contains" && e.target === img);
+  const other = el.edges.filter((e) => e.kind !== "contains");
+  const contRows = cont.map((e) => {
+    const lab = name[e.source]; const u = usedBy[lab];
+    return `<tr class="${u ? "hl" : ""}"><td>${esc(lab)}</td><td class="mono">contains</td><td>${esc(name[img])}</td>
+      <td>${u ? `<span class="ok">✓ khớp “${u.map(esc).join("”, “")}”</span>` : '<span class="no">—</span>'}</td></tr>`;
+  }).join("");
+  const otherRows = other.map((e) => {
+    const q = kindOf[e.source] === "query" || kindOf[e.target] === "query";
+    const note = e.kind === "match" ? `cos ${fmt(e.cos, 3)}` : q || e.hot ? "đường khớp của truy vấn" : "";
+    return `<tr class="${e.hot ? "hl" : ""}"><td>${esc(name[e.source])}</td><td class="mono">${esc(e.kind)}${e.rel ? " · " + esc(e.rel) : ""}</td>
+      <td>${esc(name[e.target])}</td><td class="small">${esc(note)}</td></tr>`;
+  }).join("");
+  return `<p class="small">${cont.length} cạnh <b>contains</b> vào ảnh (mỗi nhãn của ảnh một cạnh) · ${other.length} cạnh khác trong hình
+    (nhãn–nhãn giữa các nhãn của ảnh, và đường từ khái niệm của câu). Dòng tô xanh = cạnh truy vấn này dùng.</p>
+    <div class="tbl-scroll"><table><thead><tr><th>từ</th><th>loại cạnh</th><th>tới</th><th>với truy vấn</th></tr></thead>
+    <tbody>${contRows}${otherRows}</tbody></table></div>`;
 }
 
 function edgeTable(el) {
@@ -172,7 +201,7 @@ function edgeTable(el) {
 }
 
 function drawGraph(sel, el, center) {
-  const C = { image: css("--n-image"), label: css("--n-label"), concept: css("--n-concept"), query: css("--n-query") };
+  const C = { image: css("--n-image"), label: css("--n-label"), concept: css("--n-concept"), query: css("--n-query"), hop2: "#94a3b8" };
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const inst = cytoscape({
     container: $(sel),
@@ -187,12 +216,17 @@ function drawGraph(sel, el, center) {
       { selector: 'node[kind = "concept"]', style: { shape: "diamond", width: 16, height: 16 } },
       { selector: "node[?hot]", style: { width: 20, height: 20, "border-width": 2, "border-color": "#f59e0b", "font-weight": 600 } },
       { selector: "edge", style: { width: 1, "line-color": "#334155", "curve-style": "bezier", opacity: 0.55 } },
+      { selector: 'edge[kind = "contains"]', style: { width: 2, "line-color": "#60a5fa", opacity: 0.55, "target-arrow-shape": "triangle", "target-arrow-color": "#60a5fa", "arrow-scale": 0.7 } },
+      { selector: 'node[kind = "hop2"]', style: { width: 10, height: 10, "font-size": 9, color: "#94a3b8" } },
       { selector: 'edge[kind = "sg_rel"], edge[kind = "concept"]', style: { "line-style": "dashed", "line-color": "#64748b", opacity: 0.6 } },
       { selector: "edge[?hot]", style: { width: 3, "line-color": "#f59e0b", opacity: 1, "target-arrow-shape": "triangle", "target-arrow-color": "#f59e0b" } },
     ],
     // ego-graph của một nhãn: vòng đồng tâm (tâm = nhãn đang xem); đồ thị con của ảnh: lực đẩy (cose)
-    layout: sel === "#cyLabel"
-      ? { name: "concentric", concentric: (n) => (n.id() === center ? 2 : 1), levelWidth: () => 1, minNodeSpacing: 18, padding: 24, animate: false }
+    layout: sel === "#cyBuild"
+      ? { name: "concentric", concentric: (n) => ({ image: 3, label: 2 }[n.data("kind")] || 1), levelWidth: () => 1,
+          minNodeSpacing: 14, padding: 24, animate: false }
+      : sel === "#cyLabel"
+      ?{ name: "concentric", concentric: (n) => (n.id() === center ? 2 : 1), levelWidth: () => 1, minNodeSpacing: 18, padding: 24, animate: false }
       : { name: "cose", animate: !reduce, animationDuration: 400, nodeRepulsion: 12000, idealEdgeLength: 80, padding: 24, randomize: true },
   });
   inst.on("tap", "node", (e) => {
@@ -220,6 +254,76 @@ function hbar(sel, labels, data, label, color) {
   return new Chart($(sel), { type: "bar", data: { labels, datasets: [{ label, data, backgroundColor: color, borderRadius: 4 }] },
     options: { indexAxis: "y", maintainAspectRatio: false, plugins: { legend: { display: false } },
       scales: { x: { title: { display: true, text: label } }, y: { ticks: { autoSkip: false, font: { size: 11 } } } } } });
+}
+
+/* ---------------- GRAPH BUILDER ---------------- */
+let cyBuild = null, buildRow = null, pickSeed = 0;
+function initBuilder() {
+  const inp = $("#pickLabel"); let t;
+  inp.addEventListener("input", () => {
+    clearTimeout(t);
+    t = setTimeout(async () => {
+      const xs = await api(`/api/labels?q=${encodeURIComponent(inp.value)}`).catch(() => []);
+      $("#labelList2").innerHTML = xs.map((x) => `<option value="${esc(x)}">`).join("");
+    }, 200);
+  });
+  $("#pickForm").addEventListener("submit", (e) => { e.preventDefault(); pickSeed++; loadPick(); });
+  $("#hop2N").addEventListener("change", () => buildRow != null && loadBuild(buildRow));
+  loadPick().then(builderFromHash);
+}
+function builderFromHash() {
+  const row = new URLSearchParams(location.hash.split("?")[1] || "").get("row");
+  if (row != null && +row !== buildRow) loadBuild(+row);
+}
+async function loadPick() {
+  const strip = $("#pickStrip"); $("#pickErr").textContent = "";
+  strip.innerHTML = Array(8).fill('<div class="skel"></div>').join("");
+  try {
+    const r = await api(`/api/images?split=${$("#pickSplit").value}&label=${encodeURIComponent($("#pickLabel").value.trim())}&n=16&seed=${pickSeed}`);
+    strip.innerHTML = r.items.map((c) => `<button type="button" data-row="${c.row}" aria-pressed="${c.row === buildRow}" aria-label="Xem ảnh #${c.idx}">
+      ${imgTag(c)}<span>#${c.idx}</span></button>`).join("") || '<p class="small">Không có ảnh nào khớp.</p>';
+    $$("button", strip).forEach((b) => b.addEventListener("click", () => {
+      history.replaceState(null, "", `#builder?row=${b.dataset.row}`); loadBuild(+b.dataset.row);
+    }));
+    if (buildRow == null && r.items.length && !location.hash.includes("row=")) loadBuild(r.items[0].row);
+  } catch (e) { strip.innerHTML = ""; $("#pickErr").textContent = e.message; }
+}
+async function loadBuild(row) {
+  buildRow = row;
+  $$("#pickStrip button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.row === row)));
+  try {
+    const r = await api(`/api/build/${row}?two_hop=${$("#hop2N").value}`);
+    $("#buildOut").hidden = false;
+    const s = r.stats, c = r.card;
+    const st = [["đối tượng gốc (lần xuất hiện)", s.objects_raw], ["tên đối tượng khác nhau", s.objects_unique],
+      ["→ giữ thành nhãn", s.labels_kept], ["→ bỏ (ngoài bộ nhãn)", s.objects_dropped], ["quan hệ gốc", s.relations_raw],
+      ["→ góp vào sg_rel", s.relations_used], ["cạnh contains vào ảnh", s.contains], ["cạnh nhãn–nhãn trong ảnh", s.label_label_edges],
+      ["cạnh ConceptNet", s.concept_edges], ["nhãn láng giềng 2 bước", s.hop2_labels]];
+    $("#buildStats").innerHTML = st.map(([k, v]) => `<div class="stat"><b>${v.toLocaleString("vi-VN")}</b><span>${esc(k)}</span></div>`).join("");
+    const img = $("#bImg"); img.src = c.url; img.alt = `Ảnh #${c.idx}`;
+    img.onerror = () => { if (c.coco_url && img.src !== c.coco_url) img.src = c.coco_url; };
+    $("#bMeta").innerHTML = `ảnh #${c.idx} · row ${c.row} · tập <b>${esc(c.split)}</b>${r.is_train ? " (quan hệ của ảnh này được gộp vào sg_rel)" :
+      " (ảnh không thuộc train: quan hệ của nó KHÔNG tạo cạnh — chống rò rỉ)"} · min_rel_count = ${r.min_rel_count}`;
+    $("#bObjects").innerHTML = `<table><thead><tr><th>tên gốc</th><th>chuẩn hóa</th><th class="num">số lần</th><th>kết quả</th><th class="num">ảnh có nhãn</th></tr></thead><tbody>${
+      r.objects.map((o) => `<tr><td>${esc(o.raw)}</td><td class="mono">${esc(o.norm)}</td><td class="num">${o.count}</td>
+        <td>${o.kept ? '<span class="ok">✓ nhãn → cạnh contains</span>' : '<span class="no">✗ bỏ</span>'}</td><td class="num">${o.kept ? o.images_with_label : "—"}</td></tr>`).join("")}</tbody></table>`;
+    $("#bContains").innerHTML = `<table><thead><tr><th>nguồn (nhãn)</th><th>cạnh</th><th>đích</th><th class="num">nhãn có trong # ảnh</th></tr></thead><tbody>${
+      r.contains.map((x) => `<tr><td>${esc(x.label)}</td><td class="mono">contains</td><td>ảnh #${c.idx}</td><td class="num">${x.images_with_label}</td></tr>`).join("")}</tbody></table>`;
+    $("#bRels").innerHTML = r.relations.length ? `<table><thead><tr><th>chủ thể</th><th>vị từ</th><th>đối tượng</th><th>kết quả</th></tr></thead><tbody>${
+      r.relations.map((x) => `<tr class="${x.used ? "hl" : ""}"><td>${esc(x.s)}</td><td class="mono">${esc(x.p)}</td><td>${esc(x.o)}</td>
+        <td class="small">${x.used ? '<span class="ok">✓</span> ' : ""}${esc(x.why)}${x.graph_rel ? ` · cạnh trong đồ thị mang nhãn “${esc(x.graph_rel)}”` : ""}</td></tr>`).join("")}</tbody></table>`
+      : '<p class="small">Ảnh không có quan hệ nào.</p>';
+    $("#bAmong").innerHTML = r.among.length ? `<p class="small">Cạnh nhãn–nhãn giữa các nhãn của ảnh này. Cạnh do <b>mọi ảnh train</b> tạo ra; quan hệ ghi trên cạnh là vị từ phổ biến nhất.</p>
+      <table><thead><tr><th>nhãn</th><th>cạnh</th><th>quan hệ</th><th>nhãn</th></tr></thead><tbody>${
+      r.among.map((x) => `<tr><td>${esc(x.a)}</td><td class="mono">${esc(x.type)}</td><td>${esc(x.rel)}</td><td>${esc(x.b)}</td></tr>`).join("")}</tbody></table>`
+      : '<p class="small">Không có cạnh nào giữa các nhãn của ảnh.</p>';
+    $("#bConcept").innerHTML = r.concept.length ? `<div class="chips">${r.concept.slice(0, 40).map((x) => `<span class="chip plain">${esc(x.label)} —${esc(x.rel)}→ ${esc(x.concept)}</span>`).join("")}</div>`
+      : '<p class="small">Mô hình đang nạp chưa có ConceptNet (hoặc nhãn của ảnh không có cạnh ConceptNet).</p>';
+    $("#bHop2").innerHTML = r.hop2.map((h) => `<button type="button" class="chip plain" data-n="${esc(h.name)}" title="nối tới ${h.links} nhãn của ảnh">${esc(h.name)} · ${h.links}</button>`).join("");
+    $$("#bHop2 button").forEach((b) => b.addEventListener("click", () => { location.hash = "#graph"; setTimeout(() => showLabel(b.dataset.n), 50); }));
+    if (cyBuild) cyBuild.destroy();
+    cyBuild = drawGraph("#cyBuild", r.elements, `img:${row}`);
+  } catch (e) { $("#pickErr").textContent = e.message; }
 }
 
 /* ---------------- ĐỒ THỊ ---------------- */

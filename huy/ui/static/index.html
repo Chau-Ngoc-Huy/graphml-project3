@@ -23,6 +23,7 @@
     <nav>
       <a href="#search" data-view="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Thử mô hình</span></a>
       <a href="#data" data-view="data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Dữ liệu &amp; pipeline</span></a>
+      <a href="#builder" data-view="builder"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="14" width="7" height="7" rx="1.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="17" r="2.5"/><circle cx="7" cy="5" r="2.5"/><path d="M10 17h5.5M10 15.5l6-8M8.5 7l-1.5 7"/></svg><span>Graph builder</span></a>
       <a href="#graph" data-view="graph"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="9" cy="18" r="2.5"/><path d="M8 7.5l8 0.8M7 8.5l1.5 7M16.5 10l-5.8 6.5"/></svg><span>Khám phá đồ thị</span></a>
       <a href="#ablation" data-view="ablation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><span>Ablation</span></a>
     </nav>
@@ -107,7 +108,11 @@
               <span><i class="e hot"></i>đường khớp</span><span><i class="e rel"></i>sg_rel / ConceptNet</span>
             </div>
             <div id="cy" class="cy" role="img" aria-label="Đồ thị con của ảnh; xem bảng cạnh bên dưới"></div>
-            <details class="tbl-wrap"><summary>Bảng cạnh (thay cho hình)</summary><div id="exEdges"></div></details>
+            <div class="row" style="margin-top:12px">
+              <h3 class="h3" style="margin:0;margin-right:auto">Cạnh nối với ảnh này</h3>
+              <a class="btn ghost sm" id="toBuilder" href="#builder">Mở trong Graph builder</a>
+            </div>
+            <div id="exEdges"></div>
           </div>
         </div>
       </section>
@@ -125,6 +130,57 @@
         <div class="card"><h2 class="h2">Loại quan hệ trên cạnh nhãn–nhãn</h2><div class="chart-box"><canvas id="chRels" aria-label="Biểu đồ loại quan hệ"></canvas></div></div>
       </div>
       <div class="card"><h2 class="h2">Tham số đã học của mô hình đang nạp</h2><div id="learned" class="kv"></div></div>
+    </section>
+
+    <!-- ============ GRAPH BUILDER ============ -->
+    <section class="view" id="view-builder" aria-labelledby="h-builder" hidden>
+      <header class="view-head">
+        <h1 id="h-builder">Graph builder: một ảnh đi vào đồ thị như thế nào</h1>
+        <p>Đầu vào là scene graph gốc của ảnh (Visual Genome). <code>build_graph</code> giữ đối tượng thuộc bộ 2000 nhãn → cạnh
+          <b>contains</b> (nhãn → ảnh); quan hệ giữa hai nhãn của ảnh <b>train</b> được gộp với mọi ảnh train khác → cạnh
+          <b>sg_rel</b> (nhãn ↔ nhãn); ConceptNet nối nhãn ↔ khái niệm. Ảnh chỉ nhận cạnh, không gửi.</p>
+      </header>
+      <form class="card row" id="pickForm">
+        <label for="pickSplit" class="lbl inline">Tập</label>
+        <select id="pickSplit"><option value="test">test</option><option value="val">val</option><option value="train">train</option></select>
+        <label for="pickLabel" class="lbl inline">Có nhãn</label>
+        <input id="pickLabel" list="labelList2" placeholder="(tùy chọn) dog" autocomplete="off">
+        <datalist id="labelList2"></datalist>
+        <button class="btn ghost" type="submit">Lấy ảnh</button>
+        <span id="pickErr" class="err" role="alert"></span>
+      </form>
+      <div class="card"><div id="pickStrip" class="strip" aria-live="polite"></div></div>
+      <div id="buildOut" hidden>
+        <div class="stats" id="buildStats"></div>
+        <div class="grid-2">
+          <div class="card">
+            <img id="bImg" class="ex-img" alt="" width="640" height="480" referrerpolicy="no-referrer">
+            <div id="bMeta" class="mono small"></div>
+          </div>
+          <div class="card">
+            <div class="row" style="justify-content:space-between;margin-bottom:8px">
+              <div class="legend" aria-hidden="true" style="margin:0">
+                <span><i class="n image"></i>ảnh</span><span><i class="n label"></i>nhãn của ảnh</span>
+                <span><i class="n hop2"></i>láng giềng 2 bước</span><span><i class="n concept"></i>ConceptNet</span>
+                <span><i class="e contains"></i>contains</span><span><i class="e rel"></i>sg_rel</span>
+              </div>
+              <label class="lbl inline small" for="hop2N">Láng giềng 2 bước</label>
+              <select id="hop2N" style="width:auto"><option value="0">ẩn</option><option value="8">8</option><option value="20">20</option></select>
+            </div>
+            <div id="cyBuild" class="cy" role="img" aria-label="Đồ thị quanh ảnh; xem các bảng bên dưới"></div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><h2 class="h2">① Đầu vào: đối tượng gốc → nhãn</h2><div id="bObjects" class="tbl-scroll"></div></div>
+          <div class="card"><h2 class="h2">② Đầu ra: cạnh contains (nhãn → ảnh)</h2><div id="bContains" class="tbl-scroll"></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><h2 class="h2">③ Đầu vào: quan hệ gốc → cạnh sg_rel?</h2><div id="bRels" class="tbl-scroll"></div></div>
+          <div class="card"><h2 class="h2">④ Đầu ra: cạnh giữa các nhãn của ảnh</h2><div id="bAmong" class="tbl-scroll"></div>
+            <h3 class="h3">Cạnh ConceptNet</h3><div id="bConcept"></div>
+            <h3 class="h3">Láng giềng 2 bước nhiều liên kết nhất</h3><div id="bHop2" class="chips"></div></div>
+        </div>
+      </div>
     </section>
 
     <!-- ============ ĐỒ THỊ ============ -->
