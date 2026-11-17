@@ -1,0 +1,5 @@
+# t1_qa + ConceptNet, bỏ cạnh sg_rel: đồ thị nhãn chỉ còn tri thức ConceptNet.
+extends: t1_qa_cn.yaml
+graph: {variant: no_sg}
+save_model: false
+paper: {table: ablation, row: qa+cn no_sg — VG∩COCO}

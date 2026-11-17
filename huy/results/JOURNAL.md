@@ -15,6 +15,18 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #8 · 2026-11-17 · `t1_qa --set extra=data/task1_bundle/huy_extra_cn` seed 0 — có ConceptNet
+
+- **Cấu hình:** như #5 + ConceptNet (`huy_extra_cn`: 3000 nút = 2000 nhãn + 1000 khái niệm, 32.8k cạnh concept hai chiều,
+  sg_rel 101.8k). nice, 2 luồng: 11 epoch × ~11 phút = **2 giờ** (đỉnh val ở epoch 6, 0.7356).
+- **Kết quả test seed 0:** toàn pool R@1 / MRR **52.63 / 64.83**; gallery R@1 / MRR **62.99 / 74.04** (cao nhất đến nay);
+  direct / indirect **79.23 / 72.84** (α 0.35).
+- **So sánh (MRR, 1 seed):** toàn pool — adapter 63.26 · qa 64.30 · qa no_rel 64.98 · qa rel≥5 64.43 · **qa+CN 64.83**;
+  indirect — adapter 72.06 · qa 72.12 · no_rel 72.34 · rel≥5 72.34 · **qa+CN 72.84** (+0.7 so với qa không CN).
+- **Nhận xét:** ConceptNet là thứ duy nhất nhích được nhóm indirect (+0.5–0.8), nhưng chênh vẫn trong nhiễu 1 seed và
+  toàn pool chưa vượt no_rel. Vì sg_rel không giúp, cấu hình đáng thử là ConceptNet KHÔNG sg_rel → thêm biến thể `no_sg`
+  (`t1_qa_cn_no_sg`). Kết luận cần 3 seed → Kaggle (CPU 2 giờ/lượt).
+
 ## #7 · 2026-11-17 · `t1_qa --set graph.min_rel_count=5` seed 0 — sg_rel thưa cũng không giúp; ConceptNet đã có
 
 - **sg_rel thưa** (≥5 lần trên train: 13.4k cạnh, ~7 láng giềng/nhãn thay vì 49): toàn pool R@1 / MRR 52.25 / 64.43,

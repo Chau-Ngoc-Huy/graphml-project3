@@ -11,6 +11,7 @@ Biến thể cho ablation (cfg.graph.variant):
   full      đủ 3 loại cạnh
   no_rel    chỉ giữ CONTAINS (bỏ quan hệ scene graph + khái niệm)
   no_concept bỏ CONCEPT
+  no_sg     bỏ SG_REL, giữ CONCEPT (chỉ tri thức ConceptNet giữa các nhãn; JOURNAL #6–#7: sg_rel không giúp)
   no_edge   không cạnh nào (GNN chỉ còn self-loop ≈ MLP trên đặc trưng ảnh) → tách tác dụng của lớp chiếu khỏi đồ thị
   shuffle   xáo đầu mút cạnh, giữ bậc (ảnh giữ số nhãn, nhãn giữ số lần xuất hiện)
   random    đồ thị ngẫu nhiên cùng số cạnh mỗi loại
@@ -28,7 +29,7 @@ from ..data.contract import Bundle
 
 CONTAINS, SG_REL, CONCEPT = 0, 1, 2
 TYPE_NAMES = {CONTAINS: "contains", SG_REL: "sg_rel", CONCEPT: "concept"}
-VARIANTS = ("full", "no_rel", "no_concept", "no_edge", "shuffle", "random")
+VARIANTS = ("full", "no_rel", "no_concept", "no_sg", "no_edge", "shuffle", "random")
 
 
 @dataclass
@@ -110,6 +111,9 @@ def _apply_variant(ei, et, variant, n_img, n_lab, seed):
         return ei[:, m], et[m]
     if variant == "no_concept":
         m = et != CONCEPT
+        return ei[:, m], et[m]
+    if variant == "no_sg":
+        m = et != SG_REL
         return ei[:, m], et[m]
     g = torch.Generator().manual_seed(seed)
     ei = ei.clone()
