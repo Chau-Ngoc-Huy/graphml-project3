@@ -1,0 +1,5 @@
+# t1_qa_cn_no_sg với GNN = SAGE (so sánh GCN / GAT / SAGE theo đề bài; GAT là t1_qa_cn_no_sg).
+extends: t1_qa_cn_no_sg.yaml
+gnn: {kind: sage}
+save_model: false
+paper: {table: gnn, row: t1_qa_cn_no_sg SAGE — VG∩COCO}
