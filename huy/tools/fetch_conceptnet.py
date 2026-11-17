@@ -6,7 +6,9 @@ extract_clip.py --labels để có label_emb cho khái niệm mới.
 
 Tải: https://s3.amazonaws.com/conceptnet/downloads/2019/edges/conceptnet-assertions-5.7.0.csv.gz
 Dùng: python tools/fetch_conceptnet.py --assertions conceptnet-assertions-5.7.0.csv.gz --data <data_dir> \
-        [--relations IsA PartOf UsedFor AtLocation CapableOf HasA] [--min-weight 1.0] [--add-concepts 2000]
+        [--relations IsA PartOf UsedFor AtLocation CapableOf HasA Synonym] [--min-weight 1.0] [--add-concepts 2000]
+Bundle Nhiệm vụ 1 (Thắng): --bundle data/task1_bundle  → vocab = data/object_vocab_train.json, ghi vào <bundle>/huy_extra/,
+        sau đó chạy tools/extract_label_emb.py --bundle data/task1_bundle (tự gộp concepts_added.json).
 """
 
 import argparse
@@ -18,14 +20,21 @@ from pathlib import Path
 
 p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 p.add_argument("--assertions", required=True)
-p.add_argument("--data", required=True)
-p.add_argument("--relations", nargs="+", default=["IsA", "PartOf", "UsedFor", "AtLocation", "CapableOf", "HasA"])
+g = p.add_mutually_exclusive_group(required=True)
+g.add_argument("--data", help="thư mục dữ liệu theo hợp đồng (features/labels.json)")
+g.add_argument("--bundle", help="bundle Nhiệm vụ 1 của Thắng (đọc data/object_vocab_train.json, ghi huy_extra/)")
+p.add_argument("--relations", nargs="+", default=["IsA", "PartOf", "UsedFor", "AtLocation", "CapableOf", "HasA", "Synonym"])
 p.add_argument("--min-weight", type=float, default=1.0)
 p.add_argument("--add-concepts", type=int, default=0, help="thêm tối đa N khái niệm ngoài vocab (theo số cạnh)")
 a = p.parse_args()
 
-root = Path(a.data)
-labels_path = root / "features" / "labels.json"
+if a.bundle:
+    root = Path(a.bundle) / "huy_extra"
+    root.mkdir(parents=True, exist_ok=True)
+    labels_path = Path(a.bundle) / "data" / "object_vocab_train.json"  # vocab GỐC, không lẫn khái niệm đã thêm lần trước
+else:
+    root = Path(a.data)
+    labels_path = root / "features" / "labels.json"
 if labels_path.exists():
     vocab = set(json.loads(labels_path.read_text()))
 else:  # chưa có features: lấy vocab từ objects.json
@@ -63,4 +72,6 @@ new = {c for c, _ in outside.most_common(a.add_concepts)}
 keep = [(h, r, t) for h, r, t in edges if (h in vocab or h in new) and (t in vocab or t in new)]
 (root / "conceptnet.tsv").write_text("".join(f"{h}\t{r}\t{t}\n" for h, r, t in sorted(set(keep))), encoding="utf-8")
 (root / "concepts_added.json").write_text(json.dumps(sorted(new), ensure_ascii=False))
-print(f"{len(set(keep))} cạnh, {len(new)} khái niệm mới → {root / 'conceptnet.tsv'}; nhớ chạy extract_clip.py --labels")
+rc = Counter(r for _, r, _ in set(keep))
+print(f"{len(set(keep))} cạnh {dict(rc)}, {len(new)} khái niệm mới → {root / 'conceptnet.tsv'}")
+print("Tiếp: " + ("tools/extract_label_emb.py --bundle " + a.bundle if a.bundle else "extract_clip.py --labels"))
