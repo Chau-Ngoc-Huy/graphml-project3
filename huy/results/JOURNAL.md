@@ -15,6 +15,17 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #6 · 2026-11-17 · `t1_qa_ablation_no_rel` seed 0 — cạnh nhãn–nhãn (sg_rel) không giúp
+
+- **Cấu hình:** như #5, bỏ toàn bộ cạnh sg_rel (chỉ còn contains ảnh–nhãn; GNN trên nhãn chỉ còn self-loop). nice, 2 luồng, 18 phút.
+- **Kết quả:** toàn pool R@1 / MRR **53.01 / 64.98** (full #5: 52.11 / 64.30); gallery MRR 73.81 (full 73.71);
+  direct / indirect 80.13 / 72.34 (full 80.54 / 72.12).
+- **Nhận xét:** bỏ cạnh nhãn–nhãn KHÔNG làm giảm, còn nhỉnh hơn (1 seed, chênh nằm trong nhiễu). Phần tăng của #5 đến từ
+  cạnh contains ảnh–nhãn (đồ thị hai phía, 1 bước) + khớp khái niệm có học, không phải từ lan truyền 2 bước qua sg_rel.
+  Giả thuyết: sg_rel gộp từ đồng xuất hiện trên train dày (~50 láng giềng/nhãn) và nhiễu → GNN làm nhòe danh tính nhãn.
+- **Tiếp theo:** ConceptNet (quan hệ ngữ nghĩa IsA/PartOf… thưa hơn) cho nhóm indirect; thử sg_rel thưa (`min_rel_count`
+  cao); 3 seed cho full / no_rel / no_edge để kết luận chắc.
+
 ## #5 · 2026-11-17 · `t1_qa` — điểm đồ thị phụ thuộc truy vấn (khái niệm của câu ↔ nhãn của ảnh), seed 0
 
 - **Mục đích:** sửa nguyên nhân của #4 (gộp nhãn thành một vector mất thông tin khớp). `graph/qa.py`: GNN chỉ trên đồ thị nhãn,
