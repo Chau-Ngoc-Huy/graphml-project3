@@ -1,0 +1,5 @@
+# t1_qa + ConceptNet, đối chứng: xáo cạnh trong cùng loại (ảnh mang nhãn sai, tri thức nối sai).
+extends: t1_qa_cn.yaml
+graph: {variant: shuffle}
+save_model: false
+paper: {table: ablation, row: qa+cn shuffle — VG∩COCO}
