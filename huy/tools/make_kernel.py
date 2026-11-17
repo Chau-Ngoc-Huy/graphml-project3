@@ -26,7 +26,15 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 PKG = next(p.name for p in (ROOT / "src").iterdir() if (p / "run.py").exists())
-PROJECT = os.environ.get("PROJECT") or ROOT.name.lower()
+def _project_name() -> str:
+    """Tên project cố định từ paper-lab.config.json (thư mục đã đổi thành huy/ khi gộp repo nhóm)."""
+    try:
+        return json.loads((ROOT / "paper-lab.config.json").read_text())["project"]
+    except (OSError, KeyError, ValueError):
+        return ROOT.name.lower()
+
+
+PROJECT = os.environ.get("PROJECT") or _project_name()
 INCLUDE = [f"src/{PKG}", "configs"]
 TEMPLATE_META = ROOT / "kaggle" / "kernel-metadata.template.json"
 
@@ -147,7 +155,8 @@ def kaggle_user() -> str:
 
 
 def kernel_id(exp: str) -> str:
-    return f"{kaggle_user()}/{PROJECT}-{exp}"
+    """Kaggle chuẩn hóa slug ('_' → '-'); dùng sẵn dạng đó để status/wait/pull tìm đúng kernel."""
+    return f"{kaggle_user()}/{PROJECT}-{exp}".lower().replace("_", "-")
 
 
 def build_payload(bundle_vendor: bool, vendor_name: str | None) -> str:
