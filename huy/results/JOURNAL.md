@@ -15,6 +15,23 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #5 · 2026-11-17 · `t1_qa` — điểm đồ thị phụ thuộc truy vấn (khái niệm của câu ↔ nhãn của ảnh), seed 0
+
+- **Mục đích:** sửa nguyên nhân của #4 (gộp nhãn thành một vector mất thông tin khớp). `graph/qa.py`: GNN chỉ trên đồ thị nhãn,
+  m(c,i) = max mềm cos(u_c, H_l) trên nhãn l của ảnh, s_G = trung bình theo khái niệm của caption (`concepts` của Thắng, 100%
+  nằm trong bộ 2000 nhãn); score = adapter + w·s_G. Test: no_edge ⇒ s_G = 0; đường đánh giá nhanh = đường huấn luyện.
+- **Cấu hình:** GAT, chưa ConceptNet, batch 512. Máy bị lag khi 4 lượt song song → chạy tuần tự `nice`, 2 luồng (~44 phút/lượt).
+- **Kết quả test seed 0 (toàn pool R@1 / MRR · gallery 1000 MRR):**
+  CLIP 48.31 / 60.40 · 69.79 — khớp nhãn CLIP không học (untrained, không adapter) 48.40 / 60.47 · 69.93 —
+  CLIP+Adapter (qa no_edge) 51.13 / 63.26 · 72.33 — **CLIP+Adapter+QA-Graph 52.11 / 64.30 · 73.71** (α 0.25).
+  MRR theo nhóm (gallery): adapter direct 73.46 / indirect 72.06 → qa **direct 80.54** / indirect 72.12.
+- **Nhận xét:** lần đầu đồ thị thêm được trên adapter: +1.04 MRR toàn pool, +1.4 gallery, +1.0 R@1 (1 seed). Toàn bộ phần
+  tăng nằm ở nhóm **direct** (+7.1); indirect không đổi → chưa có bằng chứng lan truyền qua sg_rel giúp câu gián tiếp
+  (giống AdaMF-MAT của Khánh). Khớp nhãn không học gần như vô dụng (+0.07) → phần học (u_c, τ, w) là cần thiết.
+- **Tiếp theo:** `no_rel` (bị ngắt khi phiên kết thúc) để biết cạnh nhãn–nhãn có góp gì; ConceptNet cho nhóm indirect;
+  3 seed; kiểm định ghép cặp với adapter.
+- **Output:** `runs/t1_qa/20261117-032408_huy-chau_t1_qa-seed0/`, `runs/t1_qa_ablation_no_edge/20261117-030513_*`
+
 ## #4 · 2026-11-17 · kiến trúc `split` (adapter + đồ thị tách rời), seed 0 (`--tag split-seed0`)
 
 - **Mục đích:** sửa lỗi của #3. Nhánh đồ thị chỉ tổng hợp từ láng giềng (ảnh không self-loop), điểm = cos(Pq,Sx) + w·cos(Gq,g_i).

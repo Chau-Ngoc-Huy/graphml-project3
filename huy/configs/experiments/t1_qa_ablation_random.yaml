@@ -1,0 +1,5 @@
+# Ablation t1_qa: cạnh ngẫu nhiên cùng số lượng
+extends: t1_qa.yaml
+graph: {variant: random}
+save_model: false
+paper: {table: ablation, row: qa random — VG∩COCO}

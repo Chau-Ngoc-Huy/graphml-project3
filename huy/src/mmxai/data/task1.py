@@ -65,7 +65,8 @@ def load_task1(bundle: Path | str, extra: Path | str | None = None, max_images: 
 
     rows = [c["idx"] for c in caps if int(c["img"]) in kept]
     captions = [{"caption_id": caps[r]["idx"], "image_id": int(caps[r]["img"]), "text": caps[r]["text"],
-                 "group": caps[r].get("group")} for r in rows]
+                 "group": caps[r].get("group"),
+                 "concepts": [normalize_label(x, syn) for x in caps[r].get("concepts") or []]} for r in rows]
     assert all(int(cap_img[r]) == int(caps[r]["img"]) for r in rows[:1000]), "cap_img lệch captions.jsonl"
 
     lab_p = extra / "labels.json"
