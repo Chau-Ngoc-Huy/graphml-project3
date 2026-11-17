@@ -15,6 +15,28 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #9 · 2026-11-18 · KẾT QUẢ CHÍNH THỨC — 11 cấu hình × 3 seed trên Kaggle T4 (tag `kaggle-3seed`)
+
+- **Cách chạy:** dataset Kaggle private `huychau/mmxai-task1-bundle` (bundle Thắng + `huy_extra` + `huy_extra_cn`), mỗi cấu hình
+  một kernel chạy seed 0,1,2 (seed = gallery + khởi tạo). Kaggle giới hạn 2 phiên GPU → `tools/run_worker.sh` (2 luồng, thử lại
+  push). 4–12 phút/kernel trên T4 (CPU máy: 20–120 phút/seed). Bảng đầy đủ: `results/tables/t1_official.md` (`tools/t1_table.py`).
+- **Kết quả (MRR %, toàn pool 2138 ảnh test, mean ± std 3 seed · ΔMRR vs CLIP+Adapter seed 0 bootstrap CI95):**
+  CLIP 60.40 · CLIP+Adapter 63.14 ± 0.02 ·
+  QA-Graph contains+sg_rel 64.76 ± 0.12 (+1.76 [1.38, 2.16]) · chỉ contains 64.65 ± 0.23 (+1.50) ·
+  +CN 64.76 ± 0.26 (+1.75) · contains+CN 64.76 ± 0.04 (+1.65) ·
+  GNN (contains+sg_rel+CN): GCN 64.73 · GAT 64.76 · **SAGE 64.89 ± 0.09 (+1.85)**; (contains+CN): GCN 64.56 · GAT 64.76 ·
+  **SAGE 64.89 ± 0.15 (+1.93 [1.49, 2.32])** · **shuffle 62.67 ± 0.06 (−0.41 [−0.71, −0.11])**.
+  Gallery 1000 MRR: CLIP 69.23 · Adapter 71.80 · QA-Graph 73.4–73.6. Direct / indirect MRR: Adapter 71.90 / 71.80 →
+  QA-Graph 78.2–79.3 / 72.1–72.5.
+- **Kết luận:**
+  1. Đồ thị có đóng góp THẬT trên adapter: +1.4–1.9 MRR toàn pool, CI95 không chứa 0 ở mọi biến thể; so CLIP +4.3–4.5.
+  2. Xáo cạnh làm điểm TỤT DƯỚI cả adapter (−0.41, có ý nghĩa) → mô hình dùng đúng nội dung cạnh, không phải số tham số.
+  3. Phần tăng chủ yếu ở câu direct (+6.4–7.4); indirect chỉ +0.3–0.7 (~1 std) → lan truyền qua sg_rel/ConceptNet chưa
+     giải được câu gián tiếp; khác biệt giữa có/không sg_rel, có/không CN ≤ 0.2 MRR, trong nhiễu.
+  4. GNN: SAGE ≥ GAT ≥ GCN nhưng chênh ≤ 0.3 MRR (~1–2 std).
+- **Đề xuất cấu hình chính:** contains + ConceptNet · SAGE (`t1_qa_cn_no_sg_sage`): cao nhất (+1.93), đơn giản hơn (không sg_rel).
+- **Tiếp theo:** giải thích + fidelity cho cấu hình chính; giao số/ranks cho Khánh, model + đường đi cho Dương; viết báo cáo.
+
 ## #8 · 2026-11-17 · `t1_qa --set extra=data/task1_bundle/huy_extra_cn` seed 0 — có ConceptNet
 
 - **Cấu hình:** như #5 + ConceptNet (`huy_extra_cn`: 3000 nút = 2000 nhãn + 1000 khái niệm, 32.8k cạnh concept hai chiều,
