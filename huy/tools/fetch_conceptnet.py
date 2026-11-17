@@ -4,6 +4,7 @@ Giữ cạnh tiếng Anh, quan hệ trong --relations, có ít nhất một đ�
 (khái niệm mới như "child", "sport") được thêm vào labels để có đỉnh khái niệm — sau đó phải chạy lại
 extract_clip.py --labels để có label_emb cho khái niệm mới.
 
+Nguồn dự phòng (khi S3 lỗi): huggingface.co/datasets/peandrew/conceptnet_en_simple (.parquet).
 Tải: https://s3.amazonaws.com/conceptnet/downloads/2019/edges/conceptnet-assertions-5.7.0.csv.gz
 Dùng: python tools/fetch_conceptnet.py --assertions conceptnet-assertions-5.7.0.csv.gz --data <data_dir> \
         [--relations IsA PartOf UsedFor AtLocation CapableOf HasA Synonym] [--min-weight 1.0] [--add-concepts 2000]
@@ -25,11 +26,12 @@ g.add_argument("--data", help="thư mục dữ liệu theo hợp đồng (featur
 g.add_argument("--bundle", help="bundle Nhiệm vụ 1 của Thắng (đọc data/object_vocab_train.json, ghi huy_extra/)")
 p.add_argument("--relations", nargs="+", default=["IsA", "PartOf", "UsedFor", "AtLocation", "CapableOf", "HasA", "Synonym"])
 p.add_argument("--min-weight", type=float, default=1.0)
+p.add_argument("--out", help="thư mục ghi (mặc định <bundle>/huy_extra hoặc <data>)")
 p.add_argument("--add-concepts", type=int, default=0, help="thêm tối đa N khái niệm ngoài vocab (theo số cạnh)")
 a = p.parse_args()
 
 if a.bundle:
-    root = Path(a.bundle) / "huy_extra"
+    root = Path(a.out) if a.out else Path(a.bundle) / "huy_extra"
     root.mkdir(parents=True, exist_ok=True)
     labels_path = Path(a.bundle) / "data" / "object_vocab_train.json"  # vocab GỐC, không lẫn khái niệm đã thêm lần trước
 else:
@@ -48,25 +50,36 @@ def term(uri: str) -> str | None:
     return m.group(1).replace("_", " ") if m else None
 
 
+def rows():
+    """(rel_uri, arg1_uri, arg2_uri, weight) từ file gốc .csv.gz hoặc bản parquet tiếng Anh trên Hugging Face
+    (peandrew/conceptnet_en_simple: cột rel, arg1, arg2, weight — dùng khi máy chủ S3 của ConceptNet không tải được)."""
+    if str(a.assertions).endswith(".parquet"):
+        import pyarrow.parquet as pq
+        for batch in pq.ParquetFile(a.assertions).iter_batches(columns=["rel", "arg1", "arg2", "weight"]):
+            yield from zip(*(batch.column(i).to_pylist() for i in range(4)))
+        return
+    with gzip.open(a.assertions, "rt", encoding="utf-8") as f:
+        for line in f:
+            parts = line.rstrip("\n").split("\t")
+            if len(parts) >= 5:
+                yield parts[1], parts[2], parts[3], json.loads(parts[4]).get("weight", 1.0)
+
+
 edges, outside = [], Counter()
-with gzip.open(a.assertions, "rt", encoding="utf-8") as f:
-    for line in f:
-        parts = line.rstrip("\n").split("\t")
-        if len(parts) < 5:
-            continue
-        rel = parts[1].strip("/").split("/")[-1]
-        if rel not in rels:
-            continue
-        h, t = term(parts[2]), term(parts[3])
-        if not h or not t or h == t:
-            continue
-        w = json.loads(parts[4]).get("weight", 1.0)
-        if w < a.min_weight or (h not in vocab and t not in vocab):
-            continue
-        edges.append((h, rel, t))
-        for x in (h, t):
-            if x not in vocab:
-                outside[x] += 1
+for rel_uri, a1, a2, w in rows():
+    rel = rel_uri.strip("/").split("/")[-1]
+    if rel not in rels:
+        continue
+    h, t = term(a1), term(a2)
+    if not h or not t or h == t:
+        continue
+    w = 1.0 if w is None else float(w)
+    if w < a.min_weight or (h not in vocab and t not in vocab):
+        continue
+    edges.append((h, rel, t))
+    for x in (h, t):
+        if x not in vocab:
+            outside[x] += 1
 
 new = {c for c, _ in outside.most_common(a.add_concepts)}
 keep = [(h, r, t) for h, r, t in edges if (h in vocab or h in new) and (t in vocab or t in new)]

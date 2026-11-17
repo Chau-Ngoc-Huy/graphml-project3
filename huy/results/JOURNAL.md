@@ -15,6 +15,16 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #7 · 2026-11-17 · `t1_qa --set graph.min_rel_count=5` seed 0 — sg_rel thưa cũng không giúp; ConceptNet đã có
+
+- **sg_rel thưa** (≥5 lần trên train: 13.4k cạnh, ~7 láng giềng/nhãn thay vì 49): toàn pool R@1 / MRR 52.25 / 64.43,
+  gallery MRR 73.63, direct / indirect 79.15 / 72.34 → nằm giữa full (64.30) và no_rel (64.98); không cải thiện.
+- **ConceptNet:** S3 của ConceptNet ngắt kết nối liên tục (3 lần). Dùng bản tiếng Anh trên Hugging Face
+  `peandrew/conceptnet_en_simple` (3.42M cạnh en–en, cột rel/arg1/arg2/weight, cùng URI `/c/en/...`); `fetch_conceptnet.py`
+  đọc được `.parquet`. Lọc (IsA, PartOf, UsedFor, AtLocation, CapableOf, HasA, Synonym, weight ≥ 1, +1000 khái niệm):
+  16 413 cạnh (IsA 6029, AtLocation 5581, Synonym 2239, UsedFor 1186, PartOf 935, HasA 231, CapableOf 212) →
+  `data/task1_bundle/huy_extra_cn/` (tách khỏi `huy_extra/` để các lượt trước tái lập được).
+
 ## #6 · 2026-11-17 · `t1_qa_ablation_no_rel` seed 0 — cạnh nhãn–nhãn (sg_rel) không giúp
 
 - **Cấu hình:** như #5, bỏ toàn bộ cạnh sg_rel (chỉ còn contains ảnh–nhãn; GNN trên nhãn chỉ còn self-loop). nice, 2 luồng, 18 phút.
