@@ -38,6 +38,8 @@ def _jsonl(p: Path) -> list[dict]:
 def load_task1(bundle: Path | str, extra: Path | str | None = None, max_images: int | None = None) -> Bundle:
     root = Path(bundle)
     extra = Path(extra) if extra else root / "huy_extra"
+    if not extra.exists() and (root / extra.name).exists():  # `extra: huy_extra_cn` = thư mục trong bundle (Kaggle)
+        extra = root / extra.name
     syn_p = extra / "synonyms.json"
     syn = {k.lower(): v.lower() for k, v in json.loads(syn_p.read_text()).items()} if syn_p.exists() else {}
 

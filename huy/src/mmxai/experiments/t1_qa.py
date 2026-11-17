@@ -60,7 +60,8 @@ def run(ctx) -> dict:
 
         info = {}
         if cfg.get("mode", "graph") == "graph":
-            info = train_qa(model, qd, x_img, tr_q, tr_cid, tr_rows, val_fn, tcfg, device)
+            info = train_qa(model, qd, x_img, tr_q, tr_cid, tr_rows, val_fn, tcfg, device,
+                            log=lambda s: print(s, flush=True))
         alpha, curve = ev.tune_alpha(cv, gs_for(cv), step=float(cfg.get("alpha_step", 0.05)))
         alphas.append(alpha)
         infos.append({"seed": seed, "alpha": alpha, "alpha_curve": curve, **info})

@@ -1,4 +1,4 @@
 # t1_qa có ConceptNet (huy_extra_cn: 2000 nhãn + 1000 khái niệm, 16k cạnh IsA/AtLocation/Synonym/...). JOURNAL #8.
 extends: t1_qa.yaml
-extra: data/task1_bundle/huy_extra_cn
+extra: huy_extra_cn          # thư mục trong bundle (chạy được cả local lẫn Kaggle)
 paper: {table: main, row: CLIP+Adapter+QA-Graph+ConceptNet (GAT) — VG∩COCO}

@@ -58,9 +58,11 @@ def find_input(name):
     """Thư mục trong /kaggle/input có tên chứa `name` (tên đúng bằng được ưu tiên)."""
     if Path(name).exists():
         return name
-    hits = sorted((p for p in INPUT.glob("*/*") if name in str(p)) or (p for p in INPUT.rglob("*") if p.is_dir() and name in str(p)),
-                  key=lambda d: (d.name != name, len(str(d))))
-    hits = [h for h in hits]
+    # ưu tiên thư mục TÊN ĐÚNG BẰNG `name` ở độ sâu 1–3 (/kaggle/input/<slug> hoặc /kaggle/input/datasets/<owner>/<slug>),
+    # không lấy nhầm thư mục con như <slug>/data chỉ vì đường dẫn chứa tên
+    cands = [p for pat in ("*", "*/*", "*/*/*") for p in INPUT.glob(pat) if p.is_dir()]
+    hits = sorted([p for p in cands if p.name == name] or [p for p in cands if name in p.name],
+                  key=lambda d: len(str(d)))
     if not hits:
         sys.exit(f"Không tìm thấy dataset chứa '{{name}}' trong {{INPUT}}: " + ", ".join(str(p) for p in INPUT.glob("*/*")))
     return str(hits[0])
