@@ -28,6 +28,22 @@ make table                                            # bảng Markdown + LaTeX 
 Trên Kaggle (GPU T4): `make push EXP=clip_graph ARGS="--set data=<tên dataset> --limit 5 --tag thu"` → `make wait` →
 `make pull` → `.venv/bin/python tools/show_run.py`. Nhiều thí nghiệm: `make queue EXPS="clip_graph clip_graph_sage"`.
 
+## Giao diện thử mô hình (`ui/`)
+
+```bash
+.venv/bin/python -m pip install -e ".[ui]"     # lần đầu: fastapi, uvicorn, open_clip
+make ui                                        # → http://127.0.0.1:8765  (nạp ~1 phút, 2 luồng CPU, nice)
+```
+
+Cần `data/task1_bundle/` và một lượt `runs/t1_qa/*_t1_qa-seed0/model.pt` (đổi bằng `MMXAI_RUN=<thư mục lượt>`).
+
+| Trang | Làm gì |
+|---|---|
+| `#search` | Gõ câu tự do hoặc chọn caption test (biết ảnh đúng) → 3 cột: CLIP / chỉ tín hiệu đồ thị / kết quả cuối, kèm điểm và thay đổi hạng. Bấm một ảnh → khái niệm của câu khớp nhãn nào (cos, trọng số max mềm), đường đi qua đồ thị cho câu gián tiếp, đồ thị con của ảnh + bảng cạnh. Link chia sẻ: `#search?caption=<id>&row=<ảnh>` hoặc `#search?q=<câu>` |
+| `#data` | Số liệu thật ở từng bước pipeline (ảnh, caption, split, đỉnh/cạnh theo loại, khái niệm), nhãn nhiều ảnh nhất, loại quan hệ |
+| `#graph` | Láng giềng của một nhãn (sg_rel, ConceptNet, số ảnh) và nhãn gần nhất sau GNN |
+| `#ablation` | Toàn bộ lượt chạy theo JOURNAL: bảng Δ so với CLIP+Adapter, MRR theo nhóm direct/indirect, đường học theo epoch, độ nhạy α |
+
 ## Đầu ra mỗi lượt (`runs/<exp>/<run_id>/`)
 
 | File | Nội dung |

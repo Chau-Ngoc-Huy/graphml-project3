@@ -1,0 +1,311 @@
+"use strict";
+/* MMXAI Lab — giao diện một trang. Không framework; Chart.js + Cytoscape.js từ cdnjs. */
+
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = (x, d = 2) => (x == null || Number.isNaN(x) ? "—" : Number(x).toFixed(d));
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) } : {});
+  if (!r.ok) {
+    let msg = r.statusText;
+    try { msg = (await r.json()).detail || msg; } catch (_) { /* giữ statusText */ }
+    throw new Error(msg);
+  }
+  return r.json();
+}
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 3500);
+}
+
+/* ---------------- điều hướng (hash) ---------------- */
+const loaded = {};
+function route() {
+  const v = (location.hash || "#search").slice(1).split("?")[0];
+  const view = ["search", "data", "graph", "ablation"].includes(v) ? v : "search";
+  $$(".view").forEach((s) => (s.hidden = s.id !== `view-${view}`));
+  $$(".nav a").forEach((a) => { if (a.dataset.view !== view) a.removeAttribute("aria-current"); else a.setAttribute("aria-current", "page"); });
+  $("#main").focus({ preventScroll: true });
+  if (!loaded[view]) { loaded[view] = true; ({ search: initSearch, data: initData, graph: initGraph, ablation: initAblation })[view](); }
+}
+window.addEventListener("hashchange", route);
+window.addEventListener("DOMContentLoaded", () => {
+  Chart.defaults.color = css("--fg-2");
+  Chart.defaults.borderColor = "rgba(148,163,184,.15)";
+  Chart.defaults.font.family = css("--sans");
+  route();
+  api("/api/overview").then((o) => {
+    $("#modelInfo").innerHTML = `Mô hình: ${esc(o.model_run)}<br>α = ${o.alpha} · w = ${fmt(o.learned.w)} · τ = ${fmt(o.learned.tau_match, 3)}`;
+    window.__overview = o;
+  }).catch((e) => ($("#modelInfo").textContent = "Lỗi nạp: " + e.message));
+});
+
+/* ---------------- THỬ MÔ HÌNH ---------------- */
+let sampleGroup = "", sampleSeed = 0, lastSearch = null;
+
+function initSearch() {
+  $("#searchForm").addEventListener("submit", (e) => { e.preventDefault(); runSearch({ text: $("#q").value }); });
+  $$(".seg .chip-btn").forEach((b) => b.addEventListener("click", () => {
+    $$(".seg .chip-btn").forEach((x) => x.classList.toggle("on", x === b));
+    sampleGroup = b.dataset.group; loadSamples();
+  }));
+  $("#btnShuffle").addEventListener("click", () => { sampleSeed++; loadSamples(); });
+  $("#btnCloseExplain").addEventListener("click", () => { $("#explain").hidden = true; $$(".icard.sel").forEach((c) => c.classList.remove("sel")); });
+  loadSamples();
+  // link chia sẻ được: #search?caption=<id>[&row=<ảnh cần giải thích>]  hoặc  #search?q=<câu>
+  const qs = new URLSearchParams(location.hash.split("?")[1] || "");
+  if (qs.get("caption")) runSearch({ caption_id: +qs.get("caption") }).then(() => qs.get("row") && openExplain(+qs.get("row")));
+  else if (qs.get("q")) { $("#q").value = qs.get("q"); runSearch({ text: qs.get("q") }); }
+}
+
+async function loadSamples() {
+  const ul = $("#sampleList");
+  ul.innerHTML = `<li class="small" style="padding:10px">Đang tải…</li>`;
+  try {
+    const xs = await api(`/api/captions?split=test&group=${sampleGroup}&n=12&seed=${sampleSeed}`);
+    ul.innerHTML = xs.map((c) => `<li><button type="button" data-id="${c.caption_id}">
+      <span>${esc(c.text)}</span><span class="tag ${esc(c.group)}">${esc(c.group)}</span>
+      <span class="cc">khái niệm: ${esc(c.concepts.join(", ") || "—")}</span></button></li>`).join("");
+    $$("button", ul).forEach((b) => b.addEventListener("click", () => {
+      const c = xs.find((x) => String(x.caption_id) === b.dataset.id);
+      $("#q").value = c.text; $("#concepts").value = c.concepts.join(", ");
+      runSearch({ caption_id: c.caption_id });
+    }));
+  } catch (e) { ul.innerHTML = `<li class="err">${esc(e.message)}</li>`; }
+}
+
+async function runSearch(base) {
+  const btn = $("#btnSearch"); const err = $("#searchErr"); err.textContent = "";
+  const cTxt = $("#concepts").value.trim();
+  const body = { ...base, split: $("#pool").value, k: 12 };
+  if (cTxt) body.concepts = cTxt.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+  if (!base.caption_id && !(base.text || "").trim()) { err.textContent = "Nhập câu truy vấn hoặc chọn một caption mẫu."; $("#q").focus(); return; }
+  btn.disabled = true; btn.lastChild.textContent = "Đang tìm…";
+  ["clip", "graph", "final"].forEach((k) => ($(`#col-${k}`).innerHTML = Array(6).fill('<div class="skel"></div>').join("")));
+  $("#results").hidden = false; $("#explain").hidden = true;
+  try {
+    const r = await api("/api/search", body);
+    lastSearch = r;
+    if (!cTxt) $("#concepts").value = r.concepts.join(", ");
+    if (!$("#q").value) $("#q").value = r.text;
+    history.replaceState(null, "", base.caption_id != null ? `#search?caption=${base.caption_id}` : `#search?q=${encodeURIComponent(r.text)}`);
+    renderQueryBar(r);
+    ["clip", "graph", "final"].forEach((k) => renderCol(k, r.results[k], r));
+  } catch (e) {
+    err.textContent = e.message + " — kiểm tra câu/khái niệm rồi thử lại.";
+    $("#results").hidden = true;
+  } finally { btn.disabled = false; btn.lastChild.textContent = "Tìm"; }
+}
+
+function moveHtml(a, b) {
+  if (a == null || b == null) return `<span class="same">ngoài top-${lastSearch?.K ?? 100} của CLIP</span>`;
+  const d = a - b;
+  const cls = d > 0 ? "up" : d < 0 ? "down" : "same";
+  const word = d > 0 ? `lên ${d}` : d < 0 ? `xuống ${-d}` : "giữ nguyên";
+  return `<span>CLIP #${a}</span><span aria-hidden="true">→</span><span class="${cls}">cuối #${b} (${word})</span>`;
+}
+function renderQueryBar(r) {
+  const qb = $("#queryBar"); qb.hidden = false;
+  const chips = r.concepts.map((c) => `<span class="chip">${esc(c)}</span>`).join("") +
+    r.concepts_unknown.map((c) => `<span class="chip bad" title="không có trong bộ nhãn">${esc(c)}</span>`).join("");
+  qb.innerHTML = `<span class="qtext">“${esc(r.text)}” ${r.group ? `<span class="tag ${esc(r.group)}">${esc(r.group)}</span>` : ""}</span>
+    <span class="chips" aria-label="Khái niệm dùng để chấm đồ thị">${chips || '<span class="chip plain">không có khái niệm → s_G = 0</span>'}</span>
+    ${r.gold ? `<span class="gold-move" aria-label="Thứ hạng ảnh đúng">Ảnh đúng: ${moveHtml(r.gold.clip_rank, r.gold.final_rank)}</span>` : ""}
+    <span class="small mono">α=${r.alpha} · w=${fmt(r.w)} · pool ${r.pool} (${r.pool_size}) · top-${r.K}</span>`;
+}
+
+function imgTag(c, cls = "thumb") {
+  const alt = `Ảnh #${c.idx}: ${c.labels.slice(0, 6).join(", ")}`;
+  return `<img class="${cls}" loading="lazy" width="320" height="240" referrerpolicy="no-referrer" alt="${esc(alt)}"
+    src="${esc(c.url)}" data-alt="${esc(c.coco_url || "")}" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt=''}else{this.style.visibility='hidden'}">`;
+}
+function renderCol(key, items, r) {
+  const el = $(`#col-${key}`);
+  const maxG = Math.max(1e-6, ...r.results.graph.map((x) => x.graph));
+  el.innerHTML = items.map((c) => {
+    const delta = key === "final" ? c.clip_rank - c.final_rank : null;
+    const dTxt = delta == null ? "" : delta > 0 ? `<span class="delta up">▲${delta}</span>` : delta < 0 ? `<span class="delta down">▼${-delta}</span>` : `<span class="delta same">＝</span>`;
+    return `<button type="button" class="icard ${c.is_gold ? "gold" : ""}" data-row="${c.row}" aria-label="Hạng ${c.rank}${c.is_gold ? ", ảnh đúng" : ""}. Xem giải thích">
+      ${imgTag(c)}<span class="rk">#${c.rank}</span>${c.is_gold ? '<span class="gbadge">ẢNH ĐÚNG</span>' : ""}
+      <div class="meta">${dTxt} cos ${fmt(c.clip, 3)} · s<sub>G</sub> ${fmt(c.graph, 3)}
+        <div class="bar" aria-hidden="true"><i style="width:${Math.max(0, (c.graph / maxG) * 100)}%"></i></div></div></button>`;
+  }).join("");
+  $$(".icard", el).forEach((b) => b.addEventListener("click", () => {
+    $$(".icard.sel").forEach((x) => x.classList.remove("sel")); b.classList.add("sel");
+    openExplain(+b.dataset.row);
+  }));
+}
+
+let cy = null;
+async function openExplain(row) {
+  const box = $("#explain"); box.hidden = false;
+  $("#exMatches").innerHTML = '<div class="skel" style="aspect-ratio:auto;height:120px"></div>';
+  box.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  try {
+    const r = await api("/api/explain", { row, concepts: lastSearch?.concepts || [] });
+    const c = r.card;
+    const img = $("#exImg"); img.src = c.url; img.alt = `Ảnh #${c.idx}: ${c.labels.slice(0, 8).join(", ")}`;
+    img.onerror = () => { if (c.coco_url && img.src !== c.coco_url) img.src = c.coco_url; };
+    const hit = lastSearch ? ["clip", "final"].map((k) => lastSearch.results[k].find((x) => x.row === row)).find(Boolean) : null;
+    $("#exMeta").innerHTML = `ảnh #${c.idx} · ${c.split} · ${r.counts.labels_total} nhãn (vẽ ${r.counts.labels_shown}) · s<sub>G</sub> = ${fmt(r.graph_score, 3)}` +
+      (hit ? ` · CLIP #${hit.clip_rank} → cuối #${hit.final_rank}` : "");
+    $("#exMatches").innerHTML = r.matches.length ? r.matches.map((m) => `
+      <div class="match"><div class="mh"><span>“${esc(m.concept)}”</span><span class="mono">m = ${fmt(m.m, 3)}</span></div>
+      <div class="why">${m.in_image ? "Có đúng nhãn này trong ảnh → khớp trực tiếp." :
+        m.path ? `Không có trong ảnh; nối qua đồ thị: ${m.path.nodes.map((n) => esc(n.name)).join(" → ")}.` :
+        "Không có trong ảnh; khớp gần nhất theo nhúng nhãn sau GNN."}</div>
+      <table><thead><tr><th>nhãn của ảnh</th><th class="num">cos</th><th class="num">trọng số</th></tr></thead><tbody>
+      ${m.top.map((t, i) => `<tr class="${i === 0 ? "hl" : ""}"><td>${esc(t.label)}</td><td class="num">${fmt(t.cos, 3)}</td><td class="num">${fmt(t.weight * 100, 1)}%</td></tr>`).join("")}
+      </tbody></table></div>`).join("") : '<p class="small">Câu không có khái niệm nào trong bộ nhãn → điểm đồ thị = 0, chỉ còn CLIP + adapter.</p>';
+    drawGraph("#cy", r.elements, "img:" + row);
+    $("#exEdges").innerHTML = edgeTable(r.elements);
+  } catch (e) { $("#exMatches").innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+
+function edgeTable(el) {
+  const name = Object.fromEntries(el.nodes.map((n) => [n.id, n.label]));
+  return `<div class="tbl-scroll"><table><thead><tr><th>từ</th><th>loại cạnh</th><th>tới</th></tr></thead><tbody>${
+    el.edges.map((e) => `<tr class="${e.hot ? "hl" : ""}"><td>${esc(name[e.source])}</td><td class="mono">${esc(e.kind)}${e.rel ? " · " + esc(e.rel) : ""}</td><td>${esc(name[e.target])}</td></tr>`).join("")}</tbody></table></div>`;
+}
+
+function drawGraph(sel, el, center) {
+  const C = { image: css("--n-image"), label: css("--n-label"), concept: css("--n-concept"), query: css("--n-query") };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const inst = cytoscape({
+    container: $(sel),
+    elements: [...el.nodes.map((n) => ({ data: n })), ...el.edges.map((e, i) => ({ data: { id: "e" + i, ...e } }))],
+    wheelSensitivity: 0.25,
+    style: [
+      { selector: "node", style: { "background-color": (n) => C[n.data("kind")] || "#94a3b8", label: "data(label)", color: "#e2e8f0",
+        "font-size": 10, "font-family": "Fira Sans", "text-valign": "bottom", "text-margin-y": 4, width: 14, height: 14,
+        "text-outline-color": "#0b1120", "text-outline-width": 2 } },
+      { selector: 'node[kind = "image"]', style: { shape: "round-rectangle", width: 34, height: 26, "font-size": 11, "font-weight": 600 } },
+      { selector: 'node[kind = "query"]', style: { shape: "round-rectangle", width: 22, height: 22, "font-size": 12, "font-weight": 600, color: "#fde68a" } },
+      { selector: 'node[kind = "concept"]', style: { shape: "diamond", width: 16, height: 16 } },
+      { selector: "node[?hot]", style: { width: 20, height: 20, "border-width": 2, "border-color": "#f59e0b", "font-weight": 600 } },
+      { selector: "edge", style: { width: 1, "line-color": "#334155", "curve-style": "bezier", opacity: 0.55 } },
+      { selector: 'edge[kind = "sg_rel"], edge[kind = "concept"]', style: { "line-style": "dashed", "line-color": "#64748b", opacity: 0.6 } },
+      { selector: "edge[?hot]", style: { width: 3, "line-color": "#f59e0b", opacity: 1, "target-arrow-shape": "triangle", "target-arrow-color": "#f59e0b" } },
+    ],
+    // ego-graph của một nhãn: vòng đồng tâm (tâm = nhãn đang xem); đồ thị con của ảnh: lực đẩy (cose)
+    layout: sel === "#cyLabel"
+      ? { name: "concentric", concentric: (n) => (n.id() === center ? 2 : 1), levelWidth: () => 1, minNodeSpacing: 18, padding: 24, animate: false }
+      : { name: "cose", animate: !reduce, animationDuration: 400, nodeRepulsion: 12000, idealEdgeLength: 80, padding: 24, randomize: true },
+  });
+  inst.on("tap", "node", (e) => {
+    const k = e.target.data("kind");
+    if (k === "label" || k === "concept" || k === "query") { location.hash = "#graph"; setTimeout(() => showLabel(e.target.data("label")), 50); }
+  });
+  if (sel === "#cy") { if (cy) cy.destroy(); cy = inst; }
+  return inst;
+}
+
+/* ---------------- DỮ LIỆU ---------------- */
+async function initData() {
+  try {
+    const o = window.__overview || (await api("/api/overview"));
+    $("#steps").innerHTML = o.steps.map((s) => `<li><h3>${esc(s.title)}</h3><span class="who">${esc(s.who)}</span>
+      <dl>${s.items.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(typeof v === "number" ? v.toLocaleString("vi-VN") : v)}</dd></div>`).join("")}</dl></li>`).join("");
+    $("#learned").innerHTML = `<span><b>w</b>${fmt(o.learned.w, 3)}</span><span><b>τ_match</b>${fmt(o.learned.tau_match, 3)}</span>
+      <span><b>gate</b>${fmt(o.learned.gate, 3)}</span><span><b>α</b>${o.alpha}</span>
+      <span><b>graph</b>${esc(JSON.stringify(o.config.graph))}</span><span><b>extra</b>${esc(o.config.extra || "huy_extra")}</span>`;
+    hbar("#chLabels", o.label_degree_top.map((x) => x[0]), o.label_degree_top.map((x) => x[1]), "số ảnh", css("--n-label"));
+    hbar("#chRels", o.rel_hist.map((x) => x[0]), o.rel_hist.map((x) => x[1]), "số cặp nhãn (hai chiều)", css("--c-clip"));
+  } catch (e) { $("#steps").innerHTML = `<li class="err">${esc(e.message)}</li>`; }
+}
+function hbar(sel, labels, data, label, color) {
+  return new Chart($(sel), { type: "bar", data: { labels, datasets: [{ label, data, backgroundColor: color, borderRadius: 4 }] },
+    options: { indexAxis: "y", maintainAspectRatio: false, plugins: { legend: { display: false } },
+      scales: { x: { title: { display: true, text: label } }, y: { ticks: { autoSkip: false, font: { size: 11 } } } } } });
+}
+
+/* ---------------- ĐỒ THỊ ---------------- */
+let cyLabel = null;
+function initGraph() {
+  const inp = $("#labelInput");
+  let t;
+  inp.addEventListener("input", () => {
+    clearTimeout(t);
+    t = setTimeout(async () => {
+      const xs = await api(`/api/labels?q=${encodeURIComponent(inp.value)}`).catch(() => []);
+      $("#labelList").innerHTML = xs.map((x) => `<option value="${esc(x)}">`).join("");
+    }, 200);
+  });
+  $("#labelForm").addEventListener("submit", (e) => { e.preventDefault(); showLabel(inp.value); });
+  if (!inp.value) showLabel("dog");
+}
+async function showLabel(name) {
+  $("#labelInput").value = name; $("#labelErr").textContent = "";
+  try {
+    const r = await api(`/api/label/${encodeURIComponent(name.trim())}`);
+    $("#labelOut").hidden = false;
+    $("#labelInfo").innerHTML = `<h2 class="h2">${esc(r.name)} <span class="tag ${r.kind === "label" ? "direct" : "indirect"}">${r.kind === "label" ? "nhãn VG" : "ConceptNet"}</span></h2>
+      <p class="small">Có trong ${r.images.toLocaleString("vi-VN")} ảnh · ${r.n_neighbors} láng giềng (hiện 60 nhiều ảnh nhất)</p>`;
+    $("#labelNear").innerHTML = r.nearest_after_gnn.map(([n, s]) => `<button type="button" class="chip plain" data-n="${esc(n)}">${esc(n)} · ${fmt(s, 2)}</button>`).join("");
+    $$("#labelNear button").forEach((b) => b.addEventListener("click", () => showLabel(b.dataset.n)));
+    $("#labelNbrs").innerHTML = `<table><thead><tr><th>láng giềng</th><th>cạnh</th><th>quan hệ</th><th class="num">số ảnh</th></tr></thead><tbody>${
+      r.neighbors.map((n) => `<tr><td><a href="#graph" data-n="${esc(n.name)}">${esc(n.name)}</a></td><td class="mono">${esc(n.type)}</td><td>${esc(n.rel)}</td><td class="num">${n.images}</td></tr>`).join("")}</tbody></table>`;
+    $$("#labelNbrs a").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); showLabel(a.dataset.n); }));
+    const nodes = [{ id: "c", label: r.name, kind: "query" }, ...r.neighbors.slice(0, 40).map((n, i) => ({ id: "n" + i, label: n.name, kind: n.type === "concept" ? "concept" : "label" }))];
+    const edges = r.neighbors.slice(0, 40).map((n, i) => ({ source: "c", target: "n" + i, kind: n.type }));
+    if (cyLabel) cyLabel.destroy();
+    cyLabel = drawGraph("#cyLabel", { nodes, edges }, "c");
+  } catch (e) { $("#labelErr").textContent = e.message; }
+}
+
+/* ---------------- ABLATION ---------------- */
+async function initAblation() {
+  try {
+    const { story } = await api("/api/ablation");
+    const base = story.find((s) => s.title.startsWith("QA · no_edge"));
+    const bm = base?.full?.MRR;
+    $("#abTable").innerHTML = `<table><thead><tr><th>#</th><th>Lượt</th><th class="num">R@1</th><th class="num">R@10</th><th class="num">MRR</th>
+      <th class="num">Δ MRR vs Adapter</th><th class="num">direct</th><th class="num">indirect</th><th class="num">α</th><th>Ý nghĩa</th></tr></thead><tbody>${
+      story.map((s, i) => {
+        const d = bm != null && s.full.MRR != null ? s.full.MRR - bm : null;
+        const cls = d == null ? "" : d > 0.3 ? "up" : d < -0.3 ? "down" : "same";
+        return `<tr class="${s === base ? "hl" : ""}"><td class="num">${i + 1}</td><td><b>${esc(s.title)}</b><div class="small mono">${esc(s.exp)}${s.tag ? " · " + esc(s.tag) : ""}</div></td>
+        <td class="num">${fmt(s.full["R@1"])}</td><td class="num">${fmt(s.full["R@10"])}</td><td class="num"><b>${fmt(s.full.MRR)}</b></td>
+        <td class="num ${cls}">${d == null ? "—" : (d > 0 ? "+" : "") + fmt(d)}</td>
+        <td class="num">${fmt(s.by_group?.direct)}</td><td class="num">${fmt(s.by_group?.indirect)}</td><td class="num">${s.alpha ? s.alpha.join(",") : "—"}</td>
+        <td class="small">${esc(s.note)}</td></tr>`;
+      }).join("")}</tbody></table>
+      <p class="help">MRR/R@k: toàn pool test (2138 ảnh). direct/indirect: MRR trên gallery 1000 (seed 0). 1 seed — chênh &lt; ~0.5 MRR có thể là nhiễu.</p>`;
+    const short = story.map((s, i) => `${i + 1}. ${s.title.replace(/\s*\(#\d+\)/, "")}`);
+    const colorOf = (s) => (s.exp === "t1_clip" ? css("--c-clip") : s.exp.startsWith("t1_qa") ? css("--c-final") : css("--c-graph"));
+    new Chart($("#chMRR"), { type: "bar",
+      data: { labels: short, datasets: [{ label: "MRR toàn pool", data: story.map((s) => s.full.MRR), backgroundColor: story.map(colorOf), borderRadius: 4 }] },
+      options: { indexAxis: "y", maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { min: 58, title: { display: true, text: "MRR (%)" } } } } });
+    new Chart($("#chGroup"), { type: "bar",
+      data: { labels: short, datasets: [
+        { label: "direct", data: story.map((s) => s.by_group?.direct), backgroundColor: css("--n-label"), borderRadius: 3 },
+        { label: "indirect", data: story.map((s) => s.by_group?.indirect), backgroundColor: css("--n-concept"), borderRadius: 3 }] },
+      options: { indexAxis: "y", maintainAspectRatio: false, scales: { x: { min: 65, title: { display: true, text: "MRR (%)" } } } } });
+    const trained = story.filter((s) => s.history && s.history.length);
+    const pal = ["#60a5fa", "#c084fc", "#22c55e", "#f59e0b", "#f472b6", "#2dd4bf", "#a3e635", "#fb7185", "#38bdf8", "#e879f9", "#facc15"];
+    new Chart($("#chCurve"), { type: "line",
+      data: { labels: [...Array(Math.max(...trained.map((s) => s.history.length))).keys()],
+        datasets: trained.map((s, i) => ({ label: s.title.replace(/\s*\(#\d+\)/, ""), data: s.history.map((h) => (h.val_MRR ?? h.val_MRR_graph) * 100),
+          borderColor: pal[i % pal.length], backgroundColor: pal[i % pal.length], tension: 0.25, pointRadius: 3, hidden: !s.exp.startsWith("t1_qa") })) },
+      options: { maintainAspectRatio: false, interaction: { mode: "nearest", intersect: false },
+        scales: { x: { title: { display: true, text: "epoch" } }, y: { title: { display: true, text: "MRR val (%)" } } },
+        plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 11 } } } } } });
+    const withCurve = story.filter((s) => s.alpha_curve && s.alpha_curve.length);
+    $("#alphaRun").innerHTML = withCurve.map((s, i) => `<option value="${i}">${esc(s.title)}</option>`).join("");
+    let ch;
+    const drawAlpha = () => {
+      const s = withCurve[+$("#alphaRun").value]; if (!s) return;
+      const pts = s.alpha_curve.map((p) => Array.isArray(p) ? { x: p[0], y: p[1] } : { x: p.alpha, y: p.MRR ?? p.score });
+      if (ch) ch.destroy();
+      ch = new Chart($("#chAlpha"), { type: "line", data: { datasets: [{ label: "MRR val", data: pts, borderColor: css("--c-final"), pointRadius: 2, tension: 0.2 }] },
+        options: { maintainAspectRatio: false, parsing: false, plugins: { legend: { display: false } },
+          scales: { x: { type: "linear", min: 0, max: 1, title: { display: true, text: "α (1 = chỉ CLIP)" } }, y: { title: { display: true, text: "MRR val (%)" } } } } });
+    };
+    $("#alphaRun").addEventListener("change", drawAlpha);
+    if (withCurve.length) { $("#alphaRun").value = String(Math.max(0, withCurve.findIndex((s) => s.title.startsWith("QA: Adapter")))); drawAlpha(); }
+  } catch (e) { $("#abTable").innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MMXAI Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js" defer></script>
+<script src="/static/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Bỏ qua điều hướng</a>
+<div class="shell">
+  <aside class="nav" aria-label="Điều hướng chính">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7 7l3.5 9M17 7l-3.5 9M7.5 6h9"/></svg>
+      <div><b>MMXAI Lab</b><span>Truy vấn ảnh + đồ thị</span></div>
+    </div>
+    <nav>
+      <a href="#search" data-view="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Thử mô hình</span></a>
+      <a href="#data" data-view="data"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Dữ liệu &amp; pipeline</span></a>
+      <a href="#graph" data-view="graph"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="9" cy="18" r="2.5"/><path d="M8 7.5l8 0.8M7 8.5l1.5 7M16.5 10l-5.8 6.5"/></svg><span>Khám phá đồ thị</span></a>
+      <a href="#ablation" data-view="ablation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><span>Ablation</span></a>
+    </nav>
+    <div class="nav-foot" id="modelInfo">Đang nạp mô hình…</div>
+  </aside>
+
+  <main id="main" tabindex="-1">
+    <!-- ============ THỬ MÔ HÌNH ============ -->
+    <section class="view" id="view-search" aria-labelledby="h-search">
+      <header class="view-head">
+        <h1 id="h-search">Thử mô hình</h1>
+        <p>Câu truy vấn → CLIP lấy top-100 ảnh → điểm đồ thị (khái niệm của câu ↔ nhãn của ảnh) → xếp hạng lại. Dữ liệu và mô hình thật.</p>
+      </header>
+
+      <div class="grid-search">
+        <form class="card" id="searchForm">
+          <label for="q" class="lbl">Câu truy vấn (tiếng Anh)</label>
+          <textarea id="q" rows="2" placeholder="a dog sleeping on a shoe rack"></textarea>
+          <p class="help">Gõ câu tự do (CLIP mã hóa trực tiếp; lần đầu nạp mất ~10 s) hoặc chọn caption test bên phải để biết ảnh đúng.</p>
+          <label for="concepts" class="lbl">Khái niệm (tự tách — sửa được)</label>
+          <input id="concepts" type="text" placeholder="dog, rack, shoe" autocomplete="off">
+          <p class="help">Phân tách bằng dấu phẩy. Chỉ nhận từ có trong bộ nhãn VG. Để trống = tự tách.</p>
+          <div class="row">
+            <label for="pool" class="lbl inline">Tập ảnh</label>
+            <select id="pool"><option value="test">test (2138)</option><option value="val">val (2126)</option></select>
+            <button class="btn primary" type="submit" id="btnSearch">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Tìm
+            </button>
+          </div>
+          <div id="searchErr" class="err" role="alert"></div>
+        </form>
+
+        <div class="card samples">
+          <div class="samples-head">
+            <h2 class="h2">Caption mẫu (tập test)</h2>
+            <div class="seg" role="group" aria-label="Lọc theo nhóm">
+              <button type="button" class="chip-btn on" data-group="">Tất cả</button>
+              <button type="button" class="chip-btn" data-group="direct">direct</button>
+              <button type="button" class="chip-btn" data-group="indirect">indirect</button>
+            </div>
+            <button type="button" class="btn ghost sm" id="btnShuffle" aria-label="Đổi caption mẫu">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h11l-3-3M20 17H9l3 3"/></svg>Đổi
+            </button>
+          </div>
+          <ul id="sampleList" class="sample-list" aria-live="polite"></ul>
+        </div>
+      </div>
+
+      <div id="queryBar" class="query-bar" hidden></div>
+
+      <div id="results" class="results" hidden>
+        <div class="col">
+          <h2 class="col-h"><span class="dot clip"></span>CLIP <small>chỉ cos(câu, ảnh)</small></h2>
+          <div class="cards" id="col-clip"></div>
+        </div>
+        <div class="col">
+          <h2 class="col-h"><span class="dot graph"></span>Chỉ tín hiệu đồ thị <small>s<sub>G</sub> trên top-100</small></h2>
+          <div class="cards" id="col-graph"></div>
+        </div>
+        <div class="col">
+          <h2 class="col-h"><span class="dot final"></span>Kết quả cuối <small>α·z(cos) + (1−α)·z(mô hình)</small></h2>
+          <div class="cards" id="col-final"></div>
+        </div>
+      </div>
+
+      <section id="explain" class="card explain" hidden aria-labelledby="h-explain">
+        <div class="explain-head">
+          <h2 class="h2" id="h-explain">Vì sao ảnh này được điểm như vậy?</h2>
+          <button class="btn ghost sm" id="btnCloseExplain" type="button" aria-label="Đóng phần giải thích">Đóng</button>
+        </div>
+        <div class="explain-grid">
+          <div>
+            <img id="exImg" alt="" class="ex-img" width="640" height="480" referrerpolicy="no-referrer">
+            <div id="exMeta" class="mono small"></div>
+            <h3 class="h3">Khớp khái niệm → nhãn của ảnh</h3>
+            <div id="exMatches"></div>
+          </div>
+          <div>
+            <div class="legend" aria-hidden="true">
+              <span><i class="n query"></i>khái niệm của câu</span><span><i class="n label"></i>nhãn VG</span>
+              <span><i class="n concept"></i>khái niệm ConceptNet</span><span><i class="n image"></i>ảnh</span>
+              <span><i class="e hot"></i>đường khớp</span><span><i class="e rel"></i>sg_rel / ConceptNet</span>
+            </div>
+            <div id="cy" class="cy" role="img" aria-label="Đồ thị con của ảnh; xem bảng cạnh bên dưới"></div>
+            <details class="tbl-wrap"><summary>Bảng cạnh (thay cho hình)</summary><div id="exEdges"></div></details>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============ DỮ LIỆU ============ -->
+    <section class="view" id="view-data" aria-labelledby="h-data" hidden>
+      <header class="view-head">
+        <h1 id="h-data">Dữ liệu &amp; pipeline</h1>
+        <p>Số liệu thật ở từng bước, từ bundle Nhiệm vụ 1 tới điểm xếp hạng lại.</p>
+      </header>
+      <ol class="steps" id="steps"></ol>
+      <div class="grid-2">
+        <div class="card"><h2 class="h2">Nhãn xuất hiện ở nhiều ảnh nhất</h2><div class="chart-box"><canvas id="chLabels" aria-label="Biểu đồ số ảnh theo nhãn"></canvas></div></div>
+        <div class="card"><h2 class="h2">Loại quan hệ trên cạnh nhãn–nhãn</h2><div class="chart-box"><canvas id="chRels" aria-label="Biểu đồ loại quan hệ"></canvas></div></div>
+      </div>
+      <div class="card"><h2 class="h2">Tham số đã học của mô hình đang nạp</h2><div id="learned" class="kv"></div></div>
+    </section>
+
+    <!-- ============ ĐỒ THỊ ============ -->
+    <section class="view" id="view-graph" aria-labelledby="h-graph" hidden>
+      <header class="view-head">
+        <h1 id="h-graph">Khám phá đồ thị</h1>
+        <p>Chọn một nhãn để xem láng giềng (sg_rel từ ảnh train, ConceptNet) và các nhãn gần nhất sau GNN.</p>
+      </header>
+      <form class="card row" id="labelForm">
+        <label for="labelInput" class="lbl inline">Nhãn</label>
+        <input id="labelInput" list="labelList" placeholder="dog" autocomplete="off">
+        <datalist id="labelList"></datalist>
+        <button class="btn primary" type="submit">Xem</button>
+        <span id="labelErr" class="err" role="alert"></span>
+      </form>
+      <div class="grid-2" id="labelOut" hidden>
+        <div class="card">
+          <div class="cy" id="cyLabel" role="img" aria-label="Đồ thị láng giềng của nhãn; xem bảng bên cạnh"></div>
+        </div>
+        <div class="card">
+          <div id="labelInfo"></div>
+          <h3 class="h3">Gần nhất sau GNN (cos của H)</h3><div id="labelNear" class="chips"></div>
+          <h3 class="h3">Láng giềng</h3><div id="labelNbrs" class="tbl-scroll"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABLATION ============ -->
+    <section class="view" id="view-ablation" aria-labelledby="h-ab" hidden>
+      <header class="view-head">
+        <h1 id="h-ab">Ablation trên dữ liệu thật</h1>
+        <p>Toàn bộ lượt chạy (seed 0) theo thứ tự thí nghiệm, từ JOURNAL. Δ so với CLIP + Adapter (QA · no_edge).</p>
+      </header>
+      <div class="card"><div id="abTable" style="overflow-x:auto"></div></div>
+      <div class="grid-2">
+        <div class="card"><h2 class="h2">MRR toàn pool test</h2><div class="chart-box tall"><canvas id="chMRR" aria-label="MRR theo lượt chạy"></canvas></div></div>
+        <div class="card"><h2 class="h2">MRR theo nhóm câu (gallery 1000)</h2><div class="chart-box tall"><canvas id="chGroup" aria-label="MRR direct và indirect theo lượt"></canvas></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card"><h2 class="h2">Đường học: MRR val theo epoch</h2><div class="chart-box"><canvas id="chCurve" aria-label="MRR val theo epoch"></canvas></div><p class="help">Bấm chú giải để ẩn/hiện. Dừng sớm theo MRR val.</p></div>
+        <div class="card"><h2 class="h2">Độ nhạy theo α (val)</h2>
+          <label for="alphaRun" class="lbl">Lượt</label><select id="alphaRun"></select>
+          <div class="chart-box"><canvas id="chAlpha" aria-label="MRR val theo alpha"></canvas></div></div>
+      </div>
+    </section>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

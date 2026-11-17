@@ -12,6 +12,7 @@ dependencies = ["pyyaml", "numpy", "torch", "torch_geometric"]
 [project.optional-dependencies]
 dev = ["pytest", "kaggle"]
 clip = ["open_clip_torch", "pillow", "faiss-cpu"]
+ui = ["fastapi", "uvicorn[standard]", "open_clip_torch", "pyarrow"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
