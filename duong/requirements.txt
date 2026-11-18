@@ -1,0 +1,6 @@
+# Core XAI has no third-party runtime dependency.
+# Install these for tests and graph figures:
+pytest>=7.4
+matplotlib>=3.7
+networkx>=3.1
+
