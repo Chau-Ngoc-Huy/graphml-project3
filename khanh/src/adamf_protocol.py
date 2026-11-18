@@ -199,7 +199,9 @@ def presence_score(c, P):
 
 
 # ----------------------------------------------------------------------------------------- evaluate on the shared protocol
-def evaluate_all(P, scorer, seeds=(0, 1, 2), name="CLIP+AdaMF-MAT"):
+def evaluate_all(P, scorer, seeds=(0, 1, 2), name="CLIP+AdaMF-MAT", adapter=None):
+    """adapter (tùy chọn, `adapter.Adapter` đã huấn luyện): thêm CLIP+Adapter, +khớp tên, +AdaMF-MAT. Mốc đối chứng đúng cho AdaMF-MAT
+    khi có adapter là CLIP+Adapter (không phải CLIP thô), nên bootstrap của các phương pháp có adapter lấy mốc đó."""
     from mmxai_eval import fuse, paired_bootstrap, summary_table, tune_alpha
     base = P.evaluate(lambda c, p: c["sim"], "CLIP", "test", seeds)
     c_val = P.candidates("val", None)
@@ -211,6 +213,22 @@ def evaluate_all(P, scorer, seeds=(0, 1, 2), name="CLIP+AdaMF-MAT"):
         r["bootstrap_vs_clip"] = paired_bootstrap(base["full"]["ranks"], r["full"]["ranks"])
         res[label] = r
         rows.append(r)
+    if adapter is not None:
+        from adapter import adapted_sim
+        asim = lambda c: adapted_sim(adapter, P, c)
+        ad = P.evaluate(lambda c, p: asim(c), "CLIP+Adapter", "test", seeds)
+        ad["bootstrap_vs_clip"] = paired_bootstrap(base["full"]["ranks"], ad["full"]["ranks"])
+        res["CLIP+Adapter"] = ad
+        rows.append(ad)
+        c_val_a = dict(c_val, sim=asim(c_val))  # val với cosine của adapter: alpha chọn trên VAL
+        for label, fn in (("CLIP+Adapter+presence (no relations)", presence_score), (f"CLIP+Adapter+{name.replace('CLIP+', '')}", scorer)):
+            alpha, curve = tune_alpha(c_val_a, fn(c_val, P))
+            r = P.evaluate(lambda c, p, fn=fn, a=alpha: fuse(asim(c), fn(c, p), a), f"{label} (a={alpha})", "test", seeds)
+            r["alpha"], r["alpha_curve"] = alpha, curve
+            r["bootstrap_vs_clip"] = paired_bootstrap(base["full"]["ranks"], r["full"]["ranks"])
+            r["bootstrap_vs_adapter"] = paired_bootstrap(ad["full"]["ranks"], r["full"]["ranks"])
+            res[label] = r
+            rows.append(r)
     print(summary_table(rows, title="text->image, test, 1K galleries, mean +- std over folds"))
     for g in base["by_group"]:
         print(summary_table([dict(name=f"{r['name']} - {g}", split="test", mean_std=r["by_group"][g]) for r in rows],
@@ -218,6 +236,8 @@ def evaluate_all(P, scorer, seeds=(0, 1, 2), name="CLIP+AdaMF-MAT"):
     for k, r in res.items():
         if k != "CLIP":
             print(k, "bootstrap vs CLIP (full test pool):", json.dumps(r["bootstrap_vs_clip"]))
+        if "bootstrap_vs_adapter" in r:
+            print(k, "bootstrap vs CLIP+Adapter (full test pool):", json.dumps(r["bootstrap_vs_adapter"]))
     return res
 
 
@@ -240,6 +260,7 @@ def main():
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2])
     ap.add_argument("--out", default="results_protocol.json")
     ap.add_argument("--skip-nn", action="store_true")
+    ap.add_argument("--adapter", action="store_true", help="eval: huấn luyện adapter (train/val) và thêm CLIP+Adapter(+AdaMF-MAT)")
     a = ap.parse_args()
     P = _load_protocol(a.work)
     if a.mode == "build":
@@ -248,7 +269,11 @@ def main():
         build_mmkg(P, a.repo, a.name, enc.texts, a.variant, a.n_train_images, run_nn=not a.skip_nn)
     else:
         sc = AdamfScorer(P, a.repo, a.name, a.ckpt, a.dim, a.margin)
-        res = evaluate_all(P, sc, a.seeds)
+        adapter = None
+        if a.adapter:
+            from adapter import train_adapter
+            adapter = train_adapter(P, seed=0)
+        res = evaluate_all(P, sc, a.seeds, adapter=adapter)
         from mmxai_eval import save_json
         save_json(res, a.out)
         print("saved", a.out)
