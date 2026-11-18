@@ -21,6 +21,41 @@ function toast(msg) {
   clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 3500);
 }
 
+/* ---------------- biến thể (A = đang xem, B = so sánh) ---------------- */
+let VARS = [], curVar = null;
+const varTitle = (id) => (VARS.find((v) => v.id === id) || {}).title || id;
+const vq = () => (curVar ? `variant=${encodeURIComponent(curVar)}` : "");
+
+async function loadVariants() {
+  const r = await api("/api/variants");
+  VARS = r.items;
+  let saved = null;
+  try { saved = localStorage.getItem("mmxai.variant"); } catch (_) { /* bộ nhớ trình duyệt bị chặn */ }
+  const hv = new URLSearchParams(location.hash.split("?")[1] || "").get("v");
+  curVar = [hv, saved, r.default].find((x) => x && VARS.some((v) => v.id === x));
+  const opts = (sel) => VARS.map((v) => `<option value="${esc(v.id)}"${v.id === sel ? " selected" : ""}>${esc(v.title)}${v.loaded ? "" : " (đang nạp…)"}</option>`).join("");
+  $("#varSel").innerHTML = opts(curVar);
+  const cmp = $("#cmpSel").value;
+  $("#cmpSel").innerHTML = `<option value="">— không so sánh (hiện “chỉ tín hiệu đồ thị” của A) —</option>` + opts(cmp);
+  $("#cmpSel").value = cmp;
+  showVarNote();
+  if (VARS.some((v) => !v.loaded)) setTimeout(loadVariants, 8000);  // cập nhật trạng thái nạp nền
+}
+function showVarNote() {
+  const v = VARS.find((x) => x.id === curVar);
+  $("#varNote").textContent = v ? `${v.note}${v.alpha != null ? ` · α=${v.alpha}` : ""}` : "";
+}
+function setVariant(id) {
+  curVar = id; $("#varSel").value = id; showVarNote();
+  try { localStorage.setItem("mmxai.variant", id); } catch (_) { /* bỏ qua */ }
+  // làm mới trang đang mở theo biến thể mới
+  if (lastQuery) runSearch(lastQuery);
+  if (loaded.builder && buildRow != null) loadBuild(buildRow);
+  if (loaded.graph && $("#labelInput").value) showLabel($("#labelInput").value);
+  if (loaded.data) initData();
+  toast(`Biến thể: ${varTitle(id)}`);
+}
+
 /* ---------------- điều hướng (hash) ---------------- */
 const loaded = {};
 function route() {
@@ -33,19 +68,19 @@ function route() {
   else if (view === "builder") builderFromHash();
 }
 window.addEventListener("hashchange", route);
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
   Chart.defaults.color = css("--fg-2");
   Chart.defaults.borderColor = "rgba(148,163,184,.15)";
   Chart.defaults.font.family = css("--sans");
+  $("#varSel").addEventListener("change", (e) => setVariant(e.target.value));
+  $("#cmpSel").addEventListener("change", () => lastQuery && runSearch(lastQuery));
+  try { await loadVariants(); } catch (e) { $("#varNote").textContent = "Lỗi nạp danh sách biến thể: " + e.message; }
   route();
-  api("/api/overview").then((o) => {
-    $("#modelInfo").innerHTML = `Mô hình: ${esc(o.model_run)}<br>α = ${o.alpha} · w = ${fmt(o.learned.w)} · τ = ${fmt(o.learned.tau_match, 3)}`;
-    window.__overview = o;
-  }).catch((e) => ($("#modelInfo").textContent = "Lỗi nạp: " + e.message));
+  $("#modelInfo").textContent = `${VARS.length} biến thể · dữ liệu thật`;
 });
 
 /* ---------------- THỬ MÔ HÌNH ---------------- */
-let sampleGroup = "", sampleSeed = 0, lastSearch = null;
+let sampleGroup = "", sampleSeed = 0, lastSearch = null, lastQuery = null;
 
 function initSearch() {
   $("#searchForm").addEventListener("submit", (e) => { e.preventDefault(); runSearch({ text: $("#q").value }); });
@@ -56,9 +91,10 @@ function initSearch() {
   $("#btnShuffle").addEventListener("click", () => { sampleSeed++; loadSamples(); });
   $("#btnCloseExplain").addEventListener("click", () => { $("#explain").hidden = true; $$(".icard.sel").forEach((c) => c.classList.remove("sel")); });
   loadSamples();
-  // link chia sẻ được: #search?caption=<id>[&row=<ảnh cần giải thích>]  hoặc  #search?q=<câu>
+  // link chia sẻ được: #search?caption=<id>[&row=<ảnh>][&b=<biến thể B>]  hoặc  #search?q=<câu>
   const qs = new URLSearchParams(location.hash.split("?")[1] || "");
-  if (qs.get("caption")) runSearch({ caption_id: +qs.get("caption") }).then(() => qs.get("row") && openExplain(+qs.get("row")));
+  if (qs.get("b")) $("#cmpSel").value = qs.get("b");
+  if (qs.get("caption")) runSearch({ caption_id: +qs.get("caption") }).then(() => qs.get("row") && openExplain(+qs.get("row"), curVar));
   else if (qs.get("q")) { $("#q").value = qs.get("q"); runSearch({ text: qs.get("q") }); }
 }
 
@@ -81,41 +117,80 @@ async function loadSamples() {
 async function runSearch(base) {
   const btn = $("#btnSearch"); const err = $("#searchErr"); err.textContent = "";
   const cTxt = $("#concepts").value.trim();
-  const body = { ...base, split: $("#pool").value, k: 12 };
+  const compare = $("#cmpSel").value || null;
+  const body = { ...base, split: $("#pool").value, k: 12, variant: curVar, compare };
   if (cTxt) body.concepts = cTxt.split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
-  if (!base.caption_id && !(base.text || "").trim()) { err.textContent = "Nhập câu truy vấn hoặc chọn một caption mẫu."; $("#q").focus(); return; }
+  if (base.caption_id == null && !(base.text || "").trim()) { err.textContent = "Nhập câu truy vấn hoặc chọn một caption mẫu."; $("#q").focus(); return; }
+  lastQuery = base;
   btn.disabled = true; btn.lastChild.textContent = "Đang tìm…";
-  ["clip", "graph", "final"].forEach((k) => ($(`#col-${k}`).innerHTML = Array(6).fill('<div class="skel"></div>').join("")));
+  ["clip", "A", "B"].forEach((k) => ($(`#col-${k}`).innerHTML = Array(6).fill('<div class="skel"></div>').join("")));
   $("#results").hidden = false; $("#explain").hidden = true;
   try {
     const r = await api("/api/search", body);
     lastSearch = r;
-    if (!cTxt) $("#concepts").value = r.concepts.join(", ");
+    if (!cTxt) $("#concepts").value = r.variants.A.concepts.join(", ");
     if (!$("#q").value) $("#q").value = r.text;
-    history.replaceState(null, "", base.caption_id != null ? `#search?caption=${base.caption_id}` : `#search?q=${encodeURIComponent(r.text)}`);
+    const tail = `${compare ? `&b=${encodeURIComponent(compare)}` : ""}&v=${encodeURIComponent(curVar)}`;
+    history.replaceState(null, "", base.caption_id != null ? `#search?caption=${base.caption_id}${tail}` : `#search?q=${encodeURIComponent(r.text)}${tail}`);
     renderQueryBar(r);
-    ["clip", "graph", "final"].forEach((k) => renderCol(k, r.results[k], r));
+    const A = r.variants.A, B = r.variants.B;
+    renderCol("clip", r.clip, r, null);
+    $("#hdr-A").innerHTML = `<span class="dot final"></span>A · ${esc(A.variant.title)} <small>kết quả cuối · α=${A.alpha}</small>`;
+    renderCol("A", A.final, r, A);
+    if (B) {
+      $("#hdr-B").innerHTML = `<span class="dot graph"></span>B · ${esc(B.variant.title)} <small>kết quả cuối · α=${B.alpha}</small>`;
+      renderCol("B", B.final, r, B);
+    } else {
+      $("#hdr-B").innerHTML = `<span class="dot graph"></span>A · chỉ tín hiệu đồ thị <small>s<sub>G</sub> trên top-100</small>`;
+      renderCol("B", A.graph, r, A);
+    }
+    if (r.gold) loadGoldAll(body); else $("#goldAll").hidden = true;
   } catch (e) {
     err.textContent = e.message + " — kiểm tra câu/khái niệm rồi thử lại.";
     $("#results").hidden = true;
   } finally { btn.disabled = false; btn.lastChild.textContent = "Tìm"; }
 }
 
-function moveHtml(a, b) {
+async function loadGoldAll(body) {
+  const box = $("#goldAll"), out = $("#goldAllBody"); box.hidden = false;
+  out.innerHTML = '<div class="skel" style="aspect-ratio:auto;height:80px"></div>';
+  try {
+    const r = await api("/api/gold_all", body);
+    if (!r.in_top_k) { out.innerHTML = `<p class="small">Ảnh đúng nằm ngoài top-${r.K} của CLIP → không biến thể nào xếp lại được (cùng một tập ứng viên).</p>`; return; }
+    const clipRank = r.rows[0].rank;
+    out.innerHTML = r.rows.map((x) => {
+      const pct = x.rank ? Math.max(4, 100 * (1 - (Math.log(x.rank) / Math.log(r.K)))) : 0;
+      const d = x.rank && x.id !== "clip" ? clipRank - x.rank : null;
+      const col = x.id === "clip" ? css("--c-clip") : d > 0 ? css("--accent") : d < 0 ? css("--danger") : css("--muted");
+      const dTxt = d == null ? "" : d > 0 ? ` <span class="up">▲${d}</span>` : d < 0 ? ` <span class="down">▼${-d}</span>` : ' <span class="same">＝</span>';
+      return `<button type="button" class="rankbar ${x.id === curVar ? "cur" : ""}" data-id="${esc(x.id)}" ${x.id === "clip" || x.pending ? "disabled" : ""}>
+        <span class="tt">${esc(x.title)}${x.pending ? " <small>đang nạp…</small>" : x.note ? `<small>${esc(x.note)}</small>` : ""}</span>
+        <span class="rkn">${x.rank ? "#" + x.rank : "—"}${dTxt}</span>
+        <span class="track" aria-hidden="true"><i style="width:${pct}%;background:${col}"></i></span></button>`;
+    }).join("");
+    $$(".rankbar", out).forEach((b) => !b.disabled && b.addEventListener("click", () => setVariant(b.dataset.id)));
+    if (r.rows.some((x) => x.pending)) setTimeout(() => lastSearch && loadGoldAll(body), 10000);
+  } catch (e) { out.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+
+function moveHtml(a, b, label) {
   if (a == null || b == null) return `<span class="same">ngoài top-${lastSearch?.K ?? 100} của CLIP</span>`;
   const d = a - b;
   const cls = d > 0 ? "up" : d < 0 ? "down" : "same";
   const word = d > 0 ? `lên ${d}` : d < 0 ? `xuống ${-d}` : "giữ nguyên";
-  return `<span>CLIP #${a}</span><span aria-hidden="true">→</span><span class="${cls}">cuối #${b} (${word})</span>`;
+  return `<span class="${cls}">${label} #${b} (${word})</span>`;
 }
 function renderQueryBar(r) {
   const qb = $("#queryBar"); qb.hidden = false;
-  const chips = r.concepts.map((c) => `<span class="chip">${esc(c)}</span>`).join("") +
-    r.concepts_unknown.map((c) => `<span class="chip bad" title="không có trong bộ nhãn">${esc(c)}</span>`).join("");
+  const A = r.variants.A, B = r.variants.B;
+  const chips = A.concepts.map((c) => `<span class="chip">${esc(c)}</span>`).join("") +
+    A.concepts_unknown.map((c) => `<span class="chip bad" title="không có trong bộ nhãn">${esc(c)}</span>`).join("");
+  const g = r.gold;
   qb.innerHTML = `<span class="qtext">“${esc(r.text)}” ${r.group ? `<span class="tag ${esc(r.group)}">${esc(r.group)}</span>` : ""}</span>
     <span class="chips" aria-label="Khái niệm dùng để chấm đồ thị">${chips || '<span class="chip plain">không có khái niệm → s_G = 0</span>'}</span>
-    ${r.gold ? `<span class="gold-move" aria-label="Thứ hạng ảnh đúng">Ảnh đúng: ${moveHtml(r.gold.clip_rank, r.gold.final_rank)}</span>` : ""}
-    <span class="small mono">α=${r.alpha} · w=${fmt(r.w)} · pool ${r.pool} (${r.pool_size}) · top-${r.K}</span>`;
+    ${g ? `<span class="gold-move" aria-label="Thứ hạng ảnh đúng">Ảnh đúng: <span>CLIP #${g.clip_rank ?? "—"}</span> →
+      ${moveHtml(g.clip_rank, A.gold_rank, "A")}${B ? ` · ${moveHtml(g.clip_rank, B.gold_rank, "B")}` : ""}</span>` : ""}
+    <span class="small mono">pool ${r.pool} (${r.pool_size}) · top-${r.K} · w<sub>A</sub>=${fmt(A.w)}</span>`;
 }
 
 function imgTag(c, cls = "thumb") {
@@ -123,34 +198,40 @@ function imgTag(c, cls = "thumb") {
   return `<img class="${cls}" loading="lazy" width="320" height="240" referrerpolicy="no-referrer" alt="${esc(alt)}"
     src="${esc(c.url)}" data-alt="${esc(c.coco_url || "")}" onerror="if(this.dataset.alt){this.src=this.dataset.alt;this.dataset.alt=''}else{this.style.visibility='hidden'}">`;
 }
-function renderCol(key, items, r) {
+function renderCol(key, items, r, V) {
   const el = $(`#col-${key}`);
-  const maxG = Math.max(1e-6, ...r.results.graph.map((x) => x.graph));
+  const gvals = items.map((x) => x.graph).filter((x) => x != null);
+  const maxG = Math.max(1e-6, ...gvals);
   el.innerHTML = items.map((c) => {
-    const delta = key === "final" ? c.clip_rank - c.final_rank : null;
+    const delta = V && c.final_rank != null && c.rank === c.final_rank ? c.clip_rank - c.final_rank : null;
     const dTxt = delta == null ? "" : delta > 0 ? `<span class="delta up">▲${delta}</span>` : delta < 0 ? `<span class="delta down">▼${-delta}</span>` : `<span class="delta same">＝</span>`;
-    return `<button type="button" class="icard ${c.is_gold ? "gold" : ""}" data-row="${c.row}" aria-label="Hạng ${c.rank}${c.is_gold ? ", ảnh đúng" : ""}. Xem giải thích">
+    const gTxt = c.graph != null ? ` · s<sub>G</sub> ${fmt(c.graph, 3)}` : "";
+    return `<button type="button" class="icard ${c.is_gold ? "gold" : ""}" data-row="${c.row}" data-v="${esc(V ? V.variant.id : curVar)}"
+      aria-label="Hạng ${c.rank}${c.is_gold ? ", ảnh đúng" : ""}. Xem giải thích">
       ${imgTag(c)}<span class="rk">#${c.rank}</span>${c.is_gold ? '<span class="gbadge">ẢNH ĐÚNG</span>' : ""}
-      <div class="meta">${dTxt} cos ${fmt(c.clip, 3)} · s<sub>G</sub> ${fmt(c.graph, 3)}
-        <div class="bar" aria-hidden="true"><i style="width:${Math.max(0, (c.graph / maxG) * 100)}%"></i></div></div></button>`;
+      <div class="meta">${dTxt} cos ${fmt(c.clip, 3)}${gTxt}
+        ${c.graph != null ? `<div class="bar" aria-hidden="true"><i style="width:${Math.max(0, (c.graph / maxG) * 100)}%"></i></div>` : ""}</div></button>`;
   }).join("");
   $$(".icard", el).forEach((b) => b.addEventListener("click", () => {
     $$(".icard.sel").forEach((x) => x.classList.remove("sel")); b.classList.add("sel");
-    openExplain(+b.dataset.row);
+    openExplain(+b.dataset.row, b.dataset.v);
   }));
 }
 
 let cy = null;
-async function openExplain(row) {
+async function openExplain(row, variant) {
   const box = $("#explain"); box.hidden = false;
   $("#exMatches").innerHTML = '<div class="skel" style="aspect-ratio:auto;height:120px"></div>';
   box.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   try {
-    const r = await api("/api/explain", { row, concepts: lastSearch?.concepts || [] });
+    const V = variant || curVar;
+    const slot = lastSearch && lastSearch.variants.B && lastSearch.variants.B.variant.id === V ? lastSearch.variants.B : lastSearch?.variants.A;
+    const r = await api("/api/explain", { row, concepts: slot?.concepts || [], variant: V });
+    $("#h-explain").textContent = `Vì sao ảnh này được điểm như vậy? — ${r.variant.title}`;
     const c = r.card;
     const img = $("#exImg"); img.src = c.url; img.alt = `Ảnh #${c.idx}: ${c.labels.slice(0, 8).join(", ")}`;
     img.onerror = () => { if (c.coco_url && img.src !== c.coco_url) img.src = c.coco_url; };
-    const hit = lastSearch ? ["clip", "final"].map((k) => lastSearch.results[k].find((x) => x.row === row)).find(Boolean) : null;
+    const hit = slot ? [...slot.final, ...slot.graph].find((x) => x.row === row) : null;
     $("#exMeta").innerHTML = `ảnh #${c.idx} · ${c.split} · ${r.counts.labels_total} nhãn (vẽ ${r.counts.labels_shown}) · s<sub>G</sub> = ${fmt(r.graph_score, 3)}` +
       (hit ? ` · CLIP #${hit.clip_rank} → cuối #${hit.final_rank}` : "");
     $("#exMatches").innerHTML = r.matches.length ? r.matches.map((m) => `
@@ -160,7 +241,7 @@ async function openExplain(row) {
         "Không có trong ảnh; khớp gần nhất theo nhúng nhãn sau GNN."}</div>
       <table><thead><tr><th>nhãn của ảnh</th><th class="num">cos</th><th class="num">trọng số</th></tr></thead><tbody>
       ${m.top.map((t, i) => `<tr class="${i === 0 ? "hl" : ""}"><td>${esc(t.label)}</td><td class="num">${fmt(t.cos, 3)}</td><td class="num">${fmt(t.weight * 100, 1)}%</td></tr>`).join("")}
-      </tbody></table></div>`).join("") : '<p class="small">Câu không có khái niệm nào trong bộ nhãn → điểm đồ thị = 0, chỉ còn CLIP + adapter.</p>';
+      </tbody></table></div>`).join("") : '<p class="small">Câu không có khái niệm nào trong bộ nhãn của biến thể này → điểm đồ thị = 0, chỉ còn CLIP + adapter.</p>';
     drawGraph("#cy", r.elements, "img:" + row);
     $("#exEdges").innerHTML = imageEdgeTable(r, row);
     $("#toBuilder").href = `#builder?row=${row}`;
@@ -240,7 +321,7 @@ function drawGraph(sel, el, center) {
 /* ---------------- DỮ LIỆU ---------------- */
 async function initData() {
   try {
-    const o = window.__overview || (await api("/api/overview"));
+    const o = await api(`/api/overview?${vq()}`);
     $("#steps").innerHTML = o.steps.map((s) => `<li><h3>${esc(s.title)}</h3><span class="who">${esc(s.who)}</span>
       <dl>${s.items.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(typeof v === "number" ? v.toLocaleString("vi-VN") : v)}</dd></div>`).join("")}</dl></li>`).join("");
     $("#learned").innerHTML = `<span><b>w</b>${fmt(o.learned.w, 3)}</span><span><b>τ_match</b>${fmt(o.learned.tau_match, 3)}</span>
@@ -250,10 +331,12 @@ async function initData() {
     hbar("#chRels", o.rel_hist.map((x) => x[0]), o.rel_hist.map((x) => x[1]), "số cặp nhãn (hai chiều)", css("--c-clip"));
   } catch (e) { $("#steps").innerHTML = `<li class="err">${esc(e.message)}</li>`; }
 }
+const charts = {};
 function hbar(sel, labels, data, label, color) {
-  return new Chart($(sel), { type: "bar", data: { labels, datasets: [{ label, data, backgroundColor: color, borderRadius: 4 }] },
+  if (charts[sel]) charts[sel].destroy();
+  return (charts[sel] = new Chart($(sel), { type: "bar", data: { labels, datasets: [{ label, data, backgroundColor: color, borderRadius: 4 }] },
     options: { indexAxis: "y", maintainAspectRatio: false, plugins: { legend: { display: false } },
-      scales: { x: { title: { display: true, text: label } }, y: { ticks: { autoSkip: false, font: { size: 11 } } } } } });
+      scales: { x: { title: { display: true, text: label } }, y: { ticks: { autoSkip: false, font: { size: 11 } } } } } }));
 }
 
 /* ---------------- GRAPH BUILDER ---------------- */
@@ -263,7 +346,7 @@ function initBuilder() {
   inp.addEventListener("input", () => {
     clearTimeout(t);
     t = setTimeout(async () => {
-      const xs = await api(`/api/labels?q=${encodeURIComponent(inp.value)}`).catch(() => []);
+      const xs = await api(`/api/labels?q=${encodeURIComponent(inp.value)}&${vq()}`).catch(() => []);
       $("#labelList2").innerHTML = xs.map((x) => `<option value="${esc(x)}">`).join("");
     }, 200);
   });
@@ -279,7 +362,7 @@ async function loadPick() {
   const strip = $("#pickStrip"); $("#pickErr").textContent = "";
   strip.innerHTML = Array(8).fill('<div class="skel"></div>').join("");
   try {
-    const r = await api(`/api/images?split=${$("#pickSplit").value}&label=${encodeURIComponent($("#pickLabel").value.trim())}&n=16&seed=${pickSeed}`);
+    const r = await api(`/api/images?split=${$("#pickSplit").value}&label=${encodeURIComponent($("#pickLabel").value.trim())}&n=16&seed=${pickSeed}&${vq()}`);
     strip.innerHTML = r.items.map((c) => `<button type="button" data-row="${c.row}" aria-pressed="${c.row === buildRow}" aria-label="Xem ảnh #${c.idx}">
       ${imgTag(c)}<span>#${c.idx}</span></button>`).join("") || '<p class="small">Không có ảnh nào khớp.</p>';
     $$("button", strip).forEach((b) => b.addEventListener("click", () => {
@@ -292,7 +375,7 @@ async function loadBuild(row) {
   buildRow = row;
   $$("#pickStrip button").forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.row === row)));
   try {
-    const r = await api(`/api/build/${row}?two_hop=${$("#hop2N").value}`);
+    const r = await api(`/api/build/${row}?two_hop=${$("#hop2N").value}&${vq()}`);
     $("#buildOut").hidden = false;
     const s = r.stats, c = r.card;
     const st = [["đối tượng gốc (lần xuất hiện)", s.objects_raw], ["tên đối tượng khác nhau", s.objects_unique],
@@ -334,7 +417,7 @@ function initGraph() {
   inp.addEventListener("input", () => {
     clearTimeout(t);
     t = setTimeout(async () => {
-      const xs = await api(`/api/labels?q=${encodeURIComponent(inp.value)}`).catch(() => []);
+      const xs = await api(`/api/labels?q=${encodeURIComponent(inp.value)}&${vq()}`).catch(() => []);
       $("#labelList").innerHTML = xs.map((x) => `<option value="${esc(x)}">`).join("");
     }, 200);
   });
@@ -344,7 +427,7 @@ function initGraph() {
 async function showLabel(name) {
   $("#labelInput").value = name; $("#labelErr").textContent = "";
   try {
-    const r = await api(`/api/label/${encodeURIComponent(name.trim())}`);
+    const r = await api(`/api/label/${encodeURIComponent(name.trim())}?${vq()}`);
     $("#labelOut").hidden = false;
     $("#labelInfo").innerHTML = `<h2 class="h2">${esc(r.name)} <span class="tag ${r.kind === "label" ? "direct" : "indirect"}">${r.kind === "label" ? "nhãn VG" : "ConceptNet"}</span></h2>
       <p class="small">Có trong ${r.images.toLocaleString("vi-VN")} ảnh · ${r.n_neighbors} láng giềng (hiện 60 nhiều ảnh nhất)</p>`;
@@ -364,20 +447,29 @@ async function showLabel(name) {
 async function initAblation() {
   try {
     const { story } = await api("/api/ablation");
-    const base = story.find((s) => s.title.startsWith("QA · no_edge"));
+    const base = story.find((s) => s.exp === "t1_qa_ablation_no_edge" && s.section === "main");
     const bm = base?.full?.MRR;
-    $("#abTable").innerHTML = `<table><thead><tr><th>#</th><th>Lượt</th><th class="num">R@1</th><th class="num">R@10</th><th class="num">MRR</th>
-      <th class="num">Δ MRR vs Adapter</th><th class="num">direct</th><th class="num">indirect</th><th class="num">α</th><th>Ý nghĩa</th></tr></thead><tbody>${
-      story.map((s, i) => {
-        const d = bm != null && s.full.MRR != null ? s.full.MRR - bm : null;
-        const cls = d == null ? "" : d > 0.3 ? "up" : d < -0.3 ? "down" : "same";
-        return `<tr class="${s === base ? "hl" : ""}"><td class="num">${i + 1}</td><td><b>${esc(s.title)}</b><div class="small mono">${esc(s.exp)}${s.tag ? " · " + esc(s.tag) : ""}</div></td>
-        <td class="num">${fmt(s.full["R@1"])}</td><td class="num">${fmt(s.full["R@10"])}</td><td class="num"><b>${fmt(s.full.MRR)}</b></td>
-        <td class="num ${cls}">${d == null ? "—" : (d > 0 ? "+" : "") + fmt(d)}</td>
-        <td class="num">${fmt(s.by_group?.direct)}</td><td class="num">${fmt(s.by_group?.indirect)}</td><td class="num">${s.alpha ? s.alpha.join(",") : "—"}</td>
+    const SECT = { main: "Bảng chính (3 seed, Kaggle)", gnn: "So sánh GNN (3 seed)", history: "Lịch sử thí nghiệm (1 seed, máy) — vì sao chuyển sang QA-Graph" };
+    const pm = (v, sd) => `${fmt(v)}${sd ? `<small class="no"> ±${fmt(sd)}</small>` : ""}`;
+    const rowHtml = (s, i) => {
+      const d = bm != null && s.full.MRR != null ? s.full.MRR - bm : null;
+      const cls = d == null ? "" : d > 0.3 ? "up" : d < -0.3 ? "down" : "same";
+      return `<tr class="${s === base ? "hl" : ""}"><td class="num">${i + 1}</td><td><b>${esc(s.title)}</b><div class="small mono">${esc(s.exp)}${s.tag ? " · " + esc(s.tag) : ""}</div></td>
+        <td class="num">${pm(s.full["R@1"], s.full_std?.["R@1"])}</td><td class="num">${fmt(s.full["R@10"])}</td><td class="num"><b>${pm(s.full.MRR, s.full_std?.MRR)}</b></td>
+        <td class="num ${cls}">${d == null || s === base ? "—" : (d > 0 ? "+" : "") + fmt(d)}</td>
+        <td class="num">${fmt(s.by_group?.direct)}</td><td class="num">${fmt(s.by_group?.indirect)}</td><td class="num">${s.seeds || "—"}</td>
         <td class="small">${esc(s.note)}</td></tr>`;
-      }).join("")}</tbody></table>
-      <p class="help">MRR/R@k: toàn pool test (2138 ảnh). direct/indirect: MRR trên gallery 1000 (seed 0). 1 seed — chênh &lt; ~0.5 MRR có thể là nhiễu.</p>`;
+    };
+    let i = 0;
+    $("#abTable").innerHTML = ["main", "gnn", "history"].map((sec) => {
+      const xs = story.filter((s) => s.section === sec);
+      if (!xs.length) return "";
+      return `<h2 class="h2" style="margin-top:8px">${SECT[sec]}</h2><table><thead><tr><th>#</th><th>Mô hình</th><th class="num">R@1</th><th class="num">R@10</th><th class="num">MRR</th>
+        <th class="num">Δ MRR vs Adapter</th><th class="num">direct</th><th class="num">indirect</th><th class="num">seed</th><th>Ý nghĩa</th></tr></thead>
+        <tbody>${xs.map((s) => rowHtml(s, i++)).join("")}</tbody></table>`;
+    }).join("") + `<p class="help">MRR/R@k: toàn pool test (2138 ảnh), mean ± std theo seed. direct/indirect: MRR gallery 1000. Δ so với CLIP + Adapter (3 seed).
+      Bảng đầy đủ kèm khoảng tin cậy bootstrap: <code>results/tables/t1_official.md</code>.</p>`;
+    story.sort((a, b) => ["main", "gnn", "history"].indexOf(a.section) - ["main", "gnn", "history"].indexOf(b.section));
     const short = story.map((s, i) => `${i + 1}. ${s.title.replace(/\s*\(#\d+\)/, "")}`);
     const colorOf = (s) => (s.exp === "t1_clip" ? css("--c-clip") : s.exp.startsWith("t1_qa") ? css("--c-final") : css("--c-graph"));
     new Chart($("#chMRR"), { type: "bar",

@@ -27,6 +27,11 @@
       <a href="#graph" data-view="graph"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="9" cy="18" r="2.5"/><path d="M8 7.5l8 0.8M7 8.5l1.5 7M16.5 10l-5.8 6.5"/></svg><span>Khám phá đồ thị</span></a>
       <a href="#ablation" data-view="ablation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><span>Ablation</span></a>
     </nav>
+    <div class="nav-var">
+      <label for="varSel" class="lbl">Biến thể đang xem</label>
+      <select id="varSel" aria-describedby="varNote"></select>
+      <p id="varNote" class="small"></p>
+    </div>
     <div class="nav-foot" id="modelInfo">Đang nạp mô hình…</div>
   </aside>
 
@@ -46,6 +51,9 @@
           <label for="concepts" class="lbl">Khái niệm (tự tách — sửa được)</label>
           <input id="concepts" type="text" placeholder="dog, rack, shoe" autocomplete="off">
           <p class="help">Phân tách bằng dấu phẩy. Chỉ nhận từ có trong bộ nhãn VG. Để trống = tự tách.</p>
+          <label for="cmpSel" class="lbl">So sánh với biến thể (B)</label>
+          <select id="cmpSel"><option value="">— không so sánh (hiện “chỉ tín hiệu đồ thị” của A) —</option></select>
+          <p class="help">A = biến thể đang chọn ở thanh bên. Chọn B để đặt hai biến thể cạnh nhau trên cùng 100 ứng viên CLIP.</p>
           <div class="row">
             <label for="pool" class="lbl inline">Tập ảnh</label>
             <select id="pool"><option value="test">test (2138)</option><option value="val">val (2126)</option></select>
@@ -74,18 +82,24 @@
 
       <div id="queryBar" class="query-bar" hidden></div>
 
+      <section id="goldAll" class="card" hidden aria-labelledby="h-goldall">
+        <h2 class="h2" id="h-goldall">Ảnh đúng xếp hạng mấy ở từng biến thể?</h2>
+        <p class="help">Cùng câu, cùng 100 ứng viên CLIP. Hạng càng nhỏ càng tốt; thanh dài = hạng tốt. Bấm một dòng để chọn biến thể đó làm A.</p>
+        <div id="goldAllBody"></div>
+      </section>
+
       <div id="results" class="results" hidden>
         <div class="col">
           <h2 class="col-h"><span class="dot clip"></span>CLIP <small>chỉ cos(câu, ảnh)</small></h2>
           <div class="cards" id="col-clip"></div>
         </div>
         <div class="col">
-          <h2 class="col-h"><span class="dot graph"></span>Chỉ tín hiệu đồ thị <small>s<sub>G</sub> trên top-100</small></h2>
-          <div class="cards" id="col-graph"></div>
+          <h2 class="col-h" id="hdr-A"><span class="dot final"></span>A</h2>
+          <div class="cards" id="col-A"></div>
         </div>
         <div class="col">
-          <h2 class="col-h"><span class="dot final"></span>Kết quả cuối <small>α·z(cos) + (1−α)·z(mô hình)</small></h2>
-          <div class="cards" id="col-final"></div>
+          <h2 class="col-h" id="hdr-B"><span class="dot graph"></span>B</h2>
+          <div class="cards" id="col-B"></div>
         </div>
       </div>
 
