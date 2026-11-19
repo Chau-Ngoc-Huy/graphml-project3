@@ -1,0 +1,412 @@
+{
+ "metrics": {
+  "test": {
+   "seed": {
+    "mean": 1.5,
+    "std": 0.5,
+    "values": [
+     1.0,
+     2.0
+    ]
+   },
+   "gallery_size": {
+    "mean": 1000.0,
+    "std": 0.0,
+    "values": [
+     1000.0,
+     1000.0
+    ]
+   },
+   "R@1": {
+    "mean": 62.50379724055189,
+    "std": 0.47620275944811397,
+    "values": [
+     62.980000000000004,
+     62.027594481103776
+    ]
+   },
+   "R@5": {
+    "mean": 88.63117176564687,
+    "std": 0.34882823435313526,
+    "values": [
+     88.98,
+     88.28234353129373
+    ]
+   },
+   "R@10": {
+    "mean": 94.42055788842231,
+    "std": 0.000557888422314079,
+    "values": [
+     94.42,
+     94.42111577684463
+    ]
+   },
+   "MRR": {
+    "mean": 73.89088486332065,
+    "std": 0.3884868929849503,
+    "values": [
+     74.2793717563056,
+     73.50239797033569
+    ]
+   },
+   "nDCG@10": {
+    "mean": 78.64380261537178,
+    "std": 0.30003372034811093,
+    "values": [
+     78.9438363357199,
+     78.34376889502367
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0,
+     1.0
+    ]
+   },
+   "n": 5000
+  },
+  "test_full": {
+   "gallery_size": {
+    "mean": 2186.0,
+    "std": 0.0,
+    "values": [
+     2186.0,
+     2186.0
+    ]
+   },
+   "R@1": {
+    "mean": 51.95737674929114,
+    "std": 0.004573310161891442,
+    "values": [
+     51.95280343912925,
+     51.96195005945303
+    ]
+   },
+   "R@5": {
+    "mean": 79.40181103082412,
+    "std": 0.21951888777096684,
+    "values": [
+     79.18229214305315,
+     79.62132991859508
+    ]
+   },
+   "R@10": {
+    "mean": 88.35635232781488,
+    "std": 0.18293240647579978,
+    "values": [
+     88.17341992133908,
+     88.53928473429067
+    ]
+   },
+   "MRR": {
+    "mean": 64.38092376582574,
+    "std": 0.08851483355653755,
+    "values": [
+     64.29240893226921,
+     64.46943859938229
+    ]
+   },
+   "nDCG@10": {
+    "mean": 69.72258781456736,
+    "std": 0.12148229490347973,
+    "values": [
+     69.60110551966389,
+     69.84407010947085
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0,
+     1.0
+    ]
+   },
+   "n": 10933
+  },
+  "by_group": {
+   "direct": {
+    "R@1": {
+     "mean": 68.36521911823118,
+     "std": 2.7886270356149865,
+     "values": [
+      71.15384615384616,
+      65.57659208261619
+     ]
+    },
+    "R@5": {
+     "mean": 91.07774755365116,
+     "std": 1.4047699288663154,
+     "values": [
+      92.48251748251748,
+      89.67297762478485
+     ]
+    },
+    "R@10": {
+     "mean": 96.70675709832337,
+     "std": 0.3212149296486615,
+     "values": [
+      97.02797202797203,
+      96.3855421686747
+     ]
+    },
+    "MRR": {
+     "mean": 78.32133769741168,
+     "std": 1.976601870642945,
+     "values": [
+      80.29793956805462,
+      76.34473582676873
+     ]
+    },
+    "nDCG@10": {
+     "mean": 82.62016007966308,
+     "std": 1.6086305769379834,
+     "values": [
+      84.22879065660106,
+      81.0115295027251
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0,
+      1.0
+     ]
+    },
+    "n": 576
+   },
+   "indirect": {
+    "R@1": {
+     "mean": 61.90955450052927,
+     "std": 0.21131209012067842,
+     "values": [
+      62.120866590649946,
+      61.69824241040859
+     ]
+    },
+    "R@5": {
+     "mean": 88.51231228870807,
+     "std": 0.26761929624060343,
+     "values": [
+      88.77993158494868,
+      88.24469299246748
+     ]
+    },
+    "R@10": {
+     "mean": 94.34177386178577,
+     "std": 0.002581896481046897,
+     "values": [
+      94.34435575826681,
+      94.33919196530472
+     ]
+    },
+    "MRR": {
+     "mean": 73.50354460208351,
+     "std": 0.22172231452572078,
+     "values": [
+      73.72526691660923,
+      73.28182228755779
+     ]
+    },
+    "nDCG@10": {
+     "mean": 78.32360376958577,
+     "std": 0.17360765076161044,
+     "values": [
+      78.49721142034738,
+      78.14999611882416
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0,
+      1.0
+     ]
+    },
+    "n": 4383
+   },
+   "no_concept": {
+    "R@1": {
+     "mean": 44.00715563506262,
+     "std": 2.14669051878354,
+     "values": [
+      41.86046511627907,
+      46.15384615384615
+     ]
+    },
+    "R@5": {
+     "mean": 67.2927847346452,
+     "std": 4.5020870602265965,
+     "values": [
+      62.7906976744186,
+      71.7948717948718
+     ]
+    },
+    "R@10": {
+     "mean": 70.90041741204533,
+     "std": 3.4585569469290434,
+     "values": [
+      67.44186046511628,
+      74.35897435897436
+     ]
+    },
+    "MRR": {
+     "mean": 53.33054216733399,
+     "std": 2.6063114866534605,
+     "values": [
+      50.72423068068053,
+      55.93685365398745
+     ]
+    },
+    "nDCG@10": {
+     "mean": 57.277563065222616,
+     "std": 3.0905550466082445,
+     "values": [
+      54.18700801861437,
+      60.36811811183086
+     ]
+    },
+    "MedR": {
+     "mean": 2.5,
+     "std": 0.5,
+     "values": [
+      3.0,
+      2.0
+     ]
+    },
+    "n": 41
+   }
+  },
+  "alpha": {
+   "mean": 0.3,
+   "values": [
+    0.35,
+    0.25
+   ]
+  }
+ },
+ "n": 10933,
+ "paper": {
+  "table": "ablation",
+  "row": "qa no_rel (chỉ contains) — PSG∩COCO"
+ },
+ "run": {
+  "exp": "psg_qa_ablation_no_rel",
+  "run_id": "20261119-192839_huy-chau_psg_qa_ablation_no_rel-s12",
+  "tag": "s12",
+  "user": "huy-chau",
+  "args": {
+   "exp": "psg_qa_ablation_no_rel",
+   "config": null,
+   "config_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/configs",
+   "set": [
+    "cpu_threads=2",
+    "seeds=[1,2]",
+    "save_model=false"
+   ],
+   "limit": null,
+   "seed": null,
+   "tag": "s12",
+   "runs_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/runs",
+   "run_id": null,
+   "no_publish": false,
+   "dry_run": false
+  },
+  "config": {
+   "data": "data/psg_bundle",
+   "fake": {},
+   "max_images": null,
+   "topk": 100,
+   "seed": 42,
+   "paper": {
+    "table": "ablation",
+    "row": "qa no_rel (chỉ contains) — PSG∩COCO"
+   },
+   "seeds": [
+    1,
+    2
+   ],
+   "graph": {
+    "variant": "no_rel",
+    "min_rel_count": 1,
+    "rel_merge": "undirected"
+   },
+   "gnn": {
+    "kind": "gat",
+    "hidden": 256,
+    "layers": 2,
+    "heads": 4,
+    "dropout": 0.1,
+    "arch": "split",
+    "adapter": true,
+    "graph_weight": 1.0,
+    "tau_match": 0.1
+   },
+   "train": {
+    "epochs": 20,
+    "patience": 4,
+    "batch_size": 512,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "tau": 0.05
+   },
+   "alpha_step": 0.05,
+   "n_explain": 0,
+   "explain_top_m": 3,
+   "save_model": false,
+   "extra": null,
+   "mode": "graph",
+   "exp": "psg_qa_ablation_no_rel",
+   "cpu_threads": 2
+  },
+  "started_at": "2026-11-19T19:28:39+00:00",
+  "finished_at": "2026-11-19T19:36:49+00:00",
+  "wall_time_s": 489.77,
+  "sec_per_sample": 0.045,
+  "peak_vram_gb": null,
+  "error": null,
+  "extra": {
+   "seeds": [
+    1,
+    2
+   ],
+   "graph": {
+    "n_img": 18186,
+    "n_label": 807,
+    "variant": "no_rel",
+    "E_contains": 125247,
+    "E_sg_rel": 0,
+    "E_concept": 0,
+    "missing_labels": 0,
+    "missing_top": [],
+    "lab_edges": 0,
+    "contains": 125247,
+    "labels_per_img_max": 34,
+    "imgs_without_labels": 0,
+    "caps_without_concepts": 844,
+    "concepts_dropped": 0
+   },
+   "device": "cpu"
+  }
+ },
+ "environment": {
+  "python": "3.14.4",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+  "compute": "local",
+  "gpu": null,
+  "packages": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.5.4",
+   "pyyaml": "6.0.3",
+   "torch_geometric": "2.8.1",
+   "open_clip_torch": "4.2.2",
+   "faiss-cpu": "1.16.0"
+  },
+  "git_commit": "727f0c15cedf157cc18352ad8f3d29736679053f",
+  "vendor_commit": null
+ }
+}

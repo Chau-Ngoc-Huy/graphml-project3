@@ -22,13 +22,20 @@ function toast(msg) {
 }
 
 /* ---------------- biến thể (A = đang xem, B = so sánh) ---------------- */
-let VARS = [], curVar = null;
+let VARS = [], curVar = null, DATASET = "VG";
 const varTitle = (id) => (VARS.find((v) => v.id === id) || {}).title || id;
 const vq = () => (curVar ? `variant=${encodeURIComponent(curVar)}` : "");
 
 async function loadVariants() {
   const r = await api("/api/variants");
   VARS = r.items;
+  if (r.dataset) {  // VG hoặc PSG: chữ hiển thị + kích thước pool theo bundle đang mở
+    DATASET = r.dataset;
+    document.title = `MMXAI · ${r.dataset}`;
+    const pl = r.pool || {};
+    $("#pool").innerHTML = `<option value="test">test (${pl.test ?? "?"})</option><option value="val">val (${pl.val ?? "?"})</option>`;
+    document.querySelectorAll(".ds-name").forEach((e) => { e.textContent = r.dataset; });
+  }
   let saved = null;
   try { saved = localStorage.getItem("mmxai.variant"); } catch (_) { /* bộ nhớ trình duyệt bị chặn */ }
   const hv = new URLSearchParams(location.hash.split("?")[1] || "").get("v");
@@ -429,7 +436,7 @@ async function showLabel(name) {
   try {
     const r = await api(`/api/label/${encodeURIComponent(name.trim())}?${vq()}`);
     $("#labelOut").hidden = false;
-    $("#labelInfo").innerHTML = `<h2 class="h2">${esc(r.name)} <span class="tag ${r.kind === "label" ? "direct" : "indirect"}">${r.kind === "label" ? "nhãn VG" : "ConceptNet"}</span></h2>
+    $("#labelInfo").innerHTML = `<h2 class="h2">${esc(r.name)} <span class="tag ${r.kind === "label" ? "direct" : "indirect"}">${r.kind === "label" ? `nhãn ảnh ${DATASET}` : "khái niệm (ConceptNet)"}</span></h2>
       <p class="small">Có trong ${r.images.toLocaleString("vi-VN")} ảnh · ${r.n_neighbors} láng giềng (hiện 60 nhiều ảnh nhất)</p>`;
     $("#labelNear").innerHTML = r.nearest_after_gnn.map(([n, s]) => `<button type="button" class="chip plain" data-n="${esc(n)}">${esc(n)} · ${fmt(s, 2)}</button>`).join("");
     $$("#labelNear button").forEach((b) => b.addEventListener("click", () => showLabel(b.dataset.n)));
@@ -467,8 +474,8 @@ async function initAblation() {
       return `<h2 class="h2" style="margin-top:8px">${SECT[sec]}</h2><table><thead><tr><th>#</th><th>Mô hình</th><th class="num">R@1</th><th class="num">R@10</th><th class="num">MRR</th>
         <th class="num">Δ MRR vs Adapter</th><th class="num">direct</th><th class="num">indirect</th><th class="num">seed</th><th>Ý nghĩa</th></tr></thead>
         <tbody>${xs.map((s) => rowHtml(s, i++)).join("")}</tbody></table>`;
-    }).join("") + `<p class="help">MRR/R@k: toàn pool test (2138 ảnh), mean ± std theo seed. direct/indirect: MRR gallery 1000. Δ so với CLIP + Adapter (3 seed).
-      Bảng đầy đủ kèm khoảng tin cậy bootstrap: <code>results/tables/t1_official.md</code>.</p>`;
+    }).join("") + `<p class="help">MRR/R@k: toàn pool test (${$("#pool").options[0]?.text.match(/\d+/)?.[0] || "?"} ảnh), mean ± std theo seed. direct/indirect: MRR gallery 1000. Δ so với CLIP + Adapter (3 seed).
+      Bảng đầy đủ kèm khoảng tin cậy bootstrap: <code>results/tables/${DATASET === "PSG" ? "psg_official.md" : "t1_official.md"}</code>.</p>`;
     story.sort((a, b) => ["main", "gnn", "history"].indexOf(a.section) - ["main", "gnn", "history"].indexOf(b.section));
     const short = story.map((s, i) => `${i + 1}. ${s.title.replace(/\s*\(#\d+\)/, "")}`);
     const colorOf = (s) => (s.exp === "t1_clip" ? css("--c-clip") : s.exp.startsWith("t1_qa") ? css("--c-final") : css("--c-graph"));

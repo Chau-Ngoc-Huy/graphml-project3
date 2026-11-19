@@ -1,0 +1,4 @@
+# PSG (tools/psg_to_bundle.py): qa+cn shuffle. Cạnh sg_rel gộp không hướng (graph.rel_merge=undirected).
+extends: psg_qa_cn.yaml
+graph: {variant: shuffle, rel_merge: undirected}
+paper: {table: ablation, row: qa+cn shuffle — PSG∩COCO}

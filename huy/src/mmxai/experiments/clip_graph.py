@@ -78,7 +78,8 @@ def run(ctx) -> dict:
     explanations = []
     for si, seed in enumerate(seeds):
         set_seed(seed)
-        g = build_graph(b, gcfg.get("variant", "full"), int(gcfg.get("min_rel_count", 1)), seed=seed)
+        g = build_graph(b, gcfg.get("variant", "full"), int(gcfg.get("min_rel_count", 1)), seed=seed,
+                        rel_merge=gcfg.get("rel_merge", "directed"))
         graph_stats = graph_stats or g.stats
         print(f"  seed {seed}: đồ thị {g.stats}")
         model = GraphEncoder(b.image_emb.shape[1], **mcfg)
