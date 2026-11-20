@@ -1,6 +1,8 @@
 \documentclass[conference]{IEEEtran}
 \usepackage{fontspec}
 \IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
+\usepackage{adjustbox,array,xurl,float}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage{graphicx,booktabs,amsmath,url,multirow,tikz}
 \usetikzlibrary{arrows.meta,positioning}
 \usepackage[hidelinks]{hyperref}
@@ -71,7 +73,8 @@ Với mỗi truy vấn có đúng một ảnh đúng (ảnh sinh ra caption), g�
 \caption{Thiết lập chính của từng thành phần.}\label{tab:impl}
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{lp{5.8cm}}
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{lL{5.8cm}}
 \toprule
 Thành phần & Thiết lập\\\midrule
 CLIP & ViT-B/32, \texttt{laion2b\_s34b\_b79k}, 512 chiều, chuẩn hóa L2, đóng băng\\
@@ -83,6 +86,7 @@ AdaMF-MAT (tái lập) & chiều 200, batch 1024, 128 mẫu âm, lr $2\!\times\!
 AdaMF-MAT (truy vấn ảnh) & chiều 200, lr $10^{-4}$, 104 epoch, 85,8 s/epoch, 1 seed\\
 Phần cứng & Kaggle T4 (GPU); một số lượt PSG và thử nghiệm chạy CPU cục bộ\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 \begin{figure}[t]
@@ -106,6 +110,7 @@ Phần cứng & Kaggle T4 (GPU); một số lượt PSG và thử nghiệm chạ
 \caption{CLIP thuần, text$\to$image, VG$\cap$COCO (\%).}\label{tab:clip}
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
+\begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lccccc}
 \toprule
  & R@1 & R@5 & R@10 & MRR & nDCG\\\midrule
@@ -113,6 +118,7 @@ Test, 1K, 3 fold & $57{,}36\!\pm\!0{,}95$ & $84{,}08$ & $91{,}76$ & $69{,}23\!\p
 Test, toàn pool & $48{,}31$ & $75{,}35$ & $84{,}08$ & $60{,}40$ & $65{,}51$\\
 Val, 1K, 3 fold & $58{,}17\!\pm\!0{,}40$ & $84{,}74$ & $92{,}29$ & $69{,}92$ & $75{,}00$\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 Theo nhóm (test, 1K): direct R@1 $56{,}9$, indirect $57{,}5$, no\_concept $51{,}4$. Nghĩa là CLIP không yếu hơn rõ rệt ở nhóm gián tiếp \emph{theo cách gán nhãn tự động này}; chúng tôi quay lại điểm này ở mục~VII.
@@ -132,6 +138,7 @@ Bảng~\ref{tab:main} tổng hợp 3 seed (Kaggle T4), hiệu $\Delta$MRR so v�
 \begin{table}[t]
 \caption{MRR (\%) toàn pool test, VG$\cap$COCO, mean$\,\pm\,$std 3 seed. $\Delta$ so với CLIP+adapter.}\label{tab:main}
 \centering\small
+\begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lcc}
 \toprule
 Cấu hình & MRR & $\Delta$ [CI95]\\\midrule
@@ -144,6 +151,7 @@ CLIP + adapter (không cạnh) & $63{,}14\pm0{,}02$ & 0\\
 + contains + ConceptNet (SAGE) & $\mathbf{64{,}89\pm0{,}15}$ & $+1{,}93$ [1,49; 2,32]\\
 + đồ thị \emph{xáo cạnh} & $62{,}67\pm0{,}06$ & $-0{,}41$ [$-0{,}71$; $-0{,}11$]\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 \begin{figure}[t]
@@ -167,6 +175,7 @@ Dùng mã và cấu hình của tác giả (chiều 200, batch 1024, 128 mẫu �
 \begin{table}[t]
 \caption{Tái lập AdaMF-MAT (lọc, trung bình hai chiều), \%.}\label{tab:repro}
 \centering\small
+\begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{llcccc}
 \toprule
 Tập & & MRR & H@1 & H@3 & H@10\\\midrule
@@ -175,6 +184,7 @@ Tập & & MRR & H@1 & H@3 & H@10\\\midrule
 \multirow{2}{*}{MKG-Y} & bài báo & 38,57 & 34,34 & 40,59 & 45,76\\
  & của nhóm & 39,10 & 34,59 & 41,23 & 46,68\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 
@@ -189,6 +199,7 @@ Bảng~\ref{tab:l2} (gallery 1K, 3 fold) cho thấy AdaMF-MAT cải thiện CLIP
 \begin{table}[t]
 \caption{MRR (\%) theo nhóm truy vấn, gallery 1K, 3 fold.}\label{tab:l2}
 \centering\small
+\begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lccc}
 \toprule
 Phương pháp & Tổng & direct & indirect\\\midrule
@@ -196,6 +207,7 @@ CLIP & $69{,}23\pm0{,}68$ & $69{,}33$ & $69{,}24$\\
 CLIP + khớp tên (không quan hệ) & $70{,}21\pm0{,}84$ & $\mathbf{77{,}70}$ & $68{,}52$\\
 CLIP + AdaMF-MAT & $69{,}77\pm0{,}74$ & $75{,}17$ & $68{,}56$\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 
@@ -206,6 +218,7 @@ CLIP + AdaMF-MAT & $69{,}77\pm0{,}74$ & $75{,}17$ & $68{,}56$\\\bottomrule
 \caption{Có adapter, text$\to$image, test. MRR 1K là mean$\,\pm\,$std 3 fold (\%).}\label{tab:adapter}
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
+\begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lccc}
 \toprule
 Phương pháp & R@1 (1K) & MRR (1K) & MRR toàn pool\\\midrule
@@ -215,6 +228,7 @@ CLIP + adapter & $59{,}52\pm0{,}74$ & $71{,}47\pm0{,}55$ & 62,41\\
 + khớp tên & $60{,}98\pm0{,}83$ & $72{,}47\pm0{,}58$ & 63,46\\
 + AdaMF-MAT & $60{,}29\pm0{,}82$ & $71{,}99\pm0{,}58$ & 63,00\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 \subsection{Bộ 24 truy vấn trực tiếp/gián tiếp}
@@ -230,6 +244,7 @@ Trên toàn pool test, seed~0, cùng thứ tự 10\,696 truy vấn, kiểm đị
 \caption{Kiểm định ghép cặp so với AdaMF-MAT, toàn pool test, seed 0, 10\,696 truy vấn. MRR (\%) và $\Delta$ [CI95 bootstrap] cho tổng.}\label{tab:paired}
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
+\begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lcc}
 \toprule
 Phương pháp & MRR & $\Delta$ so với AdaMF-MAT\\\midrule
@@ -242,6 +257,7 @@ QA-Graph contains+CN (GAT) & 64,81 & $+3{,}77$ [3,36; 4,20]\\
 QA-Graph contains+CN (SAGE) & 65,09 & $+4{,}05$ [3,62; 4,48]\\
 QA-Graph xáo cạnh & 62,75 & $+1{,}71$ [1,30; 2,14]\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 \begin{figure}[t]
@@ -270,7 +286,7 @@ Thắng xuất 5 truy vấn thành công và 5 truy vấn thất bại của CLI
 \begin{table*}[t]
 \caption{Truy vấn thành công và thất bại của CLIP (test, toàn pool 2\,138 ảnh). Hạng là hạng của ảnh đúng.}\label{tab:sf}
 \centering\footnotesize
-\begin{tabular}{llcp{7.2cm}p{4.2cm}}
+\begin{tabular}{llcL{7.2cm}L{4.2cm}}
 \toprule
  & Nhóm & Hạng & Caption & Đối tượng chú thích của ảnh đúng (rút gọn)\\\midrule
 TC & indirect & 1 & Two cats on a desk and one wears pink feathers across the back. & paper, cat, bell, desk, boa, wall\\
@@ -293,7 +309,7 @@ Bảng~\ref{tab:req} đối chiếu sản phẩm với từng cấp của đề 
 \begin{table*}[t]
 \caption{Mức đáp ứng yêu cầu của đề bài (trạng thái tại thời điểm viết).}\label{tab:req}
 \centering\footnotesize
-\begin{tabular}{p{1.1cm}p{6.2cm}p{1.6cm}p{7.4cm}}
+\begin{tabular}{L{1.1cm}L{6.2cm}L{1.6cm}L{7.4cm}}
 \toprule
 Cấp & Yêu cầu & Trạng thái & Ghi chú\\\midrule
 1 & Baseline CLIP đóng băng; đồ thị từ dữ liệu có sẵn; $\ge1$ thuật toán GCN/GAT/SAGE; xếp hạng lại; cùng cách chia & Đạt & Cả ba GNN, VG và PSG, 3 seed (mục III--IV).\\
@@ -323,9 +339,10 @@ Chung & Notebook demo; video $\le5$ phút; link W\&B công khai & Chưa có & No
 Đồ thị giúp truy vấn ảnh một cách đo được, kiểm chứng được bằng ablation: $+1{,}4$ đến $+1{,}9$ MRR so với nền công bằng trên hai bộ dữ liệu, và xáo cạnh làm tụt dưới nền. Nhưng lợi ích tập trung ở truy vấn trực tiếp, và phương pháp mới AdaMF-MAT, dù tái lập đúng, không vượt baseline khớp tên khi dùng cho truy vấn ảnh. Hướng tiếp theo là kiểm tra gián tiếp bằng cách ẩn đối tượng, thêm tri thức từ Wikidata, và hoàn thành giải thích định lượng.
 
 \section*{Phân công}
-\begin{table}[h]
+\begin{table}[H]
 \centering\small
-\begin{tabular}{lp{5.5cm}}
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{lL{5.5cm}}
 \toprule
 Thành viên & Phần việc\\\midrule
 Yến & Dữ liệu, chuẩn hóa nhãn, tổng hợp báo cáo, slide\\
@@ -334,6 +351,7 @@ Huy & Dựng đồ thị, GNN, QA-Graph, ablation, ConceptNet, bộ dữ liệu 
 Khánh & Tái lập AdaMF-MAT, tích hợp giao thức chung, bộ 24 truy vấn, so sánh trực tiếp/gián tiếp\\
 Dương & Giải thích, đánh giá fidelity/validity/sparsity, MMKG tiếng Việt, demo\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 \section*{Tái lập và khai báo}
@@ -341,10 +359,11 @@ Mã nguồn, lệnh chạy và README: \url{https://github.com/Chau-Ngoc-Huy/gra
 
 
 \section*{Phụ lục A: 24 truy vấn đánh giá (cấp 2)}
-\begin{table}[h]
+\begin{table}[H]
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{p{3.9cm}p{3.9cm}}
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{L{3.9cm}L{3.9cm}}
 \toprule
 Trực tiếp (số ảnh dương) & Gián tiếp (số ảnh dương)\\\midrule
 zebra standing on field (6) & woman holding boy (28)\\
@@ -360,6 +379,7 @@ people riding bus (8) & man standing on floor (56)\\
 people walking on walkway (6) & cat sitting on bed (26)\\
 boy watching tv (5) & broccoli sitting on plate (38)\\\bottomrule
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 \section*{Phụ lục B: Cách chạy lại}
