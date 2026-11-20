@@ -10,10 +10,13 @@ Kiểm tra đầu tiên: final_score của cầu nối khớp điểm giao thứ
 Ra: <out>/graph.json, cases.json, results.jsonl. CPU ~1–2 phút / truy vấn / giá trị k.
 
 Cần (không có trong git):
-  checkpoint  Kaggle riêng tư huychau/mmxai-huy-models  → models/{vg_t1_qa,vg_t1_qa_cn,psg_qa,psg_qa_cn}_seed0/
-  bundle      Kaggle riêng tư huychau/mmxai-task1-bundle (VG) → data/task1_bundle/,
+  checkpoint  Kaggle Model riêng tư huychau/mmxai-qa-graph (PyTorch), 4 biến thể:
+              vg-qa-seed0, vg-qa-cn-seed0 (bundle VG), psg-qa-seed0, psg-qa-cn-seed0 (bundle PSG)
+              kaggle models instances versions download huychau/mmxai-qa-graph/pyTorch/psg-qa-cn-seed0/1 \
+                  -p models/psg_qa_cn_seed0 --untar
+  bundle      Kaggle Dataset riêng tư huychau/mmxai-task1-bundle (VG) → data/task1_bundle/,
               huychau/mmxai-psg-bundle (PSG) → data/psg_bundle/
-  vd: kaggle datasets download huychau/mmxai-huy-models -p models --unzip
+              kaggle datasets download huychau/mmxai-psg-bundle -p data/psg_bundle --unzip
 """
 
 import argparse
