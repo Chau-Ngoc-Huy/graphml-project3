@@ -87,6 +87,12 @@ def main():
         r = subprocess.run(["git", "-c", "merge.directoryRenames=true", "-c", "merge.renames=true", "-c", "diff.renameLimit=5000",
                             "merge", "--no-ff", "-m", msg, a.ref], cwd=ROOT, capture_output=True, text=True)
         rep += ["", "## Merge", "", "```", (r.stdout + r.stderr).strip()[-4000:], "```"]
+        if r.returncode and not git("diff", "--name-only", "--diff-filter=U").strip():
+            # chỉ là cảnh báo "directory rename split" (file mới trong thư mục cũ bị tách ra nhiều nơi): nội dung đã gộp sạch,
+            # file mới nằm lại thư mục cũ và được liệt kê bên dưới để git mv
+            git("commit", "--no-edit", "-q")
+            r = subprocess.CompletedProcess(r.args, 0)
+            rep += ["", "Không có file xung đột nội dung — đã commit merge; xem mục file nằm ở thư mục cũ."]
         if r.returncode:
             rep += ["", "**Merge dừng vì xung đột** — sửa các file trên (`git status`), `git add`, `git commit`; "
                         "hoặc `git merge --abort` để quay lại."]

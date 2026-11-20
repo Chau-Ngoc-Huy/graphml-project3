@@ -11,7 +11,7 @@ export PYTHONPATH := src
 export LAB_USER KAGGLE_USER DATASET PROJECT
 KERNEL = $(shell $(PY) -c "import sys; sys.path.insert(0,'tools'); from make_kernel import kernel_id; print(kernel_id('$(EXP)'))")
 
-.PHONY: table ablations help test local dry push kernel status wait logs pull queue summary compare tex vendor vendor-update colab check import ui
+.PHONY: sync table ablations help test local dry push kernel status wait logs pull queue summary compare tex vendor vendor-update colab check import ui
 
 help:                ## liệt kê lệnh
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | column -t -s $$'\t'
@@ -81,6 +81,9 @@ table:               ## bảng kết quả (Markdown + LaTeX) từ lượt đầ
 
 ablations:           ## chạy mọi ablation tuần tự trên Kaggle: make ablations ARGS="--set data=mmxai-vg"
 	tools/run_queue.sh "ablation_no_rel ablation_no_concept ablation_no_edge ablation_shuffle ablation_random" "$(ARGS)"
+
+sync:                ## đồng bộ thay đổi của nhóm từ origin/main sang nhánh final (DRY=1: chỉ liệt kê)
+	$(PY) tools/sync_main.py $(if $(DRY),--dry-run)
 
 ui:                  ## giao diện thử mô hình / xem dữ liệu / ablation: http://127.0.0.1:8765
 	OMP_NUM_THREADS=2 nice -n 10 $(PY) -m uvicorn apps.lab.server:app --host 127.0.0.1 --port 8765
