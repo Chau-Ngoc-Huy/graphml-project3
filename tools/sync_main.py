@@ -45,7 +45,7 @@ def locate(path, rows):
     """(đường dẫn mới, kind) cho một đường dẫn cũ; (path, 'same') nếu ngoài các thư mục cũ."""
     for old, new, kind in rows:
         if path == old or (old.endswith("/") and path.startswith(old)):
-            return (new + path[len(old):] if old.endswith("/") else new), kind
+            return ("-" if new == "-" else new + path[len(old):] if old.endswith("/") else new), kind
     return (path, "unmapped") if path.startswith(OLD) else (path, "same")
 
 
