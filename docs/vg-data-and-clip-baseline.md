@@ -5,7 +5,7 @@ trích đặc trưng OpenCLIP đóng băng + FAISS, cài metric (Recall@1/5/10, 
 baseline CLIP thuần ≥3 seed (mean ± std), **module đánh giá dùng chung** cho mọi mô hình của nhóm,
 mở rộng image→text và đánh giá theo nhóm truy vấn.
 
-**Trang báo cáo kết quả:** https://minhthang03.github.io/mmxai-vg-data/web/
+**Trang báo cáo kết quả:** https://minhthang03.github.io/mmxai-task1-clip-baseline/web/
 
 ## Nội dung
 

@@ -1,6 +1,14 @@
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-plt.rcParams.update({"font.family":"Times New Roman","font.size":9,"axes.spines.top":False,"axes.spines.right":False})
+import subprocess
+from matplotlib import font_manager
+# Font giống thân bài: Times New Roman nếu có, không thì TeX Gyre Termes (đi kèm TeX Live — nạp thẳng file vì không nằm trong
+# thư mục font hệ thống). Nhúng TrueType (Type 42) thay vì Type 3 cho PDF hợp chuẩn IEEE.
+for f in subprocess.run(["fc-list", ":family=TeX Gyre Termes", "file"], capture_output=True, text=True).stdout.split():
+    font_manager.fontManager.addfont(f.rstrip(":"))
+plt.rcParams.update({"pdf.fonttype": 42})
+_serif = [f for f in ("Times New Roman", "TeX Gyre Termes") if f in {x.name for x in font_manager.fontManager.ttflist}]
+plt.rcParams.update({"font.family":["serif","DejaVu Serif"],"font.serif":_serif + ["DejaVu Serif"],"font.size":9,"axes.spines.top":False,"axes.spines.right":False})
 O="figs/"
 C={"clip":"#9aa0a6","ad":"#5b8def","g":"#1a8f5b","sh":"#d9534f"}
 # Fig1: MRR toàn pool, VG và PSG

@@ -25,7 +25,7 @@ make setup                      # .venv + torch CPU + gói mmxai (phần phụ d
 | 5 | `make tables` | máy | < 1 phút | `results/tables/vg_official.md`, `psg_official.md`, `results/psg_vs_adamf.md`, `results/adamf/vs_qagraph_paired.md` |
 | 6 | `make xai DS=..` | máy | ~1–2 phút / truy vấn | mô hình seed 0 + khung xAI → `results/xai_bridge/<model>/` (fidelity, sparsity, validity) |
 | 7 | `make web` / `make ui` | máy | — | Observatory (`apps/observatory`), Lab (`apps/lab`, cổng 8765; PSG: `MMXAI_BUNDLE=data/psg_bundle MMXAI_RUNS='psg_qa*'`) |
-| 8 | `make report` | máy | — | `report/report.pdf` |
+| 8 | `make report` | máy | < 1 phút | hình `report/figs/*.pdf` + `build/report/report.pdf` (XeLaTeX; gói TeX: xem `report/README.md`) |
 
 Chạy cả chuỗi một bộ dữ liệu: `make all-psg` hoặc `make all-vg`.
 **Lượt thử** (rẻ, kiểm tra đường chạy): `make data DS=vg SMOKE=1` (vài trăm ảnh, ~5 phút), `make adamf DS=psg SMOKE=1` (2 epoch),

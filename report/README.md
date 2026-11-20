@@ -1,8 +1,12 @@
-# report/ — báo cáo IEEE (LaTeX)
+# report/ — báo cáo IEEE (LaTeX, tiếng Việt)
 
-- `report.tex`: nội dung (tiếng Việt). Chỗ còn thiếu đánh dấu `[CẦN BỔ SUNG: ...]` (xAI/MMKG của Dương, link W&B, họ tên).
-- `make_figs.py`: vẽ `figs/*.pdf` từ số liệu trong JOURNAL (chạy trong `report/`).
-- Biên dịch (cần font Times New Roman, XeTeX): `tectonic report.tex` hoặc `xelatex report.tex` (chạy 2 lần).
-- Quy định nộp: 1 file PDF, ≤ 25 trang, tên `MSHV1-MSHV2-...pdf`.
+```bash
+make report        # từ gốc repo: vẽ hình (make_figs.py → figs/*.pdf) + XeLaTeX 2 lượt → build/report/report.pdf
+```
 
-Sửa xong: `git pull --rebase`, commit, `git push`. Mỗi người sửa phần của mình trong `report.tex` và báo nhóm để tránh conflict.
+- Cần: XeLaTeX + gói `texlive-xetex texlive-latex-extra texlive-pictures fonts-texgyre` (Debian/Ubuntu), và `make setup`
+  (matplotlib cho hình). Font thân bài: Times New Roman nếu máy có, không thì TeX Gyre Termes (đã khai báo trong `report.tex`).
+- `report.tex`: nội dung; chỗ còn thiếu đánh dấu `\todo{...}`. `make_figs.py`: hình từ số liệu trong `results/`
+  (`results/tables/*.md`, `results/adamf/vs_qagraph_paired.md`). `IEEEtran.cls` đi kèm, không cần cài.
+- File trung gian (`.aux`, `.log`) nằm trong `build/report/`, không commit. Quy định nộp: 1 file PDF, ≤ 25 trang.
+- Overleaf: tải lên `report.tex`, `IEEEtran.cls`, `figs/`; chọn trình biên dịch XeLaTeX.

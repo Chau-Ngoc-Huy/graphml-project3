@@ -154,8 +154,13 @@ xai:                 ## bước 6: giải thích + fidelity/sparsity/validity (k
 web:                 ## bước 7: MMXAI Observatory — sinh dữ liệu từ results/ + build (apps/observatory/dist)
 	cd apps/observatory && npm ci --no-audit --no-fund && npm run data && npm run build
 
-report:              ## bước 8: hình + PDF báo cáo (cần tectonic hoặc xelatex)
-	cd report && ../$(PY) make_figs.py && (tectonic report.tex || (xelatex report.tex && xelatex report.tex))
+report:              ## bước 8: vẽ hình (results → report/figs) + biên dịch PDF → build/report/report.pdf (XeLaTeX, 2 lượt)
+	@command -v xelatex >/dev/null || { echo "Thiếu XeLaTeX: sudo apt install texlive-xetex texlive-latex-extra texlive-pictures fonts-texgyre"; exit 1; }
+	cd report && ../$(PY) -W ignore make_figs.py
+	mkdir -p build/report
+	cd report && for i in 1 2; do xelatex -interaction=nonstopmode -halt-on-error -output-directory=../build/report report.tex \
+	    > ../build/report/xelatex.log 2>&1 || { tail -n 30 ../build/report/report.log; exit 1; }; done
+	@echo "→ build/report/report.pdf ($$(pdfinfo build/report/report.pdf 2>/dev/null | sed -n 's/^Pages: *//p') trang)"
 
 all-psg:             ## toàn bộ PSG: fetch → data → extras → publish → train (local) → adamf (Kaggle) → tables → xai
 	$(MAKE) fetch && $(MAKE) data DS=psg && $(MAKE) extras DS=psg && $(MAKE) publish DS=psg && \
