@@ -5,13 +5,13 @@ trích đặc trưng OpenCLIP đóng băng + FAISS, cài metric (Recall@1/5/10, 
 baseline CLIP thuần ≥3 seed (mean ± std), **module đánh giá dùng chung** cho mọi mô hình của nhóm,
 mở rộng image→text và đánh giá theo nhóm truy vấn.
 
-**Trang báo cáo kết quả:** https://minhthang03.github.io/mmxai-task1-clip-baseline/web/
+**Trang báo cáo kết quả:** https://minhthang03.github.io/mmxai-vg-data/web/
 
 ## Nội dung
 
 | File | Mô tả |
 |---|---|
-| `task1_clip_baseline_kaggle.ipynb` | Notebook chạy trên Kaggle (hoặc local), tạo toàn bộ đầu ra bên dưới |
+| `vg_data_clip_baseline.ipynb` | Notebook chạy trên Kaggle (hoặc local), tạo toàn bộ đầu ra bên dưới |
 | `mmxai_eval.py` | Module đánh giá dùng chung (metric, giao thức split/fold/seed, top-K, fuse α, kiểm định). Notebook nhúng đúng file này trong ô `%%writefile`; khi sửa module, sửa cả ô đó để hai bản giống nhau |
 | `requirements.txt` | Thư viện cần thêm ngoài môi trường Kaggle |
 | `kernel-metadata.json` | Cấu hình để đẩy notebook lên Kaggle bằng `kaggle kernels push` (sửa `KAGGLE_USERNAME`) |
@@ -20,12 +20,12 @@ mở rộng image→text và đánh giá theo nhóm truy vấn.
 
 ## Chạy trên Kaggle
 
-1. Tạo notebook mới → *File → Import Notebook* → chọn `task1_clip_baseline_kaggle.ipynb`.
+1. Tạo notebook mới → *File → Import Notebook* → chọn `vg_data_clip_baseline.ipynb`.
 2. *Add Input* → dataset `yenphamnhu/visual-genome` (chứa `scene_graphs.json`). Notebook tự tìm file trong `/kaggle/input`.
 3. Settings: **Accelerator GPU T4 x1**, **Internet On** (tải `image_data.json` của VG, `dataset_coco.json` Karpathy và ảnh VG qua URL).
 4. *Run All*. Thời gian ước tính trên T4: tải + mã hoá ~19K ảnh qua URL 10–20 phút, phần còn lại < 5 phút.
    Mọi bước có cache trong `/kaggle/working/task1`, chạy lại sẽ bỏ qua bước đã xong.
-5. Kết quả gom trong `/kaggle/working/task1_bundle.zip` (tab *Output*).
+5. Kết quả gom trong `/kaggle/working/vg_bundle.zip` (tab *Output*).
 
 Chạy local (CPU được, chậm hơn): `pip install -r requirements.txt` rồi mở notebook; đặt `MMXAI_SMOKE=1` để chạy thử nhanh với vài trăm ảnh.
 
@@ -102,7 +102,7 @@ results/example_rerank_lexical.json  ví dụ cắm phương pháp + α trên va
 
 Notebook: https://www.kaggle.com/code/minhthang0369/notebook0c3ea0357c · Đầu ra đã tải về `kaggle_results/` (bảng, biểu đồ, split, phân tích lỗi).
 Bản zip đầy đủ (đặc trưng CLIP, FAISS index, candidates, 155 MB) không đưa lên git vì vượt giới hạn 100 MB của GitHub:
-lấy ở tab *Output* của notebook Kaggle (`task1_bundle.zip`) hoặc chạy lại notebook.
+lấy ở tab *Output* của notebook Kaggle (`vg_bundle.zip`) hoặc chạy lại notebook.
 
 Split: train 15 000 / val 2 126 / test 2 138 ảnh; 96 381 caption; 19 264/19 264 ảnh mã hoá thành công.
 
@@ -127,7 +127,7 @@ Trang tĩnh HTML/CSS/JS thuần, không cần server hay thư viện ngoài (ch�
 ```bash
 cd web
 python build_site.py ../kaggle_results     # sinh data.js từ results/ + split/ (sau mỗi lần chạy lại notebook)
-# cần results/ranks_clip_t2i_test.npz: giải nén từ task1_bundle.zip (Output Kaggle) vào kaggle_results/ trước khi chạy
+# cần results/ranks_clip_t2i_test.npz: giải nén từ vg_bundle.zip (Output Kaggle) vào kaggle_results/ trước khi chạy
 xdg-open index.html                        # hoặc double-click index.html
 ```
 

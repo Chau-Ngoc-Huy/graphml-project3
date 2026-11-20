@@ -33,8 +33,8 @@ import torch
 import torch.nn.functional as F
 
 from .data.contract import normalize_label
-from .data.task1 import load_task1
-from .experiments.t1_graph import load_eval_module
+from .data.bundle import load_bundle
+from .experiments.vg_graph import load_eval_module
 from .graph.build import CONTAINS, TYPE_NAMES, build_graph
 from .graph.qa import QAData, QAScorer
 
@@ -47,7 +47,7 @@ class QAGraphBridge:
         self.cfg = json.loads((self.run / "config.json").read_text())
         self.ev = load_eval_module(self.bundle)
         extra = self.cfg.get("extra")
-        b = load_task1(self.bundle, (self.bundle / Path(extra).name) if extra else None)
+        b = load_bundle(self.bundle, (self.bundle / Path(extra).name) if extra else None)
         gc = self.cfg.get("graph", {})
         self.g = build_graph(b, gc.get("variant", "full"), int(gc.get("min_rel_count", 1)),
                              rel_merge=gc.get("rel_merge", "directed"))

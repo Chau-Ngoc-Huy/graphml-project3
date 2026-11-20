@@ -1,2 +1,2 @@
-"""t1_qa với graph.variant=random."""
-from .t1_qa import run  # noqa: F401
+"""vg_qa với graph.variant=random."""
+from .vg_qa import run  # noqa: F401

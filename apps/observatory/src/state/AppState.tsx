@@ -35,7 +35,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [route, setRoute] = useState<Route>(readRoute);
   const [input, setInput] = useState("");
   const [queryIndex, setQueryIndex] = useState<number | null>(null);
-  const [playModels, setPlayModels] = useState<string[]>(["clip", "clip_adamf", "t1_qa_ablation_no_edge", BEST_ID]);
+  const [playModels, setPlayModels] = useState<string[]>(["clip", "clip_adamf", "vg_qa_ablation_no_edge", BEST_ID]);
   const [focusModel, setFocusModel] = useState<string>(BEST_ID);
   const [compareModels, setCompareModels] = useState<string[]>(DEFAULT_COMPARE);
   const [reference, setReference] = useState("clip");

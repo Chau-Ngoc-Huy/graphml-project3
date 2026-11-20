@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the Observatory data layer (public/data/*.json) from the team's REAL result files.
 
-    python3 scripts/build_data.py --team ../.. --bundle ../../data/task1_bundle
+    python3 scripts/build_data.py --team ../.. --bundle ../../data/vg_bundle
 
 --team    root of the graphml-project3 repo (reads results/, results/adamf, queries/, results/clip_baseline)
 --bundle  unzipped Task 1 bundle (data/images.jsonl, data/captions.jsonl, data/object_vocab_train.json); only used for
@@ -18,7 +18,7 @@ from pathlib import Path
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--team", default="../..")
-ap.add_argument("--bundle", default="../../data/task1_bundle")
+ap.add_argument("--bundle", default="../../data/vg_bundle")
 ap.add_argument("--out", default="public/data")
 a = ap.parse_args()
 TEAM, BUNDLE, OUT = Path(a.team).resolve(), Path(a.bundle).resolve(), Path(a.out)
@@ -141,29 +141,29 @@ MODELS = [
          official=official_from_khanh(KA["CLIP+Adapter+AdaMF-MAT"], "results/adamf/protocol_coco_adapter.json")),
 ]
 HUY = [
-    ("t1_qa_ablation_no_edge", "CLIP + Adapter-J (học chung)", "Adapter-J", "adapter", "Adapter học chung, graph bị tắt (no_edge ⇒ s_G = 0). Mốc đúng để đo đóng góp của graph.",
+    ("vg_qa_ablation_no_edge", "CLIP + Adapter-J (học chung)", "Adapter-J", "adapter", "Adapter học chung, graph bị tắt (no_edge ⇒ s_G = 0). Mốc đúng để đo đóng góp của graph.",
      dict(adapter=True, graph=False, relations=False, conceptnet=False, learned=True, gnn=None)),
-    ("t1_qa", "QA-Graph · GAT · contains + sg_rel", "GAT", "graph", "Graph score phụ thuộc query: concept của câu ↔ label của ảnh qua GNN trên label graph (edge contains + relation scene graph).",
+    ("vg_qa", "QA-Graph · GAT · contains + sg_rel", "GAT", "graph", "Graph score phụ thuộc query: concept của câu ↔ label của ảnh qua GNN trên label graph (edge contains + relation scene graph).",
      dict(adapter=True, graph=True, relations=True, conceptnet=False, learned=True, gnn="GAT")),
-    ("t1_qa_ablation_no_rel", "QA-Graph · chỉ contains", "GAT·contains", "ablation", "Bỏ toàn bộ edge label–label (sg_rel); chỉ còn ảnh–chứa–label.",
+    ("vg_qa_ablation_no_rel", "QA-Graph · chỉ contains", "GAT·contains", "ablation", "Bỏ toàn bộ edge label–label (sg_rel); chỉ còn ảnh–chứa–label.",
      dict(adapter=True, graph=True, relations=False, conceptnet=False, learned=True, gnn="GAT")),
-    ("t1_qa_cn", "QA-Graph · GAT · + ConceptNet", "GAT+CN", "graph", "Thêm 1 000 concept và ~16k edge ConceptNet (IsA, AtLocation, Synonym…).",
+    ("vg_qa_cn", "QA-Graph · GAT · + ConceptNet", "GAT+CN", "graph", "Thêm 1 000 concept và ~16k edge ConceptNet (IsA, AtLocation, Synonym…).",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GAT")),
-    ("t1_qa_cn_no_sg", "QA-Graph · GAT · contains + ConceptNet", "GAT·CN−sg", "graph", "ConceptNet nhưng bỏ edge sg_rel.",
+    ("vg_qa_cn_no_sg", "QA-Graph · GAT · contains + ConceptNet", "GAT·CN−sg", "graph", "ConceptNet nhưng bỏ edge sg_rel.",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GAT")),
-    ("t1_qa_cn_sage", "QA-Graph · SAGE · + ConceptNet", "SAGE+CN", "graph", "Như GAT+CN nhưng GNN = GraphSAGE.",
+    ("vg_qa_cn_sage", "QA-Graph · SAGE · + ConceptNet", "SAGE+CN", "graph", "Như GAT+CN nhưng GNN = GraphSAGE.",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="SAGE")),
-    ("t1_qa_cn_no_sg_sage", "QA-Graph · SAGE · contains + ConceptNet", "SAGE·CN−sg ★", "graph", "Cấu hình chính đề xuất (JOURNAL #9): cao nhất và đơn giản nhất.",
+    ("vg_qa_cn_no_sg_sage", "QA-Graph · SAGE · contains + ConceptNet", "SAGE·CN−sg ★", "graph", "Cấu hình chính đề xuất (JOURNAL #9): cao nhất và đơn giản nhất.",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="SAGE")),
-    ("t1_qa_cn_shuffle", "QA-Graph · edge shuffle", "Shuffle", "ablation", "Ablation: giữ số edge nhưng xáo đầu cuối. Kiểm tra model có dùng NỘI DUNG edge hay không.",
+    ("vg_qa_cn_shuffle", "QA-Graph · edge shuffle", "Shuffle", "ablation", "Ablation: giữ số edge nhưng xáo đầu cuối. Kiểm tra model có dùng NỘI DUNG edge hay không.",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GAT")),
 ]
 for exp, name, short, fam, desc, flags in HUY:
     MODELS.append(dict(id=exp, name=name, short=short, family=fam, desc=desc, flags=flags,
                        ranks=("huy", rd(HR / f"{exp}.seed0.test_full.json")["ranks"]), official=official_from_huy(exp)))
 OFFICIAL_ONLY = [
-    ("t1_qa_cn_gcn", "QA-Graph · GCN · + ConceptNet", "GCN+CN", dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GCN")),
-    ("t1_qa_cn_no_sg_gcn", "QA-Graph · GCN · contains + ConceptNet", "GCN·CN−sg", dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GCN")),
+    ("vg_qa_cn_gcn", "QA-Graph · GCN · + ConceptNet", "GCN+CN", dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GCN")),
+    ("vg_qa_cn_no_sg_gcn", "QA-Graph · GCN · contains + ConceptNet", "GCN·CN−sg", dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GCN")),
 ]
 for exp, name, short, flags in OFFICIAL_ONLY:
     MODELS.append(dict(id=exp, name=name, short=short, family="graph", flags=flags,
@@ -200,7 +200,7 @@ checks.append({"model": "clip", "check": "group alignment direct/indirect matche
 
 # --------------------------------------------------------------------------- other results
 PAIRED_ID = {"CLIP (Thắng)": "clip", "CLIP+khớp tên (Thắng/Khánh)": "clip_lex", "CLIP+AdaMF-MAT (Khánh)": "clip_adamf"}
-paired = {PAIRED_ID.get(k, k): v for k, v in rd(TEAM / "results/adamf/vs_huy_paired.json").items()}
+paired = {PAIRED_ID.get(k, k): v for k, v in rd(TEAM / "results/adamf/vs_qagraph_paired.json").items()}
 kq = rd(TEAM / "queries/eval_queries.json")
 lvl2 = []
 md = (TEAM / "results/adamf/level2_vg_own_experiment.md").read_text(encoding="utf-8")
@@ -234,7 +234,7 @@ meta = {
     "protocol": {"gallery_size": split["gallery_size"], "top_k": split["top_k"], "seeds": split["seeds"], "seed_data": split["seed_data"]},
     "checks": checks,
     "sources": {"huy": "results/*/…kaggle-3seed.json, results/ranks/*.json, results/JOURNAL.md",
-                "khanh": "results/adamf/protocol_coco_full.json, protocol_coco_adapter.json, vs_huy_paired.json, adamf_mat_repro.md, level2_vg_own_experiment.md, queries/eval_queries.json",
+                "khanh": "results/adamf/protocol_coco_full.json, protocol_coco_adapter.json, vs_qagraph_paired.json, adamf_mat_repro.md, level2_vg_own_experiment.md, queries/eval_queries.json",
                 "thang": "results/clip_baseline/results/clip_baseline.json, split/split.json"},
 }
 results = {"paired": paired, "level2": lvl2, "repro": repro, "i2t": i2t, "kqueries": kq}

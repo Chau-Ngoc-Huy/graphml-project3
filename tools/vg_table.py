@@ -1,12 +1,12 @@
 """Bảng kết quả chính thức (3 seed, Kaggle, tag kaggle-3seed) cho Nhiệm vụ 2 cấp 1 trên bundle của Thắng.
 
-Đọc results/<exp>/*<tag>*.json mới nhất của mỗi thí nghiệm → results/tables/t1_official.md:
+Đọc results/<exp>/*<tag>*.json mới nhất của mỗi thí nghiệm → results/tables/vg_official.md:
   - Bảng chính + ablation + GCN/GAT/SAGE: mean ± std 3 seed (gallery 1000) và toàn pool test (2138 ảnh).
   - MRR theo nhóm direct / indirect (định nghĩa nhóm của Thắng).
   - Kiểm định ghép cặp (bootstrap theo truy vấn, seed 0, toàn pool) so với CLIP+Adapter: ΔMRR và CI95.
-Dòng CLIP lấy từ baseline của Thắng (cùng giao thức; t1_clip của mình khớp tuyệt đối, JOURNAL #2).
+Dòng CLIP lấy từ baseline của Thắng (cùng giao thức; vg_clip của mình khớp tuyệt đối, JOURNAL #2).
 
-Dùng: python tools/t1_table.py [--tag kaggle-3seed]
+Dùng: python tools/vg_table.py [--tag kaggle-3seed]
 """
 
 import argparse
@@ -23,18 +23,18 @@ p.add_argument("--boot", type=int, default=2000)
 a = p.parse_args()
 
 ROWS = [  # (nhóm bảng, exp, tên hiển thị)
-    ("main", "t1_qa_ablation_no_edge", "CLIP + Adapter (không đồ thị)"),
-    ("main", "t1_qa", "+ QA-Graph (contains + sg_rel)"),
-    ("main", "t1_qa_ablation_no_rel", "+ QA-Graph (chỉ contains)"),
-    ("main", "t1_qa_cn", "+ QA-Graph + ConceptNet (contains + sg_rel + CN)"),
-    ("main", "t1_qa_cn_no_sg", "+ QA-Graph + ConceptNet, bỏ sg_rel (contains + CN)"),
-    ("ablation", "t1_qa_cn_shuffle", "QA-Graph + CN, xáo cạnh (shuffle)"),
-    ("gnn", "t1_qa_cn_gcn", "contains + sg_rel + CN · GCN"),
-    ("gnn", "t1_qa_cn", "contains + sg_rel + CN · GAT"),
-    ("gnn", "t1_qa_cn_sage", "contains + sg_rel + CN · SAGE"),
-    ("gnn", "t1_qa_cn_no_sg_gcn", "contains + CN · GCN"),
-    ("gnn", "t1_qa_cn_no_sg", "contains + CN · GAT"),
-    ("gnn", "t1_qa_cn_no_sg_sage", "contains + CN · SAGE"),
+    ("main", "vg_qa_ablation_no_edge", "CLIP + Adapter (không đồ thị)"),
+    ("main", "vg_qa", "+ QA-Graph (contains + sg_rel)"),
+    ("main", "vg_qa_ablation_no_rel", "+ QA-Graph (chỉ contains)"),
+    ("main", "vg_qa_cn", "+ QA-Graph + ConceptNet (contains + sg_rel + CN)"),
+    ("main", "vg_qa_cn_no_sg", "+ QA-Graph + ConceptNet, bỏ sg_rel (contains + CN)"),
+    ("ablation", "vg_qa_cn_shuffle", "QA-Graph + CN, xáo cạnh (shuffle)"),
+    ("gnn", "vg_qa_cn_gcn", "contains + sg_rel + CN · GCN"),
+    ("gnn", "vg_qa_cn", "contains + sg_rel + CN · GAT"),
+    ("gnn", "vg_qa_cn_sage", "contains + sg_rel + CN · SAGE"),
+    ("gnn", "vg_qa_cn_no_sg_gcn", "contains + CN · GCN"),
+    ("gnn", "vg_qa_cn_no_sg", "contains + CN · GAT"),
+    ("gnn", "vg_qa_cn_no_sg_sage", "contains + CN · SAGE"),
 ]
 CLIP = {"gal": {"R@1": (57.36, 0.95), "R@5": (84.08, 0.24), "R@10": (91.76, 0.33), "MRR": (69.23, 0.68),
                 "nDCG@10": (74.32, 0.55)},
@@ -56,13 +56,13 @@ def ms(d):
 
 
 res = {e: latest(e) for _, e, _ in ROWS}
-base_r = ranks(res["t1_qa_ablation_no_edge"][1], "t1_qa_ablation_no_edge") if res["t1_qa_ablation_no_edge"][0] else None
+base_r = ranks(res["vg_qa_ablation_no_edge"][1], "vg_qa_ablation_no_edge") if res["vg_qa_ablation_no_edge"][0] else None
 rng = np.random.default_rng(0)
 
 
 def paired(exp):
     r = ranks(res[exp][1], exp) if res[exp][0] else None
-    if r is None or base_r is None or len(r) != len(base_r) or exp == "t1_qa_ablation_no_edge":
+    if r is None or base_r is None or len(r) != len(base_r) or exp == "vg_qa_ablation_no_edge":
         return "—"
     d = 1 / r - 1 / base_r
     bs = [d[rng.integers(0, len(d), len(d))].mean() for _ in range(a.boot)]
@@ -97,7 +97,7 @@ for table, title in (("main", "Bảng chính"), ("ablation", "Đối chứng"), 
                    + f" | {paired(exp)} |")
     out.append("")
 out.append("Nguồn: " + ", ".join(f"`{res[e][1]}`" for _, e, _ in ROWS if res[e][0]))
-dst = ROOT / "results" / "tables" / "t1_official.md"
+dst = ROOT / "results" / "tables" / "vg_official.md"
 dst.parent.mkdir(parents=True, exist_ok=True)
 dst.write_text("\n".join(out) + "\n", encoding="utf-8")
 print("\n".join(out))

@@ -263,7 +263,7 @@
  },
  "run": {
   "exp": "psg_clip",
-  "run_id": "20261119-180040_huy-chau_psg_clip-3s",
+  "run_id": "20261119-180040_lab_psg_clip-3s",
   "tag": "3s",
   "user": "huy-chau",
   "args": {

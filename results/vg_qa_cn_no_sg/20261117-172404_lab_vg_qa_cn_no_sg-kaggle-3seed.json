@@ -329,12 +329,12 @@
   "row": "qa+cn no_sg — VG∩COCO"
  },
  "run": {
-  "exp": "t1_qa_cn_no_sg",
-  "run_id": "20261117-172404_huy_t1_qa_cn_no_sg-kaggle-3seed",
+  "exp": "vg_qa_cn_no_sg",
+  "run_id": "20261117-172404_lab_vg_qa_cn_no_sg-kaggle-3seed",
   "tag": "kaggle-3seed",
-  "user": "huy",
+  "user": "lab",
   "args": {
-   "exp": "t1_qa_cn_no_sg",
+   "exp": "vg_qa_cn_no_sg",
    "config": null,
    "config_dir": "/kaggle/working/_code/configs",
    "set": [
@@ -390,9 +390,9 @@
    "n_explain": 0,
    "explain_top_m": 3,
    "save_model": false,
-   "extra": "huy_extra_cn",
+   "extra": "graph_extra_cn",
    "mode": "graph",
-   "exp": "t1_qa_cn_no_sg"
+   "exp": "vg_qa_cn_no_sg"
   },
   "started_at": "2026-11-17T17:24:04+00:00",
   "finished_at": "2026-11-17T17:28:47+00:00",

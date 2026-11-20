@@ -5,7 +5,7 @@ import type { ExecutionEngine, ExecutionResult, ModelRun, RetrievedImage } from 
 /**
  * Live engine: forwards the query to the MMXAI Lab server (huy/ui/server.py, POST /api/search).
  * In dev, vite proxies /api → http://127.0.0.1:8765 (see vite.config.ts); otherwise set the base URL.
- * The server's variants are its own trained runs (runs/t1_qa*), listed by GET /api/variants.
+ * The server's variants are its own trained runs (runs/vg_qa*), listed by GET /api/variants.
  */
 export interface LiveVariant {
   id: string;

@@ -6,13 +6,13 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 DS=${1:?"vg|psg"}; MSG=${2:-"cập nhật từ pipeline"}
-case $DS in vg) B=data/task1_bundle; SLUG=mmxai-task1-bundle ;; psg) B=data/psg_bundle; SLUG=mmxai-psg-bundle ;; *) exit 1 ;; esac
+case $DS in vg) B=data/vg_bundle; SLUG=mmxai-task1-bundle ;; psg) B=data/psg_bundle; SLUG=mmxai-psg-bundle ;; *) exit 1 ;; esac
 K=.venv/bin/kaggle; [ -x $K ] || K=kaggle
 USER_=$(sed -n 's/^KAGGLE_USER *[?:]*= *//p' local.mk 2>/dev/null | head -1)
 [ -n "$USER_" ] || USER_=$($K config view | sed -n 's/.*username: *//p')
 OUT=build/bundle_$DS; rm -rf "$OUT"; mkdir -p "$OUT"
 # chỉ những gì pipeline đọc (không đóng gói shards / ảnh)
-for x in data split features candidates huy_extra huy_extra_cn mmxai_eval.py psg_stats.json; do
+for x in data split features candidates graph_extra graph_extra_cn mmxai_eval.py psg_stats.json; do
   [ -e "$B/$x" ] && cp -r "$B/$x" "$OUT/"
 done
 cp src/mmxai_eval.py "$OUT/mmxai_eval.py"            # bản duy nhất trong repo

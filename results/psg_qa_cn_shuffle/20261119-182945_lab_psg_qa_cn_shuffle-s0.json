@@ -262,7 +262,7 @@
  },
  "run": {
   "exp": "psg_qa_cn_shuffle",
-  "run_id": "20261119-182945_huy-chau_psg_qa_cn_shuffle-s0",
+  "run_id": "20261119-182945_lab_psg_qa_cn_shuffle-s0",
   "tag": "s0",
   "user": "huy-chau",
   "args": {
@@ -323,7 +323,7 @@
    "n_explain": 0,
    "explain_top_m": 3,
    "save_model": true,
-   "extra": "huy_extra_cn",
+   "extra": "graph_extra_cn",
    "mode": "graph",
    "exp": "psg_qa_cn_shuffle",
    "cpu_threads": 2

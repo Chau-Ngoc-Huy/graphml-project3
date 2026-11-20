@@ -1,5 +1,5 @@
-# Ablation t1_qa: bỏ mọi cạnh → ảnh không có nhãn → s_G = 0 → chỉ CLIP+Adapter
-extends: t1_qa.yaml
+# Ablation vg_qa: bỏ mọi cạnh → ảnh không có nhãn → s_G = 0 → chỉ CLIP+Adapter
+extends: vg_qa.yaml
 graph: {variant: no_edge}
 save_model: false
 paper: {table: ablation, row: qa no_edge — VG∩COCO}

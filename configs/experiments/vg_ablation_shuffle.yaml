@@ -1,5 +1,5 @@
 # Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): xáo đầu nguồn cạnh trong cùng loại, giữ bậc
-extends: t1_graph.yaml
+extends: vg_graph.yaml
 graph: {variant: shuffle}
 save_model: false
 paper: {table: ablation, row: shuffle — VG∩COCO}

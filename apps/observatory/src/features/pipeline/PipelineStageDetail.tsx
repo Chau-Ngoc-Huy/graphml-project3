@@ -110,7 +110,7 @@ function StageViz({ id }: { id: string }) {
     );
   }
   if (id === "graph") {
-    const rows = ["t1_qa", "t1_qa_cn", "t1_qa_cn_no_sg"].map((k) => ({ k, g: m.get(k)!.official.graph }));
+    const rows = ["vg_qa", "vg_qa_cn", "vg_qa_cn_no_sg"].map((k) => ({ k, g: m.get(k)!.official.graph }));
     return (
       <div className="space-y-3">
         <div className="eyebrow">Số edge theo loại</div>
@@ -121,7 +121,7 @@ function StageViz({ id }: { id: string }) {
     );
   }
   if (id === "gnn") {
-    const ids = ["t1_qa_cn_gcn", "t1_qa_cn", "t1_qa_cn_sage", "t1_qa_cn_no_sg_gcn", "t1_qa_cn_no_sg", "t1_qa_cn_no_sg_sage"];
+    const ids = ["vg_qa_cn_gcn", "vg_qa_cn", "vg_qa_cn_sage", "vg_qa_cn_no_sg_gcn", "vg_qa_cn_no_sg", "vg_qa_cn_no_sg_sage"];
     return (
       <div className="space-y-3">
         <div className="eyebrow">GCN · GAT · GraphSAGE — MRR toàn pool, 3 seed</div>

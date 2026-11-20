@@ -15,14 +15,14 @@ make setup                      # .venv + torch CPU + gói mmxai (phần phụ d
 | # | Lệnh | Chạy ở | Thời gian | Vào → Ra |
 |---|---|---|---|---|
 | 0 | `make fetch` | máy | vài phút | Internet → `data/raw/dataset_coco.json` (Karpathy), `data/conceptnet/hf_en_simple/train.parquet`, `data/psg_raw/` (psg.json + 8 parquet) |
-| 1 | `make data DS=vg` | **Kaggle T4** | ~1 giờ | dataset `yenphamnhu/visual-genome` + Karpathy → notebook Nhiệm vụ 1 (Thắng): split, CLIP ViT-B/32, FAISS, baseline CLIP 3 seed → `data/task1_bundle/` |
+| 1 | `make data DS=vg` | **Kaggle T4** | ~1 giờ | dataset `yenphamnhu/visual-genome` + Karpathy → notebook Nhiệm vụ 1 (Thắng): split, CLIP ViT-B/32, FAISS, baseline CLIP 3 seed → `data/vg_bundle/` |
 | 1 | `make data DS=psg` | máy (CPU) | ~75 phút | `data/psg_raw` + Karpathy + ConceptNet → `data/psg_bundle/` (18 186 ảnh, 133 nhãn + 674 khái niệm) + đặc trưng CLIP |
-| 2 | `make extras DS=..` | máy | vài phút | bundle → `huy_extra/` (vector nhãn), `huy_extra_cn/` (cạnh ConceptNet + vector) |
+| 2 | `make extras DS=..` | máy | vài phút | bundle → `graph_extra/` (vector nhãn), `graph_extra_cn/` (cạnh ConceptNet + vector) |
 | 2b | `make publish DS=..` | máy → Kaggle | vài phút | bundle → Kaggle Dataset riêng tư `<user>/mmxai-task1-bundle` / `mmxai-psg-bundle` |
-| 3 | `make train DS=vg` | **Kaggle T4** ×2 | ~3 giờ | 12 cấu hình × 3 seed (bảng `t1_official`) → `runs/`, `results/t1_*/` |
+| 3 | `make train DS=vg` | **Kaggle T4** ×2 | ~3 giờ | 12 cấu hình × 3 seed (bảng `vg_official`) → `runs/`, `results/vg_*/` |
 | 3 | `make train DS=psg` | máy (CPU, nhẹ) | ~2 giờ | 8 cấu hình × 3 seed → `runs/psg_*`, `results/psg_*/` |
 | 4 | `make adamf DS=..` | **Kaggle T4** ×2 | ~5 giờ | AdaMF-MAT (Khánh) + ablation xáo/bỏ quan hệ → `results/adamf_<ds>/` |
-| 5 | `make tables` | máy | < 1 phút | `results/tables/t1_official.md`, `psg_official.md`, `results/psg_vs_adamf.md`, `results/adamf/vs_huy_paired.md` |
+| 5 | `make tables` | máy | < 1 phút | `results/tables/vg_official.md`, `psg_official.md`, `results/psg_vs_adamf.md`, `results/adamf/vs_qagraph_paired.md` |
 | 6 | `make xai DS=..` | máy | ~1–2 phút / truy vấn | mô hình seed 0 + khung xAI (Dương) → `results/xai_bridge/<model>/` (fidelity, sparsity, validity) |
 | 7 | `make web` / `make ui` | máy | — | Observatory (`apps/observatory`), Lab (`apps/lab`, cổng 8765; PSG: `MMXAI_BUNDLE=data/psg_bundle MMXAI_RUNS='psg_qa*'`) |
 | 8 | `make report` | máy | — | `report/report.pdf` |

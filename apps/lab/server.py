@@ -3,11 +3,11 @@
 Chạy:   make ui            (hoặc: .venv/bin/python -m uvicorn apps.lab.server:app --port 8765)
 Mở:     http://127.0.0.1:8765
 
-Biến thể = mọi thư mục runs/t1_qa*/<run_id>/ có model.pt (trừ lượt `smoke`). Nạp dần ở nền sau khi khởi động
+Biến thể = mọi thư mục runs/vg_qa*/<run_id>/ có model.pt (trừ lượt `smoke`). Nạp dần ở nền sau khi khởi động
 (mỗi biến thể dựng lại đồ thị của nó ~20–60 s); gọi tới biến thể chưa nạp thì nạp ngay.
 
 Biến môi trường (tùy chọn):
-  MMXAI_BUNDLE   bundle Nhiệm vụ 1 (mặc định data/task1_bundle)
+  MMXAI_BUNDLE   bundle Nhiệm vụ 1 (mặc định data/vg_bundle)
   MMXAI_RUN      run_id (tên thư mục) của biến thể mặc định
   MMXAI_THREADS  số luồng torch (mặc định 2 — máy không bị lag)
   MMXAI_PRELOAD  0 = không nạp sẵn các biến thể ở nền
@@ -33,8 +33,8 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from mmxai.data.contract import normalize_label
-from mmxai.data.task1 import load_task1
-from mmxai.experiments.t1_graph import load_eval_module
+from mmxai.data.bundle import LEGACY_EXTRA, load_bundle
+from mmxai.experiments.vg_graph import load_eval_module
 from mmxai.graph.build import CONCEPT, CONTAINS, TYPE_NAMES, build_graph
 from mmxai.graph.qa import QAData, QAScorer
 
@@ -45,30 +45,30 @@ K = 100  # số ứng viên CLIP được xếp hạng lại (giống giao thứ
 
 # ---------------------------------------------------------------- tên hiển thị của biến thể
 EXP_TITLE = {
-    "t1_qa_ablation_no_edge": ("CLIP + Adapter (không đồ thị)", "Mốc so sánh: chỉ lớp chiếu học được, không cạnh nào."),
-    "t1_qa": ("QA-Graph: contains + sg_rel", "Khái niệm của câu ↔ nhãn của ảnh, nhãn lan truyền qua cạnh sg_rel."),
-    "t1_qa_ablation_no_rel": ("QA-Graph: chỉ contains", "Bỏ cạnh nhãn–nhãn: chỉ còn ảnh ↔ nhãn."),
-    "t1_qa_cn": ("QA-Graph + ConceptNet", "contains + sg_rel + ConceptNet (khái niệm cầu nối mở rộng)."),
-    "t1_qa_cn_no_sg": ("QA-Graph + ConceptNet, bỏ sg_rel", "contains + ConceptNet."),
-    "t1_qa_cn_shuffle": ("Đối chứng: xáo cạnh (shuffle)", "Ảnh mang nhãn sai ⇒ phải tụt dưới Adapter."),
+    "vg_qa_ablation_no_edge": ("CLIP + Adapter (không đồ thị)", "Mốc so sánh: chỉ lớp chiếu học được, không cạnh nào."),
+    "vg_qa": ("QA-Graph: contains + sg_rel", "Khái niệm của câu ↔ nhãn của ảnh, nhãn lan truyền qua cạnh sg_rel."),
+    "vg_qa_ablation_no_rel": ("QA-Graph: chỉ contains", "Bỏ cạnh nhãn–nhãn: chỉ còn ảnh ↔ nhãn."),
+    "vg_qa_cn": ("QA-Graph + ConceptNet", "contains + sg_rel + ConceptNet (khái niệm cầu nối mở rộng)."),
+    "vg_qa_cn_no_sg": ("QA-Graph + ConceptNet, bỏ sg_rel", "contains + ConceptNet."),
+    "vg_qa_cn_shuffle": ("Đối chứng: xáo cạnh (shuffle)", "Ảnh mang nhãn sai ⇒ phải tụt dưới Adapter."),
 }
-ORDER = ["t1_qa_ablation_no_edge", "t1_qa", "t1_qa_ablation_no_rel", "t1_qa_cn", "t1_qa_cn_no_sg", "t1_qa_cn_shuffle"]
+ORDER = ["vg_qa_ablation_no_edge", "vg_qa", "vg_qa_ablation_no_rel", "vg_qa_cn", "vg_qa_cn_no_sg", "vg_qa_cn_shuffle"]
 
 
 def _describe(exp: str, tag: str, cfg: dict) -> tuple[str, str, int]:
-    if exp.startswith("psg_"):  # thí nghiệm PSG dùng cùng tên biến thể với VG: psg_qa_cn ↔ t1_qa_cn
-        exp = "t1_" + exp[4:]
+    if exp.startswith("psg_"):  # thí nghiệm PSG dùng cùng tên biến thể với VG: psg_qa_cn ↔ vg_qa_cn
+        exp = "vg_" + exp[4:]
     base = exp
     kind = ""
     for k in ("_gcn", "_sage"):
         if exp.endswith(k):
             base, kind = exp[: -len(k)], k[1:].upper()
     title, note = EXP_TITLE.get(base, (exp, ""))
-    if base == "t1_qa" and "untrained" in tag:
+    if base == "vg_qa" and "untrained" in tag:
         title, note = "Khớp nhãn CLIP, không học", "Không huấn luyện, không adapter."
-    elif base == "t1_qa" and "rel5" in tag:
+    elif base == "vg_qa" and "rel5" in tag:
         title, note = "QA-Graph: sg_rel thưa (≥5 lần)", "Chỉ giữ cặp nhãn đồng xuất hiện ≥ 5 lần trên train."
-    elif base == "t1_qa" and (cfg.get("extra") or "").endswith("huy_extra_cn"):
+    elif base == "vg_qa" and (cfg.get("extra") or "").endswith("graph_extra_cn"):
         title, note = "QA-Graph + ConceptNet", "contains + sg_rel + ConceptNet."
     gnn = kind or (cfg.get("gnn") or {}).get("kind", "gat").upper()
     src = "Kaggle 3 seed · model seed 0" if "kaggle" in tag else "máy · seed 0"
@@ -144,7 +144,7 @@ class State:
     """Dữ liệu dùng chung cho mọi biến thể."""
 
     def __init__(self):
-        self.bundle = Path(os.environ.get("MMXAI_BUNDLE", ROOT / "data" / "task1_bundle"))
+        self.bundle = Path(os.environ.get("MMXAI_BUNDLE", ROOT / "data" / "vg_bundle"))
         if not self.bundle.is_absolute():
             self.bundle = ROOT / self.bundle
         self.ev = load_eval_module(self.bundle)
@@ -175,19 +175,19 @@ class State:
         self.pool = {s: np.array([self.row_of[i] for i in b.splits[s]]) for s in ("val", "test")}
         self._clip, self._clip_lock = None, threading.Lock()
         self._clip_baseline = None
-        self.runs_glob = os.environ.get("MMXAI_RUNS", "t1_qa*")  # PSG: MMXAI_RUNS="psg_qa*"
+        self.runs_glob = os.environ.get("MMXAI_RUNS", "vg_qa*")  # PSG: MMXAI_RUNS="psg_qa*"
         runs = [p for d in sorted((ROOT / "runs").glob(self.runs_glob)) for p in sorted(d.iterdir())
                 if (p / "model.pt").exists() and (p / "config.json").exists() and "smoke" not in p.name]
         self.variants = {v.id: v for v in sorted((Variant(p) for p in runs), key=lambda v: (v.priority, v.id))}
         want = os.environ.get("MMXAI_RUN", "")
         want = Path(want).name if want else ""
         if want not in self.variants:
-            pref = [v for v in self.variants.values() if v.exp == "t1_qa_cn" and "kaggle" in v.tag] or \
-                   [v for v in self.variants.values() if v.exp in ("t1_qa", "psg_qa_cn")] or \
+            pref = [v for v in self.variants.values() if v.exp == "vg_qa_cn" and "kaggle" in v.tag] or \
+                   [v for v in self.variants.values() if v.exp in ("vg_qa", "psg_qa_cn")] or \
                    [v for v in self.variants.values() if v.exp == "psg_qa"] or list(self.variants.values())
             want = pref[0].id if pref else ""
         if not want:
-            raise SystemExit("Không có biến thể nào (runs/t1_qa*/<run>/model.pt). Chạy `make local EXP=t1_qa ARGS='--seed 0'`.")
+            raise SystemExit("Không có biến thể nào (runs/vg_qa*/<run>/model.pt). Chạy `make local EXP=vg_qa ARGS='--seed 0'`.")
         self.default = want
 
     def kind_of(self, V, l: int) -> str:
@@ -197,7 +197,8 @@ class State:
     def resolve_extra(self, extra):
         if not extra:
             return None
-        for cand in (Path(extra), ROOT / extra, self.bundle / extra, self.bundle / Path(extra).name):
+        for cand in (Path(extra), ROOT / extra, self.bundle / extra, self.bundle / Path(extra).name,
+                     self.bundle / LEGACY_EXTRA.get(Path(extra).name, Path(extra).name)):
             if cand.exists():
                 return cand.resolve()
         raise FileNotFoundError(f"Không thấy thư mục extra '{extra}'")
@@ -206,7 +207,7 @@ class State:
         key = str(self.resolve_extra(extra) or "")
         with self._lock:
             if key not in self._bundles:
-                b = load_task1(self.bundle, key or None)
+                b = load_bundle(self.bundle, key or None)
                 if self._bundles:  # dùng chung mảng lớn với bundle gốc (giống hệt nhau, chỉ khác nhãn/khái niệm)
                     base = next(iter(self._bundles.values()))
                     b.image_emb, b.caption_emb, b.captions = base.image_emb, base.caption_emb, base.captions
@@ -687,23 +688,23 @@ def labels(q: str = "", variant: str | None = None):
 
 # ---------------------------------------------------------------- ablation
 STORY = [
-    ("t1_clip", "", "CLIP (baseline của Thắng)", "Không học gì; cos(câu, ảnh).", "main"),
-    ("t1_graph", "seed0-dau-tien", "Legacy GNN (#2)", "Gộp nhãn + lớp chiếu; tưởng đồ thị giúp +2.8 MRR.", "history"),
-    ("t1_ablation_no_edge", "seed0", "Legacy · no_edge (#3)", "Bỏ hết cạnh vẫn +2.8 ⇒ mức tăng là của adapter.", "history"),
-    ("t1_ablation_shuffle", "seed0", "Legacy · shuffle (#3)", "Xáo cạnh vẫn như cũ ⇒ đồ thị không được dùng.", "history"),
-    ("t1_graph", "split-seed0", "Split: Adapter + Graph gộp (#4)", "Nhánh đồ thị tách rời: không thêm gì.", "history"),
-    ("t1_graph", "split-noadapter-seed0", "Split: Graph trên CLIP thô (#4)", "+0.4 MRR.", "history"),
-    ("t1_qa", "untrained-noadapter-seed0", "QA: khớp nhãn không học (#5)", "Gần như không giúp.", "history"),
-    ("t1_qa_ablation_no_edge", "kaggle-3seed", "CLIP + Adapter (không đồ thị)", "Mốc so sánh đúng.", "main"),
-    ("t1_qa", "kaggle-3seed", "+ QA-Graph (contains + sg_rel)", "Khái niệm ↔ nhãn của ảnh.", "main"),
-    ("t1_qa_ablation_no_rel", "kaggle-3seed", "+ QA-Graph (chỉ contains)", "Bỏ cạnh nhãn–nhãn.", "main"),
-    ("t1_qa_cn", "kaggle-3seed", "+ QA-Graph + ConceptNet", "contains + sg_rel + CN.", "main"),
-    ("t1_qa_cn_no_sg", "kaggle-3seed", "+ QA-Graph + ConceptNet, bỏ sg_rel", "contains + CN.", "main"),
-    ("t1_qa_cn_shuffle", "kaggle-3seed", "Đối chứng: xáo cạnh", "Phải tụt dưới Adapter.", "main"),
-    ("t1_qa_cn_gcn", "kaggle-3seed", "contains + sg_rel + CN · GCN", "", "gnn"),
-    ("t1_qa_cn_sage", "kaggle-3seed", "contains + sg_rel + CN · SAGE", "", "gnn"),
-    ("t1_qa_cn_no_sg_gcn", "kaggle-3seed", "contains + CN · GCN", "", "gnn"),
-    ("t1_qa_cn_no_sg_sage", "kaggle-3seed", "contains + CN · SAGE", "", "gnn"),
+    ("vg_clip", "", "CLIP (baseline của Thắng)", "Không học gì; cos(câu, ảnh).", "main"),
+    ("vg_graph", "seed0-dau-tien", "Legacy GNN (#2)", "Gộp nhãn + lớp chiếu; tưởng đồ thị giúp +2.8 MRR.", "history"),
+    ("vg_ablation_no_edge", "seed0", "Legacy · no_edge (#3)", "Bỏ hết cạnh vẫn +2.8 ⇒ mức tăng là của adapter.", "history"),
+    ("vg_ablation_shuffle", "seed0", "Legacy · shuffle (#3)", "Xáo cạnh vẫn như cũ ⇒ đồ thị không được dùng.", "history"),
+    ("vg_graph", "split-seed0", "Split: Adapter + Graph gộp (#4)", "Nhánh đồ thị tách rời: không thêm gì.", "history"),
+    ("vg_graph", "split-noadapter-seed0", "Split: Graph trên CLIP thô (#4)", "+0.4 MRR.", "history"),
+    ("vg_qa", "untrained-noadapter-seed0", "QA: khớp nhãn không học (#5)", "Gần như không giúp.", "history"),
+    ("vg_qa_ablation_no_edge", "kaggle-3seed", "CLIP + Adapter (không đồ thị)", "Mốc so sánh đúng.", "main"),
+    ("vg_qa", "kaggle-3seed", "+ QA-Graph (contains + sg_rel)", "Khái niệm ↔ nhãn của ảnh.", "main"),
+    ("vg_qa_ablation_no_rel", "kaggle-3seed", "+ QA-Graph (chỉ contains)", "Bỏ cạnh nhãn–nhãn.", "main"),
+    ("vg_qa_cn", "kaggle-3seed", "+ QA-Graph + ConceptNet", "contains + sg_rel + CN.", "main"),
+    ("vg_qa_cn_no_sg", "kaggle-3seed", "+ QA-Graph + ConceptNet, bỏ sg_rel", "contains + CN.", "main"),
+    ("vg_qa_cn_shuffle", "kaggle-3seed", "Đối chứng: xáo cạnh", "Phải tụt dưới Adapter.", "main"),
+    ("vg_qa_cn_gcn", "kaggle-3seed", "contains + sg_rel + CN · GCN", "", "gnn"),
+    ("vg_qa_cn_sage", "kaggle-3seed", "contains + sg_rel + CN · SAGE", "", "gnn"),
+    ("vg_qa_cn_no_sg_gcn", "kaggle-3seed", "contains + CN · GCN", "", "gnn"),
+    ("vg_qa_cn_no_sg_sage", "kaggle-3seed", "contains + CN · SAGE", "", "gnn"),
 ]
 
 PSG_STORY = [  # máy local, seed 0 (tag s0); bảng 3 seed: results/tables/psg_official.md
@@ -718,8 +719,8 @@ PSG_STORY = [  # máy local, seed 0 (tag s0); bảng 3 seed: results/tables/psg_
 
 
 def _vg_name(exp: str) -> str:
-    """Frontend dùng tên thí nghiệm VG (t1_*) để tô màu/chọn mốc → đổi psg_* sang tên tương ứng."""
-    return "t1_" + exp[4:] if exp and exp.startswith("psg_") else exp
+    """Frontend dùng tên thí nghiệm VG (vg_*) để tô màu/chọn mốc → đổi psg_* sang tên tương ứng."""
+    return "vg_" + exp[4:] if exp and exp.startswith("psg_") else exp
 
 
 def _clip_row():
@@ -734,7 +735,7 @@ def _clip_row():
             if vals:
                 bg[gname] = float(np.mean(vals))
         mean = lambda k: (ms.get(k) or {}).get("mean") if isinstance(ms.get(k), dict) else ms.get(k)  # noqa: E731
-        S._clip_baseline = {"exp": "t1_clip", "tag": "", "run_id": "protocol (3 seed)",
+        S._clip_baseline = {"exp": "vg_clip", "tag": "", "run_id": "protocol (3 seed)",
                             "full": {k: fl.get(k) for k in ("R@1", "R@5", "R@10", "MRR", "nDCG@10")},
                             "full_std": {}, "gallery": {k: mean(k) for k in ("R@1", "MRR")},
                             "by_group": bg, "alpha": None, "history": [], "alpha_curve": [], "seeds": 3}
@@ -745,7 +746,7 @@ def _clip_row():
 def ablation():
     runs = [_clip_row()]
     psg = S.dataset == "PSG"
-    for f in sorted((ROOT / "results").glob("psg_*/*.json" if psg else "t1_*/*.json")):
+    for f in sorted((ROOT / "results").glob("psg_*/*.json" if psg else "vg_*/*.json")):
         d = json.loads(f.read_text())
         r, m = d.get("run", {}), d.get("metrics", {})
         if not m.get("test_full") or "smoke" in (r.get("tag") or ""):

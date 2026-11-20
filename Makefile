@@ -105,7 +105,7 @@ ui:                  ## giao diện thử mô hình / xem dữ liệu / ablation
 DS ?= psg
 MODEL_vg ?= models/vg_t1_qa_cn_seed0
 MODEL_psg ?= models/psg_qa_cn_seed0
-BUNDLE_vg = data/task1_bundle
+BUNDLE_vg = data/vg_bundle
 BUNDLE_psg = data/psg_bundle
 .PHONY: setup fetch fetch-prebuilt data data-vg data-psg extras publish train adamf tables xai web report all-psg all-vg
 
@@ -123,14 +123,14 @@ fetch-prebuilt:      ## đường tắt: tải bundle VG/PSG + 4 checkpoint đã
 	$(PY) tools/fetch_data.py bundles models
 
 data: data-$(DS)     ## bước 1: dựng bundle cho DS
-data-vg:             ## bước 1 VG: notebook Nhiệm vụ 1 (Thắng) trên Kaggle GPU → data/task1_bundle  (SMOKE=1: lượt thử)
+data-vg:             ## bước 1 VG: notebook Nhiệm vụ 1 (Thắng) trên Kaggle GPU → data/vg_bundle  (SMOKE=1: lượt thử)
 	$(PY) tools/kaggle_job.py run task1 --install $(if $(SMOKE),--smoke)
 data-psg:            ## bước 1 PSG (local CPU ~75 phút): PSG∩COCO → data/psg_bundle + đặc trưng CLIP
 	$(PY) -I tools/psg_to_bundle.py --raw data/psg_raw --coco data/raw/dataset_coco.json \
 	    --conceptnet data/conceptnet/hf_en_simple/train.parquet --out $(BUNDLE_psg)
 	OMP_NUM_THREADS=2 nice -n 19 $(PY) -I tools/psg_extract_clip.py --bundle $(BUNDLE_psg) --raw data/psg_raw --threads 2
 
-extras:              ## bước 2: vector nhãn + cạnh ConceptNet (huy_extra, huy_extra_cn) cho DS
+extras:              ## bước 2: vector nhãn + cạnh ConceptNet (graph_extra, graph_extra_cn) cho DS
 	tools/build_extras.sh $(DS)
 
 publish:             ## bước 2b: đưa bundle DS lên Kaggle Dataset riêng tư (để kernel huấn luyện đọc)
@@ -143,10 +143,10 @@ adamf:               ## bước 4: AdaMF-MAT (Khánh) + ablation trên Kaggle GP
 	$(PY) tools/kaggle_job.py run adamf --dataset $(DS) --install $(if $(SMOKE),--smoke)
 
 tables:              ## bước 5: bảng chính thức + kiểm định ghép cặp → results/tables/, results/*_paired, psg_vs_adamf
-	$(PY) tools/t1_table.py
+	$(PY) tools/vg_table.py
 	$(PY) tools/psg_table.py
 	test ! -f results/adamf_psg/results_PSG_full.json || $(PY) tools/psg_vs_adamf.py --adamf results/adamf_psg
-	test ! -f data/task1_bundle/data/images.jsonl || $(PY) tools/paired_vs_huy.py --bundle data/task1_bundle
+	test ! -f data/vg_bundle/data/images.jsonl || $(PY) tools/paired_vs_qagraph.py --bundle data/vg_bundle
 
 xai:                 ## bước 6: giải thích + fidelity/sparsity/validity (khung của Dương) trên mô hình thật, N truy vấn
 	OMP_NUM_THREADS=2 nice -n 10 $(PY) tools/xai_bridge_demo.py --model $(MODEL_$(DS)) --bundle $(BUNDLE_$(DS)) --n $(or $(N),10)

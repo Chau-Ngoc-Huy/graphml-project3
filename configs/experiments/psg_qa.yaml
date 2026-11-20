@@ -1,5 +1,5 @@
 # PSG (tools/psg_to_bundle.py): CLIP+Adapter+QA-Graph (GAT). Cạnh sg_rel gộp không hướng (graph.rel_merge=undirected).
-extends: t1_qa.yaml
+extends: vg_qa.yaml
 data: data/psg_bundle
 extra: null
 graph: {variant: full, rel_merge: undirected}

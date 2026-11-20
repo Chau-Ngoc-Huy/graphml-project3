@@ -1,5 +1,5 @@
 # CLIP + điểm đồ thị phụ thuộc truy vấn (khái niệm của câu ↔ nhãn của ảnh qua GNN trên đồ thị nhãn). Xem graph/qa.py.
-extends: t1_graph.yaml
+extends: vg_graph.yaml
 gnn:
   adapter: true           # false: P=S=I cố định → đồ thị trên nền CLIP thô
   graph_weight: 1.0       # w khởi tạo (học được)

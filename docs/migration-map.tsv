@@ -24,9 +24,9 @@ thang/mmxai_eval.py	src/mmxai_eval.py	moved	module đánh giá chung (import mmx
 thang/observatory/	apps/observatory/	moved	MMXAI Observatory (React)
 thang/web/	-	dropped	bỏ trên final (thay bằng apps/observatory)
 thang/kaggle_results/	results/clip_baseline/	moved
-thang/task1_clip_baseline_kaggle.ipynb	notebooks/kaggle/task1_clip_baseline/task1_clip_baseline_kaggle.ipynb	moved
-thang/kernel-metadata.json	notebooks/kaggle/task1_clip_baseline/kernel-metadata.json	moved
-thang/README.md	docs/members/thang.md	moved
+thang/task1_clip_baseline_kaggle.ipynb	notebooks/kaggle/vg_data/vg_data_clip_baseline.ipynb	moved
+thang/kernel-metadata.json	notebooks/kaggle/vg_data/kernel-metadata.json	moved
+thang/README.md	docs/vg-data-and-clip-baseline.md	moved
 thang/requirements.txt	pyproject.toml	rewritten	đã gộp vào pyproject.toml (extra clip)
 thang/.gitignore	.gitignore	rewritten	đã gộp vào .gitignore gốc
 khanh/src/	src/mmxai/adamf/	moved	AdaMF-MAT + adapter + bộ truy vấn (gói mmxai.adamf; import hai kiểu: gói / phẳng)
@@ -36,7 +36,7 @@ khanh/kaggle/	notebooks/kaggle/adamf/	moved
 khanh/queries/	queries/	moved
 khanh/results/	results/adamf/	moved
 khanh/docs/	docs/adamf/	moved
-khanh/README.md	docs/members/khanh.md	moved
+khanh/README.md	docs/adamf.md	moved
 khanh/CLAUDE.md	legacy/khanh/CLAUDE.md	rewritten	gộp vào CLAUDE.md
 khanh/CONTRIBUTING.md	legacy/khanh/CONTRIBUTING.md	rewritten	gộp vào CONTRIBUTING.md
 khanh/Makefile	Makefile	rewritten	đã gộp: make queries, make notebooks, make test
@@ -49,7 +49,7 @@ duong/notebooks/	notebooks/	moved
 duong/experiments/	results/xai/	moved
 duong/01_XAI_Explainability_Plan.md	docs/xai/01_XAI_Explainability_Plan.md	moved
 duong/02_Vietnamese_Multimodal_KG_Plan.md	docs/xai/02_Vietnamese_Multimodal_KG_Plan.md	moved
-duong/README.md	docs/members/duong.md	moved
+duong/README.md	docs/xai.md	moved
 duong/pyproject.toml	pyproject.toml	rewritten	đã gộp vào pyproject.toml (extra viz, script mmxai-xai-demo)
 duong/requirements.txt	pyproject.toml	rewritten	đã gộp vào pyproject.toml (extra viz)
 yen/relation_queries.json	queries/relation_queries.json	moved

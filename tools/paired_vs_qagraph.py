@@ -1,8 +1,8 @@
 """Kiểm định ghép cặp (bootstrap theo truy vấn) giữa AdaMF-MAT của Khánh và các cấu hình của Huy, toàn pool test (2138 ảnh, 10 696 caption).
 
 Hai bên phải cùng thứ tự truy vấn: script kiểm tra hạng CLIP của Khánh trùng `gt_rank` do Protocol của Thắng sinh ra, và độ dài khớp.
-Dùng:  python tools/paired_vs_huy.py --bundle <thư mục bundle của Thắng>   (bundle chỉ cần để lấy nhóm direct/indirect + kiểm tra thứ tự)
-Ra: results/vs_huy_paired.md  (+ .json)
+Dùng:  python tools/paired_vs_qagraph.py --bundle <thư mục bundle của Thắng>   (bundle chỉ cần để lấy nhóm direct/indirect + kiểm tra thứ tự)
+Ra: results/vs_qagraph_paired.md  (+ .json)
 """
 import argparse
 import json
@@ -20,7 +20,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--bundle", required=True)
 ap.add_argument("--mine", default=str(REPO / "results" / "adamf" / "protocol_coco_full.json"))
 ap.add_argument("--huy", default=str(REPO / "results" / "ranks"))
-ap.add_argument("--out", default=str(REPO / "results" / "adamf" / "vs_huy_paired"))
+ap.add_argument("--out", default=str(REPO / "results" / "adamf" / "vs_qagraph_paired"))
 a = ap.parse_args()
 
 mine = {k: np.array(v["full"]["ranks"]) for k, v in json.load(open(a.mine)).items()}

@@ -1,6 +1,6 @@
 """CLIP + điểm đồ thị phụ thuộc truy vấn (graph/qa.py) trên bundle Nhiệm vụ 1, đánh giá bằng mmxai_eval.Protocol của Thắng.
 
-Cùng giao thức với t1_graph: seed s = gallery s + khởi tạo s; α chọn bằng tune_alpha trên VAL; test chỉ báo cáo.
+Cùng giao thức với vg_graph: seed s = gallery s + khởi tạo s; α chọn bằng tune_alpha trên VAL; test chỉ báo cáo.
 Khái niệm của caption lấy từ trường `concepts` trong captions.jsonl (Thắng đã chuẩn hóa về bộ nhãn object_vocab_train).
 """
 
@@ -12,10 +12,10 @@ import numpy as np
 import torch
 
 from ..core.env import set_seed
-from ..data.task1 import load_task1
+from ..data.bundle import load_bundle
 from ..graph.build import build_graph
 from ..graph.qa import QAData, QAScorer, qa_scores, train_qa
-from .t1_graph import load_eval_module
+from .vg_graph import load_eval_module
 
 
 def run(ctx) -> dict:
@@ -32,7 +32,7 @@ def run(ctx) -> dict:
     gcfg, mcfg, tcfg = cfg.get("graph", {}), dict(cfg.get("gnn", {})), dict(cfg.get("train", {}))
     if ctx.limit:
         tcfg["epochs"] = min(int(tcfg.get("epochs", 20)), 2)
-    b = load_task1(bundle, cfg.get("extra"))
+    b = load_bundle(bundle, cfg.get("extra"))
     row_of = {iid: r for r, iid in enumerate(b.image_ids)}
     to_rows = np.vectorize(lambda i: row_of[int(i)])
     cap_concepts = {c["caption_id"]: c["concepts"] for c in b.captions}

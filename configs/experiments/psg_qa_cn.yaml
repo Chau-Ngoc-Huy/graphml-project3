@@ -1,4 +1,4 @@
 # PSG (tools/psg_to_bundle.py): CLIP+Adapter+QA-Graph+ConceptNet (GAT). Cạnh sg_rel gộp không hướng (graph.rel_merge=undirected).
 extends: psg_qa.yaml
-extra: huy_extra_cn
+extra: graph_extra_cn
 paper: {table: main, row: CLIP+Adapter+QA-Graph+ConceptNet (GAT) — PSG∩COCO}

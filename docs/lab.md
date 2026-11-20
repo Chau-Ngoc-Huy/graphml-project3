@@ -35,7 +35,7 @@ Trên Kaggle (GPU T4): `make push EXP=clip_graph ARGS="--set data=<tên dataset>
 make ui                                        # → http://127.0.0.1:8765  (nạp ~1 phút, 2 luồng CPU, nice)
 ```
 
-Cần `data/task1_bundle/` và một lượt `runs/t1_qa/*_t1_qa-seed0/model.pt` (đổi bằng `MMXAI_RUN=<thư mục lượt>`).
+Cần `data/vg_bundle/` và một lượt `runs/vg_qa/*_t1_qa-seed0/model.pt` (đổi bằng `MMXAI_RUN=<thư mục lượt>`).
 
 | Trang | Làm gì |
 |---|---|

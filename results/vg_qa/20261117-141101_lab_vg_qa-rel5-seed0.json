@@ -261,12 +261,12 @@
   "row": "CLIP+Adapter+QA-Graph (GAT) — VG∩COCO"
  },
  "run": {
-  "exp": "t1_qa",
-  "run_id": "20261117-141101_huy-chau_t1_qa-rel5-seed0",
+  "exp": "vg_qa",
+  "run_id": "20261117-141101_lab_vg_qa-rel5-seed0",
   "tag": "rel5-seed0",
   "user": "huy-chau",
   "args": {
-   "exp": "t1_qa",
+   "exp": "vg_qa",
    "config": null,
    "config_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/configs",
    "set": [
@@ -282,7 +282,7 @@
    "dry_run": false
   },
   "config": {
-   "data": "data/task1_bundle",
+   "data": "data/vg_bundle",
    "fake": {},
    "max_images": null,
    "topk": 100,
@@ -325,7 +325,7 @@
    "save_model": true,
    "extra": null,
    "mode": "graph",
-   "exp": "t1_qa",
+   "exp": "vg_qa",
    "cpu_threads": 2
   },
   "started_at": "2026-11-17T14:11:01+00:00",

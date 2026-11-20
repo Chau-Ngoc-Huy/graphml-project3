@@ -107,11 +107,11 @@ function Ablation() {
   const ds = useData();
   const ids: [string, string][] = [
     [ADAPTER_ID, "Không edge (no_edge)"],
-    ["t1_qa_ablation_no_rel", "Chỉ edge contains"],
-    ["t1_qa", "contains + relation scene graph"],
-    ["t1_qa_cn", "+ ConceptNet"],
+    ["vg_qa_ablation_no_rel", "Chỉ edge contains"],
+    ["vg_qa", "contains + relation scene graph"],
+    ["vg_qa_cn", "+ ConceptNet"],
     [BEST_ID, "contains + ConceptNet · SAGE"],
-    ["t1_qa_cn_shuffle", "Edge shuffle"],
+    ["vg_qa_cn_shuffle", "Edge shuffle"],
   ];
   const ad = ds.modelById.get(ADAPTER_ID)!.official;
   const data = ids.map(([id, name]) => { const m = ds.modelById.get(id)!; return { name, value: m.official.full.MRR!.mean, std: m.official.full.MRR!.std, color: modelColor(m) }; });
@@ -146,7 +146,7 @@ function Paired() {
     <div className="space-y-8">
       <Section title="So với AdaMF-MAT, trên cùng 10 696 query" description="Δ MRR = phương pháp − CLIP+AdaMF-MAT, khoảng tin cậy 95 % bootstrap theo query. Phải 0 = tốt hơn AdaMF-MAT. Xanh: CI không chứa 0.">
         <div className="panel p-4"><CIPlot data={rows.map(([k, v]) => ({ name: nameOf(k), delta: v.vs_AdaMF!.all.delta, lo: v.vs_AdaMF!.all.ci95[0], hi: v.vs_AdaMF!.all.ci95[1] }))} /></div>
-        <SourceNote>khanh/results/vs_huy_paired.json (seed 0, toàn pool)</SourceNote>
+        <SourceNote>khanh/results/vs_qagraph_paired.json (seed 0, toàn pool)</SourceNote>
       </Section>
       <div className="panel">
         <Table>

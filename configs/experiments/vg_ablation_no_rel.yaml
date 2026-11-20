@@ -1,5 +1,5 @@
 # Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): bỏ cạnh quan hệ scene graph (sg_rel)
-extends: t1_graph.yaml
+extends: vg_graph.yaml
 graph: {variant: no_rel}
 save_model: false
 paper: {table: ablation, row: no_rel — VG∩COCO}

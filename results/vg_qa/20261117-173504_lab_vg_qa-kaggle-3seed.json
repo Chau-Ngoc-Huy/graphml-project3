@@ -329,12 +329,12 @@
   "row": "CLIP+Adapter+QA-Graph (GAT) — VG∩COCO"
  },
  "run": {
-  "exp": "t1_qa",
-  "run_id": "20261117-173504_huy_t1_qa-kaggle-3seed",
+  "exp": "vg_qa",
+  "run_id": "20261117-173504_lab_vg_qa-kaggle-3seed",
   "tag": "kaggle-3seed",
-  "user": "huy",
+  "user": "lab",
   "args": {
-   "exp": "t1_qa",
+   "exp": "vg_qa",
    "config": null,
    "config_dir": "/kaggle/working/_code/configs",
    "set": [
@@ -392,7 +392,7 @@
    "save_model": true,
    "extra": null,
    "mode": "graph",
-   "exp": "t1_qa"
+   "exp": "vg_qa"
   },
   "started_at": "2026-11-17T17:35:04+00:00",
   "finished_at": "2026-11-17T17:42:53+00:00",

@@ -13,7 +13,7 @@ npm run dev                 # http://localhost:5173
 npm run build && npm run preview   # bản production trong dist/
 ```
 
-`npm run data` cần bundle Nhiệm vụ 1 đã giải nén ở `../../huy/data/task1_bundle/` (caption + đối tượng của ảnh test; không đọc đặc trưng). `public/data/` đã được commit nên chỉ cần chạy lại khi có kết quả mới.
+`npm run data` cần bundle Nhiệm vụ 1 đã giải nén ở `../../huy/data/vg_bundle/` (caption + đối tượng của ảnh test; không đọc đặc trưng). `public/data/` đã được commit nên chỉ cần chạy lại khi có kết quả mới.
 
 ## Các trang
 

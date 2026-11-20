@@ -3,7 +3,7 @@
 ## 2026-11-18 · Mở rộng adapter + AdaMF-MAT (chạy cục bộ CPU, checkpoint COCO_full cũ) → `protocol_coco_adapter.md`
 - Adapter (2 phép tuyến tính, InfoNCE, train/val) +2.01 MRR toàn pool so với CLIP; ghép AdaMF-MAT thêm **+0.59** [0.31, 0.87], chỉ nhóm direct.
   Khớp tên (không quan hệ) trên nền adapter +1.05 > AdaMF-MAT. Toàn pool: Adapter+AdaMF-MAT 63.00 vs Huy tốt nhất 65.09.
-- So sánh ghép cặp với các cấu hình của Huy (seed 0, toàn pool): `vs_huy_paired.md` (script `tools/paired_vs_huy.py`).
+- So sánh ghép cặp với các cấu hình của Huy (seed 0, toàn pool): `vs_qagraph_paired.md` (script `tools/paired_vs_qagraph.py`).
 
 ## 2026-11-15 · AdaMF-MAT trên giao thức chung (notebook `kaggle/protocol_adamf_kaggle.ipynb`)
 - Lần 1 hỏng ở stage 1: không tìm thấy dữ liệu của Thắng trong `/kaggle/input` (chưa gắn bundle). Đã thêm: liệt kê input, đường dẫn

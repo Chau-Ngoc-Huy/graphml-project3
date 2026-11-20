@@ -1,7 +1,7 @@
 {
-  "id": "KAGGLE_USERNAME/mmxai-task1-clip-baseline",
-  "title": "mmxai-task1-clip-baseline",
-  "code_file": "task1_clip_baseline_kaggle.ipynb",
+  "id": "KAGGLE_USERNAME/mmxai-vg-data",
+  "title": "mmxai-vg-data",
+  "code_file": "vg_data_clip_baseline.ipynb",
   "language": "python",
   "kernel_type": "notebook",
   "is_private": "true",

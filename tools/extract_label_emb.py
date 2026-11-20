@@ -3,7 +3,7 @@
 Nhãn = data/object_vocab_train.json (2000 nhãn, đếm trên ảnh TRAIN) ∪ <extra>/concepts_added.json (nếu đã lọc ConceptNet).
 Ghi: <extra>/label_emb.npy (float32, L2-normalize), labels.json, label_emb_meta.json. Chạy CPU vài phút.
 
-Dùng: python tools/extract_label_emb.py --bundle data/task1_bundle [--extra data/task1_bundle/huy_extra]
+Dùng: python tools/extract_label_emb.py --bundle data/vg_bundle [--extra data/vg_bundle/graph_extra]
         [--prompt "a photo of a {}"]
 """
 
@@ -26,7 +26,7 @@ p.add_argument("--batch", type=int, default=256)
 a = p.parse_args()
 
 root = Path(a.bundle)
-extra = Path(a.extra) if a.extra else root / "huy_extra"
+extra = Path(a.extra) if a.extra else root / "graph_extra"
 extra.mkdir(parents=True, exist_ok=True)
 meta = json.loads((root / "features" / "meta.json").read_text())
 syn = json.loads((extra / "synonyms.json").read_text()) if (extra / "synonyms.json").exists() else {}

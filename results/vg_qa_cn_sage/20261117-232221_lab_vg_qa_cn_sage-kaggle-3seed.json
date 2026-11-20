@@ -326,15 +326,15 @@
  "n": 10696,
  "paper": {
   "table": "gnn",
-  "row": "t1_qa_cn SAGE — VG∩COCO"
+  "row": "vg_qa_cn SAGE — VG∩COCO"
  },
  "run": {
-  "exp": "t1_qa_cn_sage",
-  "run_id": "20261117-232221_huy_t1_qa_cn_sage-kaggle-3seed",
+  "exp": "vg_qa_cn_sage",
+  "run_id": "20261117-232221_lab_vg_qa_cn_sage-kaggle-3seed",
   "tag": "kaggle-3seed",
-  "user": "huy",
+  "user": "lab",
   "args": {
-   "exp": "t1_qa_cn_sage",
+   "exp": "vg_qa_cn_sage",
    "config": null,
    "config_dir": "/kaggle/working/_code/configs",
    "set": [
@@ -356,7 +356,7 @@
    "seed": 42,
    "paper": {
     "table": "gnn",
-    "row": "t1_qa_cn SAGE — VG∩COCO"
+    "row": "vg_qa_cn SAGE — VG∩COCO"
    },
    "seeds": [
     0,
@@ -390,9 +390,9 @@
    "n_explain": 0,
    "explain_top_m": 3,
    "save_model": false,
-   "extra": "huy_extra_cn",
+   "extra": "graph_extra_cn",
    "mode": "graph",
-   "exp": "t1_qa_cn_sage"
+   "exp": "vg_qa_cn_sage"
   },
   "started_at": "2026-11-17T23:22:21+00:00",
   "finished_at": "2026-11-17T23:25:30+00:00",

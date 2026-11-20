@@ -1,2 +1,2 @@
-"""psg_clip: t1_graph mode=clip trên bundle PSG."""
-from .t1_graph import run  # noqa: F401
+"""psg_clip: vg_graph mode=clip trên bundle PSG."""
+from .vg_graph import run  # noqa: F401

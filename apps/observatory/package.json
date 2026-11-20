@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "data": "python3 scripts/build_data.py --team ../.. --bundle ../../data/task1_bundle",
+    "data": "python3 scripts/build_data.py --team ../.. --bundle ../../data/vg_bundle",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",

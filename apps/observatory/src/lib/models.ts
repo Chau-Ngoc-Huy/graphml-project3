@@ -20,9 +20,9 @@ export const FAMILY_COLOR: Record<Family, string> = {
 };
 
 export const BASELINE_ID = "clip";
-export const BEST_ID = "t1_qa_cn_no_sg_sage";
-export const ADAPTER_ID = "t1_qa_ablation_no_edge";
-export const SHUFFLE_ID = "t1_qa_cn_shuffle";
+export const BEST_ID = "vg_qa_cn_no_sg_sage";
+export const ADAPTER_ID = "vg_qa_ablation_no_edge";
+export const SHUFFLE_ID = "vg_qa_cn_shuffle";
 
 export const DEFAULT_COMPARE = ["clip", "clip_lex", "clip_adamf", ADAPTER_ID, BEST_ID, SHUFFLE_ID];
 

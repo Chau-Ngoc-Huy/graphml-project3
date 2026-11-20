@@ -14,7 +14,7 @@ for a,d,t,lo in ((ax[0],vg,"VG∩COCO (test, 2138 ảnh)",58),(ax[1],ps,"PSG∩C
     a.set_xticks(range(4));a.set_xticklabels([x[0] for x in d],fontsize=7.5);a.set_ylim(lo,66.5);a.set_title(t,fontsize=9)
 ax[0].set_ylabel("MRR (%)")
 plt.tight_layout();plt.savefig(O+"fig_main.pdf");plt.close()
-# Fig2: direct vs indirect, toàn pool seed 0 (vs_huy_paired.md)
+# Fig2: direct vs indirect, toàn pool seed 0 (vs_qagraph_paired.md)
 rows=[("CLIP",60.79,60.36,"clip"),("+Khớp tên\n(không quan hệ)",68.29,59.97,"clip"),("+AdaMF-MAT",66.39,59.89,"clip"),("+Adapter\n(bỏ cạnh)",63.80,63.06,"ad"),("+Đồ thị\nxáo cạnh",64.03,62.50,"sh"),("+Đồ thị\nSAGE",71.10,63.78,"g")]
 fig,a=plt.subplots(figsize=(7,2.6));w=.38
 for i,(n,d,ind,c) in enumerate(rows):

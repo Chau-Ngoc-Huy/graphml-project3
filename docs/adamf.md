@@ -58,7 +58,7 @@ tests/                build MMKG từ dữ liệu giả đúng định dạng c�
 tools/                make_notebooks.py (sinh notebook Kaggle từ src/)
 kaggle/               protocol_adamf_kaggle.ipynb (chính) · adamf_mat_kaggle.ipynb (tái lập paper) · exploratory/ (thí nghiệm riêng trên VG)
 queries/              bộ truy vấn đánh giá + mô tả
-docs/                 plan.md · design.md · level2-notes.md
+docs/                 plan.md · design.md · notes.md
 results/              JOURNAL.md, bảng kết quả (.md/.json nhỏ)
 ```
 

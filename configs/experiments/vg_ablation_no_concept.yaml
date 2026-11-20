@@ -1,5 +1,5 @@
 # Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): bỏ cạnh ConceptNet
-extends: t1_graph.yaml
+extends: vg_graph.yaml
 graph: {variant: no_concept}
 save_model: false
 paper: {table: ablation, row: no_concept — VG∩COCO}

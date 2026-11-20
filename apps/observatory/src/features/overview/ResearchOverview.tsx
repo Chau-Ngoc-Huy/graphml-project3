@@ -121,7 +121,7 @@ export default function ResearchOverview() {
         </div>
         <SourceNote>
           MRR toàn pool: huy/results/*kaggle-3seed.json (3 seed), khanh/results/protocol_coco_*.json · nhóm direct/indirect: gallery 1K, mean 3 seed ·
-          {paired["t1_qa_cn_no_sg_sage"] ? " paired bootstrap test: khanh/results/vs_huy_paired.json" : ""}
+          {paired["vg_qa_cn_no_sg_sage"] ? " paired bootstrap test: khanh/results/vs_qagraph_paired.json" : ""}
         </SourceNote>
       </Section>
 

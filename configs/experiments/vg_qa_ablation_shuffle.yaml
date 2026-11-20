@@ -1,5 +1,5 @@
-# Ablation t1_qa: xáo cạnh trong cùng loại → ảnh mang nhãn sai
-extends: t1_qa.yaml
+# Ablation vg_qa: xáo cạnh trong cùng loại → ảnh mang nhãn sai
+extends: vg_qa.yaml
 graph: {variant: shuffle}
 save_model: false
 paper: {table: ablation, row: qa shuffle — VG∩COCO}

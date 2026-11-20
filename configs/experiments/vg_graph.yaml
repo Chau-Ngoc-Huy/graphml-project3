@@ -1,8 +1,8 @@
 # CLIP + Graph trên bundle Nhiệm vụ 1 (Thắng), đánh giá bằng mmxai_eval.Protocol.
 # Local: data trỏ tới bản chép bundle; Kaggle: --set data=<tên dataset chứa bundle>
 extends: clip_graph.yaml
-data: data/task1_bundle
-extra: null               # null → <data>/huy_extra (label_emb, labels, conceptnet.tsv)
+data: data/vg_bundle
+extra: null               # null → <data>/graph_extra (label_emb, labels, conceptnet.tsv)
 mode: graph               # clip | untrained | graph
 gnn:
   arch: split             # adapter + đồ thị tách rời (JOURNAL #3: legacy không dùng đồ thị)

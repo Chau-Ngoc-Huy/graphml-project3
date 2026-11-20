@@ -27,11 +27,11 @@ BUNDLE = {"vg": "huychau/mmxai-task1-bundle", "psg": "huychau/mmxai-psg-bundle"}
 
 JOBS = {
     "task1": dict(
-        notebook="notebooks/kaggle/task1_clip_baseline/task1_clip_baseline_kaggle.ipynb",
-        slug="mmxai-task1-clip-baseline", datasets=lambda ds: ["yenphamnhu/visual-genome"], datasets_ok=("vg",),
+        notebook="notebooks/kaggle/vg_data/vg_data_clip_baseline.ipynb",
+        slug="mmxai-vg-data", datasets=lambda ds: ["yenphamnhu/visual-genome"], datasets_ok=("vg",),
         patches=lambda ds: [],
         smoke=[('SMOKE = bool(int(os.environ.get("MMXAI_SMOKE", "0")))', "SMOKE = True")],
-        outputs=r"^(task1_bundle\.zip|task1/results/.+)$"),  # không tải raw/ (dữ liệu thô ~200 MB)
+        outputs=r"^(vg_bundle\.zip|task1/results/.+)$"),  # không tải raw/ (dữ liệu thô ~200 MB)
     "adamf": dict(
         notebook="notebooks/kaggle/adamf/protocol_adamf_kaggle.ipynb",
         slug="mmxai-adamf-{ds}", datasets=lambda ds: [BUNDLE[ds]], datasets_ok=("vg", "psg"),
@@ -40,7 +40,7 @@ JOBS = {
             [('NAMES = {"full": "COCO_full", "shuffle": "COCO_shuf", "drop": "COCO_drop"}',
               'NAMES = {"full": "PSG_full", "shuffle": "PSG_shuf", "drop": "PSG_drop"}')] if ds == "psg" else []),
         smoke=[("BUDGET_H = 2.5 ", "BUDGET_H = 0.01"), ("EPOCH_CAP = 300", "EPOCH_CAP = 2  ")],
-        outputs=r".*\.(txt|json|log)$"),
+        outputs=r"^(report_protocol\.txt|results_[A-Za-z_]+\.json|[A-Za-z]+_[a-z]+-(full|smoke)\.log)$"),  # không tải repo AdaMF-MAT
 }
 
 
@@ -128,10 +128,10 @@ def pull(job, ds, smoke, install):
     if not install:
         return
     if job == "task1":
-        z = next(dst.rglob("task1_bundle.zip"), None)
+        z = next(dst.rglob("vg_bundle.zip"), None)
         if not z:
-            sys.exit("Không thấy task1_bundle.zip trong output")
-        tgt = ROOT / "data" / ("task1_bundle_smoke" if smoke else "task1_bundle")
+            sys.exit("Không thấy vg_bundle.zip trong output")
+        tgt = ROOT / "data" / ("vg_bundle_smoke" if smoke else "vg_bundle")
         if tgt.exists() and any(tgt.iterdir()):
             sys.exit(f"{tgt.relative_to(ROOT)} đã có — xóa/đổi tên trước khi --install (tránh ghi đè bundle đang dùng)")
         zipfile.ZipFile(z).extractall(tgt)

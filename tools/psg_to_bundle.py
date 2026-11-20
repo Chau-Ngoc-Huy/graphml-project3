@@ -1,6 +1,6 @@
 """PSG (Panoptic Scene Graph, ECCV 2022) + caption COCO → bundle cùng định dạng bundle Nhiệm vụ 1 của Thắng.
 
-Đầu ra dùng thẳng được bởi mmxai_eval.Protocol, mmxai.data.task1.load_task1, các thí nghiệm t1_*/psg_* và UI.
+Đầu ra dùng thẳng được bởi mmxai_eval.Protocol, mmxai.data.bundle.load_bundle, các thí nghiệm vg_*/psg_* và UI.
 
 Nguồn (thư mục --raw):
     psg.json                         chú thích gốc OpenPSG (HF HarborYuan/OpenPSG): đối tượng, quan hệ, coco_image_id
@@ -19,7 +19,7 @@ Ghi (--out):
 Khái niệm mở rộng: PSG chỉ có 133 lớp (vd. "person"), caption viết "woman", "boy", "puppy"… Ta lấy các cụm 1–3 từ
 xuất hiện trong ≥ --min-caption-count caption TRAIN, là đầu kia của một cạnh ConceptNet danh từ–danh từ
 (IsA/Synonym/PartOf/HasA/AtLocation, weight ≥ 1) với một nhãn PSG. Chỉ đếm caption train → không rò rỉ test.
-Các khái niệm này là đỉnh đồ thị (có vector CLIP); việc nối chúng với nhãn ảnh là việc của cạnh ConceptNet (huy_extra_cn).
+Các khái niệm này là đỉnh đồ thị (có vector CLIP); việc nối chúng với nhãn ảnh là việc của cạnh ConceptNet (graph_extra_cn).
 
 Dùng: python -I tools/psg_to_bundle.py --raw data/psg_raw --coco ~/Downloads/raw/dataset_coco.json \
         --conceptnet data/conceptnet/hf_en_simple/train.parquet --out data/psg_bundle
@@ -43,7 +43,7 @@ p.add_argument("--raw", default=str(ROOT / "data" / "psg_raw"))
 p.add_argument("--coco", required=True)
 p.add_argument("--conceptnet", required=True)
 p.add_argument("--out", default=str(ROOT / "data" / "psg_bundle"))
-p.add_argument("--eval-module", default=str(ROOT / "data" / "task1_bundle" / "mmxai_eval.py"))
+p.add_argument("--eval-module", default=str(ROOT / "data" / "vg_bundle" / "mmxai_eval.py"))
 p.add_argument("--n-train", type=int, default=15000)
 p.add_argument("--seed", type=int, default=0)
 p.add_argument("--min-images", type=int, default=5, help="nhãn ảnh phải có trong ≥ N ảnh train")

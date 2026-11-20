@@ -1,2 +1,2 @@
-"""t1_qa_cn_gcn (xem configs/experiments/t1_qa_cn_gcn.yaml)."""
-from .t1_qa import run  # noqa: F401
+"""vg_qa_cn_gcn (xem configs/experiments/vg_qa_cn_gcn.yaml)."""
+from .vg_qa import run  # noqa: F401

@@ -1,4 +1,4 @@
-"""Đọc bundle Nhiệm vụ 1 của Thắng (task1_bundle/) thành Bundle cho pipeline đồ thị.
+"""Đọc bundle Nhiệm vụ 1 của Thắng (vg_bundle/) thành Bundle cho pipeline đồ thị.
 
 Bundle của Thắng (KHÔNG sửa, chỉ đọc):
     data/images.jsonl      {idx, id, coco_id, vg_id, split, objects: [tên], relations: [[subj, pred, obj]]}
@@ -7,7 +7,7 @@ Bundle của Thắng (KHÔNG sửa, chỉ đọc):
     features/clip_<model>.npz      img (N,512) f16, cap (Nc,512) f16, cap_img (Nc,), ok (N,)
     features/meta.json             model/pretrained CLIP — label_emb PHẢI cùng model
 
-File của Huy, sinh thêm vào thư mục `extra` (mặc định <bundle>/huy_extra):
+File của Huy, sinh thêm vào thư mục `extra` (mặc định <bundle>/graph_extra):
     label_emb.npy + labels.json    CLIP text của nhãn + khái niệm (tools/extract_label_emb.py)
     conceptnet.tsv                 cạnh khái niệm (tools/fetch_conceptnet.py)
     synonyms.json                  (tùy chọn) chuẩn hóa nhãn — khi Yến xong
@@ -26,7 +26,7 @@ import numpy as np
 from .contract import Bundle, normalize_label
 
 
-def is_task1(path: Path | str) -> bool:
+def is_bundle(path: Path | str) -> bool:
     return (Path(path) / "data" / "images.jsonl").exists()
 
 
@@ -35,11 +35,24 @@ def _jsonl(p: Path) -> list[dict]:
         return [json.loads(l) for l in f if l.strip()]
 
 
-def load_task1(bundle: Path | str, extra: Path | str | None = None, max_images: int | None = None) -> Bundle:
+LEGACY_EXTRA = {"graph_extra": "huy_extra", "graph_extra_cn": "huy_extra_cn"}  # tên cũ trong bundle đã đưa lên Kaggle
+LEGACY_EXTRA.update({v: k for k, v in list(LEGACY_EXTRA.items())})              # và chiều ngược lại (config của lượt chạy cũ)
+
+
+def resolve_extra(root: Path | str, extra: Path | str | None = None) -> Path:
+    """Thư mục phần bổ sung đồ thị (nhãn, vector nhãn, cạnh ConceptNet): đường dẫn trực tiếp, hoặc tên thư mục trong bundle
+    (`extra: graph_extra_cn`); bundle phiên bản cũ dùng tên `huy_extra*` vẫn đọc được."""
+    root = Path(root)
+    extra = Path(extra) if extra else root / "graph_extra"
+    for cand in (extra, root / extra.name, root / LEGACY_EXTRA.get(extra.name, extra.name)):
+        if cand.exists():
+            return cand
+    return extra
+
+
+def load_bundle(bundle: Path | str, extra: Path | str | None = None, max_images: int | None = None) -> Bundle:
     root = Path(bundle)
-    extra = Path(extra) if extra else root / "huy_extra"
-    if not extra.exists() and (root / extra.name).exists():  # `extra: huy_extra_cn` = thư mục trong bundle (Kaggle)
-        extra = root / extra.name
+    extra = resolve_extra(root, extra)
     syn_p = extra / "synonyms.json"
     syn = {k.lower(): v.lower() for k, v in json.loads(syn_p.read_text()).items()} if syn_p.exists() else {}
 

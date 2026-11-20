@@ -13,7 +13,7 @@ EXPS="psg_clip psg_qa psg_qa_ablation_no_edge psg_qa_cn psg_qa_ablation_shuffle 
 Q=logs/psg_queue.log
 say() { echo "$(date '+%F %T') $*" | tee -a "$Q"; }
 
-for x in huy_extra huy_extra_cn; do
+for x in graph_extra graph_extra_cn; do
   if [ ! -f "data/psg_bundle/$x/label_emb.npy" ]; then
     say "label_emb $x"
     $N $PY -I tools/extract_label_emb.py --bundle data/psg_bundle --extra "data/psg_bundle/$x" >> "$Q" 2>&1 || { say "LỖI label_emb $x"; exit 1; }

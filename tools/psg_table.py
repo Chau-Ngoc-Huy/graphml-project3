@@ -1,4 +1,4 @@
-"""Bảng kết quả PSG (máy local, tools/run_psg_local.sh) + so sánh cạnh nhau với VG (results/tables/t1_official.md).
+"""Bảng kết quả PSG (máy local, tools/run_psg_local.sh) + so sánh cạnh nhau với VG (results/tables/vg_official.md).
 
 Mỗi biến thể có 2 lượt: tag s0 (seed 0, lưu model) và s12 (seed 1, 2) → gộp thành 3 seed:
   - gallery 1000: mean ± std trên 3 seed (seed = gallery + khởi tạo)
@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-ROWS = [  # (bảng, exp, tên, exp VG tương ứng trong t1_official)
+ROWS = [  # (bảng, exp, tên, exp VG tương ứng trong vg_official)
     ("main", "psg_clip", "CLIP (đóng băng)", None),
     ("main", "psg_qa_ablation_no_edge", "CLIP + Adapter (không đồ thị)", "CLIP + Adapter (không đồ thị)"),
     ("main", "psg_qa", "+ QA-Graph (contains + sg_rel)", "+ QA-Graph (contains + sg_rel)"),
@@ -66,8 +66,8 @@ def ms(vals):
 
 
 def vg_pool_mrr():
-    """MRR toàn pool của VG (Kaggle 3 seed) từ results/tables/t1_official.md, theo tên dòng."""
-    f = ROOT / "results" / "tables" / "t1_official.md"
+    """MRR toàn pool của VG (Kaggle 3 seed) từ results/tables/vg_official.md, theo tên dòng."""
+    f = ROOT / "results" / "tables" / "vg_official.md"
     out = {}
     if f.exists():
         for line in f.read_text().splitlines():
@@ -100,7 +100,7 @@ out = ["# Kết quả PSG (Panoptic Scene Graph ∩ caption COCO) — máy local
        f"mở rộng (ConceptNet ∩ caption train); nhóm truy vấn test {stats.get('test_groups')}. "
        "Cạnh sg_rel gộp KHÔNG hướng (graph.rel_merge=undirected).",
        "Gallery 1000: mean ± std theo seed (seed = gallery + khởi tạo). Toàn pool: 2186 ảnh test, mean ± std các mô hình.",
-       "ΔMRR vs Adapter: seed 0, toàn pool, bootstrap 2000 lần theo truy vấn [CI95]. Cột VG: Kaggle 3 seed (t1_official.md).\n"]
+       "ΔMRR vs Adapter: seed 0, toàn pool, bootstrap 2000 lần theo truy vấn [CI95]. Cột VG: Kaggle 3 seed (vg_official.md).\n"]
 for table, title in (("main", "Bảng chính"), ("ablation", "Đối chứng (xáo cạnh)")):
     out += [f"## {title}\n",
             "| Mô hình | seed | R@1 (1K) | R@5 (1K) | MRR (1K) | R@1 (pool) | MRR (pool) | MRR direct | MRR indirect | ΔMRR vs Adapter | VG: MRR (pool) | VG: ΔMRR |",

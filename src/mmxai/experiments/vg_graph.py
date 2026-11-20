@@ -20,7 +20,7 @@ import numpy as np
 import torch
 
 from ..core.env import set_seed
-from ..data.task1 import load_task1
+from ..data.bundle import load_bundle
 from ..graph.build import build_graph
 from ..graph.gnn import GraphEncoder, graph_scores, train
 
@@ -80,7 +80,7 @@ def run(ctx) -> dict:
     gcfg, mcfg, tcfg = cfg.get("graph", {}), dict(cfg.get("gnn", {})), dict(cfg.get("train", {}))
     if ctx.limit:
         tcfg["epochs"] = min(int(tcfg.get("epochs", 20)), 2)
-    b = load_task1(bundle, cfg.get("extra"))
+    b = load_bundle(bundle, cfg.get("extra"))
     row_of = {iid: r for r, iid in enumerate(b.image_ids)}
     to_rows = np.vectorize(lambda i: row_of[int(i)])
     tr_qi = b.captions_of("train", ctx.limit * 200 if ctx.limit else None)

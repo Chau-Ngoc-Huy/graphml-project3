@@ -109,7 +109,7 @@ export function buildModelGraph(ds: Dataset, family: string): G {
     const uses = ["clip", "concepts"];
     if (m.flags.adapter) uses.push("adapter");
     if (m.flags.graph || m.family === "lexical") uses.push("contains");
-    if (m.flags.relations && m.id !== "t1_qa_ablation_no_rel") uses.push("relations");
+    if (m.flags.relations && m.id !== "vg_qa_ablation_no_rel") uses.push("relations");
     if (m.flags.conceptnet) uses.push("conceptnet");
     if (m.flags.gnn) uses.push("gnn");
     if (m.family === "kgc") uses.push("kgc");

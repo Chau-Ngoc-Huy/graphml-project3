@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Bước 3 của pipeline: huấn luyện + đánh giá mọi cấu hình QA-Graph (3 seed) của một bộ dữ liệu.
-#   vg  (mặc định kaggle): 12 cấu hình của bảng chính thức t1_official (CLIP, Adapter, QA-Graph ± sg_rel/ConceptNet, GCN/GAT/SAGE,
+#   vg  (mặc định kaggle): 12 cấu hình của bảng chính thức vg_official (CLIP, Adapter, QA-Graph ± sg_rel/ConceptNet, GCN/GAT/SAGE,
 #        xáo cạnh) — mỗi cấu hình một kernel Kaggle T4 chạy seed 0,1,2; 2 worker song song (Kaggle cho tối đa 2 phiên GPU).
 #   psg (mặc định local): 8 cấu hình (tools/run_psg_local.sh: seed 0 lưu model, rồi seed 1,2), nice 19, 2 luồng, tuần tự.
 # Dùng: tools/run_suite.sh vg|psg [kaggle|local]       log: logs/suite_<ds>_*.log
 set -uo pipefail
 cd "$(dirname "$0")/.."
 DS=${1:?"vg|psg"}
-VG_A="t1_clip t1_qa_ablation_no_edge t1_qa t1_qa_ablation_no_rel t1_qa_cn t1_qa_cn_no_sg"
-VG_B="t1_qa_cn_shuffle t1_qa_cn_gcn t1_qa_cn_sage t1_qa_cn_no_sg_gcn t1_qa_cn_no_sg_sage"
+VG_A="vg_clip vg_qa_ablation_no_edge vg_qa vg_qa_ablation_no_rel vg_qa_cn vg_qa_cn_no_sg"
+VG_B="vg_qa_cn_shuffle vg_qa_cn_gcn vg_qa_cn_sage vg_qa_cn_no_sg_gcn vg_qa_cn_no_sg_sage"
 case "$DS:${2:-}" in
   vg:|vg:kaggle)
     ARGS="--set data=mmxai-task1-bundle --tag kaggle-3seed"

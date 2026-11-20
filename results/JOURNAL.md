@@ -54,9 +54,9 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 
 ## #9 · 2026-11-18 · KẾT QUẢ CHÍNH THỨC — 11 cấu hình × 3 seed trên Kaggle T4 (tag `kaggle-3seed`)
 
-- **Cách chạy:** dataset Kaggle private `huychau/mmxai-task1-bundle` (bundle Thắng + `huy_extra` + `huy_extra_cn`), mỗi cấu hình
+- **Cách chạy:** dataset Kaggle private `huychau/mmxai-task1-bundle` (bundle Thắng + `graph_extra` + `graph_extra_cn`), mỗi cấu hình
   một kernel chạy seed 0,1,2 (seed = gallery + khởi tạo). Kaggle giới hạn 2 phiên GPU → `tools/run_worker.sh` (2 luồng, thử lại
-  push). 4–12 phút/kernel trên T4 (CPU máy: 20–120 phút/seed). Bảng đầy đủ: `results/tables/t1_official.md` (`tools/t1_table.py`).
+  push). 4–12 phút/kernel trên T4 (CPU máy: 20–120 phút/seed). Bảng đầy đủ: `results/tables/vg_official.md` (`tools/vg_table.py`).
 - **Kết quả (MRR %, toàn pool 2138 ảnh test, mean ± std 3 seed · ΔMRR vs CLIP+Adapter seed 0 bootstrap CI95):**
   CLIP 60.40 · CLIP+Adapter 63.14 ± 0.02 ·
   QA-Graph contains+sg_rel 64.76 ± 0.12 (+1.76 [1.38, 2.16]) · chỉ contains 64.65 ± 0.23 (+1.50) ·
@@ -71,12 +71,12 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   3. Phần tăng chủ yếu ở câu direct (+6.4–7.4); indirect chỉ +0.3–0.7 (~1 std) → lan truyền qua sg_rel/ConceptNet chưa
      giải được câu gián tiếp; khác biệt giữa có/không sg_rel, có/không CN ≤ 0.2 MRR, trong nhiễu.
   4. GNN: SAGE ≥ GAT ≥ GCN nhưng chênh ≤ 0.3 MRR (~1–2 std).
-- **Đề xuất cấu hình chính:** contains + ConceptNet · SAGE (`t1_qa_cn_no_sg_sage`): cao nhất (+1.93), đơn giản hơn (không sg_rel).
+- **Đề xuất cấu hình chính:** contains + ConceptNet · SAGE (`vg_qa_cn_no_sg_sage`): cao nhất (+1.93), đơn giản hơn (không sg_rel).
 - **Tiếp theo:** giải thích + fidelity cho cấu hình chính; giao số/ranks cho Khánh, model + đường đi cho Dương; viết báo cáo.
 
-## #8 · 2026-11-17 · `t1_qa --set extra=data/task1_bundle/huy_extra_cn` seed 0 — có ConceptNet
+## #8 · 2026-11-17 · `vg_qa --set extra=data/vg_bundle/graph_extra_cn` seed 0 — có ConceptNet
 
-- **Cấu hình:** như #5 + ConceptNet (`huy_extra_cn`: 3000 nút = 2000 nhãn + 1000 khái niệm, 32.8k cạnh concept hai chiều,
+- **Cấu hình:** như #5 + ConceptNet (`graph_extra_cn`: 3000 nút = 2000 nhãn + 1000 khái niệm, 32.8k cạnh concept hai chiều,
   sg_rel 101.8k). nice, 2 luồng: 11 epoch × ~11 phút = **2 giờ** (đỉnh val ở epoch 6, 0.7356).
 - **Kết quả test seed 0:** toàn pool R@1 / MRR **52.63 / 64.83**; gallery R@1 / MRR **62.99 / 74.04** (cao nhất đến nay);
   direct / indirect **79.23 / 72.84** (α 0.35).
@@ -84,9 +84,9 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   indirect — adapter 72.06 · qa 72.12 · no_rel 72.34 · rel≥5 72.34 · **qa+CN 72.84** (+0.7 so với qa không CN).
 - **Nhận xét:** ConceptNet là thứ duy nhất nhích được nhóm indirect (+0.5–0.8), nhưng chênh vẫn trong nhiễu 1 seed và
   toàn pool chưa vượt no_rel. Vì sg_rel không giúp, cấu hình đáng thử là ConceptNet KHÔNG sg_rel → thêm biến thể `no_sg`
-  (`t1_qa_cn_no_sg`). Kết luận cần 3 seed → Kaggle (CPU 2 giờ/lượt).
+  (`vg_qa_cn_no_sg`). Kết luận cần 3 seed → Kaggle (CPU 2 giờ/lượt).
 
-## #8 · 2026-11-18 · `t1_qa --set extra=data/task1_bundle/huy_extra_cn` seed 0 — QA + ConceptNet
+## #8 · 2026-11-18 · `vg_qa --set extra=data/vg_bundle/graph_extra_cn` seed 0 — QA + ConceptNet
 
 - **Cấu hình:** như #5 + 16 413 cạnh ConceptNet (32 826 cạnh hai chiều), 1000 đỉnh khái niệm (3000 nhãn/khái niệm), nice 2 luồng,
   ~2 giờ (11 epoch, val MRR đỉnh 0.7356 ở epoch 6).
@@ -95,9 +95,9 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Nhận xét:** ConceptNet là thứ đầu tiên nhích được nhóm **indirect** (+0.7 so với #5, +0.8 so với Adapter) nhưng direct giảm
   1.3; tổng toàn pool +0.5 so với #5 và ngang no_rel. Một seed — chưa đủ để khẳng định; cần 3 seed cho Adapter / QA / QA-no_rel /
   QA+CN, và ablation QA+CN no_rel (ConceptNet không kèm sg_rel) vì sg_rel có thể đang làm nhiễu.
-- **Output:** `runs/t1_qa/20261117-142744_huy-chau_t1_qa-cn-seed0/` (UI mặc định có thể trỏ `MMXAI_RUN` vào đây).
+- **Output:** `runs/vg_qa/20261117-142744_lab_vg_qa-cn-seed0/` (UI mặc định có thể trỏ `MMXAI_RUN` vào đây).
 
-## #7 · 2026-11-17 · `t1_qa --set graph.min_rel_count=5` seed 0 — sg_rel thưa cũng không giúp; ConceptNet đã có
+## #7 · 2026-11-17 · `vg_qa --set graph.min_rel_count=5` seed 0 — sg_rel thưa cũng không giúp; ConceptNet đã có
 
 - **sg_rel thưa** (≥5 lần trên train: 13.4k cạnh, ~7 láng giềng/nhãn thay vì 49): toàn pool R@1 / MRR 52.25 / 64.43,
   gallery MRR 73.63, direct / indirect 79.15 / 72.34 → nằm giữa full (64.30) và no_rel (64.98); không cải thiện.
@@ -105,9 +105,9 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   `peandrew/conceptnet_en_simple` (3.42M cạnh en–en, cột rel/arg1/arg2/weight, cùng URI `/c/en/...`); `fetch_conceptnet.py`
   đọc được `.parquet`. Lọc (IsA, PartOf, UsedFor, AtLocation, CapableOf, HasA, Synonym, weight ≥ 1, +1000 khái niệm):
   16 413 cạnh (IsA 6029, AtLocation 5581, Synonym 2239, UsedFor 1186, PartOf 935, HasA 231, CapableOf 212) →
-  `data/task1_bundle/huy_extra_cn/` (tách khỏi `huy_extra/` để các lượt trước tái lập được).
+  `data/vg_bundle/graph_extra_cn/` (tách khỏi `graph_extra/` để các lượt trước tái lập được).
 
-## #6 · 2026-11-17 · `t1_qa_ablation_no_rel` seed 0 — cạnh nhãn–nhãn (sg_rel) không giúp
+## #6 · 2026-11-17 · `vg_qa_ablation_no_rel` seed 0 — cạnh nhãn–nhãn (sg_rel) không giúp
 
 - **Cấu hình:** như #5, bỏ toàn bộ cạnh sg_rel (chỉ còn contains ảnh–nhãn; GNN trên nhãn chỉ còn self-loop). nice, 2 luồng, 18 phút.
 - **Kết quả:** toàn pool R@1 / MRR **53.01 / 64.98** (full #5: 52.11 / 64.30); gallery MRR 73.81 (full 73.71);
@@ -118,7 +118,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Tiếp theo:** ConceptNet (quan hệ ngữ nghĩa IsA/PartOf… thưa hơn) cho nhóm indirect; thử sg_rel thưa (`min_rel_count`
   cao); 3 seed cho full / no_rel / no_edge để kết luận chắc.
 
-## #5 · 2026-11-17 · `t1_qa` — điểm đồ thị phụ thuộc truy vấn (khái niệm của câu ↔ nhãn của ảnh), seed 0
+## #5 · 2026-11-17 · `vg_qa` — điểm đồ thị phụ thuộc truy vấn (khái niệm của câu ↔ nhãn của ảnh), seed 0
 
 - **Mục đích:** sửa nguyên nhân của #4 (gộp nhãn thành một vector mất thông tin khớp). `graph/qa.py`: GNN chỉ trên đồ thị nhãn,
   m(c,i) = max mềm cos(u_c, H_l) trên nhãn l của ảnh, s_G = trung bình theo khái niệm của caption (`concepts` của Thắng, 100%
@@ -133,7 +133,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   (giống AdaMF-MAT của Khánh). Khớp nhãn không học gần như vô dụng (+0.07) → phần học (u_c, τ, w) là cần thiết.
 - **Tiếp theo:** `no_rel` (bị ngắt khi phiên kết thúc) để biết cạnh nhãn–nhãn có góp gì; ConceptNet cho nhóm indirect;
   3 seed; kiểm định ghép cặp với adapter.
-- **Output:** `runs/t1_qa/20261117-032408_huy-chau_t1_qa-seed0/`, `runs/t1_qa_ablation_no_edge/20261117-030513_*`
+- **Output:** `runs/vg_qa/20261117-032408_lab_vg_qa-seed0/`, `runs/vg_qa_ablation_no_edge/20261117-030513_*`
 
 ## #4 · 2026-11-17 · kiến trúc `split` (adapter + đồ thị tách rời), seed 0 (`--tag split-seed0`)
 
@@ -154,9 +154,9 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   "nhãn nào khớp khái niệm nào của câu", thứ mà khớp tên khai thác được; CLIP ảnh vốn đã mã hóa "túi đối tượng".
 - **Tiếp theo:** điểm đồ thị phụ thuộc truy vấn (khái niệm của caption `concepts` ↔ nhãn của ảnh qua đường đi trong đồ thị),
   thêm ConceptNet; cùng bộ ablation.
-- **Output:** `runs/t1_*/2026111[67]-*split*`
+- **Output:** `runs/vg_*/2026111[67]-*split*`
 
-## #3 · 2026-11-16 · t1_ablation_no_edge / t1_ablation_shuffle (`--seed 0 --tag seed0`) — đồ thị CHƯA đóng góp
+## #3 · 2026-11-16 · vg_ablation_no_edge / vg_ablation_shuffle (`--seed 0 --tag seed0`) — đồ thị CHƯA đóng góp
 
 - **Mục đích:** kiểm tra phần tăng của lượt #2 đến từ cấu trúc đồ thị hay từ lớp chiếu học được.
 - **Cấu hình:** giống #2 (GAT, chưa ConceptNet), chỉ đổi `graph.variant`. Chạy song song 2 lượt trên CPU (4 luồng mỗi lượt).
@@ -168,16 +168,16 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   (no_edge), không phải CLIP thô. Số của #2 KHÔNG được báo cáo là đóng góp của đồ thị.
 - **Tiếp theo:** sửa mô hình để nhánh GNN chỉ nhận tin từ nhãn/khái niệm (ảnh không self-loop trong GNN), tách adapter
   thành thành phần riêng; thêm ConceptNet; chạy lại full vs no_edge vs shuffle.
-- **Output:** `runs/t1_ablation_no_edge/20261116-150308_huy_t1_ablation_no_edge-seed0/`,
-  `runs/t1_ablation_shuffle/20261116-150308_huy_t1_ablation_shuffle-seed0/`
+- **Output:** `runs/vg_ablation_no_edge/20261116-150308_lab_vg_ablation_no_edge-seed0/`,
+  `runs/vg_ablation_shuffle/20261116-150308_lab_vg_ablation_shuffle-seed0/`
 
-## #2 · 2026-11-15 · 20261115-082025_huy-chau_t1_graph-seed0-dau-tien — dữ liệu THẬT, 1 seed (chưa phải số báo cáo)
+## #2 · 2026-11-15 · 20261115-082025_lab_vg_graph-seed0-dau-tien — dữ liệu THẬT, 1 seed (chưa phải số báo cáo)
 
 - **Mục đích:** lượt CLIP+Graph đầu tiên trên bundle Nhiệm vụ 1 của Thắng (VG∩COCO, Karpathy split, train 15k ảnh /
   75k caption, val 2126, test 2138), đánh giá bằng `mmxai_eval.Protocol` của Thắng (gallery 1000 theo seed + full pool,
   `fuse` z-score, `tune_alpha` trên val bước 0.05).
-- **Kiểm tra trước:** `t1_clip` khớp tuyệt đối baseline của Thắng (R@1 57.36, MRR 69.23 mean 3 gallery; full 48.31 / 60.40);
-  `t1_untrained` (GNN khởi tạo đơn vị) cho đúng số CLIP → đường dữ liệu đúng.
+- **Kiểm tra trước:** `vg_clip` khớp tuyệt đối baseline của Thắng (R@1 57.36, MRR 69.23 mean 3 gallery; full 48.31 / 60.40);
+  `vg_untrained` (GNN khởi tạo đơn vị) cho đúng số CLIP → đường dữ liệu đúng.
 - **Cấu hình:** GAT 2 tầng, hidden 256, 4 head; đồ thị 19 264 ảnh + 2 000 nhãn (`object_vocab_train`), 334k cạnh contains,
   98.8k cạnh sg_rel (train, `min_rel_count=1`), CHƯA có ConceptNet. batch 512, lr 1e-3, tau 0.05, patience 4. CPU 4 luồng.
 - **Kết quả test (seed 0):** gallery 1000: CLIP R@1 58.17 / MRR 69.79 → **60.45 / 72.15** (+2.3 / +2.4);
@@ -187,7 +187,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   lr/dropout/weight decay. CHƯA biết phần cải thiện đến từ cấu trúc đồ thị hay từ lớp chiếu học được → bắt buộc chạy
   `no_edge` và `shuffle` trên dữ liệu thật. 27 phút/seed trên CPU (≈4.4 phút/epoch).
 - **Tiếp theo:** ablation no_edge + shuffle (seed 0), ConceptNet (A3), rồi 3 seed.
-- **Output:** `runs/t1_graph/20261115-082025_huy-chau_t1_graph-seed0-dau-tien/`
+- **Output:** `runs/vg_graph/20261115-082025_lab_vg_graph-seed0-dau-tien/`
 
 ## #1 · 2026-11-14 · kiểm tra pipeline trên dữ liệu GIẢ (local CPU, 1 seed, chưa phải kết quả báo cáo)
 

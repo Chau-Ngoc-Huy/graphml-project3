@@ -333,7 +333,7 @@ async function initData() {
       <dl>${s.items.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(typeof v === "number" ? v.toLocaleString("vi-VN") : v)}</dd></div>`).join("")}</dl></li>`).join("");
     $("#learned").innerHTML = `<span><b>w</b>${fmt(o.learned.w, 3)}</span><span><b>τ_match</b>${fmt(o.learned.tau_match, 3)}</span>
       <span><b>gate</b>${fmt(o.learned.gate, 3)}</span><span><b>α</b>${o.alpha}</span>
-      <span><b>graph</b>${esc(JSON.stringify(o.config.graph))}</span><span><b>extra</b>${esc(o.config.extra || "huy_extra")}</span>`;
+      <span><b>graph</b>${esc(JSON.stringify(o.config.graph))}</span><span><b>extra</b>${esc(o.config.extra || "graph_extra")}</span>`;
     hbar("#chLabels", o.label_degree_top.map((x) => x[0]), o.label_degree_top.map((x) => x[1]), "số ảnh", css("--n-label"));
     hbar("#chRels", o.rel_hist.map((x) => x[0]), o.rel_hist.map((x) => x[1]), "số cặp nhãn (hai chiều)", css("--c-clip"));
   } catch (e) { $("#steps").innerHTML = `<li class="err">${esc(e.message)}</li>`; }
@@ -454,7 +454,7 @@ async function showLabel(name) {
 async function initAblation() {
   try {
     const { story } = await api("/api/ablation");
-    const base = story.find((s) => s.exp === "t1_qa_ablation_no_edge" && s.section === "main");
+    const base = story.find((s) => s.exp === "vg_qa_ablation_no_edge" && s.section === "main");
     const bm = base?.full?.MRR;
     const SECT = { main: "Bảng chính (3 seed, Kaggle)", gnn: "So sánh GNN (3 seed)", history: "Lịch sử thí nghiệm (1 seed, máy) — vì sao chuyển sang QA-Graph" };
     const pm = (v, sd) => `${fmt(v)}${sd ? `<small class="no"> ±${fmt(sd)}</small>` : ""}`;
@@ -475,10 +475,10 @@ async function initAblation() {
         <th class="num">Δ MRR vs Adapter</th><th class="num">direct</th><th class="num">indirect</th><th class="num">seed</th><th>Ý nghĩa</th></tr></thead>
         <tbody>${xs.map((s) => rowHtml(s, i++)).join("")}</tbody></table>`;
     }).join("") + `<p class="help">MRR/R@k: toàn pool test (${$("#pool").options[0]?.text.match(/\d+/)?.[0] || "?"} ảnh), mean ± std theo seed. direct/indirect: MRR gallery 1000. Δ so với CLIP + Adapter (3 seed).
-      Bảng đầy đủ kèm khoảng tin cậy bootstrap: <code>results/tables/${DATASET === "PSG" ? "psg_official.md" : "t1_official.md"}</code>.</p>`;
+      Bảng đầy đủ kèm khoảng tin cậy bootstrap: <code>results/tables/${DATASET === "PSG" ? "psg_official.md" : "vg_official.md"}</code>.</p>`;
     story.sort((a, b) => ["main", "gnn", "history"].indexOf(a.section) - ["main", "gnn", "history"].indexOf(b.section));
     const short = story.map((s, i) => `${i + 1}. ${s.title.replace(/\s*\(#\d+\)/, "")}`);
-    const colorOf = (s) => (s.exp === "t1_clip" ? css("--c-clip") : s.exp.startsWith("t1_qa") ? css("--c-final") : css("--c-graph"));
+    const colorOf = (s) => (s.exp === "vg_clip" ? css("--c-clip") : s.exp.startsWith("vg_qa") ? css("--c-final") : css("--c-graph"));
     new Chart($("#chMRR"), { type: "bar",
       data: { labels: short, datasets: [{ label: "MRR toàn pool", data: story.map((s) => s.full.MRR), backgroundColor: story.map(colorOf), borderRadius: 4 }] },
       options: { indexAxis: "y", maintainAspectRatio: false, plugins: { legend: { display: false } },
@@ -493,7 +493,7 @@ async function initAblation() {
     new Chart($("#chCurve"), { type: "line",
       data: { labels: [...Array(Math.max(...trained.map((s) => s.history.length))).keys()],
         datasets: trained.map((s, i) => ({ label: s.title.replace(/\s*\(#\d+\)/, ""), data: s.history.map((h) => (h.val_MRR ?? h.val_MRR_graph) * 100),
-          borderColor: pal[i % pal.length], backgroundColor: pal[i % pal.length], tension: 0.25, pointRadius: 3, hidden: !s.exp.startsWith("t1_qa") })) },
+          borderColor: pal[i % pal.length], backgroundColor: pal[i % pal.length], tension: 0.25, pointRadius: 3, hidden: !s.exp.startsWith("vg_qa") })) },
       options: { maintainAspectRatio: false, interaction: { mode: "nearest", intersect: false },
         scales: { x: { title: { display: true, text: "epoch" } }, y: { title: { display: true, text: "MRR val (%)" } } },
         plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 11 } } } } } });

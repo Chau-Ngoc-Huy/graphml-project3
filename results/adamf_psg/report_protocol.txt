@@ -8,8 +8,8 @@ what is attached in /kaggle/input:
 /kaggle/input/datasets/huychau/mmxai-psg-bundle
 /kaggle/input/datasets/huychau/mmxai-psg-bundle/data
 /kaggle/input/datasets/huychau/mmxai-psg-bundle/features
-/kaggle/input/datasets/huychau/mmxai-psg-bundle/huy_extra
-/kaggle/input/datasets/huychau/mmxai-psg-bundle/huy_extra_cn
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/graph_extra
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/graph_extra_cn
 /kaggle/input/datasets/huychau/mmxai-psg-bundle/mmxai_eval.py
 /kaggle/input/datasets/huychau/mmxai-psg-bundle/psg_stats.json
 /kaggle/input/datasets/huychau/mmxai-psg-bundle/split
@@ -18,8 +18,8 @@ WORK = /kaggle/input/datasets/huychau/mmxai-psg-bundle
 /kaggle/input/datasets/huychau/mmxai-psg-bundle:
 data
 features
-huy_extra
-huy_extra_cn
+graph_extra
+graph_extra_cn
 mmxai_eval.py
 psg_stats.json
 split
