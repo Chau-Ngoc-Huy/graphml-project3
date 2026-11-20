@@ -1,0 +1,740 @@
+{
+  "schema_version": 1,
+  "split": "test",
+  "seed": 0,
+  "hard_negative_policy": "Every negative contains all query entities but misses the required edge set.",
+  "queries": [
+    {
+      "id": "d01",
+      "group": "direct",
+      "text": "A man is playing tennis.",
+      "edges": [
+        [
+          "man",
+          "playing",
+          "tennis"
+        ]
+      ],
+      "entities": [
+        "man",
+        "tennis"
+      ],
+      "positive_image_ids": [
+        1130,
+        4399,
+        6446,
+        8126,
+        8127,
+        9153,
+        14840
+      ],
+      "hard_negative_image_ids": [
+        837,
+        8995
+      ]
+    },
+    {
+      "id": "d02",
+      "group": "direct",
+      "text": "A man is riding a motorcycle.",
+      "edges": [
+        [
+          "man",
+          "riding",
+          "motorcycle"
+        ]
+      ],
+      "entities": [
+        "man",
+        "motorcycle"
+      ],
+      "positive_image_ids": [
+        1028,
+        3542,
+        3843,
+        7056,
+        8379,
+        11013,
+        12918,
+        14108
+      ],
+      "hard_negative_image_ids": [
+        338,
+        1453,
+        1558,
+        3867,
+        5765,
+        6488,
+        7431,
+        8863,
+        10336,
+        11136,
+        11404,
+        12819,
+        12997,
+        13966,
+        14243,
+        14582,
+        15396,
+        16893,
+        18368,
+        18620
+      ]
+    },
+    {
+      "id": "d03",
+      "group": "direct",
+      "text": "A man is riding a horse.",
+      "edges": [
+        [
+          "man",
+          "riding",
+          "horse"
+        ]
+      ],
+      "entities": [
+        "horse",
+        "man"
+      ],
+      "positive_image_ids": [
+        1700,
+        2273,
+        3973,
+        8415,
+        14041,
+        16296
+      ],
+      "hard_negative_image_ids": [
+        2713,
+        3109,
+        3228,
+        7431,
+        7831,
+        9874,
+        10486,
+        10889,
+        11078,
+        12807,
+        13915,
+        14398,
+        17257,
+        18081,
+        18300
+      ]
+    },
+    {
+      "id": "d04",
+      "group": "direct",
+      "text": "A zebra is eating grass.",
+      "edges": [
+        [
+          "zebra",
+          "eating",
+          "grass"
+        ]
+      ],
+      "entities": [
+        "grass",
+        "zebra"
+      ],
+      "positive_image_ids": [
+        4375,
+        5923,
+        12295,
+        15092,
+        19236
+      ],
+      "hard_negative_image_ids": [
+        316,
+        567,
+        4068,
+        4443,
+        5291,
+        6224,
+        7591,
+        8841,
+        9897,
+        10104,
+        10220,
+        12136,
+        12654,
+        13126,
+        15054,
+        16815,
+        16849,
+        17067,
+        18104,
+        18608
+      ]
+    },
+    {
+      "id": "d05",
+      "group": "direct",
+      "text": "A woman is carrying a bag.",
+      "edges": [
+        [
+          "woman",
+          "carrying",
+          "bag"
+        ]
+      ],
+      "entities": [
+        "bag",
+        "woman"
+      ],
+      "positive_image_ids": [
+        9949,
+        10163,
+        10345,
+        14113,
+        18931
+      ],
+      "hard_negative_image_ids": [
+        83,
+        1223,
+        2105,
+        2536,
+        3795,
+        4217,
+        4854,
+        4988,
+        5352,
+        6030,
+        6456,
+        6545,
+        7508,
+        7533,
+        8256,
+        10322,
+        13064,
+        15118,
+        16972,
+        19112
+      ]
+    },
+    {
+      "id": "d06",
+      "group": "direct",
+      "text": "A player is holding a bat.",
+      "edges": [
+        [
+          "player",
+          "holding",
+          "bat"
+        ]
+      ],
+      "entities": [
+        "bat",
+        "player"
+      ],
+      "positive_image_ids": [
+        166,
+        5096,
+        7186,
+        11144,
+        12715,
+        13619
+      ],
+      "hard_negative_image_ids": [
+        1467,
+        1597,
+        6305,
+        6694,
+        7366,
+        8279,
+        8668,
+        8942,
+        10532,
+        10639,
+        14247,
+        14251,
+        14282,
+        14480,
+        14742,
+        15193,
+        15224
+      ]
+    },
+    {
+      "id": "d07",
+      "group": "direct",
+      "text": "A man is holding a frisbee.",
+      "edges": [
+        [
+          "man",
+          "holding",
+          "frisbee"
+        ]
+      ],
+      "entities": [
+        "frisbee",
+        "man"
+      ],
+      "positive_image_ids": [
+        1087,
+        3757,
+        4764,
+        10335,
+        14027,
+        14630,
+        17648
+      ],
+      "hard_negative_image_ids": [
+        4187,
+        5409,
+        5655,
+        8174,
+        8532,
+        9981,
+        12845,
+        18206
+      ]
+    },
+    {
+      "id": "d08",
+      "group": "direct",
+      "text": "A kite is flying in the sky.",
+      "edges": [
+        [
+          "kite",
+          "flying in",
+          "sky"
+        ]
+      ],
+      "entities": [
+        "kite",
+        "sky"
+      ],
+      "positive_image_ids": [
+        247,
+        7393,
+        11374,
+        16839,
+        17904,
+        18881
+      ],
+      "hard_negative_image_ids": [
+        2816,
+        3302,
+        3767,
+        3925,
+        4016,
+        5368,
+        6103,
+        7798,
+        9077,
+        10549,
+        11359,
+        13285,
+        13497,
+        16616,
+        16660,
+        17887,
+        18519,
+        18875,
+        19172,
+        19193
+      ]
+    },
+    {
+      "id": "d09",
+      "group": "direct",
+      "text": "A cat is sitting on a chair.",
+      "edges": [
+        [
+          "cat",
+          "sitting on",
+          "chair"
+        ]
+      ],
+      "entities": [
+        "cat",
+        "chair"
+      ],
+      "positive_image_ids": [
+        900,
+        7838,
+        17184
+      ],
+      "hard_negative_image_ids": [
+        792,
+        1449,
+        2248,
+        2584,
+        5823,
+        7304,
+        7510,
+        9948,
+        11542,
+        11607
+      ]
+    },
+    {
+      "id": "d10",
+      "group": "direct",
+      "text": "A boy is playing baseball.",
+      "edges": [
+        [
+          "boy",
+          "playing",
+          "baseball"
+        ]
+      ],
+      "entities": [
+        "baseball",
+        "boy"
+      ],
+      "positive_image_ids": [
+        1467
+      ],
+      "hard_negative_image_ids": [
+        7366,
+        10532,
+        13189,
+        14811,
+        15193
+      ]
+    },
+    {
+      "id": "i01",
+      "group": "indirect",
+      "text": "A man is surfing a wave in the ocean.",
+      "edges": [
+        [
+          "man",
+          "surfing",
+          "wave"
+        ],
+        [
+          "wave",
+          "in",
+          "ocean"
+        ]
+      ],
+      "entities": [
+        "man",
+        "ocean",
+        "wave"
+      ],
+      "positive_image_ids": [
+        1093,
+        8072
+      ],
+      "hard_negative_image_ids": [
+        279,
+        676,
+        3302,
+        3710,
+        4039,
+        4988,
+        6494,
+        10932,
+        12592,
+        13633,
+        14347,
+        14860,
+        15634,
+        17737,
+        17778,
+        18275,
+        19193
+      ]
+    },
+    {
+      "id": "i02",
+      "group": "indirect",
+      "text": "A man is riding a horse on a street.",
+      "edges": [
+        [
+          "man",
+          "riding",
+          "horse"
+        ],
+        [
+          "horse",
+          "on",
+          "street"
+        ]
+      ],
+      "entities": [
+        "horse",
+        "man",
+        "street"
+      ],
+      "positive_image_ids": [
+        1700,
+        16296
+      ],
+      "hard_negative_image_ids": [
+        14398
+      ]
+    },
+    {
+      "id": "i03",
+      "group": "indirect",
+      "text": "A person is riding a motorcycle on a road.",
+      "edges": [
+        [
+          "person",
+          "riding",
+          "motorcycle"
+        ],
+        [
+          "motorcycle",
+          "on",
+          "road"
+        ]
+      ],
+      "entities": [
+        "motorcycle",
+        "person",
+        "road"
+      ],
+      "positive_image_ids": [
+        4813,
+        11013
+      ],
+      "hard_negative_image_ids": [
+        1453,
+        3867,
+        4893,
+        5765,
+        6198,
+        7431,
+        8808,
+        11404,
+        12819,
+        13966,
+        16893,
+        18296,
+        18620,
+        18704
+      ]
+    },
+    {
+      "id": "i04",
+      "group": "indirect",
+      "text": "A person is watching a kite in the sky.",
+      "edges": [
+        [
+          "person",
+          "watching",
+          "kite"
+        ],
+        [
+          "kite",
+          "in",
+          "sky"
+        ]
+      ],
+      "entities": [
+        "kite",
+        "person",
+        "sky"
+      ],
+      "positive_image_ids": [
+        3767,
+        17887
+      ],
+      "hard_negative_image_ids": [
+        247,
+        5368,
+        7393,
+        7430,
+        13285,
+        13497,
+        18519
+      ]
+    },
+    {
+      "id": "i05",
+      "group": "indirect",
+      "text": "A boy is playing baseball with the ball in the air.",
+      "edges": [
+        [
+          "boy",
+          "playing",
+          "baseball"
+        ],
+        [
+          "baseball",
+          "in",
+          "air"
+        ]
+      ],
+      "entities": [
+        "air",
+        "baseball",
+        "boy"
+      ],
+      "positive_image_ids": [
+        1467
+      ],
+      "hard_negative_image_ids": [
+        13189
+      ]
+    },
+    {
+      "id": "i06",
+      "group": "indirect",
+      "text": "A giraffe is eating a leaf from a tree.",
+      "edges": [
+        [
+          "giraffe",
+          "eating",
+          "leaf"
+        ],
+        [
+          "leaf",
+          "on",
+          "tree"
+        ]
+      ],
+      "entities": [
+        "giraffe",
+        "leaf",
+        "tree"
+      ],
+      "positive_image_ids": [
+        6150
+      ],
+      "hard_negative_image_ids": [
+        5832,
+        5872,
+        9040,
+        9071,
+        9318,
+        15229,
+        15707
+      ]
+    },
+    {
+      "id": "i07",
+      "group": "indirect",
+      "text": "A woman is holding a pot on a stove.",
+      "edges": [
+        [
+          "woman",
+          "holding",
+          "pot"
+        ],
+        [
+          "pot",
+          "on",
+          "stove"
+        ]
+      ],
+      "entities": [
+        "pot",
+        "stove",
+        "woman"
+      ],
+      "positive_image_ids": [
+        7978
+      ],
+      "hard_negative_image_ids": [
+        10858,
+        13072
+      ]
+    },
+    {
+      "id": "i08",
+      "group": "indirect",
+      "text": "A man is eating pizza from a plate.",
+      "edges": [
+        [
+          "man",
+          "eating",
+          "pizza"
+        ],
+        [
+          "pizza",
+          "on",
+          "plate"
+        ]
+      ],
+      "entities": [
+        "man",
+        "pizza",
+        "plate"
+      ],
+      "positive_image_ids": [
+        3855
+      ],
+      "hard_negative_image_ids": [
+        130,
+        1613,
+        6278,
+        6715,
+        9433,
+        11054
+      ]
+    },
+    {
+      "id": "i09",
+      "group": "indirect",
+      "text": "A person is walking across a crosswalk on a road.",
+      "edges": [
+        [
+          "person",
+          "walking on",
+          "crosswalk"
+        ],
+        [
+          "crosswalk",
+          "on",
+          "road"
+        ]
+      ],
+      "entities": [
+        "crosswalk",
+        "person",
+        "road"
+      ],
+      "positive_image_ids": [
+        1453
+      ],
+      "hard_negative_image_ids": [
+        11235,
+        13890,
+        13908,
+        18704
+      ]
+    },
+    {
+      "id": "i10",
+      "group": "indirect",
+      "text": "People are standing on sand near the water.",
+      "edges": [
+        [
+          "people",
+          "standing on",
+          "sand"
+        ],
+        [
+          "sand",
+          "near",
+          "water"
+        ]
+      ],
+      "entities": [
+        "people",
+        "sand",
+        "water"
+      ],
+      "positive_image_ids": [
+        5368
+      ],
+      "hard_negative_image_ids": [
+        1093,
+        4988,
+        6494,
+        7568,
+        10432,
+        17085,
+        18275,
+        18519
+      ]
+    }
+  ]
+}
