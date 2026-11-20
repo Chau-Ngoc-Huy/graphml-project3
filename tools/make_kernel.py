@@ -35,7 +35,7 @@ def _project_name() -> str:
 
 
 PROJECT = os.environ.get("PROJECT") or _project_name()
-INCLUDE = [f"src/{PKG}", "configs"]
+INCLUDE = [f"src/{PKG}", "src/mmxai_eval.py", "configs"]   # mmxai_eval: bộ đánh giá chung (một bản duy nhất)
 TEMPLATE_META = ROOT / "kaggle" / "kernel-metadata.template.json"
 
 TEMPLATE = '''# File sinh tự động bởi tools/make_kernel.py, không sửa tay.

@@ -25,12 +25,28 @@ from ..graph.build import build_graph
 from ..graph.gnn import GraphEncoder, graph_scores, train
 
 
-def load_eval_module(bundle: Path):
-    """Nạp mmxai_eval.py của Thắng từ bundle (không chép code, để luôn dùng đúng bản của Nhiệm vụ 1)."""
-    spec = importlib.util.spec_from_file_location("mmxai_eval", bundle / "mmxai_eval.py")
-    mod = importlib.util.module_from_spec(spec)
-    sys.modules["mmxai_eval"] = mod
-    spec.loader.exec_module(mod)
+def load_eval_module(bundle: Path | None = None):
+    """Bộ đánh giá chung của Nhiệm vụ 1 (src/mmxai_eval.py — MỘT bản cho mọi phương pháp, mọi bộ dữ liệu).
+
+    Bundle cũ có kèm bản chép `mmxai_eval.py`; nếu phần code (bỏ docstring) khác bản trong repo thì cảnh báo để không âm thầm
+    chấm theo hai cách khác nhau. Không có bản trong repo (vd môi trường lạ) thì mới dùng bản chép trong bundle.
+    """
+    try:
+        import mmxai_eval as mod
+    except ImportError:
+        if bundle is None:
+            raise
+        spec = importlib.util.spec_from_file_location("mmxai_eval", Path(bundle) / "mmxai_eval.py")
+        mod = importlib.util.module_from_spec(spec)
+        sys.modules["mmxai_eval"] = mod
+        spec.loader.exec_module(mod)
+        return mod
+    copy = Path(bundle) / "mmxai_eval.py" if bundle is not None else None
+    if copy is not None and copy.exists():
+        def code(t):  # bỏ docstring đầu file
+            return t.split('"""', 2)[2] if t.lstrip().startswith('"""') else t
+        if code(copy.read_text(encoding="utf-8")) != code(Path(mod.__file__).read_text(encoding="utf-8")):
+            print(f"[mmxai] CẢNH BÁO: {copy} khác src/mmxai_eval.py — đang dùng bản trong repo", flush=True)
     return mod
 
 
