@@ -1,6 +1,6 @@
 \documentclass[conference]{IEEEtran}
 \usepackage{fontspec}
-\setmainfont{Times New Roman}
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
 \usepackage{graphicx,booktabs,amsmath,url,multirow,tikz}
 \usetikzlibrary{arrows.meta,positioning}
 \usepackage[hidelinks]{hyperref}
