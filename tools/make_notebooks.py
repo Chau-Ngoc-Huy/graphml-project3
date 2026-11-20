@@ -1,6 +1,6 @@
 """Nhúng lại mã nguồn hiện tại vào các ô `%%writefile` của notebook Kaggle (notebook nhúng nguyên mã nguồn để chạy độc lập).
 
-Sửa mã trong src/adamf/ (hoặc src/mmxai_eval.py), rồi `make notebooks`. Phần cấu hình và các stage (ô khác) sửa trực tiếp
+Sửa mã trong src/mmxai/adamf/ (hoặc src/mmxai_eval.py), rồi `make notebooks`. Phần cấu hình và các stage (ô khác) sửa trực tiếp
 trong notebook. Chỉ đổi nội dung các ô `%%writefile /kaggle/working/src/<tên>.py`; in ra file nào đổi.
 """
 import json
@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = {"mmxai_eval.py": ROOT / "src" / "mmxai_eval.py"}
-SOURCES.update({p.name: p for p in (ROOT / "src" / "adamf").glob("*.py")})
+SOURCES.update({p.name: p for p in (ROOT / "src" / "mmxai" / "adamf").glob("*.py") if p.name != "__init__.py"})
 PAT = re.compile(r"^%%writefile /kaggle/working/src/([\w.]+)\n")
 
 for nb_path in sorted((ROOT / "notebooks" / "kaggle" / "adamf").glob("*.ipynb")):  # exploratory/ là bản lưu các lượt đã chạy: không đụng

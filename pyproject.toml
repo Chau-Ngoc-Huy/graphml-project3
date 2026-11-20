@@ -28,6 +28,6 @@ include = ["mmxai*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-# src/adamf: mã AdaMF-MAT/adapter của Khánh dùng import phẳng (`import adapter`, `from common import ...`) — đợt 2 sẽ đưa vào gói
-pythonpath = ["src", "src/adamf", "tests/adamf"]
+# tests/adamf: conftest của Khánh được import trực tiếp (`from conftest import ...`)
+pythonpath = ["src", "tests/adamf"]
 addopts = "--import-mode=importlib"

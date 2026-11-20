@@ -16,7 +16,10 @@ import random
 import sys
 from collections import Counter, defaultdict
 
-from common import ACTIONS, load_images
+try:  # trong gói mmxai.adamf
+    from .common import ACTIONS, load_images
+except ImportError:  # chạy phẳng (notebook Kaggle ghi file cạnh nhau, hoặc `python <file>.py`)
+    from common import ACTIONS, load_images
 
 VAGUE = {"hand", "hands", "game", "food", "thing", "item", "area", "side", "part", "top", "front", "back"}
 

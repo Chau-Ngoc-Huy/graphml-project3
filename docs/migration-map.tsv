@@ -28,7 +28,7 @@ thang/kernel-metadata.json	notebooks/kaggle/task1_clip_baseline/kernel-metadata.
 thang/README.md	docs/members/thang.md	moved
 thang/requirements.txt	legacy/thang/requirements.txt	rewritten	gộp vào pyproject.toml
 thang/.gitignore	legacy/thang/.gitignore	rewritten	gộp vào .gitignore gốc
-khanh/src/	src/adamf/	moved	AdaMF-MAT + adapter + bộ truy vấn
+khanh/src/	src/mmxai/adamf/	moved	AdaMF-MAT + adapter + bộ truy vấn (gói mmxai.adamf; import hai kiểu: gói / phẳng)
 khanh/tests/	tests/adamf/	moved
 khanh/tools/	tools/	moved
 khanh/kaggle/	notebooks/kaggle/adamf/	moved

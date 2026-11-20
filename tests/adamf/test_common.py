@@ -1,6 +1,6 @@
 import numpy as np
 
-from common import metrics, split_ids
+from mmxai.adamf.common import metrics, split_ids
 
 
 def test_metrics_hand_example():

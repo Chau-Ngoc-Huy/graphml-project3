@@ -7,7 +7,7 @@ import pytest
 from conftest import fake_text_encode
 
 torch = pytest.importorskip("torch")
-import adamf_protocol as A  # noqa: E402
+from mmxai.adamf import adamf_protocol as A  # noqa: E402
 from mmxai_eval import Protocol  # noqa: E402  (../thang, đọc không sửa)
 
 

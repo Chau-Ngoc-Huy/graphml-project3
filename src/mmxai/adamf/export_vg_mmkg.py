@@ -33,8 +33,12 @@ from collections import Counter
 
 import numpy as np
 
-from common import load_images, split_ids
-from features import Encoder
+try:  # trong gói mmxai.adamf
+    from .common import load_images, split_ids
+    from .features import Encoder
+except ImportError:  # chạy phẳng (notebook Kaggle ghi file cạnh nhau, hoặc `python <file>.py`)
+    from common import load_images, split_ids
+    from features import Encoder
 
 SUFFIX = {"full": "", "shuffle": "_shuf", "drop": "_drop"}
 

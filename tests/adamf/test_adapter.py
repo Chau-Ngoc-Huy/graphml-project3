@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 torch = pytest.importorskip("torch")
-import adapter as AD  # noqa: E402
+from mmxai.adamf import adapter as AD  # noqa: E402
 from mmxai_eval import Protocol  # noqa: E402
 
 

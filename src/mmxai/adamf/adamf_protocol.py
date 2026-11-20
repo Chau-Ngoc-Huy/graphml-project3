@@ -31,8 +31,8 @@ import numpy as np
 
 try:
     import mmxai_eval  # noqa: F401  (Kaggle notebook writes it next to this file)
-except ImportError:  # trong repo thống nhất, module chung nằm ở src/mmxai_eval.py (thư mục cha của src/adamf)
-    sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+except ImportError:  # trong repo thống nhất, module chung nằm ở src/mmxai_eval.py (src/mmxai/adamf → ../..)
+    sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 
 SUFFIX = {"full": "", "shuffle": "_shuf", "drop": "_drop"}
 
@@ -214,7 +214,10 @@ def evaluate_all(P, scorer, seeds=(0, 1, 2), name="CLIP+AdaMF-MAT", adapter=None
         res[label] = r
         rows.append(r)
     if adapter is not None:
-        from adapter import adapted_sim
+        try:
+            from .adapter import adapted_sim
+        except ImportError:
+            from adapter import adapted_sim
         asim = lambda c: adapted_sim(adapter, P, c)
         ad = P.evaluate(lambda c, p: asim(c), "CLIP+Adapter", "test", seeds)
         ad["bootstrap_vs_clip"] = paired_bootstrap(base["full"]["ranks"], ad["full"]["ranks"])
@@ -264,14 +267,20 @@ def main():
     a = ap.parse_args()
     P = _load_protocol(a.work)
     if a.mode == "build":
-        from features import Encoder
+        try:
+            from .features import Encoder
+        except ImportError:
+            from features import Encoder
         enc = Encoder("clip")  # same OpenCLIP ViT-B-32 laion2b as the shared features
         build_mmkg(P, a.repo, a.name, enc.texts, a.variant, a.n_train_images, run_nn=not a.skip_nn)
     else:
         sc = AdamfScorer(P, a.repo, a.name, a.ckpt, a.dim, a.margin)
         adapter = None
         if a.adapter:
-            from adapter import train_adapter
+            try:
+                from .adapter import train_adapter
+            except ImportError:
+                from adapter import train_adapter
             adapter = train_adapter(P, seed=0)
         res = evaluate_all(P, sc, a.seeds, adapter=adapter)
         from mmxai_eval import save_json
