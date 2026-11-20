@@ -14,7 +14,7 @@ KERNEL = $(shell $(PY) -c "import sys; sys.path.insert(0,'tools'); from make_ker
 .PHONY: queries notebooks sync table ablations help test local dry push kernel status wait logs pull queue summary compare tex vendor vendor-update colab check import ui
 
 help:                ## liệt kê lệnh
-	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | column -t -s $$'\t'
+	@grep -hE '^[a-z0-9-]+:.*##' Makefile | awk 'BEGIN{FS=":.*## *"}{printf "  %-16s %s\n", $$1, $$2}'
 
 check:               ## kiểm tra môi trường (python, git, gh, kaggle, GPU)
 	@bash tools/check_env.sh
@@ -95,3 +95,72 @@ sync:                ## đồng bộ thay đổi của nhóm từ origin/main sa
 
 ui:                  ## giao diện thử mô hình / xem dữ liệu / ablation: http://127.0.0.1:8765
 	OMP_NUM_THREADS=2 nice -n 10 $(PY) -m uvicorn apps.lab.server:app --host 127.0.0.1 --port 8765
+
+# =====================================================================================================================
+# PIPELINE ĐẦY ĐỦ (docs/PIPELINE.md). DS=vg|psg. Bước GPU chạy trên Kaggle bằng kaggle CLI, không thao tác tay trên web.
+#   make setup → make fetch → make data DS=.. → make extras DS=.. → make publish DS=.. → make train DS=.. → make adamf DS=..
+#   → make tables → make xai DS=.. → make web / make ui / make report
+# Đường tắt (dùng bundle + checkpoint đã dựng sẵn trên Kaggle): make setup fetch-prebuilt tables xai web
+# =====================================================================================================================
+DS ?= psg
+MODEL_vg ?= models/vg_t1_qa_cn_seed0
+MODEL_psg ?= models/psg_qa_cn_seed0
+BUNDLE_vg = data/task1_bundle
+BUNDLE_psg = data/psg_bundle
+.PHONY: setup fetch fetch-prebuilt data data-vg data-psg extras publish train adamf tables xai web report all-psg all-vg
+
+setup:               ## tạo .venv (Python ≥3.10, torch CPU) + cài gói mmxai đầy đủ phần phụ
+	test -d .venv || python3 -m venv .venv
+	.venv/bin/python -m pip install -q --upgrade pip
+	.venv/bin/python -m pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+	.venv/bin/python -m pip install -q -e ".[dev,clip,ui,viz]"
+	@echo "Kaggle CLI: đặt token ở ~/.kaggle/access_token (hoặc kaggle.json); KAGGLE_USER trong local.mk"
+
+fetch:               ## bước 0: tải dữ liệu thô công khai (caption Karpathy, ConceptNet, PSG)
+	$(PY) tools/fetch_data.py captions conceptnet psg
+
+fetch-prebuilt:      ## đường tắt: tải bundle VG/PSG + 4 checkpoint đã dựng sẵn (Kaggle, riêng tư)
+	$(PY) tools/fetch_data.py bundles models
+
+data: data-$(DS)     ## bước 1: dựng bundle cho DS
+data-vg:             ## bước 1 VG: notebook Nhiệm vụ 1 (Thắng) trên Kaggle GPU → data/task1_bundle  (SMOKE=1: lượt thử)
+	$(PY) tools/kaggle_job.py run task1 --install $(if $(SMOKE),--smoke)
+data-psg:            ## bước 1 PSG (local CPU ~75 phút): PSG∩COCO → data/psg_bundle + đặc trưng CLIP
+	$(PY) -I tools/psg_to_bundle.py --raw data/psg_raw --coco data/raw/dataset_coco.json \
+	    --conceptnet data/conceptnet/hf_en_simple/train.parquet --out $(BUNDLE_psg)
+	OMP_NUM_THREADS=2 nice -n 19 $(PY) -I tools/psg_extract_clip.py --bundle $(BUNDLE_psg) --raw data/psg_raw --threads 2
+
+extras:              ## bước 2: vector nhãn + cạnh ConceptNet (huy_extra, huy_extra_cn) cho DS
+	tools/build_extras.sh $(DS)
+
+publish:             ## bước 2b: đưa bundle DS lên Kaggle Dataset riêng tư (để kernel huấn luyện đọc)
+	tools/publish_bundle.sh $(DS)
+
+train:               ## bước 3: mọi cấu hình QA-Graph × 3 seed (vg: Kaggle 2 worker; psg: local) — TARGET=kaggle|local
+	tools/run_suite.sh $(DS) $(TARGET)
+
+adamf:               ## bước 4: AdaMF-MAT (Khánh) + ablation trên Kaggle GPU → results/adamf_$(DS)/  (SMOKE=1: lượt thử)
+	$(PY) tools/kaggle_job.py run adamf --dataset $(DS) --install $(if $(SMOKE),--smoke)
+
+tables:              ## bước 5: bảng chính thức + kiểm định ghép cặp → results/tables/, results/*_paired, psg_vs_adamf
+	$(PY) tools/t1_table.py
+	$(PY) tools/psg_table.py
+	test ! -f results/adamf_psg/results_PSG_full.json || $(PY) tools/psg_vs_adamf.py --adamf results/adamf_psg
+	test ! -f data/task1_bundle/data/images.jsonl || $(PY) tools/paired_vs_huy.py --bundle data/task1_bundle
+
+xai:                 ## bước 6: giải thích + fidelity/sparsity/validity (khung của Dương) trên mô hình thật, N truy vấn
+	OMP_NUM_THREADS=2 nice -n 10 $(PY) tools/xai_bridge_demo.py --model $(MODEL_$(DS)) --bundle $(BUNDLE_$(DS)) --n $(or $(N),10)
+
+web:                 ## bước 7: MMXAI Observatory — sinh dữ liệu từ results/ + build (apps/observatory/dist)
+	cd apps/observatory && npm ci --no-audit --no-fund && npm run data && npm run build
+
+report:              ## bước 8: hình + PDF báo cáo (cần tectonic hoặc xelatex)
+	cd report && ../$(PY) make_figs.py && (tectonic report.tex || (xelatex report.tex && xelatex report.tex))
+
+all-psg:             ## toàn bộ PSG: fetch → data → extras → publish → train (local) → adamf (Kaggle) → tables → xai
+	$(MAKE) fetch && $(MAKE) data DS=psg && $(MAKE) extras DS=psg && $(MAKE) publish DS=psg && \
+	$(MAKE) train DS=psg && $(MAKE) adamf DS=psg && $(MAKE) tables && $(MAKE) xai DS=psg
+
+all-vg:              ## toàn bộ VG: data (Kaggle) → extras → publish → train (Kaggle) → adamf (Kaggle) → tables → xai
+	$(MAKE) fetch && $(MAKE) data DS=vg && $(MAKE) extras DS=vg && $(MAKE) publish DS=vg && \
+	$(MAKE) train DS=vg && $(MAKE) adamf DS=vg && $(MAKE) tables && $(MAKE) xai DS=vg
