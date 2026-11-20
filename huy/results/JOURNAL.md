@@ -15,6 +15,27 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #10 · 2026-11-20 · DATASET THỨ HAI: PSG — 8 cấu hình × 3 seed, máy local (tag `s0` + `s12`)
+
+- **Mục đích:** kiểm tra kết luận Task 1 trên bộ dữ liệu công khai thứ hai cùng cấu trúc VG (scene graph + caption COCO).
+- **Dữ liệu:** PSG (ECCV 2022) ∩ caption Karpathy → `data/psg_bundle` (`tools/psg_to_bundle.py`): 18.186 ảnh
+  (train 15.000 lấy mẫu seed 0 / val 1.000 / test 2.186), 90.974 caption; 133 nhãn ảnh (lớp panoptic đã chuẩn hoá) +
+  674 khái niệm mở rộng (ConceptNet ∩ danh từ trong caption train, ≥20 lần) → truy vấn test indirect 9.645 / direct 1.199 /
+  no_concept 89. ConceptNet: 3.743 cạnh. Bỏ 1 ảnh trùng train/val của bản HF. Đặc trưng CLIP: `tools/psg_extract_clip.py`.
+- **Cấu hình:** giống Task 1 (GAT, top-100, fuse α tune trên val) nhưng `graph.rel_merge: undirected` (sửa lỗi cạnh sg_rel
+  bị nhân đôi khi cặp xuất hiện cả hai chiều; VG giữ `directed` để tái lập #9). CPU nice 19, 2 luồng,
+  `tools/run_psg_local.sh` (≈4–16 phút/seed), bảng `tools/psg_table.py` → `results/tables/psg_official.md`.
+- **Kết quả (MRR %, toàn pool 2186 ảnh, mean ± std 3 seed · ΔMRR vs Adapter seed 0 bootstrap CI95):**
+  CLIP 59.59 · Adapter 62.67 ± 0.03 · QA-Graph contains+sg_rel 64.17 ± 0.09 (+1.58 [1.29, 1.89]) ·
+  chỉ contains 64.35 ± 0.08 (+1.59) · +CN 64.41 ± 0.12 (+1.56) · contains+CN 64.21 ± 0.08 (+1.54) ·
+  shuffle 62.12 ± 0.08 (−0.50 [−0.78, −0.23]) · CN shuffle 62.17 ± 0.13 (−0.70 [−0.98, −0.42]).
+  Direct / indirect MRR (gallery 1K): Adapter 74.6 / 72.0 → QA-Graph 77.2–77.9 / 73.3–73.4.
+- **Nhận xét & kết luận:** tái lập gần như y hệt VG: (1) đồ thị thật +1.5–1.6 MRR so với Adapter, CI không chứa 0;
+  (2) xáo cạnh làm *tệ hơn* Adapter → lợi ích đến từ cấu trúc contains, không phải thêm tham số; (3) sg_rel và ConceptNet
+  không thêm gì đáng kể so với chỉ contains (khác nhau < 0.25, trong nhiễu seed) — kể cả trên PSG nơi 88% truy vấn là
+  indirect và từ vựng có 674 khái niệm chỉ nối qua ConceptNet. Nhóm direct hưởng lợi nhiều hơn indirect (≈+3 vs +1.4).
+- **Output:** `runs/psg_*/*-s0*`, `runs/psg_*/*-s12*` (model seed 0 lưu để UI dùng), `logs/psg_*.log`.
+
 ## #9 · 2026-11-18 · KẾT QUẢ CHÍNH THỨC — 11 cấu hình × 3 seed trên Kaggle T4 (tag `kaggle-3seed`)
 
 - **Cách chạy:** dataset Kaggle private `huychau/mmxai-task1-bundle` (bundle Thắng + `huy_extra` + `huy_extra_cn`), mỗi cấu hình

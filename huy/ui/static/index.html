@@ -50,7 +50,7 @@
           <p class="help">Gõ câu tự do (CLIP mã hóa trực tiếp; lần đầu nạp mất ~10 s) hoặc chọn caption test bên phải để biết ảnh đúng.</p>
           <label for="concepts" class="lbl">Khái niệm (tự tách — sửa được)</label>
           <input id="concepts" type="text" placeholder="dog, rack, shoe" autocomplete="off">
-          <p class="help">Phân tách bằng dấu phẩy. Chỉ nhận từ có trong bộ nhãn VG. Để trống = tự tách.</p>
+          <p class="help">Phân tách bằng dấu phẩy. Chỉ nhận từ có trong bộ nhãn <span class="ds-name">VG</span>. Để trống = tự tách.</p>
           <label for="cmpSel" class="lbl">So sánh với biến thể (B)</label>
           <select id="cmpSel"><option value="">— không so sánh (hiện “chỉ tín hiệu đồ thị” của A) —</option></select>
           <p class="help">A = biến thể đang chọn ở thanh bên. Chọn B để đặt hai biến thể cạnh nhau trên cùng 100 ứng viên CLIP.</p>
@@ -117,7 +117,7 @@
           </div>
           <div>
             <div class="legend" aria-hidden="true">
-              <span><i class="n query"></i>khái niệm của câu</span><span><i class="n label"></i>nhãn VG</span>
+              <span><i class="n query"></i>khái niệm của câu</span><span><i class="n label"></i>nhãn <span class="ds-name">VG</span></span>
               <span><i class="n concept"></i>khái niệm ConceptNet</span><span><i class="n image"></i>ảnh</span>
               <span><i class="e hot"></i>đường khớp</span><span><i class="e rel"></i>sg_rel / ConceptNet</span>
             </div>

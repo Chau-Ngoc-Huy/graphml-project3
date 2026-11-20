@@ -1,0 +1,376 @@
+{
+ "metrics": {
+  "test": {
+   "seed": {
+    "mean": 0.0,
+    "std": 0.0,
+    "values": [
+     0.0
+    ]
+   },
+   "gallery_size": {
+    "mean": 1000.0,
+    "std": 0.0,
+    "values": [
+     1000.0
+    ]
+   },
+   "R@1": {
+    "mean": 58.564861083349996,
+    "std": 0.0,
+    "values": [
+     58.564861083349996
+    ]
+   },
+   "R@5": {
+    "mean": 87.04777133719767,
+    "std": 0.0,
+    "values": [
+     87.04777133719767
+    ]
+   },
+   "R@10": {
+    "mean": 93.62382570457726,
+    "std": 0.0,
+    "values": [
+     93.62382570457726
+    ]
+   },
+   "MRR": {
+    "mean": 71.02355745867202,
+    "std": 0.0,
+    "values": [
+     71.02355745867202
+    ]
+   },
+   "nDCG@10": {
+    "mean": 76.25284375904346,
+    "std": 0.0,
+    "values": [
+     76.25284375904346
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "n": 5003
+  },
+  "test_full": {
+   "gallery_size": {
+    "mean": 2186.0,
+    "std": 0.0,
+    "values": [
+     2186.0
+    ]
+   },
+   "R@1": {
+    "mean": 49.446629470410684,
+    "std": 0.0,
+    "values": [
+     49.446629470410684
+    ]
+   },
+   "R@5": {
+    "mean": 77.26150187505716,
+    "std": 0.0,
+    "values": [
+     77.26150187505716
+    ]
+   },
+   "R@10": {
+    "mean": 86.67337418823745,
+    "std": 0.0,
+    "values": [
+     86.67337418823745
+    ]
+   },
+   "MRR": {
+    "mean": 62.00645153654432,
+    "std": 0.0,
+    "values": [
+     62.00645153654432
+    ]
+   },
+   "nDCG@10": {
+    "mean": 67.4424574268461,
+    "std": 0.0,
+    "values": [
+     67.4424574268461
+    ]
+   },
+   "MedR": {
+    "mean": 2.0,
+    "std": 0.0,
+    "values": [
+     2.0
+    ]
+   },
+   "n": 10933
+  },
+  "by_group": {
+   "direct": {
+    "R@1": {
+     "mean": 61.29032258064516,
+     "std": 0.0,
+     "values": [
+      61.29032258064516
+     ]
+    },
+    "R@5": {
+     "mean": 88.5304659498208,
+     "std": 0.0,
+     "values": [
+      88.5304659498208
+     ]
+    },
+    "R@10": {
+     "mean": 96.95340501792114,
+     "std": 0.0,
+     "values": [
+      96.95340501792114
+     ]
+    },
+    "MRR": {
+     "mean": 73.4971854215641,
+     "std": 0.0,
+     "values": [
+      73.4971854215641
+     ]
+    },
+    "nDCG@10": {
+     "mean": 79.05578056938234,
+     "std": 0.0,
+     "values": [
+      79.05578056938234
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 558
+   },
+   "indirect": {
+    "R@1": {
+     "mean": 58.24425744826017,
+     "std": 0.0,
+     "values": [
+      58.24425744826017
+     ]
+    },
+    "R@5": {
+     "mean": 87.08210143279508,
+     "std": 0.0,
+     "values": [
+      87.08210143279508
+     ]
+    },
+    "R@10": {
+     "mean": 93.40459404139185,
+     "std": 0.0,
+     "values": [
+      93.40459404139185
+     ]
+    },
+    "MRR": {
+     "mean": 70.81045947863466,
+     "std": 0.0,
+     "values": [
+      70.81045947863466
+     ]
+    },
+    "nDCG@10": {
+     "mean": 76.02218368266045,
+     "std": 0.0,
+     "values": [
+      76.02218368266045
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 4397
+   },
+   "no_concept": {
+    "R@1": {
+     "mean": 56.25,
+     "std": 0.0,
+     "values": [
+      56.25
+     ]
+    },
+    "R@5": {
+     "mean": 66.66666666666666,
+     "std": 0.0,
+     "values": [
+      66.66666666666666
+     ]
+    },
+    "R@10": {
+     "mean": 75.0,
+     "std": 0.0,
+     "values": [
+      75.0
+     ]
+    },
+    "MRR": {
+     "mean": 61.78829526972307,
+     "std": 0.0,
+     "values": [
+      61.78829526972307
+     ]
+    },
+    "nDCG@10": {
+     "mean": 64.79812741918957,
+     "std": 0.0,
+     "values": [
+      64.79812741918957
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 48
+   }
+  },
+  "alpha": {
+   "mean": 0.5,
+   "values": [
+    0.5
+   ]
+  }
+ },
+ "n": 10933,
+ "paper": {
+  "table": "ablation",
+  "row": "qa+cn shuffle — PSG∩COCO"
+ },
+ "run": {
+  "exp": "psg_qa_cn_shuffle",
+  "run_id": "20261119-182945_huy-chau_psg_qa_cn_shuffle-s0",
+  "tag": "s0",
+  "user": "huy-chau",
+  "args": {
+   "exp": "psg_qa_cn_shuffle",
+   "config": null,
+   "config_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/configs",
+   "set": [
+    "cpu_threads=2"
+   ],
+   "limit": null,
+   "seed": 0,
+   "tag": "s0",
+   "runs_dir": "/home/huy-chau/Documents/huy.chau/Documents/SauDaiHoc/Graph ML/FinalProject/graphml-project3/huy/runs",
+   "run_id": null,
+   "no_publish": false,
+   "dry_run": false
+  },
+  "config": {
+   "data": "data/psg_bundle",
+   "fake": {},
+   "max_images": null,
+   "topk": 100,
+   "seed": 0,
+   "paper": {
+    "table": "ablation",
+    "row": "qa+cn shuffle — PSG∩COCO"
+   },
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "graph": {
+    "variant": "shuffle",
+    "min_rel_count": 1,
+    "rel_merge": "undirected"
+   },
+   "gnn": {
+    "kind": "gat",
+    "hidden": 256,
+    "layers": 2,
+    "heads": 4,
+    "dropout": 0.1,
+    "arch": "split",
+    "adapter": true,
+    "graph_weight": 1.0,
+    "tau_match": 0.1
+   },
+   "train": {
+    "epochs": 20,
+    "patience": 4,
+    "batch_size": 512,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "tau": 0.05
+   },
+   "alpha_step": 0.05,
+   "n_explain": 0,
+   "explain_top_m": 3,
+   "save_model": true,
+   "extra": "huy_extra_cn",
+   "mode": "graph",
+   "exp": "psg_qa_cn_shuffle",
+   "cpu_threads": 2
+  },
+  "started_at": "2026-11-19T18:29:45+00:00",
+  "finished_at": "2026-11-19T18:36:42+00:00",
+  "wall_time_s": 416.68,
+  "sec_per_sample": 0.038,
+  "peak_vram_gb": null,
+  "error": null,
+  "extra": {
+   "seeds": [
+    0
+   ],
+   "graph": {
+    "n_img": 18186,
+    "n_label": 807,
+    "variant": "shuffle",
+    "E_contains": 125247,
+    "E_sg_rel": 6378,
+    "E_concept": 7486,
+    "missing_labels": 0,
+    "missing_top": [],
+    "lab_edges": 13864,
+    "contains": 125247,
+    "labels_per_img_max": 28,
+    "imgs_without_labels": 0,
+    "caps_without_concepts": 844,
+    "concepts_dropped": 0
+   },
+   "device": "cpu"
+  }
+ },
+ "environment": {
+  "python": "3.14.4",
+  "platform": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+  "compute": "local",
+  "gpu": null,
+  "packages": {
+   "torch": "2.15.0+cpu",
+   "numpy": "2.5.4",
+   "pyyaml": "6.0.3",
+   "torch_geometric": "2.8.1",
+   "open_clip_torch": "4.2.2",
+   "faiss-cpu": "1.16.0"
+  },
+  "git_commit": "727f0c15cedf157cc18352ad8f3d29736679053f",
+  "vendor_commit": null
+ }
+}

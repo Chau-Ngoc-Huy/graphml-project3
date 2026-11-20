@@ -126,3 +126,37 @@ def test_clip_graph_end_to_end(tmp_path):
         assert 0 <= m["metrics"][key]["all"]["MRR"] <= 1
     ex = json.loads((run_dir / "explanations.json").read_text())
     assert len(ex) == 2 and ex[0]["paths"]
+
+
+def _tiny_rel_bundle():
+    """3 ảnh train của ví dụ trong JOURNAL: A (man wearing shirt, man holding controller),
+    B (man wears shirt, shirt on man), C (woman wearing shirt, man holding controller)."""
+    from mmxai.data.contract import Bundle
+    labs = ["man", "shirt", "controller", "woman"]
+    rels = {0: [("man", "wearing", "shirt"), ("man", "holding", "controller")],
+            1: [("man", "wears", "shirt"), ("shirt", "on", "man")],
+            2: [("woman", "wearing", "shirt"), ("man", "holding", "controller")]}
+    return Bundle(image_ids=[0, 1, 2], image_emb=np.zeros((3, 4), np.float32),
+                  image_labels={0: ["man", "shirt", "controller"], 1: ["man", "shirt"], 2: ["woman", "shirt", "man"]},
+                  image_rels=rels, captions=[], caption_emb=np.zeros((0, 4), np.float32),
+                  splits={"train": [0, 1, 2], "val": [], "test": []}, labels=labs,
+                  label_emb=np.eye(4, dtype=np.float32))
+
+
+def test_rel_merge_undirected_no_duplicate_edges():
+    """'man wearing shirt' và 'shirt on man' là một cặp → mỗi chiều đúng 1 cạnh (bản directed cũ: 2 cạnh)."""
+    b = _tiny_rel_bundle()
+    n = len(b.image_ids)
+    man, shirt = n + 0, n + 1
+
+    def count(g, s, d):
+        ei, et = g.data.edge_index, g.data.edge_type
+        return int(((ei[0] == s) & (ei[1] == d) & (et == SG_REL)).sum())
+
+    old, new = build_graph(b, "full", rel_merge="directed"), build_graph(b, "full", rel_merge="undirected")
+    assert count(old, man, shirt) == 2 and count(old, shirt, man) == 2       # lỗi cũ, giữ để tái lập kết quả VG
+    assert count(new, man, shirt) == 1 and count(new, shirt, man) == 1
+    assert int((new.data.edge_type == SG_REL).sum()) == 6                   # 3 cặp {man,shirt},{man,controller},{woman,shirt}
+    assert new.rel_name[(man, shirt)] == "wearing" and new.rel_name[(shirt, man)] == "wearing⁻¹"
+    with pytest.raises(ValueError):
+        build_graph(b, "full", rel_merge="sideways")

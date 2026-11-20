@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* AI Research Observatory — dark-first charcoal, indigo primary, cyan for data flow */
+    --background: 222 14% 7%;
+    --foreground: 220 14% 92%;
+    --surface: 222 13% 10%;
+    --surface-raised: 222 12% 13%;
+    --card: 222 13% 10%;
+    --card-foreground: 220 14% 92%;
+    --popover: 222 13% 11%;
+    --popover-foreground: 220 14% 92%;
+    --primary: 236 84% 68%;
+    --primary-foreground: 0 0% 100%;
+    --flow: 188 86% 53%;
+    --flow-foreground: 222 14% 7%;
+    --secondary: 222 11% 16%;
+    --secondary-foreground: 220 14% 88%;
+    --muted: 222 11% 15%;
+    --muted-foreground: 220 9% 60%;
+    --accent: 222 12% 17%;
+    --accent-foreground: 220 14% 95%;
+    --border: 222 10% 19%;
+    --input: 222 10% 21%;
+    --ring: 236 84% 68%;
+    --good: 152 60% 52%;
+    --bad: 0 72% 64%;
+    --warn: 38 92% 58%;
+    --radius: 0.5rem;
+  }
+  * { @apply border-border; }
+  html, body, #root { height: 100%; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  .tabular { font-variant-numeric: tabular-nums; }
+  ::selection { background: hsl(var(--primary) / 0.35); }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 8px; border: 2px solid hsl(var(--background)); }
+}
+
+@layer components {
+  .eyebrow { @apply text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground; }
+  .panel { @apply rounded-lg border bg-surface; }
+  .hairline { @apply border-b border-border/70; }
+  .grid-bg {
+    background-image: linear-gradient(hsl(var(--border) / 0.35) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.35) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+}
+
+/* React Flow dark theme tuning */
+.react-flow { --xy-background-color: transparent; }
+.react-flow__attribution { display: none; }
+.react-flow__controls { @apply overflow-hidden rounded-md border bg-surface-raised shadow-none; }
+.react-flow__controls-button { @apply border-b-border bg-surface-raised fill-foreground text-foreground hover:bg-accent; }
+.react-flow__minimap { @apply rounded-md border bg-surface; }

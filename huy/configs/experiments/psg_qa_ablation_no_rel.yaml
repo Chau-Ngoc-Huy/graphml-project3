@@ -1,0 +1,4 @@
+# PSG (tools/psg_to_bundle.py): qa no_rel (chỉ contains). Cạnh sg_rel gộp không hướng (graph.rel_merge=undirected).
+extends: psg_qa.yaml
+graph: {variant: no_rel, rel_merge: undirected}
+paper: {table: ablation, row: qa no_rel (chỉ contains) — PSG∩COCO}

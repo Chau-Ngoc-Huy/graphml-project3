@@ -144,3 +144,7 @@ Tự chuyển sáng/tối theo hệ điều hành, hiển thị được trên �
 - **FAISS** (Johnson et al., 2019) cho tìm láng giềng gần.
 
 Repo không chứa ảnh hay file dữ liệu gốc; `kaggle_results/` chỉ gồm số liệu tổng hợp, id ảnh, URL ảnh và một số caption COCO làm ví dụ.
+
+## MMXAI Observatory (`observatory/`)
+
+Trang web React trình bày kết quả của cả nhóm: pipeline, playground chạy truy vấn trên 14 cấu hình mô hình, so sánh mô hình, đồ thị truy vấn và kết quả đánh giá — mọi số liệu lấy từ file kết quả thật và được kiểm tra chéo. Cách chạy: `observatory/README.md`.

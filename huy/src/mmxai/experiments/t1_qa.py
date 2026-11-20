@@ -45,7 +45,8 @@ def run(ctx) -> dict:
     per_seed, full_runs, alphas, infos, stats = [], [], [], [], None
     for seed in seeds:
         set_seed(seed)
-        g = build_graph(b, gcfg.get("variant", "full"), int(gcfg.get("min_rel_count", 1)), seed=seed)
+        g = build_graph(b, gcfg.get("variant", "full"), int(gcfg.get("min_rel_count", 1)), seed=seed,
+                        rel_merge=gcfg.get("rel_merge", "directed"))
         qd = QAData(g, cap_concepts, device)
         stats = stats or {**g.stats, **qd.stats, "concepts_dropped": qd.n_dropped}
         print(f"  seed {seed}: đồ thị {g.stats} | qa {qd.stats}")

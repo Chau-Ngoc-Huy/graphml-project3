@@ -45,7 +45,10 @@ class Graph:
         return f"image:{i}" if i < self.n_img else self.labels[i - self.n_img]
 
 
-def build_graph(b: Bundle, variant: str = "full", min_rel_count: int = 1, seed: int = 0) -> Graph:
+def build_graph(b: Bundle, variant: str = "full", min_rel_count: int = 1, seed: int = 0,
+                rel_merge: str = "directed") -> Graph:
+    """rel_merge: "directed" (mặc định, giữ nguyên kết quả VG đã báo cáo — cặp thấy cả 2 chiều bị thêm cạnh 2 lần)
+    hoặc "undirected" (đúng: gộp theo cặp không hướng, mỗi chiều 1 cạnh; dùng cho PSG)."""
     from torch_geometric.data import Data
 
     if variant not in VARIANTS:
@@ -65,18 +68,39 @@ def build_graph(b: Bundle, variant: str = "full", min_rel_count: int = 1, seed: 
                 missing[l] += 1
 
     train = set(b.splits["train"])
-    pair_pred: dict[tuple[int, int], Counter] = {}
-    for iid in train:
-        for s, p, o in b.image_rels.get(iid, []):
-            if s in lab_idx and o in lab_idx and s != o:
-                pair_pred.setdefault((lab_idx[s], lab_idx[o]), Counter())[p] += 1
-    for (u, v), cnt in pair_pred.items():
-        if sum(cnt.values()) >= min_rel_count:
-            p = cnt.most_common(1)[0][0]
-            for a, c in ((u, v), (v, u)):
-                src.append(a); dst.append(c); typ.append(SG_REL)
-            rel_name[(u, v)] = p
-            rel_name[(v, u)] = f"{p}⁻¹"
+    if rel_merge == "undirected":
+        # Gộp (s→o) và (o→s) thành MỘT cặp {s, o}: "man wearing shirt" và "shirt on man" là cùng một sự thật.
+        # Mỗi chiều đúng 1 cạnh; tên = (predicate, chiều) gặp nhiều nhất. (Bản "directed" cũ thêm cạnh 2 lần.)
+        pair_pred_u: dict[tuple[int, int], Counter] = {}
+        for iid in train:
+            for s, p, o in b.image_rels.get(iid, []):
+                if s in lab_idx and o in lab_idx and s != o:
+                    u, v = lab_idx[s], lab_idx[o]
+                    key = (min(u, v), max(u, v))
+                    pair_pred_u.setdefault(key, Counter())[(p, u < v)] += 1
+        for (u, v), cnt in pair_pred_u.items():
+            if sum(cnt.values()) >= min_rel_count:
+                (p, fwd), _ = cnt.most_common(1)[0]
+                for a, c in ((u, v), (v, u)):
+                    src.append(a); dst.append(c); typ.append(SG_REL)
+                a, c = (u, v) if fwd else (v, u)
+                rel_name[(a, c)] = p
+                rel_name[(c, a)] = f"{p}⁻¹"
+    elif rel_merge == "directed":
+        pair_pred: dict[tuple[int, int], Counter] = {}
+        for iid in train:
+            for s, p, o in b.image_rels.get(iid, []):
+                if s in lab_idx and o in lab_idx and s != o:
+                    pair_pred.setdefault((lab_idx[s], lab_idx[o]), Counter())[p] += 1
+        for (u, v), cnt in pair_pred.items():
+            if sum(cnt.values()) >= min_rel_count:
+                p = cnt.most_common(1)[0][0]
+                for a, c in ((u, v), (v, u)):
+                    src.append(a); dst.append(c); typ.append(SG_REL)
+                rel_name[(u, v)] = p
+                rel_name[(v, u)] = f"{p}⁻¹"
+    else:
+        raise ValueError(f"graph.rel_merge phải là 'directed' hoặc 'undirected', nhận {rel_merge!r}")
 
     for h, r, t in b.concept_edges:
         if h in lab_idx and t in lab_idx and h != t:

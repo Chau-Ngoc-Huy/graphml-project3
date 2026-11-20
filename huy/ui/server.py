@@ -48,7 +48,7 @@ EXP_TITLE = {
     "t1_qa_ablation_no_edge": ("CLIP + Adapter (không đồ thị)", "Mốc so sánh: chỉ lớp chiếu học được, không cạnh nào."),
     "t1_qa": ("QA-Graph: contains + sg_rel", "Khái niệm của câu ↔ nhãn của ảnh, nhãn lan truyền qua cạnh sg_rel."),
     "t1_qa_ablation_no_rel": ("QA-Graph: chỉ contains", "Bỏ cạnh nhãn–nhãn: chỉ còn ảnh ↔ nhãn."),
-    "t1_qa_cn": ("QA-Graph + ConceptNet", "contains + sg_rel + ConceptNet (1000 khái niệm cầu nối)."),
+    "t1_qa_cn": ("QA-Graph + ConceptNet", "contains + sg_rel + ConceptNet (khái niệm cầu nối mở rộng)."),
     "t1_qa_cn_no_sg": ("QA-Graph + ConceptNet, bỏ sg_rel", "contains + ConceptNet."),
     "t1_qa_cn_shuffle": ("Đối chứng: xáo cạnh (shuffle)", "Ảnh mang nhãn sai ⇒ phải tụt dưới Adapter."),
 }
@@ -56,6 +56,8 @@ ORDER = ["t1_qa_ablation_no_edge", "t1_qa", "t1_qa_ablation_no_rel", "t1_qa_cn",
 
 
 def _describe(exp: str, tag: str, cfg: dict) -> tuple[str, str, int]:
+    if exp.startswith("psg_"):  # thí nghiệm PSG dùng cùng tên biến thể với VG: psg_qa_cn ↔ t1_qa_cn
+        exp = "t1_" + exp[4:]
     base = exp
     kind = ""
     for k in ("_gcn", "_sage"):
@@ -111,7 +113,8 @@ class Variant:
         cfg = self.cfg
         b = S.bundle_for(cfg.get("extra"))
         gcfg = cfg.get("graph", {})
-        self.g = S.graph_for(b, cfg.get("extra"), gcfg.get("variant", "full"), int(gcfg.get("min_rel_count", 1)))
+        self.g = S.graph_for(b, cfg.get("extra"), gcfg.get("variant", "full"), int(gcfg.get("min_rel_count", 1)),
+                             gcfg.get("rel_merge", "directed"))
         self.b = b
         self.qd = QAData(self.g, S.cap_concepts)
         self.model = QAScorer(b.image_emb.shape[1], **cfg.get("gnn", {}))
@@ -153,30 +156,42 @@ class State:
         self.cap_row = {c["caption_id"]: i for i, c in enumerate(b.captions)}
         self.cap_concepts = {cid: c["concepts"] for cid, c in self.cap_by_id.items()}
         self.n_vocab = len(json.loads((self.bundle / "data" / "object_vocab_train.json").read_text()))
+        # nhãn ẢNH (đỉnh nối được với ảnh). VG: = vocab; PSG: 133 lớp, phần còn lại của vocab là khái niệm mở rộng
+        il = self.bundle / "data" / "image_labels.json"
+        self.image_labels = {normalize_label(v, {}) for v in json.loads(
+            (il if il.exists() else self.bundle / "data" / "object_vocab_train.json").read_text())}
+        self.dataset = os.environ.get("MMXAI_DATASET", "PSG" if il.exists() else "VG")
         self.vocab = set(json.loads((self.bundle / "data" / "object_vocab_train.json").read_text()))
         self.vocab = {normalize_label(v, {}) for v in self.vocab}
         self.meta = {}
         with open(self.bundle / "data" / "images.jsonl", encoding="utf-8") as f:
             for line in f:
                 im = json.loads(line)
-                self.meta[im["idx"]] = {"url": im.get("url"), "coco_url": im.get("coco_url"), "split": im["split"],
+                coco = im.get("coco_url") or (f"http://images.cocodataset.org/{im['coco_file']}"
+                                              if im.get("coco_file") else None)   # PSG: chỉ có tên file COCO 2017
+                self.meta[im["idx"]] = {"url": im.get("url") or coco, "coco_url": coco, "split": im["split"],
                                         "objects": im["objects"], "relations": im["relations"]}
         self.row_of = {iid: r for r, iid in enumerate(b.image_ids)}
         self.pool = {s: np.array([self.row_of[i] for i in b.splits[s]]) for s in ("val", "test")}
         self._clip, self._clip_lock = None, threading.Lock()
         self._clip_baseline = None
-        runs = [p for d in sorted((ROOT / "runs").glob("t1_qa*")) for p in sorted(d.iterdir())
+        self.runs_glob = os.environ.get("MMXAI_RUNS", "t1_qa*")  # PSG: MMXAI_RUNS="psg_qa*"
+        runs = [p for d in sorted((ROOT / "runs").glob(self.runs_glob)) for p in sorted(d.iterdir())
                 if (p / "model.pt").exists() and (p / "config.json").exists() and "smoke" not in p.name]
         self.variants = {v.id: v for v in sorted((Variant(p) for p in runs), key=lambda v: (v.priority, v.id))}
         want = os.environ.get("MMXAI_RUN", "")
         want = Path(want).name if want else ""
         if want not in self.variants:
             pref = [v for v in self.variants.values() if v.exp == "t1_qa_cn" and "kaggle" in v.tag] or \
-                   [v for v in self.variants.values() if v.exp == "t1_qa"] or list(self.variants.values())
+                   [v for v in self.variants.values() if v.exp in ("t1_qa", "psg_qa_cn")] or \
+                   [v for v in self.variants.values() if v.exp == "psg_qa"] or list(self.variants.values())
             want = pref[0].id if pref else ""
         if not want:
             raise SystemExit("Không có biến thể nào (runs/t1_qa*/<run>/model.pt). Chạy `make local EXP=t1_qa ARGS='--seed 0'`.")
         self.default = want
+
+    def kind_of(self, V, l: int) -> str:
+        return "label" if V.g.labels[l] in self.image_labels else "concept"
 
     # ---- bundle / đồ thị dùng chung giữa các biến thể
     def resolve_extra(self, extra):
@@ -198,11 +213,11 @@ class State:
                 self._bundles[key] = b
             return self._bundles[key]
 
-    def graph_for(self, b, extra, variant, min_rel):
-        key = (str(self.resolve_extra(extra) or ""), variant, min_rel)
+    def graph_for(self, b, extra, variant, min_rel, rel_merge="directed"):
+        key = (str(self.resolve_extra(extra) or ""), variant, min_rel, rel_merge)
         with self._lock:
             if key not in self._graphs:
-                self._graphs[key] = build_graph(b, variant, min_rel)
+                self._graphs[key] = build_graph(b, variant, min_rel, rel_merge=rel_merge)
             return self._graphs[key]
 
     def var(self, vid: str | None) -> Variant:
@@ -281,7 +296,8 @@ def _startup():
 
 @app.get("/api/variants")
 def variants():
-    return {"default": S.default, "items": [v.info() for v in S.variants.values()]}
+    return {"default": S.default, "items": [v.info() for v in S.variants.values()], "dataset": S.dataset,
+            "pool": {s: int(len(S.pool[s])) for s in ("val", "test")}}
 
 
 # ---------------------------------------------------------------- tổng quan dữ liệu theo bước
@@ -301,15 +317,15 @@ def overview(variant: str | None = None):
         "learned": {"w": V.model.w.item(), "tau_match": V.model.log_tau.exp().item(), "gate": V.model.gate.item()},
         "steps": [
             {"id": "raw", "title": "1 · Dữ liệu gốc", "who": "Yến / Thắng",
-             "items": [["Ảnh VG ∩ COCO", len(b.image_ids)], ["Caption COCO", len(b.captions)],
+             "items": [[f"Ảnh {S.dataset} ∩ COCO", len(b.image_ids)], ["Caption COCO", len(b.captions)],
                        ["Ảnh train / val / test", f"{len(b.splits['train'])} / {len(b.splits['val'])} / {len(b.splits['test'])}"],
                        ["Caption train / val / test", f"{split_caps['train']} / {split_caps['val']} / {split_caps['test']}"]]},
             {"id": "clip", "title": "2 · Đặc trưng CLIP", "who": "Thắng",
              "items": [["Mô hình", "ViT-B-32 / laion2b (đóng băng)"], ["Chiều vector", b.image_emb.shape[1]],
                        ["Ứng viên mỗi truy vấn", f"top-{K}"]]},
             {"id": "graph", "title": "3 · Đồ thị (biến thể đang chọn)", "who": "Huy",
-             "items": [["Đỉnh ảnh", st["n_img"]], ["Đỉnh nhãn VG", S.n_vocab],
-                       ["Đỉnh khái niệm ConceptNet", len(g.labels) - S.n_vocab],
+             "items": [["Đỉnh ảnh", st["n_img"]], [f"Đỉnh nhãn ảnh ({S.dataset})", sum(1 for l in g.labels if l in S.image_labels)],
+                       ["Đỉnh khái niệm (ConceptNet / mở rộng)", sum(1 for l in g.labels if l not in S.image_labels)],
                        ["Cạnh contains (nhãn → ảnh)", st.get("E_contains", 0)],
                        ["Cạnh sg_rel (nhãn ↔ nhãn, từ ảnh train)", st.get("E_sg_rel", 0)],
                        ["Cạnh ConceptNet", st.get("E_concept", 0)],
@@ -503,7 +519,7 @@ def explain(req: ExplainReq):
     hot = {V.label_idx[mt["top"][0]["label"]] for mt in matches if mt["top"]}
     show = list(dict.fromkeys([*hot, *labs]))[: len(hot) + req.max_other_labels]
     for l in show:
-        add_node(f"lab:{l}", V.g.labels[l], "label" if l < S.n_vocab else "concept", hot=l in hot)
+        add_node(f"lab:{l}", V.g.labels[l], S.kind_of(V, l), hot=l in hot)
         add_edge(f"lab:{l}", img_id, "contains", hot=l in hot)
     for mt, c in zip(matches, cids):
         qid = f"q:{c}"
@@ -514,7 +530,7 @@ def explain(req: ExplainReq):
                 prev = qid
                 for step in mt["path"]["nodes"][1:]:
                     nid = f"lab:{step['idx']}"
-                    add_node(nid, step["name"], "label" if step["idx"] < S.n_vocab else "concept")
+                    add_node(nid, step["name"], S.kind_of(V, step["idx"]))
                     add_edge(prev, nid, step["edge"], hot=True)
                     prev = nid
             else:
@@ -624,7 +640,7 @@ def build(row: int, two_hop: int = 0, variant: str | None = None):
         for h in hop2[: int(two_hop)]:
             s = V.label_idx[h["name"]]
             nid = f"lab:{s}"
-            nodes[nid] = {"id": nid, "label": h["name"], "kind": "concept" if s >= S.n_vocab else "hop2"}
+            nodes[nid] = {"id": nid, "label": h["name"], "kind": "hop2" if S.kind_of(V, s) == "label" else "concept"}
             for l in labs:
                 if any(x == s for x, _ in V.lab_nbrs.get(l, [])):
                     edges.append({"source": nid, "target": f"lab:{l}", "kind": h["type"]})
@@ -658,7 +674,7 @@ def label(name: str, variant: str | None = None):
     with torch.no_grad():
         sim = (V.H @ V.H[l]).numpy()
     close = [(V.g.labels[i], float(sim[i])) for i in np.argsort(-sim)[1:11]]
-    return {"variant": V.info(), "name": V.g.labels[l], "kind": "label" if l < S.n_vocab else "concept",
+    return {"variant": V.info(), "name": V.g.labels[l], "kind": S.kind_of(V, l),
             "images": V.img_count.get(l, 0), "neighbors": nb[:60], "n_neighbors": len(nb), "nearest_after_gnn": close}
 
 
@@ -690,6 +706,21 @@ STORY = [
     ("t1_qa_cn_no_sg_sage", "kaggle-3seed", "contains + CN · SAGE", "", "gnn"),
 ]
 
+PSG_STORY = [  # máy local, seed 0 (tag s0); bảng 3 seed: results/tables/psg_official.md
+    ("psg_qa_ablation_no_edge", "s0", "CLIP + Adapter (không đồ thị)", "Mốc so sánh đúng.", "main"),
+    ("psg_qa", "s0", "+ QA-Graph (contains + sg_rel)", "Khái niệm ↔ nhãn của ảnh.", "main"),
+    ("psg_qa_ablation_no_rel", "s0", "+ QA-Graph (chỉ contains)", "Bỏ cạnh nhãn–nhãn.", "main"),
+    ("psg_qa_cn", "s0", "+ QA-Graph + ConceptNet", "contains + sg_rel + CN (woman→person…).", "main"),
+    ("psg_qa_cn_no_sg", "s0", "+ QA-Graph + ConceptNet, bỏ sg_rel", "contains + CN.", "main"),
+    ("psg_qa_ablation_shuffle", "s0", "Đối chứng: xáo cạnh", "Phải tụt dưới Adapter.", "main"),
+    ("psg_qa_cn_shuffle", "s0", "Đối chứng: xáo cạnh (+CN)", "Phải tụt dưới Adapter.", "main"),
+]
+
+
+def _vg_name(exp: str) -> str:
+    """Frontend dùng tên thí nghiệm VG (t1_*) để tô màu/chọn mốc → đổi psg_* sang tên tương ứng."""
+    return "t1_" + exp[4:] if exp and exp.startswith("psg_") else exp
+
 
 def _clip_row():
     """Dòng CLIP tính lại bằng chính Protocol của Thắng (3 seed + toàn pool)."""
@@ -713,7 +744,8 @@ def _clip_row():
 @app.get("/api/ablation")
 def ablation():
     runs = [_clip_row()]
-    for f in sorted((ROOT / "results").glob("t1_*/*.json")):
+    psg = S.dataset == "PSG"
+    for f in sorted((ROOT / "results").glob("psg_*/*.json" if psg else "t1_*/*.json")):
         d = json.loads(f.read_text())
         r, m = d.get("run", {}), d.get("metrics", {})
         if not m.get("test_full") or "smoke" in (r.get("tag") or ""):
@@ -738,11 +770,15 @@ def ablation():
                      "alpha": (m.get("alpha") or {}).get("values"), "history": hist, "alpha_curve": curve,
                      "seeds": len((m.get("alpha") or {}).get("values") or [])})
     story = []
-    for exp, tag, title, note, section in STORY:
+    if psg:
+        story.append({**runs[0], "title": "CLIP (đóng băng)", "note": "Không học gì; cos(câu, ảnh).", "section": "main"})
+    for exp, tag, title, note, section in (PSG_STORY if psg else STORY):
         hit = [x for x in runs if x["exp"] == exp and x["tag"] == tag]
         if hit:
             story.append({**hit[-1], "title": title, "note": note, "section": section})
-    return {"story": story, "all": runs}
+    for x in story + runs:
+        x["exp"] = _vg_name(x["exp"])
+    return {"story": story, "all": runs, "dataset": S.dataset}
 
 
 # ---------------------------------------------------------------- tĩnh

@@ -1,0 +1,4 @@
+# PSG: CLIP thuần (mode=clip) — mốc gốc trên bundle PSG
+extends: t1_clip.yaml
+data: data/psg_bundle
+paper: {table: main, row: CLIP — PSG∩COCO}
