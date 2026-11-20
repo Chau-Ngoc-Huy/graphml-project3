@@ -1,0 +1,17 @@
+{
+ "id": "huychau/mmxai-adamf-psg",
+ "title": "mmxai adamf psg",
+ "code_file": "adamf_psg.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_internet": true,
+ "dataset_sources": [
+  "huychau/mmxai-psg-bundle"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [],
+ "model_sources": [],
+ "machine_shape": "NvidiaTeslaT4"
+}

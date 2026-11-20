@@ -1,0 +1,284 @@
+AdaMF-MAT on the team protocol (Thang's mmxai_eval) report
+
+######## 1 locate Thang's WORK dir = PSG bundle ########
+what is attached in /kaggle/input:
+/kaggle/input
+/kaggle/input/datasets
+/kaggle/input/datasets/huychau
+/kaggle/input/datasets/huychau/mmxai-psg-bundle
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/data
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/features
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/huy_extra
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/huy_extra_cn
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/mmxai_eval.py
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/psg_stats.json
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/split
+
+WORK = /kaggle/input/datasets/huychau/mmxai-psg-bundle
+/kaggle/input/datasets/huychau/mmxai-psg-bundle:
+data
+features
+huy_extra
+huy_extra_cn
+mmxai_eval.py
+psg_stats.json
+split
+
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/features:
+clip_ViT-B-32_laion2b.npz
+meta.json
+
+/kaggle/input/datasets/huychau/mmxai-psg-bundle/split:
+split.json
+
+
+using the bundle's mmxai_eval.py
+-- 1 locate Thang's WORK dir = PSG bundle took 2s
+
+######## 2 clone AdaMF-MAT ########
+
+1-1.txt
+1-n.txt
+entity2id.txt
+n-1.txt
+n-n.py
+n-n.txt
+relation2id.txt
+test2id_all.txt
+test2id.txt
+train2id.txt
+type_constrain.txt
+valid2id.txt
+
+-- 2 clone AdaMF-MAT took 1s
+
+######## 3 build the MMKG variants from the protocol (CLIP text features for concept names) ########
+[full] rc=0
+[    3.3s] Protocol: 18186 ảnh, 90974 caption, features clip_ViT-B-32_laion2b.npz (18186, 512), gallery=1000, K=100
+[PSG_full] 9319 entities (133 concepts, 9186 images), 31 relations, 69445 train triples (65131 contains, 4314 concept relations), heldout valid/test 901/902
+
+[shuffle] rc=0
+[    0.6s] Protocol: 18186 ảnh, 90974 caption, features clip_ViT-B-32_laion2b.npz (18186, 512), gallery=1000, K=100
+[PSG_shuf] 9319 entities (133 concepts, 9186 images), 31 relations, 69445 train triples (65131 contains, 4314 concept relations), heldout valid/test 901/902
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+[drop] rc=0
+[    0.6s] Protocol: 18186 ảnh, 90974 caption, features clip_ViT-B-32_laion2b.npz (18186, 512), gallery=1000, K=100
+[PSG_drop] 9319 entities (133 concepts, 9186 images), 31 relations, 65131 train triples (65131 contains, 0 concept relations), heldout valid/test 901/902
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+
+-- 3 build the MMKG variants from the protocol (CLIP text features for concept names) took 95s
+
+######## 4 speed test: 2 epochs on the full variant (also checks the repo accepts the files) ########
+PSG_full smoke: rc=0 time=71s
+--- log tail ---
+ (ent_embeddings): Embedding(9319, 400)
+  (rel_embeddings): Embedding(31, 200)
+  (img_proj): Linear(in_features=512, out_features=400, bias=True)
+  (img_embeddings): Embedding(9319, 512)
+  (text_proj): Linear(in_features=512, out_features=400, bias=True)
+  (text_embeddings): Embedding(9319, 512)
+  (ent_attn): Linear(in_features=400, out_features=1, bias=False)
+)
+Learning Rate of D: 0.0001
+Learning Rate of G: 0.0001
+Finish initializing...
+
+  0%|          | 0/2 [00:00<?, ?it/s]
+Epoch 0 | D loss: 71.207132, G loss 229.200912:   0%|          | 0/2 [00:28<?, ?it/s]
+Epoch 0 | D loss: 71.207132, G loss 229.200912:  50%|█████     | 1/2 [00:28<00:28, 28.08s/it]
+Epoch 1 | D loss: 36.117197, G loss 103.783127:  50%|█████     | 1/2 [00:55<00:28, 28.08s/it]
+Epoch 1 | D loss: 36.117197, G loss 103.783127: 100%|██████████| 2/2 [00:55<00:00, 27.93s/it]
+Epoch 1 | D loss: 36.117197, G loss 103.783127: 100%|██████████| 2/2 [00:55<00:00, 27.96s/it]
+Input Files Path : ./benchmarks/PSG_full/
+The toolkit is importing datasets.
+The total of relations is 31.
+The total of entities is 9319.
+The total of train triples is 69445.
+Input Files Path : ./benchmarks/PSG_full/
+The total of test triples is 902.
+The total of valid triples is 901.
+metric:			 MRR 		 MR 		 hit@10 	 hit@3  	 hit@1 
+l(filter):		 0.115100 	 41.803768 	 0.229490 	 0.114191 	 0.044346 
+r(filter):		 0.102606 	 38.526608 	 0.209534 	 0.089800 	 0.033259 
+averaged(filter):	 0.108853 	 40.165188 	 0.219512 	 0.101996 	 0.038803 
+
+
+
+0.219512
+
+28.0 s/epoch -> 300 epochs for EVERY variant (budget 2.5 h per phase)
+-- 4 speed test: 2 epochs on the full variant (also checks the repo accepts the files) took 71s
+
+######## 5 train AdaMF-MAT: phase A = full (GPU0) + shuffled edges (GPU1) in parallel; phase B = dropped edges ########
+PSG_full full: rc=0 time=9048s
+--- log tail ---
+96/300 [2:28:31<02:00, 30.05s/it]
+Epoch 296 | D loss: 9.647843, G loss 220.724078:  99%|█████████▊| 296/300 [2:29:01<02:00, 30.05s/it]
+Epoch 296 | D loss: 9.647843, G loss 220.724078:  99%|█████████▉| 297/300 [2:29:01<01:30, 30.07s/it]
+Epoch 297 | D loss: 9.698875, G loss 220.153945:  99%|█████████▉| 297/300 [2:29:32<01:30, 30.07s/it]
+Epoch 297 | D loss: 9.698875, G loss 220.153945:  99%|█████████▉| 298/300 [2:29:32<01:00, 30.09s/it]
+Epoch 298 | D loss: 9.659049, G loss 220.585142:  99%|█████████▉| 298/300 [2:30:02<01:00, 30.09s/it]
+Epoch 298 | D loss: 9.659049, G loss 220.585142: 100%|█████████▉| 299/300 [2:30:02<00:30, 30.10s/it]
+Epoch 299 | D loss: 9.672770, G loss 220.593506: 100%|█████████▉| 299/300 [2:30:32<00:30, 30.10s/it]
+Epoch 299 | D loss: 9.672770, G loss 220.593506: 100%|██████████| 300/300 [2:30:32<00:00, 30.11s/it]
+Epoch 299 | D loss: 9.672770, G loss 220.593506: 100%|██████████| 300/300 [2:30:32<00:00, 30.11s/it]
+Input Files Path : ./benchmarks/PSG_full/
+The toolkit is importing datasets.
+The total of relations is 31.
+The total of entities is 9319.
+The total of train triples is 69445.
+Input Files Path : ./benchmarks/PSG_full/
+The total of test triples is 902.
+The total of valid triples is 901.
+metric:			 MRR 		 MR 		 hit@10 	 hit@3  	 hit@1 
+l(filter):		 0.142232 	 22.768293 	 0.414634 	 0.161863 	 0.007761 
+r(filter):		 0.124732 	 22.643015 	 0.383592 	 0.125277 	 0.002217 
+averaged(filter):	 0.133482 	 22.705654 	 0.399113 	 0.143570 	 0.004989 
+
+
+
+0.399113
+
+PSG_shuf full: rc=0 time=9048s
+--- log tail ---
+2:28:26<02:00, 30.09s/it]
+Epoch 296 | D loss: 9.976515, G loss 217.916404:  99%|█████████▊| 296/300 [2:28:56<02:00, 30.09s/it] 
+Epoch 296 | D loss: 9.976515, G loss 217.916404:  99%|█████████▉| 297/300 [2:28:56<01:30, 30.08s/it]
+Epoch 297 | D loss: 10.097099, G loss 217.504249:  99%|█████████▉| 297/300 [2:29:27<01:30, 30.08s/it]
+Epoch 297 | D loss: 10.097099, G loss 217.504249:  99%|█████████▉| 298/300 [2:29:27<01:00, 30.10s/it]
+Epoch 298 | D loss: 10.009627, G loss 217.759771:  99%|█████████▉| 298/300 [2:29:57<01:00, 30.10s/it]
+Epoch 298 | D loss: 10.009627, G loss 217.759771: 100%|█████████▉| 299/300 [2:29:57<00:30, 30.10s/it]
+Epoch 299 | D loss: 10.050413, G loss 217.787115: 100%|█████████▉| 299/300 [2:30:27<00:30, 30.10s/it]
+Epoch 299 | D loss: 10.050413, G loss 217.787115: 100%|██████████| 300/300 [2:30:27<00:00, 30.11s/it]
+Epoch 299 | D loss: 10.050413, G loss 217.787115: 100%|██████████| 300/300 [2:30:27<00:00, 30.09s/it]
+Input Files Path : ./benchmarks/PSG_shuf/
+The toolkit is importing datasets.
+The total of relations is 31.
+The total of entities is 9319.
+The total of train triples is 68956.
+Input Files Path : ./benchmarks/PSG_shuf/
+The total of test triples is 902.
+The total of valid triples is 901.
+metric:			 MRR 		 MR 		 hit@10 	 hit@3  	 hit@1 
+l(filter):		 0.109395 	 42.834812 	 0.251663 	 0.114191 	 0.031042 
+r(filter):		 0.070996 	 42.749447 	 0.189579 	 0.058758 	 0.003326 
+averaged(filter):	 0.090196 	 42.792130 	 0.220621 	 0.086475 	 0.017184 
+
+
+
+0.220621
+
+PSG_drop full: rc=0 time=8473s
+--- log tail ---
+ [2:19:04<01:52, 28.17s/it]
+Epoch 296 | D loss: 7.332626, G loss 220.608785:  99%|█████████▊| 296/300 [2:19:32<01:52, 28.17s/it]
+Epoch 296 | D loss: 7.332626, G loss 220.608785:  99%|█████████▉| 297/300 [2:19:32<01:24, 28.19s/it]
+Epoch 297 | D loss: 7.334796, G loss 220.651784:  99%|█████████▉| 297/300 [2:20:00<01:24, 28.19s/it]
+Epoch 297 | D loss: 7.334796, G loss 220.651784:  99%|█████████▉| 298/300 [2:20:00<00:56, 28.20s/it]
+Epoch 298 | D loss: 7.334385, G loss 220.805268:  99%|█████████▉| 298/300 [2:20:28<00:56, 28.20s/it]
+Epoch 298 | D loss: 7.334385, G loss 220.805268: 100%|█████████▉| 299/300 [2:20:28<00:28, 28.21s/it]
+Epoch 299 | D loss: 7.338880, G loss 220.793511: 100%|█████████▉| 299/300 [2:20:57<00:28, 28.21s/it]
+Epoch 299 | D loss: 7.338880, G loss 220.793511: 100%|██████████| 300/300 [2:20:57<00:00, 28.19s/it]
+Epoch 299 | D loss: 7.338880, G loss 220.793511: 100%|██████████| 300/300 [2:20:57<00:00, 28.19s/it]
+Input Files Path : ./benchmarks/PSG_drop/
+The toolkit is importing datasets.
+The total of relations is 31.
+The total of entities is 9319.
+The total of train triples is 65131.
+Input Files Path : ./benchmarks/PSG_drop/
+The total of test triples is 902.
+The total of valid triples is 901.
+metric:			 MRR 		 MR 		 hit@10 	 hit@3  	 hit@1 
+l(filter):		 0.002991 	 4137.767090 	 0.004435 	 0.001109 	 0.000000 
+r(filter):		 0.005094 	 3666.051025 	 0.011086 	 0.004435 	 0.000000 
+averaged(filter):	 0.004042 	 3901.909180 	 0.007761 	 0.002772 	 0.000000 
+
+
+
+0.007761
+
+-- 5 train AdaMF-MAT: phase A = full (GPU0) + shuffled edges (GPU1) in parallel; phase B = dropped edges took 17521s
+
+######## 6 evaluate each variant with the team protocol (3 folds + full pool, alpha tuned on val) ########
+== PSG_full: rc=0
+---|---|---|---|---|---|---|---|
+| CLIP - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+presence (no relations) (a=0.75) - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+AdaMF-MAT (a=0.7) - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+Adapter - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+| CLIP+Adapter+presence (no relations) (a=0.8) - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+| CLIP+Adapter+AdaMF-MAT (a=0.8) - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+CLIP+presence (no relations) bootstrap vs CLIP (full test pool): {"MRR": {"delta": 0.9351688855135367, "ci95": [0.7409053088146678, 1.1332031043861697], "p_value": 0.0}, "R@1": {"delta": 0.9603951339979877, "ci95": [0.6402634226653252, 1.2622336046830696], "p_value": 0.0}, "R@10": {"delta": 1.0061282356169396, "ci95": [0.7591694868745998, 1.2622336046830696], "p_value": 0.0}}
+CLIP+AdaMF-MAT bootstrap vs CLIP (full test pool): {"MRR": {"delta": 0.7121372703487309, "ci95": [0.4689556046409604, 0.9498917373522912], "p_value": 0.0}, "R@1": {"delta": 0.7042897649318577, "ci95": [0.28354523003750115, 1.115887679502424], "p_value": 0.0}, "R@10": {"delta": 0.914662032379036, "ci95": [0.6128235616939541, 1.2165005030641178], "p_value": 0.0}}
+CLIP+Adapter bootstrap vs CLIP (full test pool): {"MRR": {"delta": 1.8076830998615585, "ci95": [1.3022504328221278, 2.3167910151760993], "p_value": 0.0}, "R@1": {"delta": 1.2165005030641178, "ci95": [0.41159791457056616, 1.9299368883197658], "p_value": 0.001}, "R@10": {"delta": 2.972651605231867, "ci95": [2.4238543858044452, 3.5214488246592883], "p_value": 0.0}}
+CLIP+Adapter+presence (no relations) bootstrap vs CLIP (full test pool): {"MRR": {"delta": 2.6772746600098416, "ci95": [2.170519800929009, 3.1937831178640583], "p_value": 0.0}, "R@1": {"delta": 2.085429433824202, "ci95": [1.3077380407939267, 2.8080124394036403], "p_value": 0.0}, "R@10": {"delta": 3.3751028994786427, "ci95": [2.8445989206988016, 3.9239001189060643], "p_value": 0.0}}
+CLIP+Adapter+presence (no relations) bootstrap vs CLIP+Adapter (full test pool): {"MRR": {"delta": 0.8695915601482829, "ci95": [0.6776834625385957, 1.0516370369897003], "p_value": 0.0}, "R@1": {"delta": 0.8689289307600842, "ci95": [0.5670904600750023, 1.1709960669532595], "p_value": 0.0}, "R@10": {"delta": 0.40245129424677584, "ci95": [0.1829324064758072, 0.6311168023415348], "p_value": 0.0}}
+CLIP+Adapter+AdaMF-MAT bootstrap vs CLIP (full test pool): {"MRR": {"delta": 2.6291111579169404, "ci95": [2.1351910286834217, 3.150526378094129], "p_value": 0.0}, "R@1": {"delta": 2.0945760541479923, "ci95": [1.3077380407939267, 2.8811854019939633], "p_value": 0.0}, "R@10": {"delta": 3.2470502149455776, "ci95": [2.716546236165737, 3.795847434372999], "p_value": 0.0}}
+CLIP+Adapter+AdaMF-MAT bootstrap vs CLIP+Adapter (full test pool): {"MRR": {"delta": 0.8214280580553817, "ci95": [0.5972271067967573, 1.048027506366047], "p_value": 0.0}, "R@1": {"delta": 0.8780755510838745, "ci95": [0.48477087716088907, 1.2805268453306504], "p_value": 0.0}, "R@10": {"delta": 0.2743986097137108, "ci95": [0.027439860971371077, 0.5122107381322601], "p_value": 0.029}}
+saved /kaggle/working/results_PSG_full.json
+
+== PSG_shuf: rc=0
+--|---|---|---|---|---|---|
+| CLIP - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+presence (no relations) (a=0.75) - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+AdaMF-MAT (a=0.75) - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+Adapter - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+| CLIP+Adapter+presence (no relations) (a=0.8) - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+| CLIP+Adapter+AdaMF-MAT (a=0.8) - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+CLIP+presence (no relations) bootstrap vs CLIP (full test pool): {"MRR": {"delta": 0.9351688855135367, "ci95": [0.7409053088146678, 1.1332031043861697], "p_value": 0.0}, "R@1": {"delta": 0.9603951339979877, "ci95": [0.6402634226653252, 1.2622336046830696], "p_value": 0.0}, "R@10": {"delta": 1.0061282356169396, "ci95": [0.7591694868745998, 1.2622336046830696], "p_value": 0.0}}
+CLIP+AdaMF-MAT bootstrap vs CLIP (full test pool): {"MRR": {"delta": 0.6512296056847813, "ci95": [0.4266476435900858, 0.8596221029510484], "p_value": 0.0}, "R@1": {"delta": 0.6402634226653252, "ci95": [0.2561053690661301, 1.0244214762645203], "p_value": 0.001}, "R@10": {"delta": 0.7774627275221806, "ci95": [0.5030641178084698, 1.0518613372358914], "p_value": 0.0}}
+CLIP+Adapter bootstrap vs CLIP (full test pool): {"MRR": {"delta": 1.8076830998615585, "ci95": [1.3022504328221278, 2.3167910151760993], "p_value": 0.0}, "R@1": {"delta": 1.2165005030641178, "ci95": [0.41159791457056616, 1.9299368883197658], "p_value": 0.001}, "R@10": {"delta": 2.972651605231867, "ci95": [2.4238543858044452, 3.5214488246592883], "p_value": 0.0}}
+CLIP+Adapter+presence (no relations) bootstrap vs CLIP (full test pool): {"MRR": {"delta": 2.6772746600098416, "ci95": [2.170519800929009, 3.1937831178640583], "p_value": 0.0}, "R@1": {"delta": 2.085429433824202, "ci95": [1.3077380407939267, 2.8080124394036403], "p_value": 0.0}, "R@10": {"delta": 3.3751028994786427, "ci95": [2.8445989206988016, 3.9239001189060643], "p_value": 0.0}}
+CLIP+Adapter+presence (no relations) bootstrap vs CLIP+Adapter (full test pool): {"MRR": {"delta": 0.8695915601482829, "ci95": [0.6776834625385957, 1.0516370369897003], "p_value": 0.0}, "R@1": {"delta": 0.8689289307600842, "ci95": [0.5670904600750023, 1.1709960669532595], "p_value": 0.0}, "R@10": {"delta": 0.40245129424677584, "ci95": [0.1829324064758072, 0.6311168023415348], "p_value": 0.0}}
+CLIP+Adapter+AdaMF-MAT bootstrap vs CLIP (full test pool): {"MRR": {"delta": 2.6134141059931264, "ci95": [2.1034360956037212, 3.1335627903461343], "p_value": 0.0}, "R@1": {"delta": 2.0488429525290406, "ci95": [1.2802981798225557, 2.7805725784322695], "p_value": 0.0}, "R@10": {"delta": 3.274490075916949, "ci95": [2.7439860971371077, 3.8143693405286734], "p_value": 0.0}}
+CLIP+Adapter+AdaMF-MAT bootstrap vs CLIP+Adapter (full test pool): {"MRR": {"delta": 0.8057310061315675, "ci95": [0.5775633567822922, 1.030247533287926], "p_value": 0.0}, "R@1": {"delta": 0.8323424494649228, "ci95": [0.4481843958657276, 1.2256471233879083], "p_value": 0.0}, "R@10": {"delta": 0.30183847068508185, "ci95": [0.054879721942742155, 0.557943839751212], "p_value": 0.019}}
+saved /kaggle/working/results_PSG_shuf.json
+
+== PSG_drop: rc=0
+|---|---|---|---|---|---|---|
+| CLIP - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+presence (no relations) (a=0.75) - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+AdaMF-MAT (a=0.75) - no_concept | test | 43 | 41.52 ± 3.05 | 66.07 ± 2.47 | 70.88 ± 2.82 | 51.86 ± 3.23 | 56.21 ± 3.27 |
+| CLIP+Adapter - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+| CLIP+Adapter+presence (no relations) (a=0.8) - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+| CLIP+Adapter+AdaMF-MAT (a=0.8) - no_concept | test | 43 | 48.17 ± 6.84 | 66.07 ± 2.47 | 73.04 ± 2.33 | 55.98 ± 5.18 | 59.86 ± 4.63 |
+CLIP+presence (no relations) bootstrap vs CLIP (full test pool): {"MRR": {"delta": 0.9351688855135367, "ci95": [0.7409053088146678, 1.1332031043861697], "p_value": 0.0}, "R@1": {"delta": 0.9603951339979877, "ci95": [0.6402634226653252, 1.2622336046830696], "p_value": 0.0}, "R@10": {"delta": 1.0061282356169396, "ci95": [0.7591694868745998, 1.2622336046830696], "p_value": 0.0}}
+CLIP+AdaMF-MAT bootstrap vs CLIP (full test pool): {"MRR": {"delta": 0.7182474283636777, "ci95": [0.4847239305525078, 0.944091929241517], "p_value": 0.0}, "R@1": {"delta": 0.7042897649318577, "ci95": [0.3201317113326626, 1.0793011982072624], "p_value": 0.0}, "R@10": {"delta": 0.8414890697887131, "ci95": [0.5670904600750023, 1.115887679502424], "p_value": 0.0}}
+CLIP+Adapter bootstrap vs CLIP (full test pool): {"MRR": {"delta": 1.8076830998615585, "ci95": [1.3022504328221278, 2.3167910151760993], "p_value": 0.0}, "R@1": {"delta": 1.2165005030641178, "ci95": [0.41159791457056616, 1.9299368883197658], "p_value": 0.001}, "R@10": {"delta": 2.972651605231867, "ci95": [2.4238543858044452, 3.5214488246592883], "p_value": 0.0}}
+CLIP+Adapter+presence (no relations) bootstrap vs CLIP (full test pool): {"MRR": {"delta": 2.6772746600098416, "ci95": [2.170519800929009, 3.1937831178640583], "p_value": 0.0}, "R@1": {"delta": 2.085429433824202, "ci95": [1.3077380407939267, 2.8080124394036403], "p_value": 0.0}, "R@10": {"delta": 3.3751028994786427, "ci95": [2.8445989206988016, 3.9239001189060643], "p_value": 0.0}}
+CLIP+Adapter+presence (no relations) bootstrap vs CLIP+Adapter (full test pool): {"MRR": {"delta": 0.8695915601482829, "ci95": [0.6776834625385957, 1.0516370369897003], "p_value": 0.0}, "R@1": {"delta": 0.8689289307600842, "ci95": [0.5670904600750023, 1.1709960669532595], "p_value": 0.0}, "R@10": {"delta": 0.40245129424677584, "ci95": [0.1829324064758072, 0.6311168023415348], "p_value": 0.0}}
+CLIP+Adapter+AdaMF-MAT bootstrap vs CLIP (full test pool): {"MRR": {"delta": 2.5929761676816963, "ci95": [2.0681305332601245, 3.1072072298418547], "p_value": 0.0}, "R@1": {"delta": 2.0122564712338793, "ci95": [1.243940364035489, 2.7622793377846886], "p_value": 0.0}, "R@10": {"delta": 3.2196103539742067, "ci95": [2.679959754870575, 3.7684075734016282], "p_value": 0.0}}
+CLIP+Adapter+AdaMF-MAT bootstrap vs CLIP+Adapter (full test pool): {"MRR": {"delta": 0.7852930678201376, "ci95": [0.5558914663607329, 1.0169411014231955], "p_value": 0.0}, "R@1": {"delta": 0.7957559681697612, "ci95": [0.39330467392298546, 1.1892893076008402], "p_value": 0.0}, "R@10": {"delta": 0.2469587487423397, "ci95": [-0.018521906155675467, 0.4941461629927729], "p_value": 0.074}}
+saved /kaggle/working/results_PSG_drop.json
+
+-- 6 evaluate each variant with the team protocol (3 folds + full pool, alpha tuned on val) took 212s
+
+######## 7 summary ########
+[PSG_full]  test, 1K galleries, mean over folds (R@1 / R@10 / MRR) and by query group (MRR)
+   CLIP                               R@1 57.44  R@10 91.86  MRR 69.35  {'direct': 72.52, 'indirect': 69.11, 'no_concept': 51.86}
+   CLIP+presence (no relations)       R@1 58.34  R@10 92.45  MRR 70.18  {'direct': 74.94, 'indirect': 69.74, 'no_concept': 51.86}
+   CLIP+AdaMF-MAT                     R@1 58.17  R@10 92.52  MRR 70.01  {'direct': 74.09, 'indirect': 69.67, 'no_concept': 51.86}
+   CLIP+Adapter                       R@1 59.00  R@10 94.10  MRR 71.26  {'direct': 73.72, 'indirect': 71.1, 'no_concept': 55.98}
+   CLIP+Adapter+presence (no relations) R@1 59.77  R@10 94.51  MRR 72.02  {'direct': 76.42, 'indirect': 71.6, 'no_concept': 55.98}
+   CLIP+Adapter+AdaMF-MAT             R@1 59.92  R@10 94.44  MRR 72.05  {'direct': 75.93, 'indirect': 71.7, 'no_concept': 55.98}
+[PSG_shuf]  test, 1K galleries, mean over folds (R@1 / R@10 / MRR) and by query group (MRR)
+   CLIP                               R@1 57.44  R@10 91.86  MRR 69.35  {'direct': 72.52, 'indirect': 69.11, 'no_concept': 51.86}
+   CLIP+presence (no relations)       R@1 58.34  R@10 92.45  MRR 70.18  {'direct': 74.94, 'indirect': 69.74, 'no_concept': 51.86}
+   CLIP+AdaMF-MAT                     R@1 58.00  R@10 92.36  MRR 69.89  {'direct': 73.7, 'indirect': 69.58, 'no_concept': 51.86}
+   CLIP+Adapter                       R@1 59.00  R@10 94.10  MRR 71.26  {'direct': 73.72, 'indirect': 71.1, 'no_concept': 55.98}
+   CLIP+Adapter+presence (no relations) R@1 59.77  R@10 94.51  MRR 72.02  {'direct': 76.42, 'indirect': 71.6, 'no_concept': 55.98}
+   CLIP+Adapter+AdaMF-MAT             R@1 59.91  R@10 94.46  MRR 72.05  {'direct': 76.07, 'indirect': 71.68, 'no_concept': 55.98}
+[PSG_drop]  test, 1K galleries, mean over folds (R@1 / R@10 / MRR) and by query group (MRR)
+   CLIP                               R@1 57.44  R@10 91.86  MRR 69.35  {'direct': 72.52, 'indirect': 69.11, 'no_concept': 51.86}
+   CLIP+presence (no relations)       R@1 58.34  R@10 92.45  MRR 70.18  {'direct': 74.94, 'indirect': 69.74, 'no_concept': 51.86}
+   CLIP+AdaMF-MAT                     R@1 58.10  R@10 92.40  MRR 69.96  {'direct': 73.69, 'indirect': 69.66, 'no_concept': 51.86}
+   CLIP+Adapter                       R@1 59.00  R@10 94.10  MRR 71.26  {'direct': 73.72, 'indirect': 71.1, 'no_concept': 55.98}
+   CLIP+Adapter+presence (no relations) R@1 59.77  R@10 94.51  MRR 72.02  {'direct': 76.42, 'indirect': 71.6, 'no_concept': 55.98}
+   CLIP+Adapter+AdaMF-MAT             R@1 59.90  R@10 94.39  MRR 72.04  {'direct': 76.27, 'indirect': 71.64, 'no_concept': 55.98}
+KGC on held-out concept relations [PSG_full]: averaged(filter):	 0.133482 	 22.705654 	 0.399113 	 0.143570 	 0.004989
+KGC on held-out concept relations [PSG_shuf]: averaged(filter):	 0.090196 	 42.792130 	 0.220621 	 0.086475 	 0.017184
+KGC on held-out concept relations [PSG_drop]: averaged(filter):	 0.004042 	 3901.909180 	 0.007761 	 0.002772 	 0.000000
+-- 7 summary took 0s
+
+DONE. Send me /kaggle/working/report_protocol.txt and results_PSG_*.json (small files).

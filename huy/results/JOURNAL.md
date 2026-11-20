@@ -15,6 +15,22 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
+## #11 · 2026-11-20 · AdaMF-MAT (Khánh) trên PSG + ablation, Kaggle T4 (`huychau/mmxai-adamf-psg` v1)
+
+- **Mục đích:** phương pháp cấp độ 2 (AdaMF-MAT) trên tập công khai thứ hai, cùng giao thức PSG với #10; thêm ablation của nó.
+- **Cấu hình:** notebook của Khánh nguyên vẹn (`results/adamf_psg/adamf_psg.ipynb`), chỉ đổi input = dataset riêng tư
+  `huychau/mmxai-psg-bundle`, tên MMKG `PSG_*`, `RUN_ABLATIONS=True`. MMKG: 133 nhãn PSG + 9.186 ảnh (6.000 train + val/test),
+  69.445 bộ ba (65.131 contains + 4.314 quan hệ khái niệm). 28 s/epoch → 300 epoch (trần), 1 seed huấn luyện; full ∥ shuffle trên
+  2 GPU rồi drop; tổng ≈ 5 giờ GPU. Lưu ý: từ vựng của AdaMF-MAT chỉ gồm nhãn ảnh, nên khái niệm mở rộng (woman…) bị bỏ qua.
+- **Kết quả (MRR %, toàn pool 2186 ảnh, `results/psg_vs_adamf.md`):** CLIP 59.59 · +AdaMF-MAT 60.30 (+0.71 [0.47, 0.95] vs CLIP)
+  · khớp tên 60.52 · Adapter (Khánh) 61.40 → +AdaMF-MAT 62.22 (+0.82 vs adapter) ≈ Adapter+khớp tên 62.27 (Δ +0.05 [−0.13, 0.22]).
+  Ablation AdaMF-MAT trên nền adapter: xáo cạnh 62.20, bỏ quan hệ 62.18 (Δ −0.02 / −0.04, CI chứa 0).
+  QA-Graph (Huy, seed 0) 64.29 → hơn Adapter+AdaMF-MAT **+2.07 [1.66, 2.48]** (indirect +2.19, direct +1.29).
+  KGC trên quan hệ khái niệm giữ lại: MRR 0.133 (full) / 0.090 (shuffle) / 0.004 (drop) — có học quan hệ, nhưng không giúp tìm ảnh.
+- **Nhận xét & kết luận:** lặp lại đúng kết luận của Khánh trên VG: lợi ích của AdaMF-MAT = thông tin hiện diện đối tượng
+  (bằng baseline khớp tên); xáo/bỏ quan hệ không đổi kết quả → phần quan hệ không đóng góp vào xếp hạng. QA-Graph vẫn hơn rõ.
+- **Output:** `results/adamf_psg/` (report, results_PSG_*.json có hạng từng truy vấn, notebook), `tools/psg_vs_adamf.py`.
+
 ## #10 · 2026-11-20 · DATASET THỨ HAI: PSG — 8 cấu hình × 3 seed, máy local (tag `s0` + `s12`)
 
 - **Mục đích:** kiểm tra kết luận Task 1 trên bộ dữ liệu công khai thứ hai cùng cấu trúc VG (scene graph + caption COCO).
