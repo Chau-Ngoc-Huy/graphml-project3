@@ -1,0 +1,3743 @@
+accessory	IsA	clothing
+action	IsA	drive
+action	IsA	event
+action	PartOf	keyboard
+action	Synonym	brush
+action	Synonym	case
+action	Synonym	course
+action	Synonym	suit
+adult	IsA	animal
+adult	IsA	person
+advertisement	AtLocation	bus
+advertisement	AtLocation	magazine
+advertisement	AtLocation	store
+advertisement	AtLocation	tv
+aircraft	AtLocation	sky
+aircraft	UsedFor	fly
+aircraft	UsedFor	land
+airliner	IsA	airplane
+airplane	AtLocation	hangar
+airplane	AtLocation	sky
+airplane	IsA	aircraft
+airplane	IsA	vehicle
+airplane	Synonym	plane
+airplane	UsedFor	cargo
+airplane	UsedFor	fly
+airplane	UsedFor	transportation
+airport	AtLocation	city
+airport	AtLocation	suitcase
+alley	IsA	street
+alley	Synonym	lane
+american	IsA	person
+animal	AtLocation	cafe
+animal	AtLocation	park
+animal	AtLocation	zoo
+animal	HasA	meat
+animal	IsA	single
+animal	UsedFor	food
+animal	UsedFor	fur
+animal	UsedFor	pet
+apartment	AtLocation	building
+apartment	AtLocation	town
+apartment	HasA	door
+apartment	HasA	kitchen
+apartment	IsA	building
+apple	AtLocation	house
+apple	AtLocation	refrigerator
+apple	IsA	fruit
+apple	IsA	plant
+apple	IsA	tree
+apple	UsedFor	dessert
+apple	UsedFor	pie
+appliance	AtLocation	home
+appliance	IsA	device
+arm	AtLocation	chair
+arm	AtLocation	coat
+arm	AtLocation	house
+arm	AtLocation	jacket
+arm	HasA	hand
+arm	IsA	holder
+arm	PartOf	chair
+arm	PartOf	person
+arm	Synonym	branch
+arm	UsedFor	wave
+art	AtLocation	museum
+art	UsedFor	people
+asian	IsA	american
+asian	IsA	person
+athlete	AtLocation	stadium
+athlete	IsA	person
+audience	AtLocation	church
+audience	AtLocation	school
+audience	AtLocation	stadium
+baby	AtLocation	house
+baby	AtLocation	rug
+baby	IsA	child
+baby	Synonym	child
+backpack	IsA	bag
+bacon	AtLocation	refrigerator
+bacon	Synonym	ham
+bag	AtLocation	bed
+bag	AtLocation	desk
+bag	AtLocation	drawer
+bag	AtLocation	market
+bag	AtLocation	shelf
+bag	AtLocation	trash
+bag	IsA	baggage
+bag	IsA	container
+bag	Synonym	base
+bag	Synonym	dog
+bag	Synonym	handbag
+baggage	AtLocation	airport
+baggage	AtLocation	room
+baggage	AtLocation	train station
+baggage	IsA	case
+baggage	IsA	woman
+baggage	Synonym	luggage
+bakery	IsA	shop
+bakery	IsA	store
+balance	IsA	person
+balance	IsA	structure
+balcony	AtLocation	building
+balcony	AtLocation	hotel
+balcony	AtLocation	house
+balcony	IsA	structure
+ball	AtLocation	baseball field
+ball	AtLocation	baseball game
+ball	AtLocation	beach
+ball	AtLocation	closet
+ball	AtLocation	hole
+ball	AtLocation	soccer field
+ball	AtLocation	soccer game
+ball	AtLocation	sport
+ball	AtLocation	street
+ball	CapableOf	toy
+ball	IsA	event
+ball	IsA	party
+ball	IsA	pitch
+ball	IsA	structure
+ball	IsA	toy
+ball	IsA	video game
+ball	PartOf	hand
+ball	Synonym	baseball
+ball	UsedFor	game
+balloon	AtLocation	circus
+balloon	AtLocation	sky
+balloon	UsedFor	fly
+balloon	UsedFor	party
+banana	IsA	dessert
+banana	IsA	food
+banana	IsA	hand
+banana tree	IsA	tree
+banana tree	Synonym	banana
+banner	IsA	flag
+bar	AtLocation	airport
+bar	AtLocation	city
+bar	AtLocation	restaurant
+bar	AtLocation	street
+bar	IsA	barrier
+bar	IsA	business
+bar	IsA	counter
+bar	IsA	place
+bar	IsA	railing
+bar	PartOf	court
+bar	Synonym	block
+bar	Synonym	cake
+bar	Synonym	pipe
+bar	Synonym	stripe
+barn	AtLocation	country
+barn	AtLocation	countryside
+barn	AtLocation	field
+barn	IsA	building
+barrier	IsA	obstacle
+barrier	Synonym	obstacle
+base	IsA	bottom
+base	PartOf	box
+base	PartOf	lamp
+base	Synonym	floor
+baseball	AtLocation	baseball game
+baseball	AtLocation	park
+baseball	IsA	ball
+baseball	IsA	game
+baseball	IsA	sport
+baseball bat	IsA	bat
+baseball field	AtLocation	country
+baseball field	IsA	playing field
+baseball game	Synonym	baseball
+baseball glove	IsA	glove
+baseball player	AtLocation	plate
+baseball player	CapableOf	pitch
+baseball player	IsA	athlete
+baseball player	IsA	person
+baseball player	IsA	worker
+basket	AtLocation	church
+basket	AtLocation	home
+basket	AtLocation	kitchen
+basket	AtLocation	office
+basket	AtLocation	store
+basket	IsA	container
+basket	Synonym	basketball
+basket	Synonym	cart
+basketball	AtLocation	park
+basketball	AtLocation	store
+basketball	IsA	ball
+basketball	IsA	sport
+bat	AtLocation	bridge
+bat	AtLocation	tree
+bat	CapableOf	fly
+bat	IsA	animal
+bat	UsedFor	baseball
+bat	UsedFor	fun
+bath	AtLocation	hotel room
+bath	AtLocation	house
+bath	Synonym	bathtub
+bathroom	AtLocation	airport
+bathroom	AtLocation	apartment
+bathroom	AtLocation	building
+bathroom	AtLocation	hotel
+bathroom	AtLocation	house
+bathroom	AtLocation	race track
+bathroom	AtLocation	school
+bathroom	IsA	restroom
+bathroom	IsA	room
+bathroom	Synonym	bath
+bathroom	Synonym	restroom
+bathroom	Synonym	toilet
+bathtub	PartOf	bathroom
+bathtub	Synonym	bath
+bay	AtLocation	lake
+bay	AtLocation	water
+bay	HasA	water
+bay	IsA	horse
+bay	IsA	person
+bay	PartOf	aircraft
+bay	PartOf	sea
+bay	PartOf	ship
+beach	IsA	place
+beach	IsA	shore
+beach	PartOf	shore
+beach	Synonym	sand
+beach chair	IsA	chair
+beak	IsA	mouth
+beak	IsA	nose
+beak	PartOf	bird
+bean	AtLocation	coffee
+bean	AtLocation	soup
+bean	IsA	fruit
+bean	IsA	vegetable
+bear	AtLocation	countryside
+bear	AtLocation	drawer
+bear	AtLocation	meadow
+bear	AtLocation	park
+bear	IsA	animal
+bear	IsA	person
+bear	Synonym	fruit
+beard	IsA	hair
+beard	IsA	person
+beard	PartOf	face
+beard	PartOf	goat
+bed	AtLocation	apartment
+bed	AtLocation	hospital
+bed	AtLocation	hotel room
+bed	AtLocation	house
+bed	AtLocation	room
+bed	IsA	furniture
+bed	IsA	place
+bed	IsA	surface
+bed	PartOf	bedroom
+bedroom	AtLocation	apartment
+bedroom	AtLocation	house
+bedroom	HasA	floor
+bedroom	IsA	room
+beef	AtLocation	plate
+beef	IsA	cattle
+beef	IsA	food
+beef	IsA	meat
+beef	PartOf	cattle
+beer	AtLocation	bar
+beer	AtLocation	beach
+beer	AtLocation	boat
+beer	AtLocation	bottle
+beer	AtLocation	container
+beer	AtLocation	home
+beer	AtLocation	plane
+beer	AtLocation	refrigerator
+beer	AtLocation	shelf
+beer	AtLocation	soccer game
+beer	AtLocation	store
+beer	HasA	water
+beer	IsA	beverage
+bell	AtLocation	boat
+bell	AtLocation	church
+bell	AtLocation	school
+belt	AtLocation	closet
+belt	IsA	accessory
+belt	Synonym	book
+ben	IsA	mountain
+bench	AtLocation	bus stop
+bench	AtLocation	garden
+bench	AtLocation	lawn
+bench	AtLocation	train station
+bench	IsA	furniture
+bench	IsA	seat
+bench	PartOf	court
+bench	PartOf	team
+bench	UsedFor	seat
+bend	IsA	section
+bend	PartOf	road
+berry	IsA	fruit
+beverage	AtLocation	bottle
+beverage	IsA	food
+beverage	IsA	liquid
+bicycle	AtLocation	garage
+bicycle	AtLocation	park
+bicycle	AtLocation	store
+bicycle	AtLocation	street
+bicycle	HasA	chain
+bicycle	IsA	bike
+bicycle	IsA	toy
+bicycle	IsA	transportation
+bicycle	IsA	vehicle
+bicycle	Synonym	bike
+bicycle	Synonym	cycle
+bicycle	UsedFor	transportation
+bike	AtLocation	garage
+bike	AtLocation	street
+bike	IsA	bicycle
+bike	Synonym	bicycle
+bike	Synonym	motorcycle
+bird	AtLocation	bush
+bird	AtLocation	cage
+bird	AtLocation	countryside
+bird	AtLocation	forest
+bird	AtLocation	garden
+bird	AtLocation	lawn
+bird	AtLocation	roof
+bird	AtLocation	sea
+bird	AtLocation	sky
+bird	AtLocation	tree
+bird	CapableOf	fly
+bird	CapableOf	pet
+bird	IsA	animal
+bird	IsA	meat
+bird	PartOf	flock
+bird	Synonym	girl
+bird	Synonym	guy
+bird	Synonym	time
+birthday cake	IsA	cake
+blanket	AtLocation	backpack
+blanket	AtLocation	bedroom
+blanket	AtLocation	closet
+blanket	AtLocation	hospital
+blender	AtLocation	apartment
+blender	AtLocation	kitchen
+blender	IsA	magazine
+blender	IsA	mountain
+block	IsA	collection
+board	AtLocation	building
+board	AtLocation	store
+board	IsA	sheet
+board	IsA	surface
+board	Synonym	cabinet
+board	Synonym	dining table
+board	Synonym	meal
+board	Synonym	table
+board	UsedFor	building
+boat	AtLocation	bay
+boat	AtLocation	garage
+boat	AtLocation	lake
+boat	AtLocation	ocean
+boat	AtLocation	river
+boat	AtLocation	water
+boat	IsA	ship
+boat	IsA	vehicle
+boat	Synonym	ship
+book	AtLocation	backpack
+book	AtLocation	bed
+book	AtLocation	bedroom
+book	AtLocation	closet
+book	AtLocation	coffee table
+book	AtLocation	desk
+book	AtLocation	drawer
+book	AtLocation	floor
+book	AtLocation	house
+book	AtLocation	shelf
+book	AtLocation	stack
+book	AtLocation	store
+book	AtLocation	suitcase
+book	AtLocation	table
+book	HasA	story
+book	IsA	collection
+book	IsA	device
+book	IsA	object
+book	IsA	product
+book	IsA	section
+book	UsedFor	school
+boot	AtLocation	foot
+boot	IsA	shoe
+boot	PartOf	car
+boot	Synonym	trunk
+booth	HasA	door
+booth	IsA	closet
+booth	IsA	shop
+booth	IsA	table
+bottle	AtLocation	store
+bottle	HasA	liquid
+bottle	IsA	container
+bottom	AtLocation	water
+bottom	Synonym	base
+bottom	Synonym	bed
+bow tie	IsA	tie
+bowl	AtLocation	apartment
+bowl	AtLocation	cabinet
+bowl	AtLocation	cupboard
+bowl	AtLocation	refrigerator
+bowl	AtLocation	restaurant
+bowl	AtLocation	sink
+bowl	AtLocation	table
+bowl	IsA	ball
+bowl	IsA	container
+bowl	IsA	dish
+bowl	PartOf	pipe
+bowl	Synonym	stadium
+bowl	UsedFor	soup
+bowl	UsedFor	sugar
+box	AtLocation	closet
+box	AtLocation	garage
+box	AtLocation	pen
+box	AtLocation	warehouse
+box	IsA	container
+box	IsA	seat
+box	IsA	tree
+box	PartOf	balcony
+box	PartOf	coach
+box	Synonym	case
+box	Synonym	computer
+box	Synonym	cup
+box	UsedFor	seat
+box	UsedFor	store
+branch	AtLocation	forest
+branch	AtLocation	trunk
+branch	IsA	stream
+branch	Synonym	arm
+branch	Synonym	section
+bread	AtLocation	basket
+bread	AtLocation	dinner
+bread	AtLocation	market
+bread	AtLocation	oven
+bread	AtLocation	refrigerator
+bread	AtLocation	sandwich
+bread	AtLocation	store
+bread	AtLocation	toaster
+bread	HasA	crust
+bread	IsA	food
+bread	PartOf	sandwich
+breakfast	AtLocation	table
+breakfast	IsA	meal
+brick	IsA	block
+brick	PartOf	brick wall
+bridge	AtLocation	mouth
+bridge	AtLocation	river
+bridge	IsA	game
+bridge	IsA	link
+bridge	IsA	structure
+bridge	PartOf	guitar
+bridge	PartOf	nose
+british	IsA	european
+british	IsA	person
+broccoli	AtLocation	plate
+brown bear	IsA	bear
+brush	AtLocation	garage
+brush	IsA	tail
+brush	Synonym	tail
+brush	UsedFor	paint
+brush	UsedFor	painting
+bucket	AtLocation	garage
+bucket	AtLocation	well
+bucket	HasA	handle
+bucket	IsA	container
+building	AtLocation	office
+building	AtLocation	town
+building	IsA	structure
+building	Synonym	construction
+bull	IsA	adult
+bull	IsA	animal
+bull	IsA	cattle
+bull	IsA	man
+bull	IsA	person
+bull	PartOf	cattle
+bull	Synonym	guy
+bunk	IsA	bed
+bunk	Synonym	bunk bed
+bunk bed	IsA	bed
+burger	IsA	food
+burger	IsA	sandwich
+burger	Synonym	hamburger
+bus	AtLocation	bus stop
+bus	AtLocation	city
+bus	AtLocation	computer
+bus	AtLocation	garage
+bus	AtLocation	road
+bus	AtLocation	school
+bus	AtLocation	street
+bus	IsA	car
+bus	UsedFor	transportation
+bus stop	AtLocation	airport
+bus stop	AtLocation	city
+bus stop	AtLocation	town
+bush	IsA	wilderness
+business	AtLocation	building
+business	AtLocation	city
+business	AtLocation	skyscraper
+butter	AtLocation	pastry
+butter	AtLocation	refrigerator
+butter	AtLocation	restaurant
+butter	AtLocation	store
+butter	IsA	condiment
+butter	IsA	food
+butter	IsA	grocery
+button	PartOf	coat
+cabin	AtLocation	plane
+cabin	IsA	building
+cabin	IsA	home
+cabin	IsA	house
+cabin	PartOf	aircraft
+cabin	Synonym	cell
+cabinet	IsA	box
+cabinet	IsA	furniture
+cafe	AtLocation	building
+cafe	AtLocation	city
+cafe	AtLocation	large city
+cafe	AtLocation	pie
+cafe	AtLocation	town
+cafe	IsA	restaurant
+cafe	UsedFor	dinner
+cafe	UsedFor	lunch
+cage	AtLocation	zoo
+cage	IsA	net
+cake	AtLocation	bakery
+cake	AtLocation	oven
+cake	AtLocation	party
+cake	AtLocation	plate
+cake	AtLocation	refrigerator
+cake	IsA	block
+cake	IsA	dessert
+cake	IsA	food
+cake	Synonym	block
+cake	Synonym	coat
+cake	Synonym	crust
+cake	UsedFor	dessert
+cake	UsedFor	party
+cake	UsedFor	wedding
+calf	IsA	animal
+calf	IsA	cow
+calf	IsA	leather
+calf	PartOf	cattle
+camera	AtLocation	drawer
+camera	AtLocation	suitcase
+camera	IsA	device
+camera	UsedFor	photograph
+canal	AtLocation	bridge
+canal	HasA	water
+candle	AtLocation	bedroom
+candle	AtLocation	birthday cake
+candle	AtLocation	cabinet
+candle	AtLocation	church
+candle	AtLocation	drawer
+candle	AtLocation	kitchen
+candle	AtLocation	restaurant
+candle	AtLocation	room
+candle	AtLocation	shelf
+candle	AtLocation	shop
+candle	AtLocation	table
+candle	IsA	lamp
+candle	IsA	light
+candle	UsedFor	light
+candy	AtLocation	box
+candy	AtLocation	desktop
+candy	AtLocation	jar
+candy	AtLocation	purse
+candy	AtLocation	shop
+candy	AtLocation	store
+candy	HasA	sugar
+candy	IsA	food
+candy	IsA	snack
+canoe	AtLocation	stream
+canoe	AtLocation	water
+canoe	IsA	boat
+canoe	IsA	ship
+canoe	IsA	small boat
+canoe	IsA	vehicle
+canoe	UsedFor	fun
+cap	AtLocation	suitcase
+cap	Synonym	ceiling
+cap	Synonym	hood
+car	AtLocation	city
+car	AtLocation	driveway
+car	AtLocation	freeway
+car	AtLocation	highway
+car	AtLocation	land
+car	AtLocation	parade
+car	AtLocation	race track
+car	AtLocation	road
+car	AtLocation	street corner
+car	CapableOf	stall
+car	HasA	engine
+car	HasA	horn
+car	HasA	roof
+car	HasA	seat
+car	IsA	item
+car	IsA	machine
+car	IsA	tool
+car	IsA	vehicle
+car	PartOf	train
+car	Synonym	carriage
+car	UsedFor	drive
+car	UsedFor	fun
+car	UsedFor	people
+card	AtLocation	deck
+card	AtLocation	store
+card	IsA	cardboard
+card	IsA	paper
+card	Synonym	poster
+card	UsedFor	business
+card	UsedFor	deck
+cardboard	AtLocation	box
+cardboard	AtLocation	warehouse
+cardboard	IsA	paper
+cargo	AtLocation	airplane
+cargo	AtLocation	boat
+cargo	AtLocation	plane
+cargo	AtLocation	ship
+cargo	AtLocation	train
+carpet	AtLocation	bathroom
+carpet	AtLocation	bed
+carpet	AtLocation	bedroom
+carpet	AtLocation	building
+carpet	AtLocation	church
+carpet	AtLocation	closet
+carpet	AtLocation	desk
+carpet	AtLocation	hotel
+carpet	AtLocation	house
+carpet	AtLocation	office
+carpet	AtLocation	restaurant
+carpet	AtLocation	room
+carpet	AtLocation	store
+carpet	AtLocation	table
+carpet	Synonym	rug
+carriage	IsA	box
+carrot	IsA	vegetable
+cart	IsA	box
+cart	IsA	carriage
+cart	IsA	vehicle
+cartoon	AtLocation	television
+case	AtLocation	trunk
+case	IsA	container
+case	IsA	person
+case	Synonym	event
+cat	AtLocation	alley
+cat	AtLocation	apartment
+cat	AtLocation	art
+cat	AtLocation	bag
+cat	AtLocation	barn
+cat	AtLocation	bed
+cat	AtLocation	bedroom
+cat	AtLocation	box
+cat	AtLocation	cage
+cat	AtLocation	car
+cat	AtLocation	cartoon
+cat	AtLocation	chair
+cat	AtLocation	closet
+cat	AtLocation	couch
+cat	AtLocation	cream
+cat	AtLocation	desk
+cat	AtLocation	dirt
+cat	AtLocation	field
+cat	AtLocation	floor
+cat	AtLocation	game
+cat	AtLocation	grass
+cat	AtLocation	ground
+cat	AtLocation	home
+cat	AtLocation	hose
+cat	AtLocation	house
+cat	AtLocation	jungle
+cat	AtLocation	kitchen
+cat	AtLocation	lap
+cat	AtLocation	microwave
+cat	AtLocation	park
+cat	AtLocation	roof
+cat	AtLocation	rug
+cat	AtLocation	shelf
+cat	AtLocation	sofa
+cat	AtLocation	story
+cat	AtLocation	sun
+cat	AtLocation	table
+cat	AtLocation	toaster
+cat	AtLocation	town
+cat	AtLocation	way
+cat	AtLocation	window sill
+cat	AtLocation	zoo
+cat	CapableOf	pet
+cat	HasA	hair
+cat	HasA	nose
+cat	IsA	animal
+cat	IsA	book
+cat	IsA	woman
+cat	Synonym	guy
+cat	UsedFor	pet
+cattle	AtLocation	country
+cattle	AtLocation	farm
+ceiling	AtLocation	building
+ceiling	AtLocation	house
+ceiling	IsA	control
+ceiling	PartOf	hallway
+ceiling	PartOf	room
+ceiling	UsedFor	painting
+cell	IsA	book
+cell	IsA	room
+cell phone	AtLocation	backpack
+cell phone	AtLocation	shelf
+cell phone	IsA	telephone
+cell phone	Synonym	cell
+cell phone	Synonym	mobile phone
+cellular phone	IsA	gear
+cellular phone	IsA	phone
+cellular phone	IsA	product
+cellular phone	Synonym	cell phone
+cellular phone	Synonym	mobile phone
+cement	AtLocation	building
+cement	AtLocation	ground
+cement	IsA	concrete
+cement	PartOf	concrete
+center	IsA	building
+center	IsA	object
+center	IsA	place
+center	IsA	point
+center	IsA	position
+center	Synonym	plaza
+chain	AtLocation	bicycle
+chain	AtLocation	garage
+chain	AtLocation	motorbike
+chain	IsA	business
+chain	PartOf	bicycle
+chain link fence	IsA	fence
+chair	AtLocation	airport
+chair	AtLocation	bedroom
+chair	AtLocation	building
+chair	AtLocation	church
+chair	AtLocation	desk
+chair	AtLocation	floor
+chair	AtLocation	kitchen
+chair	AtLocation	living room
+chair	AtLocation	office
+chair	AtLocation	porch
+chair	AtLocation	room
+chair	IsA	furniture
+chair	IsA	place
+chair	IsA	seat
+chair	IsA	stool
+chair	Synonym	stool
+chair	UsedFor	people
+chair	UsedFor	seat
+cheese	AtLocation	market
+cheese	AtLocation	pizza
+cheese	AtLocation	plate
+cheese	AtLocation	refrigerator
+cheese	IsA	food
+cheese	IsA	magazine
+cheese	PartOf	pizza
+cheese pizza	IsA	pizza
+chest	AtLocation	animal
+chest	AtLocation	bedroom
+chest	AtLocation	house
+chest	IsA	box
+chest	IsA	container
+chest	IsA	furniture
+chest	PartOf	person
+chest	Synonym	case
+chest	Synonym	trunk
+chicken	AtLocation	freezer
+chicken	AtLocation	oven
+chicken	AtLocation	pizza
+chicken	AtLocation	plate
+chicken	CapableOf	food
+chicken	CapableOf	pet
+chicken	IsA	bird
+chicken	IsA	food
+chicken	IsA	meat
+child	AtLocation	family
+child	AtLocation	pen
+child	AtLocation	school
+child	IsA	animal
+child	IsA	person
+child	PartOf	family
+child	Synonym	product
+child	UsedFor	fun
+chinese	IsA	asian
+chinese	IsA	person
+chip	IsA	counter
+chip	IsA	magazine
+chip	PartOf	computer
+chocolate	AtLocation	box
+chocolate	AtLocation	mouth
+chocolate	AtLocation	restaurant
+chocolate	IsA	candy
+chocolate	IsA	dessert
+chocolate	IsA	food
+chocolate cake	IsA	cake
+chocolate cake	IsA	food
+church	AtLocation	city
+church	AtLocation	town
+church	AtLocation	wedding
+church	IsA	building
+church	IsA	place
+circus	IsA	magazine
+circus	IsA	plaza
+circus	IsA	stadium
+circus	IsA	video game
+city	AtLocation	bus
+city	AtLocation	country
+city	IsA	book
+city	IsA	market
+city	IsA	place
+city	IsA	town
+city	UsedFor	people
+city bus	IsA	bus
+clock	AtLocation	airport
+clock	AtLocation	car
+clock	AtLocation	desk
+clock	AtLocation	house
+clock	AtLocation	office
+clock	AtLocation	shelf
+clock	AtLocation	store
+clock	AtLocation	table
+clock	AtLocation	train station
+clock	AtLocation	wall
+clock	HasA	face
+clock	IsA	device
+clock	IsA	machine
+clock	Synonym	time
+clock	UsedFor	people
+clock face	IsA	face
+clock face	PartOf	clock
+closet	AtLocation	bedroom
+closet	AtLocation	hotel
+closet	AtLocation	house
+closet	AtLocation	room
+closet	AtLocation	school
+closet	IsA	room
+closet	Synonym	cabinet
+closet	Synonym	cupboard
+cloth	AtLocation	bathroom
+cloth	AtLocation	bedroom
+cloth	AtLocation	closet
+cloth	AtLocation	clothes
+cloth	AtLocation	kitchen
+cloth	AtLocation	store
+cloth	AtLocation	table
+cloth	UsedFor	clothes
+cloth	UsedFor	clothing
+clothes	AtLocation	bed
+clothes	AtLocation	bedroom
+clothes	AtLocation	cabinet
+clothes	AtLocation	closet
+clothes	AtLocation	drawer
+clothes	AtLocation	dresser
+clothes	AtLocation	house
+clothes	AtLocation	shop
+clothes	AtLocation	store
+clothes	AtLocation	suitcase
+clothes	AtLocation	trunk
+clothes	Synonym	clothing
+clothing	AtLocation	backpack
+clothing	AtLocation	closet
+clothing	AtLocation	drawer
+clothing	AtLocation	floor
+clothing	AtLocation	house
+clothing	AtLocation	person
+clothing	AtLocation	shop
+clothing	AtLocation	store
+clothing	AtLocation	suitcase
+clothing	AtLocation	trunk
+clothing	Synonym	clothes
+cloud	AtLocation	sky
+cloud	IsA	video game
+cloud	PartOf	sky
+cloud	UsedFor	rain
+cloud	UsedFor	shade
+cloud	UsedFor	snow
+cloud	UsedFor	weather
+coach	AtLocation	soccer game
+coach	IsA	carriage
+coach	IsA	vehicle
+coach	IsA	worker
+coach	Synonym	bus
+coach	Synonym	carriage
+coat	AtLocation	backpack
+coat	AtLocation	closet
+coat	IsA	hair
+coffee	AtLocation	airport
+coffee	AtLocation	conference
+coffee	AtLocation	container
+coffee	AtLocation	cup
+coffee	AtLocation	mug
+coffee	AtLocation	office
+coffee	AtLocation	shelf
+coffee	AtLocation	subway
+coffee	AtLocation	train station
+coffee	IsA	beverage
+coffee	IsA	liquid
+coffee	IsA	tree
+coffee	Synonym	chocolate
+coffee cup	AtLocation	cupboard
+coffee cup	AtLocation	desk
+coffee cup	AtLocation	trash
+coffee cup	IsA	cup
+coffee cup	IsA	mug
+coffee table	AtLocation	house
+coffee table	AtLocation	living room
+coffee table	IsA	table
+collection	AtLocation	garage
+comforter	AtLocation	bedroom
+comforter	IsA	blanket
+comforter	IsA	chair
+comforter	IsA	device
+commuter	IsA	passenger
+commuter	IsA	passenger train
+commuter	IsA	person
+computer	AtLocation	apartment
+computer	AtLocation	backpack
+computer	AtLocation	box
+computer	AtLocation	building
+computer	AtLocation	car
+computer	AtLocation	desktop
+computer	AtLocation	house
+computer	AtLocation	office
+computer	AtLocation	school
+computer	AtLocation	table
+computer	HasA	keyboard
+computer	HasA	monitor
+computer	HasA	mouse
+computer	IsA	electronic device
+computer	IsA	machine
+computer	IsA	tool
+computer	PartOf	platform
+computer keyboard	IsA	keyboard
+computer monitor	AtLocation	desk
+computer monitor	AtLocation	desktop
+computer monitor	AtLocation	table
+computer monitor	IsA	monitor
+computer mouse	AtLocation	desktop
+computer mouse	Synonym	mouse
+computer screen	IsA	screen
+concrete	AtLocation	carpet
+concrete	AtLocation	closet
+concrete	AtLocation	freeway
+concrete	AtLocation	street
+console	IsA	computer
+console	IsA	device
+console	Synonym	cabinet
+construction	Synonym	building
+construction	Synonym	structure
+container	AtLocation	cabinet
+container	AtLocation	closet
+container	AtLocation	cupboard
+container	AtLocation	food
+container	AtLocation	garage
+container	AtLocation	kitchen
+container	AtLocation	refrigerator
+container	IsA	item
+corn	AtLocation	container
+corn	AtLocation	country
+corn	AtLocation	dinner
+corn	AtLocation	field
+corn	AtLocation	market
+corn	AtLocation	plate
+corn	AtLocation	restaurant
+corn	AtLocation	shop
+corn	IsA	food
+corn	IsA	product
+corn	IsA	vegetable
+couch	AtLocation	apartment
+couch	AtLocation	house
+couch	AtLocation	party
+couch	AtLocation	room
+couch	IsA	bed
+couch	Synonym	frame
+couch	Synonym	sofa
+couch	UsedFor	furniture
+counter	AtLocation	kitchen
+counter	AtLocation	store
+counter	IsA	person
+counter	IsA	table
+counter	PartOf	boot
+counter	PartOf	shoe
+counter	UsedFor	bathroom
+counter	UsedFor	kitchen
+counter	UsedFor	space
+counter	UsedFor	store
+countertop	PartOf	counter
+country	AtLocation	forest
+countryside	IsA	country
+countryside	IsA	place
+course	IsA	action
+course	PartOf	meal
+course	PartOf	wall
+court	AtLocation	building
+court	AtLocation	city
+court	AtLocation	park
+court	AtLocation	town
+court	IsA	playing field
+court	IsA	room
+court	PartOf	building
+courtyard	AtLocation	lawn
+courtyard	AtLocation	yard
+courtyard	Synonym	court
+courtyard	UsedFor	garden
+cow	AtLocation	advertisement
+cow	AtLocation	book
+cow	AtLocation	cattle
+cow	AtLocation	countryside
+cow	AtLocation	fence
+cow	AtLocation	freezer
+cow	AtLocation	grass
+cow	AtLocation	green field
+cow	AtLocation	hamburger
+cow	AtLocation	herd
+cow	AtLocation	stall
+cow	AtLocation	village
+cow	CapableOf	pet
+cow	IsA	adult
+cow	IsA	cattle
+cow	PartOf	cattle
+cowboy	AtLocation	horse
+cracker	IsA	bread
+cracker	IsA	food
+crane	IsA	bird
+cream	Synonym	bat
+cream	UsedFor	person
+crust	PartOf	pizza
+cup	AtLocation	apartment
+cup	AtLocation	cafe
+cup	AtLocation	closet
+cup	AtLocation	counter
+cup	AtLocation	kitchen
+cup	AtLocation	restaurant
+cup	AtLocation	shelf
+cup	AtLocation	sink
+cup	AtLocation	table
+cup	HasA	liquid
+cup	IsA	container
+cup	IsA	hole
+cupboard	IsA	cabinet
+cupboard	IsA	closet
+cupcake	IsA	cake
+cupcake	IsA	food
+curtain	AtLocation	house
+curtain	AtLocation	window
+curtain	IsA	barrier
+curtain	IsA	book
+curtain	Synonym	shade
+cycle	Synonym	bicycle
+cycle	Synonym	motorcycle
+deck	AtLocation	boat
+deck	IsA	platform
+deck	IsA	porch
+deck	PartOf	ship
+delta	IsA	aircraft
+delta	IsA	letter
+delta	IsA	sand
+depot	Synonym	terminal
+depot	Synonym	warehouse
+desk	AtLocation	bedroom
+desk	IsA	furniture
+desk	IsA	place
+desk	IsA	table
+desktop	IsA	computer
+dessert	IsA	course
+dessert	IsA	food
+dessert	IsA	magazine
+dining area	AtLocation	home
+dining area	AtLocation	house
+dining area	AtLocation	restaurant
+dining room	AtLocation	home
+dining room	AtLocation	restaurant
+dining room	HasA	table
+dining room	IsA	room
+dining table	AtLocation	house
+dining table	IsA	table
+dinner	AtLocation	oven
+dinner	AtLocation	table
+dinner	IsA	meal
+dinner	IsA	party
+dinner	Synonym	lunch
+dinner plate	AtLocation	cupboard
+dinner plate	AtLocation	dinner
+dinner plate	AtLocation	table
+dinner plate	IsA	plate
+dinner table	IsA	dining table
+dinner table	IsA	table
+dirt	AtLocation	bed
+dirt	AtLocation	carpet
+dirt	AtLocation	closet
+dirt	AtLocation	desk
+dirt	AtLocation	field
+dirt	AtLocation	finger
+dirt	AtLocation	floor
+dirt	AtLocation	forest
+dirt	AtLocation	garden
+dirt	AtLocation	ground
+dirt	AtLocation	race track
+dirt	AtLocation	rug
+dirt	AtLocation	street
+dirt	AtLocation	subway
+dirt	AtLocation	tree
+dirt	IsA	word
+dirt bike	IsA	motorcycle
+dish	AtLocation	cabinet
+dish	AtLocation	kitchen
+dish	AtLocation	sink
+dish	AtLocation	table
+dish	IsA	container
+dish	IsA	plate
+dish	PartOf	meal
+dish	Synonym	plate
+dish	UsedFor	food
+display	IsA	electronic device
+display	PartOf	computer
+dock	IsA	platform
+dock	PartOf	tail
+dock	Synonym	pier
+dog	AtLocation	bed
+dog	AtLocation	couch
+dog	AtLocation	desk
+dog	AtLocation	ground
+dog	AtLocation	house
+dog	AtLocation	leash
+dog	AtLocation	park
+dog	AtLocation	porch
+dog	AtLocation	rug
+dog	AtLocation	table
+dog	CapableOf	open door
+dog	CapableOf	pet
+dog	HasA	fur
+dog	HasA	nose
+dog	IsA	pet
+dog	Synonym	soldier
+dog	UsedFor	pet
+donut	AtLocation	bakery
+donut	Synonym	doughnut
+door	AtLocation	apartment
+door	AtLocation	building
+door	AtLocation	bus
+door	AtLocation	car
+door	AtLocation	office
+door	AtLocation	room
+door	AtLocation	school
+door	AtLocation	subway
+door	AtLocation	wall
+door	CapableOf	glass
+door	HasA	handle
+door	IsA	barrier
+door	IsA	entrance
+door	IsA	room
+door	IsA	structure
+door	PartOf	doorway
+door	PartOf	house
+door	Synonym	doorway
+doorway	AtLocation	airport
+doorway	AtLocation	bedroom
+doorway	AtLocation	building
+doorway	AtLocation	home
+doorway	AtLocation	room
+doorway	AtLocation	wall
+doorway	IsA	entrance
+doorway	PartOf	wall
+double decker	Synonym	bus
+doughnut	IsA	food
+drawer	AtLocation	chest
+drawer	AtLocation	dresser
+drawer	AtLocation	kitchen
+drawer	HasA	clothing
+drawer	IsA	container
+drawer	PartOf	desk
+drawer	PartOf	dresser
+drawer	PartOf	furniture
+drawer	UsedFor	store
+dresser	AtLocation	bedroom
+dresser	AtLocation	drawer
+dresser	AtLocation	home
+dresser	AtLocation	house
+dresser	IsA	box
+dresser	IsA	cabinet
+dresser	IsA	furniture
+dresser	IsA	person
+drinking water	AtLocation	container
+drinking water	IsA	beverage
+drinking water	IsA	liquid
+drinking water	IsA	water
+drive	AtLocation	park
+drive	CapableOf	street
+drive	IsA	device
+drive	IsA	road
+drive	IsA	transportation
+drive	Synonym	driveway
+drive	Synonym	engine
+drive	Synonym	herd
+driver	IsA	person
+driver	IsA	wood
+driver	IsA	worker
+driveway	AtLocation	car
+driveway	AtLocation	city
+driveway	AtLocation	yard
+driveway	IsA	road
+driveway	Synonym	drive
+driveway	UsedFor	car
+driveway	UsedFor	pickup
+driveway	UsedFor	truck
+dryer	IsA	appliance
+duck	AtLocation	lake
+duck	AtLocation	pond
+duck	IsA	meat
+dump truck	IsA	toy
+dump truck	IsA	truck
+ear	AtLocation	ground
+ear	AtLocation	head
+ear	IsA	fruit
+ear	PartOf	corn
+ear	PartOf	head
+ear	Synonym	head
+egg	AtLocation	chicken
+egg	AtLocation	plate
+egg	IsA	food
+egg	IsA	magazine
+egg	UsedFor	food
+electronic device	IsA	device
+electronic device	IsA	product
+elephant	AtLocation	circus
+elephant	AtLocation	zoo
+elephant	HasA	nose
+elephant	HasA	trunk
+elephant	IsA	animal
+end	IsA	book
+end	IsA	point
+end	IsA	surface
+end	PartOf	event
+engine	AtLocation	plane
+engine	IsA	motor
+engine	PartOf	car
+engine	PartOf	motorcycle
+engine	PartOf	train
+engine	Synonym	motor
+entertainment center	AtLocation	house
+entrance	AtLocation	house
+entrance	AtLocation	stadium
+entrance	Synonym	doorway
+european	IsA	newspaper
+european	IsA	person
+eye	AtLocation	face
+eye	AtLocation	potato
+eye	IsA	hole
+eye	PartOf	face
+eye	PartOf	head
+eye	Synonym	center
+face	HasA	nose
+face	IsA	person
+face	IsA	surface
+face	PartOf	animal
+face	PartOf	clock
+face	PartOf	head
+face	PartOf	racket
+family	AtLocation	house
+family	IsA	carriage
+family	IsA	people
+fan	AtLocation	bedroom
+fan	AtLocation	living room
+fan	AtLocation	room
+fan	AtLocation	stadium
+fan	AtLocation	window
+fan	IsA	device
+fan	IsA	person
+fan	IsA	river
+farm	AtLocation	countryside
+farmer	IsA	person
+feather	AtLocation	bird
+feather	AtLocation	cage
+feather	AtLocation	cap
+feather	AtLocation	hat
+feather	AtLocation	pillow
+feather	PartOf	bird
+female	AtLocation	bed
+female	IsA	animal
+female	IsA	person
+female	Synonym	woman
+fence	IsA	barrier
+fence	IsA	wall
+fence	Synonym	barrier
+fence	Synonym	guard
+fence	Synonym	wall
+field	AtLocation	country
+field	AtLocation	countryside
+field	AtLocation	meadow
+field	AtLocation	soccer game
+field	IsA	countryside
+field	IsA	open area
+field	Synonym	course
+field	Synonym	playing field
+fighter	IsA	airplane
+figure	IsA	model
+figure	Synonym	name
+figurine	IsA	figure
+finger	AtLocation	glove
+finger	AtLocation	hand
+finger	AtLocation	nose
+finger	CapableOf	point
+finger	PartOf	glove
+finger	PartOf	hand
+finger	Synonym	bird
+finger	UsedFor	point
+fire	AtLocation	fireplace
+fire	AtLocation	forest
+fire	AtLocation	house
+fire	IsA	book
+fire	IsA	fireplace
+fire hydrant	AtLocation	street corner
+fire truck	IsA	truck
+fireplace	AtLocation	cabin
+fireplace	AtLocation	home
+fireplace	AtLocation	house
+fireplace	AtLocation	living room
+fireplace	IsA	box
+fish	AtLocation	boat
+fish	AtLocation	bridge
+fish	AtLocation	lake
+fish	AtLocation	market
+fish	AtLocation	ocean
+fish	AtLocation	pond
+fish	AtLocation	refrigerator
+fish	AtLocation	river
+fish	AtLocation	stream
+fish	AtLocation	water
+fish	HasA	tail
+fish	IsA	animal
+fish	IsA	food
+fish	IsA	meat
+fish	IsA	person
+fishing boat	AtLocation	sea
+flag	AtLocation	country
+flag	IsA	tail
+flag	PartOf	dog
+floor	AtLocation	bed
+floor	AtLocation	bus
+floor	AtLocation	carpet
+floor	AtLocation	closet
+floor	AtLocation	desk
+floor	AtLocation	house
+floor	AtLocation	restaurant
+floor	AtLocation	room
+floor	AtLocation	store
+floor	AtLocation	table
+floor	IsA	control
+floor	IsA	land
+floor	IsA	room
+floor	IsA	structure
+floor	IsA	surface
+floor	IsA	wall
+floor	PartOf	building
+floor	PartOf	hallway
+floor	PartOf	lake
+floor	PartOf	room
+floor	Synonym	deck
+flower	AtLocation	park
+flower	AtLocation	shelf
+flower	AtLocation	vase
+flower	PartOf	bush
+flower	Synonym	cream
+flower	Synonym	head
+fly	AtLocation	sky
+fly	IsA	carriage
+fly	PartOf	pants
+food	AtLocation	backpack
+food	AtLocation	boat
+food	AtLocation	bowl
+food	AtLocation	cabinet
+food	AtLocation	container
+food	AtLocation	cupboard
+food	AtLocation	freezer
+food	AtLocation	home
+food	AtLocation	house
+food	AtLocation	jar
+food	AtLocation	kitchen
+food	AtLocation	market
+food	AtLocation	mouth
+food	AtLocation	oven
+food	AtLocation	park
+food	AtLocation	plate
+food	AtLocation	refrigerator
+food	AtLocation	school
+food	AtLocation	shelf
+food	AtLocation	shop
+food	AtLocation	spoon
+food	AtLocation	store
+food	AtLocation	table
+food	AtLocation	trash
+food	AtLocation	truck
+food	AtLocation	wedding
+food	AtLocation	zoo
+food	IsA	grocery
+food	Synonym	bread
+food	Synonym	meat
+foot	AtLocation	boot
+foot	AtLocation	desk
+foot	AtLocation	shoe
+foot	AtLocation	table
+foot	AtLocation	yard
+foot	IsA	bottom
+foot	PartOf	chair
+foot	PartOf	leg
+foot	PartOf	yard
+football	AtLocation	roof
+football	IsA	ball
+football	IsA	game
+football	IsA	sport
+forest	AtLocation	country
+forest	AtLocation	countryside
+forest	CapableOf	place
+forest	IsA	land
+forest	IsA	single
+forest	Synonym	wood
+fork	AtLocation	drawer
+fork	AtLocation	kitchen
+fork	AtLocation	napkin
+fork	AtLocation	plane
+fork	AtLocation	plate
+fork	AtLocation	road
+fork	AtLocation	table
+fork	IsA	silverware
+fork	IsA	tool
+fork	Synonym	branch
+fountain	AtLocation	city
+fountain	AtLocation	courtyard
+fountain	AtLocation	garden
+fountain	IsA	structure
+fountain	UsedFor	drinking water
+frame	AtLocation	bed
+frame	PartOf	bed
+frame	PartOf	painting
+frame	PartOf	window
+frame	Synonym	rack
+freeway	AtLocation	city
+freeway	AtLocation	countryside
+freeway	AtLocation	large city
+freeway	IsA	highway
+freeway	IsA	road
+freeway	UsedFor	transportation
+freezer	AtLocation	food
+freezer	AtLocation	garage
+freight train	IsA	train
+french fries	IsA	food
+french fries	IsA	potato
+friend	AtLocation	school
+friend	IsA	person
+frisbee	AtLocation	park
+frisbee	AtLocation	roof
+frisbee	AtLocation	tree
+frisbee	CapableOf	fly
+frisbee	IsA	game
+frisbee	IsA	toy
+frisbee	UsedFor	beach
+frisbee	UsedFor	park
+fruit	AtLocation	container
+fruit	AtLocation	jar
+fruit	AtLocation	market
+fruit	AtLocation	mouth
+fruit	AtLocation	plate
+fruit	AtLocation	refrigerator
+fruit	AtLocation	tree
+fruit	HasA	sugar
+fruit	HasA	water
+fun	PartOf	life
+fur	AtLocation	cat
+fur	AtLocation	jacket
+fur	IsA	coat
+fur	UsedFor	pet
+furniture	AtLocation	apartment
+furniture	AtLocation	building
+furniture	AtLocation	floor
+furniture	AtLocation	house
+furniture	AtLocation	room
+furniture	AtLocation	rug
+furniture	AtLocation	store
+game	AtLocation	store
+game	AtLocation	table
+game	IsA	animal
+game	IsA	meat
+game	IsA	word
+game	Synonym	match
+game	Synonym	racket
+game	UsedFor	fun
+garage	AtLocation	bike
+garage	AtLocation	building
+garage	AtLocation	car
+garage	AtLocation	home
+garage	AtLocation	house
+garage	AtLocation	town
+garage	IsA	room
+garbage	AtLocation	container
+garbage	AtLocation	floor
+garbage	AtLocation	ground
+garbage	AtLocation	television
+garbage	AtLocation	trash
+garbage	CapableOf	container
+garbage	IsA	trash
+garden	AtLocation	fence
+garden	AtLocation	ground
+garden	AtLocation	park
+garden	AtLocation	yard
+garden	HasA	lawn
+garden	IsA	yard
+garden	PartOf	house
+garden	Synonym	farm
+garden	Synonym	park
+garden	Synonym	yard
+gas	AtLocation	boat
+gas	AtLocation	space
+gas	Synonym	wind
+gas	UsedFor	light
+gate	AtLocation	apartment
+gate	AtLocation	fence
+gate	AtLocation	garden
+gate	IsA	entrance
+gear	AtLocation	car
+gear	IsA	device
+gear	IsA	wheel
+giant	IsA	animal
+giant	IsA	person
+giraffe	AtLocation	drawer
+giraffe	AtLocation	zoo
+giraffe	HasA	nose
+girl	IsA	child
+girl	IsA	female
+girl	IsA	kid
+girl	IsA	woman
+glass	AtLocation	cabinet
+glass	AtLocation	dining room
+glass	AtLocation	hand
+glass	AtLocation	kitchen
+glass	AtLocation	sink
+glass	AtLocation	street
+glass	AtLocation	table
+glass	AtLocation	window
+glass	IsA	container
+glass	IsA	vehicle
+glass	PartOf	window
+glass door	IsA	door
+glasses	AtLocation	bar
+glasses	AtLocation	cabinet
+glasses	AtLocation	case
+glasses	AtLocation	cupboard
+glasses	AtLocation	drawer
+glasses	AtLocation	home
+glasses	AtLocation	nose
+glove	IsA	accessory
+glove	Synonym	baseball glove
+goat	AtLocation	barn
+goat	AtLocation	farm
+goat	IsA	person
+goose	CapableOf	fly
+goose	IsA	animal
+goose	IsA	bird
+goose	IsA	meat
+graffiti	AtLocation	bridge
+graffiti	AtLocation	bus stop
+grandfather clock	IsA	clock
+granite	IsA	stone
+grape	AtLocation	art
+grape	AtLocation	bowl
+grape	AtLocation	farm
+grape	AtLocation	field
+grape	AtLocation	food
+grape	AtLocation	garden
+grape	AtLocation	grocery
+grape	AtLocation	kitchen
+grape	AtLocation	lunch
+grape	AtLocation	market
+grape	AtLocation	mouth
+grape	AtLocation	painting
+grape	AtLocation	plate
+grape	AtLocation	restaurant
+grape	AtLocation	salad
+grape	AtLocation	shop
+grape	AtLocation	wine
+grape	PartOf	wine
+grass	AtLocation	country
+grass	AtLocation	countryside
+grass	AtLocation	field
+grass	AtLocation	garden
+grass	AtLocation	ground
+grass	AtLocation	lawn
+grass	AtLocation	park
+grass	AtLocation	soccer game
+grass	AtLocation	tree
+grass	IsA	plant
+grass	Synonym	pot
+gravel	AtLocation	roof
+gravel	AtLocation	street
+gravel	IsA	rock
+green light	IsA	traffic light
+ground	AtLocation	tree
+ground	IsA	surface
+ground	Synonym	land
+guard	IsA	device
+guard	IsA	position
+guitar	AtLocation	case
+guitar	AtLocation	store
+guitar	UsedFor	music
+guy	IsA	man
+guy	PartOf	tent
+guy	Synonym	people
+hair	AtLocation	arm
+hair	AtLocation	bed
+hair	AtLocation	brush
+hair	AtLocation	ear
+hair	AtLocation	finger
+hair	AtLocation	food
+hair	AtLocation	head
+hair	AtLocation	rug
+hair	AtLocation	sink
+hair	AtLocation	soup
+hair	PartOf	head
+hair	UsedFor	fur
+hair dryer	AtLocation	bathroom
+hair dryer	AtLocation	box
+half	PartOf	basketball
+half	PartOf	football
+hallway	AtLocation	building
+hallway	AtLocation	house
+hallway	IsA	room
+hallway	IsA	space
+hallway	UsedFor	entrance
+ham	AtLocation	pizza
+ham	AtLocation	refrigerator
+ham	IsA	food
+ham	IsA	person
+hamburger	AtLocation	mouth
+hamburger	AtLocation	pizza
+hamburger	IsA	burger
+hamburger	IsA	food
+hamburger	IsA	sandwich
+hand	IsA	collection
+hand	IsA	holder
+hand	PartOf	arm
+handbag	AtLocation	shop
+handbag	AtLocation	store
+handbag	IsA	bag
+handbag	IsA	purse
+handbag	Synonym	bag
+handbag	Synonym	purse
+handle	AtLocation	bathroom
+handle	AtLocation	door
+handle	AtLocation	drawer
+handle	PartOf	baggage
+handle	PartOf	baseball bat
+handle	PartOf	brush
+handle	PartOf	coffee cup
+handle	PartOf	door
+handle	PartOf	mug
+handle	PartOf	object
+handle	PartOf	racket
+handle	PartOf	umbrella
+handle	Synonym	finger
+handle	Synonym	hand
+handle	UsedFor	open door
+hangar	AtLocation	plane
+hangar	IsA	large building
+hat	AtLocation	box
+hat	AtLocation	closet
+hat	AtLocation	head
+hat	AtLocation	home
+hat	AtLocation	shelf
+hat	AtLocation	suitcase
+hat	IsA	accessory
+hat	UsedFor	shade
+head	AtLocation	neck
+head	AtLocation	ship
+head	IsA	object
+head	IsA	point
+head	IsA	structure
+head	IsA	toilet
+head	IsA	word
+head	PartOf	animal
+head	PartOf	match
+head	PartOf	people
+head	Synonym	branch
+head	Synonym	point
+head	Synonym	section
+head	UsedFor	hat
+heart	AtLocation	animal
+heart	AtLocation	chest
+heart	AtLocation	home
+heart	AtLocation	hospital
+heart	AtLocation	person
+heart	AtLocation	turkey
+heart	IsA	container
+heart	Synonym	center
+highway	AtLocation	city
+highway	AtLocation	country
+highway	AtLocation	countryside
+highway	IsA	road
+highway	Synonym	freeway
+highway	UsedFor	drive
+highway	UsedFor	transportation
+holder	IsA	owner
+holder	Synonym	owner
+hole	AtLocation	button
+hole	AtLocation	dirt
+hole	AtLocation	donut
+hole	AtLocation	doughnut
+hole	AtLocation	ground
+hole	AtLocation	wall
+hole	IsA	space
+hole	UsedFor	dirt
+hole	UsedFor	water
+home	AtLocation	city
+home	AtLocation	field
+home	IsA	house
+home	Synonym	base
+home	Synonym	family
+home	UsedFor	family
+hood	IsA	roof
+hood	PartOf	airplane
+hood	PartOf	car
+hood	PartOf	plant
+hood	Synonym	head
+hood	Synonym	ship
+horn	AtLocation	car
+horn	AtLocation	truck
+horn	IsA	device
+horn	PartOf	bull
+horn	PartOf	car
+horn	PartOf	goat
+horn	UsedFor	music
+horse	AtLocation	art
+horse	AtLocation	cartoon
+horse	AtLocation	circus
+horse	AtLocation	country
+horse	AtLocation	countryside
+horse	AtLocation	gate
+horse	AtLocation	herd
+horse	AtLocation	painting
+horse	AtLocation	parade
+horse	AtLocation	race track
+horse	AtLocation	stall
+horse	AtLocation	trailer
+horse	AtLocation	zoo
+horse	CapableOf	pet
+horse	IsA	animal
+horseback	PartOf	horse
+hose	AtLocation	garage
+hose	AtLocation	shop
+hose	AtLocation	yard
+hospital	AtLocation	city
+hospital	AtLocation	town
+hospital	IsA	building
+hospital	IsA	large building
+hot dog	AtLocation	soccer game
+hot dog	IsA	food
+hot dog	IsA	sausage
+hot dog	Synonym	hotdog
+hotdog	IsA	sandwich
+hotel	AtLocation	city
+hotel	AtLocation	town
+hotel	IsA	building
+hotel	UsedFor	rest
+hotel room	AtLocation	city
+hotel room	IsA	bedroom
+hotel room	PartOf	hotel
+hotel room	UsedFor	rest
+house	AtLocation	bedroom
+house	AtLocation	city
+house	AtLocation	newspaper
+house	AtLocation	street
+house	AtLocation	village
+house	HasA	bathroom
+house	HasA	door
+house	HasA	floor
+house	HasA	furniture
+house	HasA	kitchen
+house	HasA	living room
+house	HasA	roof
+house	HasA	yard
+house	IsA	audience
+house	IsA	building
+house	IsA	family
+house	IsA	home
+house	IsA	place
+house	IsA	structure
+house	PartOf	street
+house	Synonym	family
+house	Synonym	shop
+house	Synonym	store
+house	UsedFor	family
+ice	AtLocation	bar
+ice	AtLocation	freezer
+ice	AtLocation	glass
+ice	AtLocation	ground
+ice	AtLocation	refrigerator
+ice	IsA	object
+ice	IsA	water
+icing	PartOf	cake
+intersection	AtLocation	city
+intersection	AtLocation	road
+intersection	AtLocation	street
+intersection	AtLocation	street corner
+intersection	AtLocation	town
+intersection	IsA	point
+intersection	PartOf	road
+iron	AtLocation	house
+iron	AtLocation	kitchen
+iron	IsA	metal
+iron	IsA	tool
+island	AtLocation	water
+island	IsA	book
+island	IsA	land
+island	UsedFor	fish
+item	AtLocation	container
+jacket	AtLocation	closet
+jacket	AtLocation	person
+jacket	IsA	clothing
+jacket	IsA	coat
+jacket	PartOf	potato
+jacket	Synonym	case
+jacket	Synonym	coat
+jar	AtLocation	cabinet
+jar	AtLocation	cupboard
+jar	AtLocation	house
+jar	AtLocation	refrigerator
+jar	AtLocation	shelf
+jar	AtLocation	store
+jar	IsA	container
+jar	Synonym	pot
+jeans	AtLocation	bedroom
+jeans	AtLocation	closet
+jeans	AtLocation	drawer
+jeans	AtLocation	house
+jeans	AtLocation	shop
+jeans	AtLocation	store
+jeans	UsedFor	clothing
+jeans	UsedFor	utility
+jet	AtLocation	airport
+jet	IsA	airplane
+jet	Synonym	fountain
+jet plane	IsA	airplane
+jet plane	IsA	plane
+jet plane	Synonym	jet
+juice	AtLocation	refrigerator
+juice	IsA	beverage
+juice	IsA	liquid
+jungle	IsA	book
+jungle	IsA	forest
+ketchup	AtLocation	refrigerator
+ketchup	IsA	condiment
+ketchup	IsA	food
+keyboard	AtLocation	desk
+keyboard	AtLocation	desktop
+keyboard	AtLocation	finger
+keyboard	AtLocation	office
+keyboard	AtLocation	piano
+keyboard	AtLocation	school
+keyboard	IsA	device
+keyboard	IsA	holder
+keyboard	PartOf	computer
+keyboard	PartOf	piano
+keyboard	PartOf	terminal
+kid	AtLocation	park
+kid	IsA	goat
+kid	IsA	leather
+kid	IsA	person
+kid	Synonym	child
+kitchen	AtLocation	apartment
+kitchen	AtLocation	home
+kitchen	AtLocation	hotel
+kitchen	AtLocation	restaurant
+kitchen	IsA	place
+kitchen	IsA	room
+kite	AtLocation	park
+kite	AtLocation	sky
+kite	CapableOf	fly
+kite	HasA	tail
+kite	IsA	bird
+kite	IsA	toy
+kite	IsA	word
+kite	UsedFor	fun
+kitten	AtLocation	alley
+kitten	AtLocation	apartment
+kitten	AtLocation	bed
+kitten	AtLocation	book
+kitten	AtLocation	boot
+kitten	AtLocation	bush
+kitten	AtLocation	cage
+kitten	AtLocation	cartoon
+kitten	AtLocation	cat
+kitten	AtLocation	closet
+kitten	AtLocation	couch
+kitten	AtLocation	farm
+kitten	AtLocation	floor
+kitten	AtLocation	garden
+kitten	AtLocation	grass
+kitten	AtLocation	house
+kitten	AtLocation	kitchen
+kitten	AtLocation	lap
+kitten	AtLocation	living room
+kitten	AtLocation	room
+kitten	AtLocation	shoe
+kitten	AtLocation	table
+kitten	AtLocation	window
+kitten	AtLocation	yard
+kitten	AtLocation	zoo
+kitten	IsA	animal
+kitten	IsA	cat
+knee	PartOf	leg
+knife	AtLocation	backpack
+knife	AtLocation	drawer
+knife	AtLocation	fishing boat
+knife	AtLocation	kitchen
+knife	AtLocation	plate
+knife	AtLocation	table
+knife	IsA	tool
+knife	Synonym	tongue
+knife	UsedFor	butter
+ladder	AtLocation	garage
+ladder	AtLocation	roof
+ladder	IsA	tool
+lake	AtLocation	country
+lake	AtLocation	countryside
+lake	AtLocation	forest
+lake	AtLocation	park
+lake	HasA	surface
+lake	HasA	water
+lake	UsedFor	fish
+lake	UsedFor	fun
+lamb	IsA	meat
+lamb	IsA	sheep
+lamp	AtLocation	apartment
+lamp	AtLocation	bedroom
+lamp	AtLocation	building
+lamp	AtLocation	desk
+lamp	AtLocation	desktop
+lamp	AtLocation	house
+lamp	AtLocation	office
+lamp	AtLocation	shelf
+lamp	AtLocation	store
+lamp	AtLocation	table
+lamp	IsA	furniture
+lamp	IsA	light
+lamp	UsedFor	light
+land	AtLocation	country
+land	AtLocation	countryside
+land	AtLocation	ocean
+land	IsA	object
+land	Synonym	country
+landing gear	PartOf	airplane
+landscape	IsA	painting
+lane	AtLocation	city
+lane	AtLocation	highway
+lane	AtLocation	road
+lane	AtLocation	street
+lane	AtLocation	town
+lane	AtLocation	village
+lane	IsA	street
+lane	IsA	way
+lane	Synonym	alley
+lap	PartOf	skirt
+laptop	AtLocation	desk
+laptop	Synonym	laptop computer
+laptop computer	Synonym	laptop
+large bird	IsA	bird
+large building	IsA	building
+large tree	IsA	tree
+lawn	AtLocation	yard
+lawn	IsA	field
+lawn	IsA	grass
+lawn chair	AtLocation	lawn
+lawn chair	IsA	chair
+leaf	AtLocation	ground
+leaf	AtLocation	lawn
+leaf	AtLocation	roof
+leaf	AtLocation	tree
+leaf	IsA	section
+leaf	IsA	sheet
+leaf	PartOf	dinner table
+leaf	PartOf	plant
+leaf	PartOf	tree
+leaf	UsedFor	shade
+leash	Synonym	rope
+leather	AtLocation	handbag
+ledge	PartOf	cliff
+leg	AtLocation	chair
+leg	AtLocation	table
+leg	HasA	foot
+leg	PartOf	chair
+leg	PartOf	table
+leg	Synonym	branch
+leg	Synonym	stage
+lemon	AtLocation	refrigerator
+lemon	IsA	fruit
+lemon	IsA	plant
+letter	IsA	owner
+letter	PartOf	word
+letter	UsedFor	post
+lettuce	AtLocation	refrigerator
+lettuce	AtLocation	salad
+lettuce	IsA	food
+lettuce	IsA	plant
+lettuce	IsA	salad
+lettuce	IsA	vegetable
+lettuce	PartOf	salad
+life	CapableOf	end
+life	IsA	magazine
+life	IsA	person
+life	IsA	school
+life	Synonym	time
+lift	IsA	device
+lift	IsA	drive
+lift	IsA	wave
+light	AtLocation	closet
+light	AtLocation	desk
+light	AtLocation	ocean
+light	AtLocation	porch
+light	IsA	friend
+light	IsA	position
+light	IsA	wave
+light	Synonym	traffic light
+lighthouse	IsA	book
+lighthouse	IsA	building
+lighthouse	IsA	house
+lighthouse	IsA	light
+link	PartOf	chain
+liquid	AtLocation	container
+liquid	AtLocation	cup
+liquid	AtLocation	jar
+living room	AtLocation	apartment
+living room	AtLocation	home
+living room	IsA	place
+living room	IsA	room
+living room	PartOf	house
+log	IsA	wood
+log	PartOf	bath
+log	PartOf	ship
+luggage	AtLocation	airplane
+luggage	AtLocation	bus stop
+luggage	AtLocation	closet
+luggage	AtLocation	plane
+luggage	AtLocation	train station
+luggage	AtLocation	trunk
+luggage	Synonym	baggage
+lunch	AtLocation	backpack
+lunch	AtLocation	desk
+lunch	AtLocation	school
+lunch	IsA	meal
+machine	AtLocation	barn
+machine	AtLocation	house
+machine	AtLocation	museum
+machine	AtLocation	office
+machine	AtLocation	street
+machine	IsA	device
+machine	IsA	person
+machine	Synonym	car
+machine	Synonym	engine
+machine	UsedFor	fly
+machine	UsedFor	lift
+machine	UsedFor	phone
+magazine	AtLocation	bed
+magazine	AtLocation	rack
+magazine	AtLocation	shop
+magazine	AtLocation	table
+magazine	AtLocation	train station
+magazine	IsA	book
+magazine	IsA	product
+magazine	PartOf	camera
+man	IsA	adult
+man	IsA	person
+man	Synonym	person
+marble	AtLocation	game
+marble	AtLocation	jar
+marble	AtLocation	store
+marble	IsA	ball
+marble	IsA	rock
+marble	IsA	stone
+marble	UsedFor	game
+marker	AtLocation	book
+marker	AtLocation	desk
+marker	AtLocation	drawer
+marker	AtLocation	school
+marker	IsA	pen
+market	AtLocation	city
+market	AtLocation	town
+market	AtLocation	village
+market	IsA	place
+mat	AtLocation	bathroom
+mat	AtLocation	doorway
+mat	AtLocation	frame
+mat	AtLocation	house
+mat	AtLocation	living room
+mat	AtLocation	school
+mat	AtLocation	store
+mat	IsA	pad
+mat	IsA	river
+match	CapableOf	competition
+match	IsA	utensil
+match	UsedFor	fire
+meadow	AtLocation	countryside
+meal	AtLocation	dinner
+meal	AtLocation	plate
+meat	AtLocation	animal
+meat	AtLocation	dinner
+meat	AtLocation	food
+meat	AtLocation	freezer
+meat	AtLocation	market
+meat	AtLocation	oven
+meat	IsA	food
+meat	Synonym	meal
+meat	UsedFor	clothing
+meat	UsedFor	food
+meat	UsedFor	sale
+message	AtLocation	table
+message	Synonym	wire
+message	Synonym	word
+metal	AtLocation	car
+metal	AtLocation	steel
+metal	IsA	music
+mexican	IsA	food
+mexican	IsA	person
+microwave	AtLocation	apartment
+microwave	AtLocation	kitchen
+microwave	IsA	appliance
+microwave	IsA	wave
+microwave	Synonym	microwave oven
+microwave oven	AtLocation	house
+microwave oven	AtLocation	kitchen
+microwave oven	IsA	oven
+microwave oven	Synonym	microwave
+milk	AtLocation	bottle
+milk	AtLocation	container
+milk	AtLocation	cow
+milk	AtLocation	freezer
+milk	AtLocation	kitchen
+milk	AtLocation	market
+milk	AtLocation	refrigerator
+milk	AtLocation	store
+milk	HasA	water
+milk	IsA	beverage
+milk	IsA	liquid
+mirror	AtLocation	bedroom
+mirror	AtLocation	car
+mirror	AtLocation	closet
+mirror	AtLocation	house
+mirror	AtLocation	purse
+mirror	AtLocation	wall
+mirror	IsA	glass
+mirror	IsA	surface
+mirror	Synonym	glass
+mirror	UsedFor	reflection
+mitt	Synonym	baseball glove
+mitt	Synonym	hand
+mobile phone	IsA	computer
+mobile phone	IsA	phone
+mobile phone	IsA	telephone
+mobile phone	Synonym	cell phone
+monitor	AtLocation	box
+monitor	AtLocation	desk
+monitor	AtLocation	desktop
+monitor	IsA	display
+monitor	IsA	tv
+monitor	PartOf	computer
+monitor	PartOf	television
+monkey	AtLocation	art
+monkey	AtLocation	banana tree
+monkey	AtLocation	book
+monkey	AtLocation	box
+monkey	AtLocation	cartoon
+monkey	AtLocation	circus
+monkey	AtLocation	mirror
+monkey	AtLocation	palm tree
+monkey	AtLocation	sea
+monkey	HasA	nose
+monkey	IsA	animal
+mother	IsA	book
+motor	IsA	machine
+motor	Synonym	drive
+motor	Synonym	engine
+motorbike	Synonym	motorcycle
+motorcycle	AtLocation	garage
+motorcycle	Synonym	bike
+motorcycle	UsedFor	transportation
+mountain	IsA	place
+mountain	PartOf	landscape
+mouse	AtLocation	apartment
+mouse	AtLocation	box
+mouse	AtLocation	building
+mouse	AtLocation	cat
+mouse	AtLocation	cheese
+mouse	AtLocation	computer
+mouse	AtLocation	cupboard
+mouse	AtLocation	desk
+mouse	AtLocation	desktop
+mouse	AtLocation	farm
+mouse	AtLocation	field
+mouse	AtLocation	garage
+mouse	AtLocation	garbage
+mouse	AtLocation	garden
+mouse	AtLocation	grass
+mouse	AtLocation	grassy field
+mouse	AtLocation	hole
+mouse	AtLocation	home
+mouse	AtLocation	kitchen
+mouse	AtLocation	living room
+mouse	AtLocation	office
+mouse	AtLocation	pants
+mouse	AtLocation	school
+mouse	AtLocation	shelf
+mouse	AtLocation	shop
+mouse	AtLocation	soup
+mouse	AtLocation	store
+mouse	AtLocation	trash
+mouse	AtLocation	tunnel
+mouse	AtLocation	warehouse
+mouse	CapableOf	pet
+mouse	IsA	animal
+mouse	IsA	electronic device
+mouse	IsA	person
+mouse	PartOf	computer
+mouth	AtLocation	head
+mouth	AtLocation	nose
+mouth	AtLocation	river
+mouth	PartOf	bell
+mouth	PartOf	bottle
+mouth	PartOf	face
+mouth	PartOf	head
+mouth	PartOf	jar
+mud	AtLocation	rug
+mud	IsA	dirt
+mud	IsA	river
+mud	Synonym	dirt
+muffin	AtLocation	cupboard
+muffin	IsA	food
+mug	AtLocation	bar
+mug	AtLocation	cabinet
+mug	AtLocation	cupboard
+mug	AtLocation	store
+mug	HasA	handle
+mug	IsA	container
+mug	IsA	dish
+mug	UsedFor	coffee
+mug	UsedFor	tea
+mural	AtLocation	wall
+mural	IsA	painting
+museum	AtLocation	city
+mushroom	AtLocation	tree
+mushroom	IsA	cloud
+mushroom	IsA	vegetable
+music	AtLocation	cabinet
+mustard	AtLocation	hot dog
+mustard	AtLocation	jar
+mustard	AtLocation	refrigerator
+mustard	IsA	condiment
+name	AtLocation	book
+name	IsA	family
+napkin	AtLocation	table
+neck	AtLocation	bottle
+neck	AtLocation	shoulder
+neck	IsA	land
+neck	PartOf	guitar
+neon	IsA	gas
+neon	IsA	light
+net	AtLocation	boat
+net	AtLocation	fishing boat
+net	AtLocation	soccer game
+net	UsedFor	basketball
+newspaper	AtLocation	floor
+newspaper	AtLocation	lawn
+newspaper	AtLocation	porch
+newspaper	AtLocation	rug
+newspaper	AtLocation	subway
+newspaper	AtLocation	trash
+newspaper	IsA	paper
+newspaper	IsA	product
+noodle	IsA	food
+noodle	IsA	pasta
+nose	AtLocation	face
+nose	PartOf	aircraft
+nose	PartOf	face
+nose	PartOf	head
+nose	UsedFor	face
+nut	AtLocation	ground
+nut	IsA	block
+nut	IsA	fruit
+nut	IsA	tool
+object	AtLocation	drawer
+object	AtLocation	trash
+object	HasA	surface
+obstacle	Synonym	barrier
+ocean	AtLocation	beach
+ocean	AtLocation	lake
+ocean	AtLocation	water
+ocean	HasA	water
+ocean	IsA	liquid
+ocean	IsA	sea
+ocean	Synonym	sea
+ocean	UsedFor	fish
+ocean	UsedFor	sail
+office	AtLocation	business
+office	AtLocation	city
+office	AtLocation	paper
+office	AtLocation	skyscraper
+office	AtLocation	tall building
+office	IsA	building
+office	Synonym	position
+officer	IsA	person
+officer	IsA	worker
+olive	AtLocation	jar
+olive	IsA	fruit
+olive	IsA	plant
+olive	IsA	tree
+olive	IsA	wood
+onion	AtLocation	market
+onion	IsA	newspaper
+onion	IsA	vegetable
+open door	IsA	door
+orange	IsA	food
+orange	IsA	fruit
+orange	PartOf	fruit
+orange juice	AtLocation	refrigerator
+orange juice	IsA	beverage
+orange juice	IsA	juice
+orange juice	IsA	liquid
+oven	AtLocation	home
+oven	AtLocation	restaurant
+oven	AtLocation	stove
+oven	IsA	appliance
+oven	IsA	box
+overhead	IsA	ceiling
+overhead	PartOf	cabin
+owl	IsA	animal
+owl	IsA	bird
+owner	IsA	person
+pack	IsA	collection
+pack	Synonym	backpack
+pack	Synonym	stack
+pad	AtLocation	carpet
+pad	AtLocation	desk
+pad	AtLocation	furniture
+pad	AtLocation	office
+pad	AtLocation	store
+pad	IsA	block
+pad	IsA	leaf
+pad	IsA	paper
+pad	IsA	structure
+pad	PartOf	finger
+pad	PartOf	paw
+pad	UsedFor	mouse
+pad	UsedFor	paper
+page	AtLocation	newspaper
+page	IsA	leaf
+page	PartOf	book
+paint	AtLocation	garage
+paint	AtLocation	porch
+paint	AtLocation	shelf
+paint	AtLocation	shop
+paint	AtLocation	store
+paint	AtLocation	wall
+paint	UsedFor	painting
+painting	AtLocation	museum
+painting	AtLocation	school
+painting	IsA	art
+painting	PartOf	construction
+painting	UsedFor	art
+palm	IsA	tree
+palm	PartOf	hand
+palm	Synonym	handle
+palm	Synonym	palm tree
+palm tree	IsA	palm
+palm tree	IsA	tree
+palm tree	Synonym	palm
+pan	AtLocation	cabinet
+pan	AtLocation	kitchen
+pan	AtLocation	oven
+pan	HasA	handle
+pan	IsA	container
+pancake	IsA	cake
+pancake	IsA	food
+pants	AtLocation	closet
+pants	AtLocation	suitcase
+paper	AtLocation	cabinet
+paper	AtLocation	conference
+paper	AtLocation	desktop
+paper	AtLocation	drawer
+paper	AtLocation	floor
+paper	AtLocation	garbage
+paper	AtLocation	store
+paper	AtLocation	suitcase
+paper	AtLocation	trash
+paper	Synonym	newspaper
+parade	IsA	display
+park	IsA	gear
+park	Synonym	courtyard
+park bench	AtLocation	park
+park bench	IsA	bench
+parrot	IsA	bird
+parrot	IsA	pet
+party	AtLocation	boat
+party	AtLocation	home
+party	IsA	event
+party	IsA	person
+passenger	AtLocation	airport
+passenger	AtLocation	bus stop
+passenger	AtLocation	car
+passenger	IsA	person
+passenger train	IsA	train
+pasta	AtLocation	box
+pasta	IsA	dish
+pasta	IsA	food
+pasta	IsA	noodle
+pastry	IsA	dessert
+pastry	IsA	food
+patio	AtLocation	garden
+patio	AtLocation	house
+patio	PartOf	garden
+patio	PartOf	house
+pavement	AtLocation	city
+pavement	AtLocation	driveway
+pavement	AtLocation	freeway
+pavement	AtLocation	ground
+pavement	AtLocation	town
+pavement	Synonym	roadway
+pavement	Synonym	sidewalk
+paw	IsA	foot
+paw	IsA	handle
+paw	Synonym	hand
+pedestrian	AtLocation	street
+pedestrian	AtLocation	street corner
+pedestrian	IsA	person
+pen	AtLocation	backpack
+pen	AtLocation	box
+pen	AtLocation	desktop
+pen	AtLocation	drawer
+pen	AtLocation	hotel
+pen	AtLocation	office
+pen	AtLocation	purse
+pen	AtLocation	school
+pen	AtLocation	shop
+pen	AtLocation	table
+pen	IsA	object
+pen	IsA	swan
+people	AtLocation	apartment
+people	AtLocation	audience
+people	AtLocation	building
+people	AtLocation	bus stop
+people	AtLocation	city
+people	AtLocation	conference
+people	AtLocation	ground
+people	AtLocation	hospital
+people	AtLocation	race track
+people	AtLocation	room
+people	AtLocation	rug
+people	AtLocation	shop
+people	AtLocation	street corner
+people	AtLocation	town
+people	AtLocation	train station
+people	AtLocation	wedding
+people	AtLocation	zoo
+people	CapableOf	baby
+people	CapableOf	sail boat
+people	HasA	person
+people	IsA	family
+people	IsA	magazine
+people eating	AtLocation	table
+people walking	AtLocation	park
+people walking	AtLocation	rug
+pepper	AtLocation	dinner
+pepper	AtLocation	table
+pepper	IsA	condiment
+pepper	IsA	fruit
+pepper	IsA	vegetable
+pepperoni	AtLocation	pizza
+pepperoni	IsA	food
+pepperoni	IsA	sausage
+pepperoni pizza	IsA	pizza
+person	AtLocation	building
+person	AtLocation	bus stop
+person	AtLocation	conference
+person	AtLocation	desk
+person	AtLocation	family
+person	AtLocation	garage
+person	AtLocation	hospital
+person	AtLocation	street corner
+person	AtLocation	zoo
+person	CapableOf	hand
+person	CapableOf	open door
+person	CapableOf	sail boat
+person	HasA	head
+person	HasA	mouth
+person	HasA	name
+person	HasA	nose
+person	UsedFor	friend
+person wearing	IsA	person
+pet	AtLocation	house
+pet	IsA	animal
+phone	AtLocation	desk
+phone	AtLocation	desktop
+phone	AtLocation	house
+phone	AtLocation	office
+phone	IsA	device
+phone	IsA	machine
+phone	IsA	telephone
+phone	IsA	tool
+phone	Synonym	telephone
+photograph	AtLocation	shelf
+piano	AtLocation	church
+piano	AtLocation	restaurant
+piano	IsA	furniture
+piano	UsedFor	music
+pickle	AtLocation	hamburger
+pickle	AtLocation	jar
+pickle	IsA	food
+pickle	IsA	vegetable
+pickup	IsA	collection
+pickup	IsA	truck
+pickup	PartOf	guitar
+pickup	PartOf	transportation
+pickup	Synonym	pickup truck
+pickup truck	IsA	machine
+pickup truck	IsA	truck
+pickup truck	Synonym	pickup
+picnic	AtLocation	ground
+picnic	AtLocation	park
+picnic	AtLocation	tree
+picnic	IsA	meal
+pie	AtLocation	freezer
+pie	AtLocation	home
+pie	AtLocation	kitchen
+pie	AtLocation	oven
+pie	AtLocation	plate
+pie	AtLocation	refrigerator
+pie	AtLocation	store
+pie	HasA	crust
+pie	IsA	pastry
+pier	AtLocation	beach
+pier	IsA	construction
+pier	IsA	platform
+pier	PartOf	bridge
+pier	PartOf	wall
+pigeon	AtLocation	park
+pigeon	IsA	bird
+pillow	AtLocation	bedroom
+pillow	AtLocation	home
+pillow	AtLocation	plane
+pillow	AtLocation	room
+pine tree	IsA	tree
+pipe	IsA	container
+pipe	Synonym	bar
+pitch	IsA	position
+pitch	Synonym	gear
+pitch	Synonym	slope
+pitch	Synonym	soccer field
+pizza	AtLocation	oven
+pizza	AtLocation	plate
+pizza	AtLocation	restaurant
+pizza	IsA	dish
+pizza	IsA	food
+pizza	Synonym	pie
+place	AtLocation	city
+place	IsA	item
+place	Synonym	courtyard
+place	Synonym	home
+place	Synonym	plaza
+place	Synonym	position
+place	Synonym	seat
+place	Synonym	space
+place	UsedFor	event
+plane	AtLocation	hangar
+plane	AtLocation	runway
+plane	AtLocation	sky
+plane	CapableOf	fly
+plane	IsA	machine
+plane	IsA	river
+plane	IsA	surface
+plane	IsA	vehicle
+plane	Synonym	airplane
+plane	UsedFor	fly
+plant	AtLocation	dirt
+plant	AtLocation	garden
+plant	AtLocation	house
+plant	AtLocation	porch
+plant	AtLocation	pot
+plant	AtLocation	shelf
+plant	AtLocation	table
+plant	IsA	book
+plant	PartOf	garden
+plastic	AtLocation	cabinet
+plastic	AtLocation	cupboard
+plastic	AtLocation	kitchen
+plastic	AtLocation	store
+plastic	AtLocation	trash
+plate	AtLocation	cabinet
+plate	AtLocation	cupboard
+plate	AtLocation	kitchen
+plate	AtLocation	restaurant
+plate	AtLocation	sink
+plate	AtLocation	table
+plate	IsA	crust
+plate	IsA	dish
+plate	IsA	sheet
+plate	IsA	structure
+plate	PartOf	structure
+platform	AtLocation	building
+platform	AtLocation	depot
+platform	AtLocation	dock
+platform	AtLocation	museum
+platform	IsA	stage
+platform	IsA	structure
+platter	AtLocation	cabinet
+platter	IsA	dish
+platter	Synonym	dish
+player	AtLocation	stadium
+player	IsA	electronic device
+player	IsA	person
+player	PartOf	team
+playing field	AtLocation	school
+playing field	IsA	open area
+playing field	PartOf	stadium
+plaza	IsA	building
+point	IsA	end
+point	PartOf	knife
+point	Synonym	end
+point	Synonym	item
+polar bear	AtLocation	zoo
+polar bear	IsA	animal
+polar bear	IsA	bear
+police car	IsA	car
+police officer	AtLocation	city
+police officer	AtLocation	street
+police officer	CapableOf	case
+pond	AtLocation	countryside
+pond	AtLocation	forest
+pond	AtLocation	ground
+pond	AtLocation	meadow
+pond	AtLocation	park
+pond	HasA	water
+pond	IsA	lake
+pond	UsedFor	fish
+pony	CapableOf	pet
+pony	IsA	horse
+pool	HasA	water
+pool	IsA	construction
+pool	Synonym	pond
+porch	IsA	structure
+porch	PartOf	house
+position	IsA	point
+position	Synonym	place
+post	IsA	position
+post	IsA	product
+post	Synonym	position
+poster	AtLocation	bedroom
+poster	IsA	sign
+pot	AtLocation	backpack
+pot	AtLocation	cupboard
+pot	AtLocation	drawer
+pot	AtLocation	kitchen
+pot	AtLocation	porch
+pot	AtLocation	restaurant
+pot	IsA	container
+pot	IsA	name
+pot	IsA	pan
+pot	IsA	tool
+pot	Synonym	toilet
+potato	AtLocation	apartment
+potato	AtLocation	bag
+potato	AtLocation	chicken
+potato	AtLocation	dirt
+potato	AtLocation	food
+potato	AtLocation	french fries
+potato	AtLocation	grocery
+potato	AtLocation	kitchen
+potato	AtLocation	market
+potato	AtLocation	microwave
+potato	AtLocation	pan
+potato	AtLocation	pizza
+potato	AtLocation	plate
+potato	AtLocation	pot
+potato	AtLocation	restaurant
+potato	AtLocation	salad
+potato	AtLocation	sink
+potato	AtLocation	store
+potato	IsA	food
+potato	IsA	plant
+potato	IsA	vegetable
+potato	PartOf	plant
+potted plant	AtLocation	shelf
+potted plant	AtLocation	table
+product	AtLocation	market
+product	AtLocation	shelf
+product	AtLocation	store
+product	Synonym	intersection
+propeller plane	IsA	airplane
+puppy	AtLocation	home
+puppy	AtLocation	table
+puppy	CapableOf	pet
+puppy	IsA	animal
+puppy	IsA	dog
+puppy	IsA	young person
+purse	AtLocation	hand
+purse	AtLocation	handbag
+purse	AtLocation	home
+purse	AtLocation	house
+purse	AtLocation	store
+purse	IsA	bag
+purse	IsA	baggage
+purse	IsA	gear
+purse	IsA	handbag
+purse	Synonym	bag
+purse	Synonym	handbag
+racer	AtLocation	race track
+racer	IsA	animal
+racer	IsA	car
+racer	IsA	driver
+rack	AtLocation	oven
+rack	Synonym	neck
+racket	Synonym	bat
+rail	AtLocation	race track
+rail	AtLocation	subway
+rail	IsA	bar
+rail	IsA	bird
+rail	IsA	railway
+rail	Synonym	railing
+rail	Synonym	track
+rail	Synonym	train
+railing	AtLocation	deck
+railing	AtLocation	house
+railing	AtLocation	park
+railing	AtLocation	porch
+railing	AtLocation	ship
+railing	IsA	barrier
+railroad	Synonym	railroad track
+railroad	Synonym	railway
+railroad track	AtLocation	train station
+railroad track	IsA	track
+railway	Synonym	railroad
+railway	Synonym	railroad track
+rain	AtLocation	forest
+rain	AtLocation	street
+rain	AtLocation	weather
+rain	IsA	water
+rain	IsA	weather
+rain	PartOf	weather
+rainbow	AtLocation	sky
+rainbow	PartOf	sky
+red light	IsA	traffic light
+reflection	AtLocation	mirror
+reflection	AtLocation	sea
+refrigerator	AtLocation	apartment
+refrigerator	AtLocation	food
+refrigerator	AtLocation	garage
+refrigerator	AtLocation	home
+refrigerator	AtLocation	house
+refrigerator	IsA	machine
+refrigerator freezer	AtLocation	apartment
+refrigerator freezer	AtLocation	garage
+refrigerator freezer	AtLocation	home
+refrigerator freezer	AtLocation	house
+remote	Synonym	remote control
+remote control	AtLocation	television
+remote control	IsA	device
+remote control	Synonym	remote
+rest	IsA	bridge
+rest	Synonym	pillow
+restaurant	AtLocation	building
+restaurant	AtLocation	city
+restaurant	AtLocation	hotel
+restaurant	AtLocation	town
+restaurant	HasA	bathroom
+restaurant	IsA	building
+restaurant	IsA	business
+restaurant	IsA	magazine
+restaurant	UsedFor	dinner
+restroom	IsA	bathroom
+restroom	IsA	room
+restroom	IsA	toilet
+restroom	Synonym	bathroom
+rice	AtLocation	refrigerator
+rice	AtLocation	wedding
+rice	IsA	pasta
+rider	IsA	person
+rider	Synonym	passenger
+river	AtLocation	bridge
+river	AtLocation	country
+river	AtLocation	town
+river	AtLocation	valley
+river	AtLocation	wilderness
+river	HasA	water
+river	IsA	stream
+river	UsedFor	transportation
+road	AtLocation	bridge
+road	AtLocation	town
+road	AtLocation	valley
+road	IsA	surface
+road	IsA	way
+road	Synonym	street
+road sign	AtLocation	street corner
+roadway	AtLocation	city
+roadway	AtLocation	country
+roadway	AtLocation	countryside
+roadway	IsA	road
+roadway	Synonym	road
+rock	AtLocation	bridge
+rock	AtLocation	chair
+rock	AtLocation	countryside
+rock	AtLocation	field
+rock	AtLocation	ground
+rock	AtLocation	mountain
+rock	AtLocation	mountain range
+rock	AtLocation	water
+rock	IsA	music
+rock	IsA	stone
+rock	Synonym	cliff
+rock	Synonym	ice
+rock	Synonym	stone
+rock	UsedFor	gravel
+roof	AtLocation	airplane
+roof	AtLocation	garage
+roof	AtLocation	mouth
+roof	AtLocation	town
+roof	IsA	single
+roof	PartOf	building
+roof	PartOf	bus
+roof	PartOf	car
+roof	PartOf	house
+roof	PartOf	truck
+roof	Synonym	ceiling
+room	AtLocation	apartment
+room	AtLocation	school
+room	IsA	place
+room	IsA	position
+room	IsA	space
+room	PartOf	building
+room	Synonym	board
+room	Synonym	place
+room	UsedFor	furniture
+room	UsedFor	paint
+rope	AtLocation	backpack
+rope	AtLocation	boat
+rope	AtLocation	swimming pool
+rope	CapableOf	tie
+rope	Synonym	tie
+rose	AtLocation	garden
+rose	IsA	bush
+rose	IsA	flower
+rose	IsA	plant
+rug	AtLocation	bed
+rug	AtLocation	bedroom
+rug	AtLocation	desk
+rug	AtLocation	living room
+rug	AtLocation	place
+rug	AtLocation	table
+rug	IsA	mat
+rug	Synonym	carpet
+rug	UsedFor	carpet
+runner	AtLocation	track
+runner	IsA	athlete
+runner	IsA	device
+runner	IsA	person
+runner	IsA	rug
+runway	AtLocation	city
+runway	IsA	platform
+runway	IsA	way
+runway	Synonym	track
+sail	IsA	structure
+sail	PartOf	sailboat
+sail boat	IsA	boat
+sailboat	AtLocation	lake
+sailboat	IsA	boat
+sailboat	IsA	vehicle
+salad	AtLocation	refrigerator
+salad	IsA	dish
+salad	IsA	food
+sale	AtLocation	store
+sand	AtLocation	concrete
+sand	AtLocation	ground
+sand	AtLocation	ocean
+sand	AtLocation	street
+sand	AtLocation	tree
+sand	IsA	ground
+sandwich	AtLocation	plate
+sandwich	IsA	food
+sandwich	PartOf	meal
+sandy	IsA	person
+sauce	AtLocation	plate
+sauce	IsA	condiment
+sauce	IsA	liquid
+sauce	PartOf	dish
+sauce	PartOf	pizza
+sausage	AtLocation	pizza
+sausage	IsA	food
+sausage	IsA	meat
+sausage	UsedFor	food
+school	AtLocation	backpack
+school	AtLocation	city
+school	AtLocation	town
+school	IsA	building
+school	IsA	place
+school bus	AtLocation	school
+school bus	IsA	bus
+scissors	AtLocation	backpack
+scissors	AtLocation	cabinet
+scissors	AtLocation	desk
+scissors	AtLocation	drawer
+scissors	AtLocation	house
+screen	AtLocation	laptop
+screen	AtLocation	monitor
+screen	IsA	display
+screen	IsA	surface
+screen	PartOf	monitor
+screen	PartOf	tv
+sea	AtLocation	beach
+sea	AtLocation	land
+sea	AtLocation	ocean
+sea	IsA	place
+sea	Synonym	ocean
+sea	UsedFor	sail boat
+seat	AtLocation	airplane
+seat	AtLocation	bike
+seat	AtLocation	bus stop
+seat	AtLocation	porch
+seat	AtLocation	train
+seat	IsA	center
+seat	IsA	chair
+seat	IsA	device
+seat	IsA	furniture
+seat	IsA	space
+seat	PartOf	skirt
+section	IsA	music
+section	IsA	slice
+section	IsA	team
+semi truck	AtLocation	city
+semi truck	IsA	truck
+shade	AtLocation	bridge
+shade	AtLocation	park
+shade	AtLocation	tree
+shade	PartOf	lamp
+shade	Synonym	shadow
+shadow	AtLocation	bridge
+shadow	AtLocation	ground
+shadow	AtLocation	light
+shadow	IsA	shade
+shadow	Synonym	tail
+shadow	UsedFor	shade
+sheep	AtLocation	farm
+sheep	AtLocation	meadow
+sheep	IsA	animal
+sheep	PartOf	flock
+sheet	AtLocation	bedroom
+sheet	IsA	paper
+sheet	PartOf	ship
+sheet	Synonym	blanket
+sheet	Synonym	page
+sheet	Synonym	plane
+sheet	Synonym	rope
+sheet	Synonym	sail
+sheet	UsedFor	bed
+shelf	AtLocation	bathroom
+shelf	AtLocation	bedroom
+shelf	AtLocation	book
+shelf	AtLocation	cabinet
+shelf	AtLocation	closet
+shelf	AtLocation	cupboard
+shelf	AtLocation	garage
+shelf	AtLocation	house
+shelf	AtLocation	refrigerator
+shelf	AtLocation	room
+shelf	AtLocation	wall
+shelf	PartOf	cabinet
+shelf	PartOf	closet
+shelf	Synonym	ledge
+ship	AtLocation	ocean
+ship	HasA	bridge
+ship	IsA	boat
+ship	IsA	vehicle
+ship	Synonym	boat
+shirt	AtLocation	closet
+shirt	AtLocation	drawer
+shirt	AtLocation	dresser
+shirt	AtLocation	suitcase
+shirt	IsA	clothes
+shirt	UsedFor	advertisement
+shoe	AtLocation	closet
+shoe	AtLocation	foot
+shoe	AtLocation	house
+shoe	AtLocation	store
+shoe	AtLocation	wedding
+shoe	IsA	case
+shoe	IsA	clothes
+shoe	PartOf	clothing
+shoe	UsedFor	sale
+shop	AtLocation	container
+shop	AtLocation	street
+shop	AtLocation	town
+shop	IsA	store
+shop	Synonym	garage
+shop	Synonym	office
+shore	AtLocation	beach
+shore	AtLocation	ocean
+shore	HasA	beach
+shore	Synonym	land
+shoulder	PartOf	road
+shower	AtLocation	house
+shower	IsA	party
+shower	IsA	rain
+shower	PartOf	house
+shower curtain	AtLocation	bathtub
+shower curtain	AtLocation	hotel
+shower curtain	AtLocation	shower
+shower curtain	IsA	curtain
+shower curtain	IsA	door
+sidewalk	AtLocation	ground
+sidewalk	AtLocation	people
+sidewalk	IsA	cement
+sidewalk	PartOf	street
+sidewalk	Synonym	pavement
+sign	AtLocation	book
+sign	AtLocation	bus stop
+sign	AtLocation	city
+sign	AtLocation	street
+sign	AtLocation	street corner
+sign	AtLocation	town
+sign	UsedFor	display
+sill	IsA	river
+sill	IsA	rock
+silverware	AtLocation	cupboard
+silverware	AtLocation	kitchen
+silverware	AtLocation	restaurant
+silverware	AtLocation	table
+silverware	IsA	utensil
+sink	AtLocation	apartment
+sink	AtLocation	home
+sink	AtLocation	house
+sink	AtLocation	kitchen
+skateboard	IsA	board
+skateboard	IsA	toy
+ski	IsA	runner
+skier	AtLocation	mountain
+skier	IsA	athlete
+skier	IsA	worker
+skirt	AtLocation	closet
+sky	AtLocation	painting
+sky	IsA	gas
+sky	Synonym	lift
+sky	UsedFor	fly
+sky	UsedFor	rain
+sky	UsedFor	sun
+skyscraper	AtLocation	city
+skyscraper	AtLocation	large city
+skyscraper	IsA	building
+skyscraper	IsA	large building
+skyscraper	IsA	tall building
+skyscraper	IsA	tower
+slice	PartOf	orange
+small boat	IsA	boat
+small dog	AtLocation	arm
+small dog	AtLocation	backpack
+small dog	AtLocation	basket
+small dog	AtLocation	bed
+small dog	AtLocation	box
+small dog	AtLocation	cage
+small dog	AtLocation	car
+small dog	AtLocation	circus
+small dog	AtLocation	city
+small dog	AtLocation	game
+small dog	AtLocation	handbag
+small dog	AtLocation	home
+small dog	AtLocation	lap
+small dog	AtLocation	living room
+small dog	AtLocation	photograph
+small dog	AtLocation	place
+small dog	AtLocation	sun
+small dog	AtLocation	trash
+small dog	AtLocation	tree
+small dog	AtLocation	yard
+smoke	AtLocation	bar
+smoke	AtLocation	oven
+smoke	AtLocation	sky
+smoke	IsA	cloud
+smoke	IsA	gas
+smoke	Synonym	pot
+snack	AtLocation	backpack
+snack	AtLocation	plane
+snack	IsA	meal
+snow	AtLocation	ground
+snow	AtLocation	roof
+snow	IsA	water
+snow	IsA	weather
+snow	PartOf	weather
+snow	UsedFor	weather
+snowboard	IsA	board
+soccer ball	AtLocation	field
+soccer ball	AtLocation	lawn
+soccer ball	IsA	ball
+soccer field	AtLocation	countryside
+soccer field	AtLocation	park
+soccer field	AtLocation	school
+soccer field	AtLocation	stadium
+soccer field	AtLocation	town
+soccer field	IsA	playing field
+soda	IsA	beverage
+sofa	AtLocation	home
+sofa	AtLocation	house
+sofa	AtLocation	living room
+sofa	IsA	chair
+sofa	IsA	furniture
+sofa	IsA	seat
+sofa	Synonym	couch
+sofa	UsedFor	people
+sofa	UsedFor	seat
+softball	IsA	ball
+softball	IsA	baseball
+softball	IsA	flower
+softball	IsA	game
+softball	IsA	sport
+soldier	AtLocation	tent
+soldier	IsA	person
+soldier	IsA	worker
+soldier	UsedFor	guard
+sort	IsA	person
+sort	Synonym	screen
+soup	AtLocation	container
+soup	AtLocation	cupboard
+soup	AtLocation	dinner
+soup	AtLocation	jar
+soup	IsA	course
+soup	IsA	dish
+soup	IsA	food
+soup	IsA	liquid
+soup	PartOf	meal
+space	AtLocation	box
+space	AtLocation	jar
+space	AtLocation	suitcase
+space	AtLocation	table
+space	IsA	time
+space	Synonym	place
+space	Synonym	room
+space	UsedFor	item
+speaker	AtLocation	conference
+speaker	AtLocation	desk
+speaker	AtLocation	shelf
+speaker	IsA	product
+split	IsA	bottle
+spoon	AtLocation	bed
+spoon	AtLocation	bowl
+spoon	AtLocation	dinner
+spoon	AtLocation	hand
+spoon	AtLocation	soup
+spoon	AtLocation	table
+spoon	IsA	container
+spoon	IsA	utensil
+spoon	IsA	wood
+sport	AtLocation	field
+sport	IsA	athlete
+sport	IsA	game
+sport	IsA	newspaper
+sport	IsA	person
+sport	Synonym	fun
+spray	IsA	jet
+stadium	AtLocation	city
+stadium	AtLocation	large city
+stadium	IsA	structure
+stage	IsA	platform
+stage	UsedFor	music
+stair	AtLocation	building
+stair	Synonym	step
+stall	AtLocation	barn
+stall	AtLocation	bathroom
+stall	AtLocation	market
+stall	AtLocation	restroom
+stall	IsA	booth
+stall	Synonym	booth
+stall	UsedFor	horse
+stance	IsA	position
+stance	Synonym	position
+star	AtLocation	sky
+star	AtLocation	space
+star	IsA	sun
+steak	AtLocation	freezer
+steak	AtLocation	oven
+steak	AtLocation	plate
+steak	IsA	food
+steak	IsA	meat
+steam	IsA	gas
+steam	IsA	water
+steel	AtLocation	bridge
+steel	AtLocation	hospital
+steel	AtLocation	tall building
+steel	HasA	iron
+steel	IsA	metal
+step	IsA	block
+step	Synonym	stage
+stick	AtLocation	forest
+stick	AtLocation	grass
+stick	AtLocation	mud
+stick	AtLocation	tree
+stick	AtLocation	yard
+stick	IsA	butter
+stone	AtLocation	driveway
+stone	AtLocation	pond
+stone	AtLocation	river
+stone	AtLocation	shoe
+stone	AtLocation	stream
+stone	PartOf	building
+stone	Synonym	rock
+stone wall	IsA	fence
+stool	AtLocation	bar
+stool	AtLocation	building
+stool	IsA	furniture
+stool	IsA	seat
+stool	Synonym	toilet
+stop light	AtLocation	street corner
+stop sign	AtLocation	bus stop
+stop sign	AtLocation	street corner
+stop sign	IsA	road sign
+stoplight	AtLocation	street corner
+stoplight	IsA	lamp
+stoplight	Synonym	traffic light
+stoplight	Synonym	traffic signal
+store	AtLocation	city
+store	AtLocation	street
+store	AtLocation	town
+store	IsA	business
+store	Synonym	shop
+story	AtLocation	newspaper
+story	CapableOf	floor
+story	PartOf	newspaper
+story	Synonym	floor
+stove	AtLocation	apartment
+stove	AtLocation	house
+stove	AtLocation	living room
+stove	AtLocation	tent
+stove	IsA	device
+strawberry	IsA	berry
+strawberry	IsA	fruit
+strawberry	IsA	plant
+stream	AtLocation	bridge
+stream	AtLocation	countryside
+stream	AtLocation	forest
+stream	AtLocation	mud
+stream	AtLocation	wilderness
+stream	IsA	course
+street	AtLocation	street corner
+street	HasA	name
+street	IsA	road
+street	IsA	roadway
+street	UsedFor	transportation
+structure	IsA	system
+sub	IsA	sandwich
+subway	IsA	railroad
+subway train	IsA	passenger train
+subway train	IsA	train
+sugar	AtLocation	bag
+sugar	AtLocation	coffee
+sugar	AtLocation	container
+sugar	AtLocation	cupboard
+sugar	AtLocation	jar
+sugar	AtLocation	kitchen
+sugar	PartOf	candy
+sugar	PartOf	juice
+suit	AtLocation	closet
+suit	AtLocation	suitcase
+suitcase	AtLocation	airplane
+suitcase	AtLocation	taxi
+suitcase	IsA	baggage
+suitcase	IsA	box
+suitcase	Synonym	bag
+suitcase	Synonym	baggage
+sun	AtLocation	beach
+sun	AtLocation	space
+sun	HasA	iron
+sun	IsA	newspaper
+sun	IsA	star
+sun	Synonym	sunlight
+sun	UsedFor	life
+sun	UsedFor	light
+sunglasses	AtLocation	bag
+sunglasses	AtLocation	car
+sunglasses	AtLocation	purse
+sunglasses	IsA	glasses
+sunlight	IsA	light
+sunset	Synonym	end
+surf	IsA	wave
+surface	AtLocation	lake
+surface	AtLocation	mirror
+surface	AtLocation	object
+surface	Synonym	coat
+surface	UsedFor	counter
+surface	UsedFor	painting
+surfboard	IsA	board
+surfboard	Synonym	surf
+swan	IsA	bird
+sweater	AtLocation	drawer
+swimming pool	AtLocation	park
+swimming pool	AtLocation	school
+swimming pool	IsA	pond
+swimming pool	IsA	pool
+swimming pool	UsedFor	fun
+system	AtLocation	place
+system	AtLocation	shop
+system	UsedFor	store
+tabby cat	AtLocation	alley
+tabby cat	AtLocation	barn
+tabby cat	AtLocation	home
+tabby cat	AtLocation	lap
+tabby cat	IsA	cat
+table	AtLocation	apartment
+table	AtLocation	bedroom
+table	AtLocation	building
+table	AtLocation	conference
+table	AtLocation	dining room
+table	AtLocation	floor
+table	AtLocation	house
+table	AtLocation	kitchen
+table	AtLocation	room
+table	AtLocation	rug
+table	IsA	furniture
+table	IsA	platform
+table	Synonym	board
+table	UsedFor	dinner
+table	UsedFor	furniture
+tablet	IsA	cake
+tablet	Synonym	pad
+tail	AtLocation	monkey
+tail	PartOf	cat
+tail	Synonym	dock
+tail	UsedFor	way
+tall building	IsA	building
+tall tree	IsA	tree
+taxi	AtLocation	airport
+taxi	AtLocation	street
+taxi	AtLocation	train station
+taxi	IsA	car
+tea	AtLocation	cup
+tea	AtLocation	cupboard
+tea	AtLocation	refrigerator
+tea	IsA	beverage
+tea	IsA	meal
+team	AtLocation	soccer game
+teddy bear	AtLocation	bed
+teddy bear	AtLocation	home
+teddy bear	AtLocation	shelf
+teddy bear	IsA	stuffed animal
+teddy bear	Synonym	teddy
+teenager	AtLocation	roof
+telephone	AtLocation	desk
+telephone	AtLocation	desktop
+telephone	AtLocation	hospital
+telephone	AtLocation	hotel
+telephone	AtLocation	office
+telephone	AtLocation	party
+telephone	Synonym	phone
+television	AtLocation	apartment
+television	AtLocation	bar
+television	AtLocation	bedroom
+television	AtLocation	cabinet
+television	AtLocation	house
+television	AtLocation	living room
+television	IsA	appliance
+television	IsA	device
+television	IsA	machine
+television	IsA	tv
+television	Synonym	tv
+tennis ball	IsA	ball
+tennis court	AtLocation	park
+tennis court	AtLocation	town
+tennis court	HasA	net
+tennis court	IsA	court
+tennis racket	IsA	racket
+tennis racquet	Synonym	tennis racket
+tent	AtLocation	backpack
+terminal	AtLocation	airport
+terminal	Synonym	end
+tie	IsA	accessory
+tie	IsA	clothing
+tie	IsA	competition
+tie	PartOf	railroad track
+tie	Synonym	link
+tile	AtLocation	floor
+tile	AtLocation	home
+tile	AtLocation	roof
+tile	AtLocation	room
+tile	AtLocation	shower
+tile	AtLocation	wall
+tile	IsA	man
+tile	PartOf	roof
+tile	UsedFor	art
+tile	UsedFor	bathroom
+tile	UsedFor	kitchen
+tile	UsedFor	wall
+time	IsA	case
+time	IsA	magazine
+time	IsA	single
+time	Synonym	clock
+toast	IsA	bread
+toast	IsA	food
+toaster	IsA	machine
+toilet	AtLocation	apartment
+toilet	AtLocation	bathroom
+toilet	AtLocation	hospital
+toilet	AtLocation	hotel
+toilet	AtLocation	house
+toilet	AtLocation	restaurant
+toilet	AtLocation	stadium
+toilet	AtLocation	trash
+toilet	IsA	room
+toilet	PartOf	bathroom
+toilet	PartOf	restroom
+toilet	Synonym	bathroom
+toilet	Synonym	head
+toilet bowl	IsA	bowl
+toilet bowl	IsA	seat
+toilet bowl	PartOf	toilet
+toilet paper	AtLocation	bathroom
+toilet paper	AtLocation	cabinet
+toilet paper	AtLocation	restroom
+toilet paper	AtLocation	store
+toilet paper	AtLocation	toilet
+toilet paper	IsA	paper
+toilet paper	UsedFor	bathroom
+toilet seat	IsA	seat
+toilet seat	PartOf	toilet
+tomato	AtLocation	refrigerator
+tomato	IsA	berry
+tomato	IsA	fruit
+tomato	IsA	plant
+tomato	IsA	vegetable
+tongue	AtLocation	mouth
+tongue	PartOf	boot
+tongue	PartOf	mouth
+tongue	PartOf	shoe
+tool	AtLocation	garage
+tool	AtLocation	street
+tool	IsA	device
+tool	IsA	item
+tool	IsA	object
+tool	UsedFor	building
+tooth	AtLocation	mouth
+tooth	IsA	structure
+tooth	PartOf	gear
+tooth	PartOf	mouth
+toothbrush	AtLocation	bedroom
+toothbrush	AtLocation	cabinet
+toothbrush	AtLocation	mouth
+toothbrush	AtLocation	store
+toothbrush	AtLocation	suitcase
+toothbrush	IsA	brush
+tour	AtLocation	museum
+tour bus	IsA	bus
+towel	AtLocation	backpack
+towel	AtLocation	closet
+towel	AtLocation	cupboard
+towel	AtLocation	dryer
+towel	AtLocation	hotel
+towel	AtLocation	roof
+towel	AtLocation	swimming pool
+tower	AtLocation	airport
+tower	AtLocation	city
+tower	IsA	structure
+town	AtLocation	country
+town	AtLocation	countryside
+town	AtLocation	train station
+town	AtLocation	valley
+town	IsA	city
+town	IsA	place
+toy	AtLocation	store
+toy	AtLocation	table
+toy	IsA	device
+toy	UsedFor	fun
+track	AtLocation	school
+track	AtLocation	snow
+track	AtLocation	stadium
+track	AtLocation	subway
+track	AtLocation	train station
+track	IsA	bar
+track	IsA	belt
+track	IsA	road
+track	PartOf	railroad track
+track	Synonym	course
+track	Synonym	ground
+track	Synonym	monitor
+track	Synonym	platform
+track	Synonym	trail
+tractor	AtLocation	farm
+tractor	IsA	truck
+tractor	IsA	vehicle
+traffic light	AtLocation	street
+traffic light	IsA	light
+traffic light	Synonym	light
+traffic light	Synonym	stop light
+traffic light	Synonym	traffic signal
+traffic signal	Synonym	light
+traffic signal	Synonym	traffic light
+trail	IsA	track
+trail	Synonym	track
+train	AtLocation	zoo
+train	IsA	video game
+train	Synonym	coach
+train	Synonym	trail
+train car	PartOf	train
+train station	AtLocation	city
+train station	IsA	building
+train station	IsA	terminal
+transportation	AtLocation	subway
+trash	AtLocation	alley
+trash	AtLocation	bag
+trash	AtLocation	bed
+trash	AtLocation	bridge
+trash	AtLocation	bus stop
+trash	AtLocation	container
+trash	AtLocation	garage
+trash	AtLocation	ground
+trash	AtLocation	hospital
+trash	AtLocation	kitchen
+trash	AtLocation	school
+trash	AtLocation	soccer game
+trash	AtLocation	subway
+trash	IsA	garbage
+trash	IsA	object
+trash	Synonym	garbage
+trash	Synonym	pan
+tree	AtLocation	jungle
+tree	AtLocation	town
+tree	AtLocation	zoo
+tree	HasA	trunk
+tree	IsA	figure
+tree	IsA	plant
+tree	IsA	wood
+tree	PartOf	forest
+tree	UsedFor	fruit
+tree	UsedFor	shade
+tree	UsedFor	wood
+tree branch	AtLocation	roof
+trough	Synonym	bowl
+truck	AtLocation	freeway
+truck	AtLocation	garage
+truck	AtLocation	road
+truck	IsA	vehicle
+trunk	AtLocation	bedroom
+trunk	AtLocation	car
+trunk	AtLocation	garage
+trunk	AtLocation	zoo
+trunk	IsA	baggage
+trunk	IsA	nose
+trunk	IsA	wood
+trunk	PartOf	car
+trunk	PartOf	tree
+trunk	Synonym	boot
+trunk	Synonym	suitcase
+turkey	AtLocation	oven
+turkey	AtLocation	refrigerator
+turkey	IsA	bird
+turkey	IsA	country
+turkey	IsA	food
+tusk	IsA	tooth
+tusk	PartOf	elephant
+tusk	Synonym	horn
+tv	AtLocation	apartment
+tv	AtLocation	bedroom
+tv	AtLocation	house
+tv	Synonym	television
+twin bed	IsA	bed
+umbrella	AtLocation	beach
+umbrella	AtLocation	car
+umbrella	AtLocation	closet
+umbrella	AtLocation	store
+umbrella	AtLocation	suitcase
+umbrella	IsA	canopy
+umbrella	IsA	shade
+urinal	IsA	toilet
+valley	IsA	place
+valley	IsA	stadium
+van	IsA	car
+van	IsA	truck
+van	IsA	vehicle
+vase	AtLocation	cabinet
+vase	AtLocation	shelf
+vase	AtLocation	table
+vase	IsA	container
+vase	IsA	jar
+vegetable	IsA	food
+vegetable	IsA	grocery
+vehicle	AtLocation	freeway
+vehicle	AtLocation	street
+vehicle	IsA	machine
+video	AtLocation	drawer
+video	PartOf	television
+video	Synonym	television
+village	AtLocation	countryside
+village	IsA	city
+village	IsA	town
+wall	AtLocation	building
+wall	AtLocation	house
+wall	AtLocation	room
+wall	IsA	fence
+wall	IsA	object
+wall	PartOf	building
+wall	PartOf	hallway
+wall	PartOf	house
+wall	PartOf	room
+wall	PartOf	structure
+warehouse	IsA	house
+warehouse	IsA	large building
+water	AtLocation	backpack
+water	AtLocation	bath
+water	AtLocation	bathroom
+water	AtLocation	bathtub
+water	AtLocation	beer
+water	AtLocation	bottle
+water	AtLocation	bridge
+water	AtLocation	bucket
+water	AtLocation	closet
+water	AtLocation	coffee
+water	AtLocation	coffee cup
+water	AtLocation	container
+water	AtLocation	delta
+water	AtLocation	fountain
+water	AtLocation	glass
+water	AtLocation	grape
+water	AtLocation	ice
+water	AtLocation	jar
+water	AtLocation	juice
+water	AtLocation	lake
+water	AtLocation	meadow
+water	AtLocation	milk
+water	AtLocation	mouth
+water	AtLocation	mud
+water	AtLocation	ocean
+water	AtLocation	pipe
+water	AtLocation	pool
+water	AtLocation	rain
+water	AtLocation	rainbow
+water	AtLocation	restaurant
+water	AtLocation	river
+water	AtLocation	roof
+water	AtLocation	shower
+water	AtLocation	sink
+water	AtLocation	snow
+water	AtLocation	soda
+water	AtLocation	soup
+water	AtLocation	spray
+water	AtLocation	steam
+water	AtLocation	stream
+water	AtLocation	street
+water	AtLocation	toilet
+water	AtLocation	well
+water	HasA	cycle
+water	HasA	surface
+water	IsA	beverage
+water	IsA	food
+water	IsA	life
+water	IsA	liquid
+water	IsA	utility
+water	PartOf	sea
+water bottle	AtLocation	beach
+water bottle	IsA	bottle
+waterway	AtLocation	bridge
+wave	IsA	weather
+wave	IsA	woman
+wave	PartOf	ocean
+way	IsA	course
+way	Synonym	alley
+way	Synonym	course
+way	Synonym	device
+way	Synonym	road
+way	Synonym	room
+way	Synonym	space
+way	Synonym	step
+way	Synonym	street
+way	Synonym	trail
+wedding	AtLocation	church
+wedding	IsA	party
+wedding cake	AtLocation	wedding
+wedding cake	IsA	cake
+wedding cake	IsA	food
+well	AtLocation	country
+well	AtLocation	countryside
+well	AtLocation	farm
+well	AtLocation	ground
+well	AtLocation	water
+well	HasA	water
+well	IsA	device
+well	IsA	place
+well	UsedFor	drinking water
+wheel	AtLocation	boat
+wheel	AtLocation	trunk
+wheel	IsA	machine
+wheel	IsA	object
+wheel	PartOf	bicycle
+wheel	PartOf	car
+wheel	PartOf	skateboard
+wheel	PartOf	vehicle
+wheel	Synonym	bicycle
+wheel	Synonym	rack
+wheel	UsedFor	car
+wind	AtLocation	field
+wind	AtLocation	sea
+wind	IsA	weather
+wind	Synonym	gas
+window	AtLocation	bedroom
+window	AtLocation	building
+window	AtLocation	garage
+window	AtLocation	house
+window	AtLocation	office
+window	AtLocation	room
+window	AtLocation	wall
+window	IsA	display
+window	IsA	wall
+window	PartOf	building
+window	PartOf	bus
+window	PartOf	car
+window	PartOf	computer screen
+wine	AtLocation	bar
+wine	AtLocation	bottle
+wine	AtLocation	church
+wine	IsA	beverage
+wine	IsA	food
+wine bottle	IsA	bottle
+wine glass	AtLocation	cupboard
+wine glass	IsA	dish
+wire	IsA	device
+wire	IsA	magazine
+wire	PartOf	electronic device
+wire fence	IsA	fence
+woman	IsA	adult
+woman	IsA	female
+woman	IsA	man
+woman	IsA	person
+wood	AtLocation	boat
+wood	AtLocation	carpet
+wood	AtLocation	desk
+wood	AtLocation	fire
+wood	AtLocation	tree
+wood	Synonym	forest
+wood	UsedFor	building
+wooden chair	IsA	chair
+word	AtLocation	book
+worker	AtLocation	desk
+worker	AtLocation	shop
+worker	IsA	person
+yard	AtLocation	city
+yard	AtLocation	house
+yard	IsA	field
+yard	IsA	lawn
+yard	PartOf	chain
+yard	Synonym	courtyard
+yard	Synonym	garden
+young person	IsA	person
+zebra	AtLocation	zoo
+zebra	HasA	nose
+zebra	IsA	animal
+zebra	IsA	horse
