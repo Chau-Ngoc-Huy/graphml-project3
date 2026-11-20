@@ -11,7 +11,7 @@ VG_A="vg_clip vg_qa_ablation_no_edge vg_qa vg_qa_ablation_no_rel vg_qa_cn vg_qa_
 VG_B="vg_qa_cn_shuffle vg_qa_cn_gcn vg_qa_cn_sage vg_qa_cn_no_sg_gcn vg_qa_cn_no_sg_sage"
 case "$DS:${2:-}" in
   vg:|vg:kaggle)
-    ARGS="--set data=mmxai-task1-bundle --tag kaggle-3seed"
+    ARGS="--set data=mmxai-vg-bundle --tag kaggle-3seed"
     tools/run_worker.sh "$VG_A" "$ARGS" > logs/suite_vg_A.log 2>&1 &
     tools/run_worker.sh "$VG_B" "$ARGS" > logs/suite_vg_B.log 2>&1 &
     wait

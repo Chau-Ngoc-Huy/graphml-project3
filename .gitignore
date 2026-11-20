@@ -63,5 +63,5 @@ results/tex/
 checkpoint/
 external/
 results/raw/
-work_task1/
+work_vg_data/
 *.index

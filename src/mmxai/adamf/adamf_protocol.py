@@ -1,7 +1,7 @@
-"""AdaMF-MAT as a score_fn for the team's shared protocol (Thang's mmxai_eval.Protocol).   [Khanh, Level 2]
+"""AdaMF-MAT as a score_fn for the team's shared protocol (the mmxai_eval.Protocol).   [cấp độ 2]
 
 Pipeline (same split, same 1K-gallery folds, same CLIP top-K as every other method):
-  caption -> concepts (Thang's ConceptLinker, already in captions.jsonl["concepts"])
+  caption -> concepts (the ConceptLinker, already in captions.jsonl["concepts"])
   graph_score(caption, candidate image) = sum over the caption's concepts c of AdaMF-MAT plausibility of (image, contains, c)
   final score = alpha*z(cosine) + (1-alpha)*z(graph_score), alpha chosen on VAL  (mmxai_eval.fuse / tune_alpha)
 
@@ -15,7 +15,7 @@ MMKG that AdaMF-MAT is trained on (built from the Protocol, no leakage):
               textual = CLIP text feature of the concept name (image = mean of its concepts' text features)
   variants  : full | shuffle (tails permuted) | drop (no concept relations) for the relation-structure ablation.
 
-Usage (Kaggle, after Thang's notebook produced WORK=/kaggle/working/task1 and the repo is cloned):
+Usage (Kaggle, after the notebook produced WORK=/kaggle/working/vg_data and the repo is cloned):
   python adamf_protocol.py build --work WORK --repo REPO --name COCO_full --variant full
   (train with the repo: python run_adamf_mat.py -dataset=COCO_full ... -save=./checkpoint/COCO_full-full)
   python adamf_protocol.py eval  --work WORK --repo REPO --name COCO_full --ckpt checkpoint/COCO_full-full --out results.json
@@ -188,7 +188,7 @@ class AdamfScorer:
 
 
 def presence_score(c, P):
-    """Control with NO relational knowledge: share of the caption's concepts in the candidate's object list (Thang's lexical rerank)."""
+    """Control with NO relational knowledge: share of the caption's concepts in the candidate's object list (the lexical rerank)."""
     obj = [set(im["objects"]) for im in P.images]
     out = np.zeros(c["sim"].shape, np.float64)
     for r, q in enumerate(c["q_cap"]):
@@ -252,7 +252,7 @@ def _load_protocol(work):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("mode", choices=["build", "eval"])
-    ap.add_argument("--work", required=True, help="Thang's WORK dir (data/, split/, features/)")
+    ap.add_argument("--work", required=True, help="the WORK dir (data/, split/, features/)")
     ap.add_argument("--repo", required=True)
     ap.add_argument("--name", default="COCO_full")
     ap.add_argument("--variant", default="full", choices=list(SUFFIX))

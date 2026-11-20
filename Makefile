@@ -82,7 +82,7 @@ table:               ## bảng kết quả (Markdown + LaTeX) từ lượt đầ
 ablations:           ## chạy mọi ablation tuần tự trên Kaggle: make ablations ARGS="--set data=mmxai-vg"
 	tools/run_queue.sh "ablation_no_rel ablation_no_concept ablation_no_edge ablation_shuffle ablation_random" "$(ARGS)"
 
-# --- AdaMF-MAT / bộ truy vấn (gộp từ legacy/khanh/Makefile)
+# --- AdaMF-MAT / bộ truy vấn 
 SG ?= data/scene_graphs.json
 queries:             ## sinh lại bộ 24 truy vấn từ scene_graphs.json của VG (không commit file đó): SG=<đường dẫn>
 	$(PY) -m mmxai.adamf.build_eval_queries $(SG) queries 12 0
@@ -123,8 +123,8 @@ fetch-prebuilt:      ## đường tắt: tải bundle VG/PSG + 4 checkpoint đã
 	$(PY) tools/fetch_data.py bundles models
 
 data: data-$(DS)     ## bước 1: dựng bundle cho DS
-data-vg:             ## bước 1 VG: notebook Nhiệm vụ 1 (Thắng) trên Kaggle GPU → data/vg_bundle  (SMOKE=1: lượt thử)
-	$(PY) tools/kaggle_job.py run task1 --install $(if $(SMOKE),--smoke)
+data-vg:             ## bước 1 VG: notebook giao thức đánh giá trên Kaggle GPU → data/vg_bundle  (SMOKE=1: lượt thử)
+	$(PY) tools/kaggle_job.py run vg-data --install $(if $(SMOKE),--smoke)
 data-psg:            ## bước 1 PSG (local CPU ~75 phút): PSG∩COCO → data/psg_bundle + đặc trưng CLIP
 	$(PY) -I tools/psg_to_bundle.py --raw data/psg_raw --coco data/raw/dataset_coco.json \
 	    --conceptnet data/conceptnet/hf_en_simple/train.parquet --out $(BUNDLE_psg)
@@ -139,7 +139,7 @@ publish:             ## bước 2b: đưa bundle DS lên Kaggle Dataset riêng t
 train:               ## bước 3: mọi cấu hình QA-Graph × 3 seed (vg: Kaggle 2 worker; psg: local) — TARGET=kaggle|local
 	tools/run_suite.sh $(DS) $(TARGET)
 
-adamf:               ## bước 4: AdaMF-MAT (Khánh) + ablation trên Kaggle GPU → results/adamf_$(DS)/  (SMOKE=1: lượt thử)
+adamf:               ## bước 4: AdaMF-MAT + ablation trên Kaggle GPU → results/adamf_$(DS)/  (SMOKE=1: lượt thử)
 	$(PY) tools/kaggle_job.py run adamf --dataset $(DS) --install $(if $(SMOKE),--smoke)
 
 tables:              ## bước 5: bảng chính thức + kiểm định ghép cặp → results/tables/, results/*_paired, psg_vs_adamf
@@ -148,7 +148,7 @@ tables:              ## bước 5: bảng chính thức + kiểm định ghép c
 	test ! -f results/adamf_psg/results_PSG_full.json || $(PY) tools/psg_vs_adamf.py --adamf results/adamf_psg
 	test ! -f data/vg_bundle/data/images.jsonl || $(PY) tools/paired_vs_qagraph.py --bundle data/vg_bundle
 
-xai:                 ## bước 6: giải thích + fidelity/sparsity/validity (khung của Dương) trên mô hình thật, N truy vấn
+xai:                 ## bước 6: giải thích + fidelity/sparsity/validity (khung xAI (mmxai.xai)) trên mô hình thật, N truy vấn
 	OMP_NUM_THREADS=2 nice -n 10 $(PY) tools/xai_bridge_demo.py --model $(MODEL_$(DS)) --bundle $(BUNDLE_$(DS)) --n $(or $(N),10)
 
 web:                 ## bước 7: MMXAI Observatory — sinh dữ liệu từ results/ + build (apps/observatory/dist)

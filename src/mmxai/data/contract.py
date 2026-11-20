@@ -3,11 +3,11 @@
     <data_dir>/vg/objects.json          định dạng Visual Genome gốc (có thể là tập con)
     <data_dir>/vg/relationships.json    định dạng Visual Genome gốc
     <data_dir>/captions.json            [{"caption_id", "image_id", "text", "group"?: "direct"|"indirect"}]
-    <data_dir>/splits.json              {"train": [image_id], "val": [...], "test": [...]}  (Yến)
+    <data_dir>/splits.json              {"train": [image_id], "val": [...], "test": [...]}
     <data_dir>/conceptnet.tsv           head<TAB>rel<TAB>tail  (tùy chọn, đã lọc theo vocab; tools/fetch_conceptnet.py)
-    <data_dir>/synonyms.json            {"men": "man", ...}  (tùy chọn, chuẩn hóa nhãn; Yến)
-    <data_dir>/features/image_emb.npy + image_ids.json       CLIP ảnh, đã L2-normalize (Thắng)
-    <data_dir>/features/caption_emb.npy + caption_ids.json   CLIP caption (Thắng)
+    <data_dir>/synonyms.json            {"men": "man", ...}  (tùy chọn, chuẩn hóa nhãn)
+    <data_dir>/features/image_emb.npy + image_ids.json       CLIP ảnh, đã L2-normalize
+    <data_dir>/features/caption_emb.npy + caption_ids.json   CLIP caption
     <data_dir>/features/label_emb.npy + labels.json          CLIP text của tên nhãn/khái niệm (tools/extract_clip.py --labels)
 """
 

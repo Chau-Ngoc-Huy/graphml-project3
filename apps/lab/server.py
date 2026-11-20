@@ -7,7 +7,7 @@ Biến thể = mọi thư mục runs/vg_qa*/<run_id>/ có model.pt (trừ lượ
 (mỗi biến thể dựng lại đồ thị của nó ~20–60 s); gọi tới biến thể chưa nạp thì nạp ngay.
 
 Biến môi trường (tùy chọn):
-  MMXAI_BUNDLE   bundle Nhiệm vụ 1 (mặc định data/vg_bundle)
+  MMXAI_BUNDLE   bundle VG (mặc định data/vg_bundle)
   MMXAI_RUN      run_id (tên thư mục) của biến thể mặc định
   MMXAI_THREADS  số luồng torch (mặc định 2 — máy không bị lag)
   MMXAI_PRELOAD  0 = không nạp sẵn các biến thể ở nền
@@ -41,7 +41,7 @@ from mmxai.graph.qa import QAData, QAScorer
 ROOT = Path(__file__).resolve().parents[2]   # apps/lab/server.py → gốc repo
 STATIC = Path(__file__).resolve().parent / "static"
 torch.set_num_threads(int(os.environ.get("MMXAI_THREADS", "2")))
-K = 100  # số ứng viên CLIP được xếp hạng lại (giống giao thức của Thắng)
+K = 100  # số ứng viên CLIP được xếp hạng lại (giống giao thức)
 
 # ---------------------------------------------------------------- tên hiển thị của biến thể
 EXP_TITLE = {
@@ -247,7 +247,7 @@ class State:
             return F.normalize(e, dim=-1)[0].numpy()
 
     def extract_concepts(self, text: str) -> list[str]:
-        """Xấp xỉ trường `concepts` của Thắng cho câu tự do: khớp 1–3 từ liên tiếp với bộ nhãn gốc (bỏ s/es)."""
+        """Xấp xỉ trường `concepts` cho câu tự do: khớp 1–3 từ liên tiếp với bộ nhãn gốc (bỏ s/es)."""
         words = re.findall(r"[a-z]+", text.lower())
         out, i = [], 0
         while i < len(words):
@@ -317,26 +317,26 @@ def overview(variant: str | None = None):
         "config": {"graph": V.cfg.get("graph"), "gnn": V.cfg.get("gnn"), "extra": V.cfg.get("extra")},
         "learned": {"w": V.model.w.item(), "tau_match": V.model.log_tau.exp().item(), "gate": V.model.gate.item()},
         "steps": [
-            {"id": "raw", "title": "1 · Dữ liệu gốc", "who": "Yến / Thắng",
+            {"id": "raw", "title": "1 · Dữ liệu gốc", "who": "mmxai.data · tools/psg_to_bundle.py",
              "items": [[f"Ảnh {S.dataset} ∩ COCO", len(b.image_ids)], ["Caption COCO", len(b.captions)],
                        ["Ảnh train / val / test", f"{len(b.splits['train'])} / {len(b.splits['val'])} / {len(b.splits['test'])}"],
                        ["Caption train / val / test", f"{split_caps['train']} / {split_caps['val']} / {split_caps['test']}"]]},
-            {"id": "clip", "title": "2 · Đặc trưng CLIP", "who": "Thắng",
+            {"id": "clip", "title": "2 · Đặc trưng CLIP", "who": "CLIP ViT-B/32 (đóng băng)",
              "items": [["Mô hình", "ViT-B-32 / laion2b (đóng băng)"], ["Chiều vector", b.image_emb.shape[1]],
                        ["Ứng viên mỗi truy vấn", f"top-{K}"]]},
-            {"id": "graph", "title": "3 · Đồ thị (biến thể đang chọn)", "who": "Huy",
+            {"id": "graph", "title": "3 · Đồ thị (biến thể đang chọn)", "who": "mmxai.graph",
              "items": [["Đỉnh ảnh", st["n_img"]], [f"Đỉnh nhãn ảnh ({S.dataset})", sum(1 for l in g.labels if l in S.image_labels)],
                        ["Đỉnh khái niệm (ConceptNet / mở rộng)", sum(1 for l in g.labels if l not in S.image_labels)],
                        ["Cạnh contains (nhãn → ảnh)", st.get("E_contains", 0)],
                        ["Cạnh sg_rel (nhãn ↔ nhãn, từ ảnh train)", st.get("E_sg_rel", 0)],
                        ["Cạnh ConceptNet", st.get("E_concept", 0)],
                        ["Nhãn / ảnh (trung bình · tối đa)", f"{np.mean(lpi):.1f} · {max(lpi)}"]]},
-            {"id": "query", "title": "4 · Truy vấn → khái niệm", "who": "Thắng (concepts) / Huy",
+            {"id": "query", "title": "4 · Truy vấn → khái niệm", "who": "mmxai_eval.ConceptLinker",
              "items": [["Khái niệm / caption (trung bình)",
                         f"{np.mean([len(c['concepts']) for c in b.captions]):.2f}"],
                        ["Nhóm direct / indirect / no_concept",
                         f"{caps_by.get('direct', 0)} / {caps_by.get('indirect', 0)} / {caps_by.get('no_concept', 0)}"]]},
-            {"id": "score", "title": "5 · Chấm điểm & xếp hạng lại", "who": "Huy",
+            {"id": "score", "title": "5 · Chấm điểm & xếp hạng lại", "who": "mmxai.graph",
              "items": [["Điểm mô hình", "cos(Pq, Sx) + w · s_G(q, ảnh)"],
                        ["s_G", "trung bình theo khái niệm của max mềm cos(u_c, H_nhãn)"],
                        ["Điểm cuối", f"α·z(cos CLIP) + (1−α)·z(điểm mô hình), α = {V.alpha}"]]},
@@ -458,7 +458,7 @@ def gold_all(req: SearchReq):
         raise HTTPException(400, "Chỉ dùng được với caption có ảnh đúng")
     pool, cand, sim = _cands(q, req.split)
     hit = np.where(cand == gold)[0]
-    rows = [{"id": "clip", "title": "CLIP (baseline của Thắng)", "rank": int(_rank(sim)[hit[0]]) if len(hit) else None}]
+    rows = [{"id": "clip", "title": "CLIP (baseline)", "rank": int(_rank(sim)[hit[0]]) if len(hit) else None}]
     for v in S.variants.values():
         if not v.loaded:
             rows.append({"id": v.id, "title": v.title, "note": v.note, "rank": None, "pending": True})
@@ -688,7 +688,7 @@ def labels(q: str = "", variant: str | None = None):
 
 # ---------------------------------------------------------------- ablation
 STORY = [
-    ("vg_clip", "", "CLIP (baseline của Thắng)", "Không học gì; cos(câu, ảnh).", "main"),
+    ("vg_clip", "", "CLIP (baseline)", "Không học gì; cos(câu, ảnh).", "main"),
     ("vg_graph", "seed0-dau-tien", "Legacy GNN (#2)", "Gộp nhãn + lớp chiếu; tưởng đồ thị giúp +2.8 MRR.", "history"),
     ("vg_ablation_no_edge", "seed0", "Legacy · no_edge (#3)", "Bỏ hết cạnh vẫn +2.8 ⇒ mức tăng là của adapter.", "history"),
     ("vg_ablation_shuffle", "seed0", "Legacy · shuffle (#3)", "Xáo cạnh vẫn như cũ ⇒ đồ thị không được dùng.", "history"),
@@ -724,7 +724,7 @@ def _vg_name(exp: str) -> str:
 
 
 def _clip_row():
-    """Dòng CLIP tính lại bằng chính Protocol của Thắng (3 seed + toàn pool)."""
+    """Dòng CLIP tính lại bằng chính Protocol (3 seed + toàn pool)."""
     if S._clip_baseline is None:
         P = S.ev.Protocol.load(S.bundle)
         res = P.evaluate(lambda c, p: c["sim"], name="CLIP", split="test", seeds=[0, 1, 2], full=True)

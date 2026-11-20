@@ -1,5 +1,5 @@
 """Trích đặc trưng OpenCLIP ĐÓNG BĂNG theo hợp đồng dữ liệu (docs/data-contract.md). Bản tham chiếu: phần chính
-thức là của Thắng — chỉ cần file đầu ra cùng tên/định dạng. Chạy trên Kaggle GPU (ảnh) hoặc CPU (chỉ --labels, --captions).
+thức là — chỉ cần file đầu ra cùng tên/định dạng. Chạy trên Kaggle GPU (ảnh) hoặc CPU (chỉ --labels, --captions).
 
   --images    features/image_emb.npy + image_ids.json      ảnh <images_dir>/<image_id>.jpg
   --captions  features/caption_emb.npy + caption_ids.json  từ captions.json

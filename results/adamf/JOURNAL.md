@@ -1,15 +1,15 @@
-# Nhật ký thí nghiệm — khanh/ (mới nhất ở trên)
+# Nhật ký thí nghiệm AdaMF-MAT (mới nhất ở trên)
 
 ## 2026-11-18 · Mở rộng adapter + AdaMF-MAT (chạy cục bộ CPU, checkpoint COCO_full cũ) → `protocol_coco_adapter.md`
 - Adapter (2 phép tuyến tính, InfoNCE, train/val) +2.01 MRR toàn pool so với CLIP; ghép AdaMF-MAT thêm **+0.59** [0.31, 0.87], chỉ nhóm direct.
-  Khớp tên (không quan hệ) trên nền adapter +1.05 > AdaMF-MAT. Toàn pool: Adapter+AdaMF-MAT 63.00 vs Huy tốt nhất 65.09.
-- So sánh ghép cặp với các cấu hình của Huy (seed 0, toàn pool): `vs_qagraph_paired.md` (script `tools/paired_vs_qagraph.py`).
+  Khớp tên (không quan hệ) trên nền adapter +1.05 > AdaMF-MAT. Toàn pool: Adapter+AdaMF-MAT 63.00 vs QA-Graph tốt nhất 65.09.
+- So sánh ghép cặp với các cấu hình (seed 0, toàn pool): `vs_qagraph_paired.md` (script `tools/paired_vs_qagraph.py`).
 
-## 2026-11-15 · AdaMF-MAT trên giao thức chung (notebook `kaggle/protocol_adamf_kaggle.ipynb`)
-- Lần 1 hỏng ở stage 1: không tìm thấy dữ liệu của Thắng trong `/kaggle/input` (chưa gắn bundle). Đã thêm: liệt kê input, đường dẫn
-  `task1-bundle`, dự phòng chạy lại notebook của Thắng.
+## 2026-11-15 · AdaMF-MAT trên giao thức chung (notebook `notebooks/kaggle/adamf/protocol_adamf_kaggle.ipynb`)
+- Lần 1 hỏng ở stage 1: không tìm thấy dữ liệu trong `/kaggle/input` (chưa gắn bundle). Đã thêm: liệt kê input, đường dẫn
+  `mmxai-vg-bundle`, dự phòng chạy lại notebook.
 - Chạy thử trên **bundle thật, CPU, mô hình khởi tạo ngẫu nhiên** (chỉ để kiểm tra đường chạy): 272 giây; baseline CLIP trên toàn pool
-  test cho R@1 48.31, MRR 60.40 và baseline khớp tên cho MRR +1.06 [0.74, 1.37] — **trùng số trong README của Thắng**.
+  test cho R@1 48.31, MRR 60.40 và baseline khớp tên cho MRR +1.06 [0.74, 1.37] — **trùng số trong README**.
 - **2026-11-16 · lượt huấn luyện thật xong** (104 epoch, 2.5 giờ): CLIP+AdaMF-MAT MRR 69.77 vs CLIP 69.23 (toàn pool +0.64, CI95 [0.33, 0.97]),
   nhưng chỉ nhờ nhóm direct (75.17 vs 69.33); nhóm indirect 68.56 < CLIP 69.24; baseline khớp tên (không quan hệ) 70.21 ≥ AdaMF-MAT.
   → **không ủng hộ** "đồ thị giúp ở nhóm gián tiếp". Chi tiết và hạn chế: `protocol_coco_full.md`; số thô: `protocol_coco_full.json`.

@@ -19,9 +19,9 @@ import { HeadToHeadMatrix } from "./HeadToHeadMatrix";
 import { findDisagreements, useComparison, type Subset } from "./useComparison";
 
 const COST_NOTES: Record<string, string> = {
-  clip: "Notebook Nhiệm vụ 1: trích 19 264 ảnh + 96 381 caption và đánh giá, ~6 phút trên Kaggle T4.",
-  clip_adamf: "AdaMF-MAT 104 epoch × 85,8 s ≈ 2,5 giờ (Kaggle T4, 1 seed) — khanh/results/protocol_coco_full.md.",
-  k_adapter_adamf: "Dùng lại checkpoint AdaMF-MAT ở trên; adapter huấn luyện trên CPU.",
+  clip: "Notebook giao thức đánh giá: trích 19 264 ảnh + 96 381 caption và đánh giá, ~6 phút trên Kaggle T4.",
+  clip_adamf: "AdaMF-MAT 104 epoch × 85,8 s ≈ 2,5 giờ (Kaggle T4, 1 seed) — results/adamf/protocol_coco_full.md.",
+  adapter_s_adamf: "Dùng lại checkpoint AdaMF-MAT ở trên; adapter huấn luyện trên CPU.",
 };
 
 export default function ModelComparison() {
@@ -146,7 +146,7 @@ export default function ModelComparison() {
             </TableBody>
           </Table>
         </div>
-        <SourceNote>run.wall_time_s / peak_vram_gb / sec_per_sample trong huy/results/*kaggle-3seed.json</SourceNote>
+        <SourceNote>run.wall_time_s / peak_vram_gb / sec_per_sample trong results/*kaggle-3seed.json</SourceNote>
       </Section>
     </div>
   );

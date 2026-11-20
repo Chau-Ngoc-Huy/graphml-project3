@@ -1,11 +1,11 @@
-"""Chạy khung xAI của Dương (src/mmxai/xai, KHÔNG sửa) trên mô hình QA-Graph thật qua mmxai.xai_bridge.
+"""Chạy khung xAI (mmxai.xai) (src/mmxai/xai, KHÔNG sửa) trên mô hình QA-Graph thật qua mmxai.xai_bridge.
 
   python tools/xai_bridge_demo.py --model models/psg_qa_cn_seed0 --bundle data/psg_bundle --n 10 --k 20
   python tools/xai_bridge_demo.py --model models/vg_t1_qa_cn_seed0 --bundle data/vg_bundle --n 10
 
 Chọn n caption test (nửa direct, nửa indirect, cố định theo seed), ứng viên = top-k CLIP (+ ảnh đúng), export đồ thị con theo
-định dạng duong/xai/io.load_graph, rồi cho mỗi truy vấn: EdgeContributionExplainer (bỏ từng cạnh, mô hình chấm lại) và
-XAIEvaluator (fidelity so với xóa ngẫu nhiên, sparsity, validity theo duong/configs/graph_schema.json).
+định dạng mmxai.xai.io.load_graph, rồi cho mỗi truy vấn: EdgeContributionExplainer (bỏ từng cạnh, mô hình chấm lại) và
+XAIEvaluator (fidelity so với xóa ngẫu nhiên, sparsity, validity theo configs/xai/graph_schema.json).
 Kiểm tra đầu tiên: final_score của cầu nối khớp điểm giao thức (qa_scores + fuse) trên đồ thị đầy đủ.
 Ra: <out>/graph.json, cases.json, results.jsonl. CPU ~1–2 phút / truy vấn / giá trị k.
 
@@ -14,7 +14,7 @@ Cần (không có trong git):
               vg-qa-seed0, vg-qa-cn-seed0 (bundle VG), psg-qa-seed0, psg-qa-cn-seed0 (bundle PSG)
               kaggle models instances versions download huychau/mmxai-qa-graph/pyTorch/psg-qa-cn-seed0/1 \
                   -p models/psg_qa_cn_seed0 --untar
-  bundle      Kaggle Dataset riêng tư huychau/mmxai-task1-bundle (VG) → data/vg_bundle/,
+  bundle      Kaggle Dataset riêng tư huychau/mmxai-vg-bundle (VG) → data/vg_bundle/,
               huychau/mmxai-psg-bundle (PSG) → data/psg_bundle/
               kaggle datasets download huychau/mmxai-psg-bundle -p data/psg_bundle --unzip
 """

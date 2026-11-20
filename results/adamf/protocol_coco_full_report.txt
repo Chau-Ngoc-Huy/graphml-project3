@@ -1,6 +1,6 @@
-AdaMF-MAT on the team protocol (Thang's mmxai_eval) report
+AdaMF-MAT on the team protocol (the mmxai_eval) report
 
-######## 1 locate Thang's WORK dir (data/images.jsonl, split/split.json, features/clip_*.npz) ########
+######## 1 locate the WORK dir (data/images.jsonl, split/split.json, features/clip_*.npz) ########
 what is attached in /kaggle/input:
 /kaggle/input
 /kaggle/input/datasets
@@ -48,7 +48,7 @@ split.json
 
 
 using the bundle's mmxai_eval.py
--- 1 locate Thang's WORK dir (data/images.jsonl, split/split.json, features/clip_*.npz) took 1s
+-- 1 locate the WORK dir (data/images.jsonl, split/split.json, features/clip_*.npz) took 1s
 
 ######## 2 clone AdaMF-MAT ########
 

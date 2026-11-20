@@ -1,6 +1,6 @@
 """Tạo splits.json cố định theo seed, chia theo ẢNH (mọi caption của một ảnh nằm cùng split → không rò rỉ).
 
-Phần chính thức là của Yến; file này để có split tạm khi chưa nhận được, cùng định dạng.
+Phần chính thức là; file này để có split tạm khi chưa nhận được, cùng định dạng.
 Dùng: python tools/make_split.py --data <data_dir> [--ratios 0.8 0.1 0.1] [--seed 0]
 """
 

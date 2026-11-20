@@ -1,4 +1,4 @@
-# Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): bỏ mọi cạnh: chỉ còn lớp chiếu học được
+# Ablation trên dữ liệu THẬT (bundle VG): bỏ mọi cạnh: chỉ còn lớp chiếu học được
 extends: vg_graph.yaml
 graph: {variant: no_edge}
 save_model: false

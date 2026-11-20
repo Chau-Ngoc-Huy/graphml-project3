@@ -1,4 +1,4 @@
-# Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): xáo đầu nguồn cạnh trong cùng loại, giữ bậc
+# Ablation trên dữ liệu THẬT (bundle VG): xáo đầu nguồn cạnh trong cùng loại, giữ bậc
 extends: vg_graph.yaml
 graph: {variant: shuffle}
 save_model: false

@@ -1,18 +1,18 @@
-"""Đọc bundle Nhiệm vụ 1 của Thắng (vg_bundle/) thành Bundle cho pipeline đồ thị.
+"""Đọc bundle VG (vg_bundle/) thành Bundle cho pipeline đồ thị.
 
-Bundle của Thắng (KHÔNG sửa, chỉ đọc):
+Bundle (KHÔNG sửa, chỉ đọc):
     data/images.jsonl      {idx, id, coco_id, vg_id, split, objects: [tên], relations: [[subj, pred, obj]]}
     data/captions.jsonl    {idx, img, text, group, concepts}
     data/object_vocab_train.json   2000 nhãn phổ biến nhất trên ảnh TRAIN
     features/clip_<model>.npz      img (N,512) f16, cap (Nc,512) f16, cap_img (Nc,), ok (N,)
     features/meta.json             model/pretrained CLIP — label_emb PHẢI cùng model
 
-File của Huy, sinh thêm vào thư mục `extra` (mặc định <bundle>/graph_extra):
+Phần bổ sung đồ thị, sinh thêm vào thư mục `extra` (mặc định <bundle>/graph_extra):
     label_emb.npy + labels.json    CLIP text của nhãn + khái niệm (tools/extract_label_emb.py)
     conceptnet.tsv                 cạnh khái niệm (tools/fetch_conceptnet.py)
-    synonyms.json                  (tùy chọn) chuẩn hóa nhãn — khi Yến xong
+    synonyms.json                  (tùy chọn) bảng chuẩn hóa nhãn
 
-image_id trong Bundle = idx của Thắng (= số dòng images.jsonl = chỉ số trong Protocol), caption_id = idx caption,
+image_id trong Bundle = idx (= số dòng images.jsonl = chỉ số trong Protocol), caption_id = idx caption,
 nên điểm đồ thị cắm thẳng vào Protocol.evaluate() mà không cần ánh xạ.
 """
 
@@ -94,7 +94,7 @@ def load_bundle(bundle: Path | str, extra: Path | str | None = None, max_images:
     if lmeta_p.exists():
         lm = json.loads(lmeta_p.read_text())
         if (lm.get("model"), lm.get("pretrained")) != (meta.get("model"), meta.get("pretrained")):
-            raise ValueError(f"label_emb dùng {lm} nhưng features của Thắng dùng {meta} — phải cùng model CLIP")
+            raise ValueError(f"label_emb dùng {lm} nhưng features dùng {meta} — phải cùng model CLIP")
 
     concept_edges = []
     cn = extra / "conceptnet.tsv"

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Đưa bundle (sau bước extras) lên Kaggle Dataset riêng tư để các kernel huấn luyện (make push / make adamf) đọc được.
-#   vg  → <KAGGLE_USER>/mmxai-task1-bundle      psg → <KAGGLE_USER>/mmxai-psg-bundle
+#   vg  → <KAGGLE_USER>/mmxai-vg-bundle      psg → <KAGGLE_USER>/mmxai-psg-bundle
 # Lần đầu: tạo dataset; các lần sau: thêm phiên bản mới (kernel luôn đọc bản mới nhất).
 # Dùng: tools/publish_bundle.sh vg|psg ["ghi chú phiên bản"]
 set -euo pipefail
 cd "$(dirname "$0")/.."
 DS=${1:?"vg|psg"}; MSG=${2:-"cập nhật từ pipeline"}
-case $DS in vg) B=data/vg_bundle; SLUG=mmxai-task1-bundle ;; psg) B=data/psg_bundle; SLUG=mmxai-psg-bundle ;; *) exit 1 ;; esac
+case $DS in vg) B=data/vg_bundle; SLUG=mmxai-vg-bundle ;; psg) B=data/psg_bundle; SLUG=mmxai-psg-bundle ;; *) exit 1 ;; esac
 K=.venv/bin/kaggle; [ -x $K ] || K=kaggle
 USER_=$(sed -n 's/^KAGGLE_USER *[?:]*= *//p' local.mk 2>/dev/null | head -1)
 [ -n "$USER_" ] || USER_=$($K config view | sed -n 's/.*username: *//p')

@@ -1,4 +1,4 @@
-# Baseline CLIP đóng băng (Nhiệm vụ 1). Chỉ cosine CLIP, không học gì.
+# Baseline CLIP đóng băng (baseline CLIP). Chỉ cosine CLIP, không học gì.
 data: null          # null = dữ liệu giả (cache/); dữ liệu thật: --set data=<thư mục> (Kaggle: --set data=<tên dataset>)
 fake: {}            # tham số mmxai.data.fake.generate khi data=null, vd. {n_images: 2000}
 max_images: null    # cắt bớt ảnh (giữ tỷ lệ split) để chạy nhanh

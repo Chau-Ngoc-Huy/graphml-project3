@@ -4,7 +4,7 @@
     python3 scripts/build_data.py --team ../.. --bundle ../../data/vg_bundle
 
 --team    root of the graphml-project3 repo (reads results/, results/adamf, queries/, results/clip_baseline)
---bundle  unzipped Task 1 bundle (data/images.jsonl, data/captions.jsonl, data/object_vocab_train.json); only used for
+--bundle  unzipped VG bundle (data/images.jsonl, data/captions.jsonl, data/object_vocab_train.json); only used for
           test-set captions, image objects/relations and the concept vocabulary (no features are read)
 
 Standard library only. Every per-query rank file is cross-checked: MRR recomputed from ranks must equal the MRR the
@@ -77,13 +77,13 @@ KA = rd(TEAM / "results/adamf/protocol_coco_adapter.json")
 HR = TEAM / "results/ranks"
 
 
-def huy_official(exp):
+def qagraph_official(exp):
     f = sorted(glob.glob(str(TEAM / f"results/{exp}/*kaggle-3seed*.json")))
     return rd(f[-1]) if f else None
 
 
-def official_from_huy(exp):
-    d = huy_official(exp)
+def official_from_qagraph(exp):
+    d = qagraph_official(exp)
     m, run = d["metrics"], d["run"]
     g = run.get("extra", {}).get("graph", {})
     return {
@@ -100,7 +100,7 @@ def official_from_huy(exp):
     }
 
 
-def official_from_khanh(rec, src):
+def official_from_protocol(rec, src):
     out = {"protocol": "3 fold gallery, 1 seed huấn luyện" if "Adapter" in rec["name"] or "AdaMF" in rec["name"] else "3 fold gallery (tất định)",
            "test1k": ms(rec["mean_std"]), "full": single(rec["full"]),
            "groups1k": {k: ms(v) for k, v in rec.get("by_group", {}).items()}, "source": src}
@@ -114,31 +114,31 @@ MODELS = [
     dict(id="clip", name="CLIP (đóng băng)", short="CLIP", family="baseline",
          desc="OpenCLIP ViT-B/32 laion2b, cosine văn bản–ảnh, không học gì. Mốc cho mọi phương pháp.",
          flags=dict(adapter=False, graph=False, relations=False, conceptnet=False, learned=False, gnn=None),
-         ranks=("khanh", KF["CLIP"]["full"]["ranks"]), official=official_from_khanh(KF["CLIP"], "results/adamf/protocol_coco_full.json")),
+         ranks=("protocol", KF["CLIP"]["full"]["ranks"]), official=official_from_protocol(KF["CLIP"], "results/adamf/protocol_coco_full.json")),
     dict(id="clip_lex", name="CLIP + presence matching", short="+Presence", family="lexical",
          desc="α·z(cos) + (1−α)·z(tỉ lệ concept của câu có trong danh sách object của ảnh). Không relation, không học.",
          flags=dict(adapter=False, graph=False, relations=False, conceptnet=False, learned=False, gnn=None),
-         ranks=("khanh", KF["CLIP+presence (no relations)"]["full"]["ranks"]),
-         official=official_from_khanh(KF["CLIP+presence (no relations)"], "results/adamf/protocol_coco_full.json")),
+         ranks=("protocol", KF["CLIP+presence (no relations)"]["full"]["ranks"]),
+         official=official_from_protocol(KF["CLIP+presence (no relations)"], "results/adamf/protocol_coco_full.json")),
     dict(id="clip_adamf", name="CLIP + AdaMF-MAT", short="+AdaMF-MAT", family="kgc",
          desc="AdaMF-MAT (LREC-COLING 2024) học MMKG ảnh–concept; điểm = độ hợp lý của (ảnh, contains, concept).",
          flags=dict(adapter=False, graph=True, relations=True, conceptnet=False, learned=True, gnn=None),
-         ranks=("khanh", KF["CLIP+AdaMF-MAT"]["full"]["ranks"]),
-         official=official_from_khanh(KF["CLIP+AdaMF-MAT"], "results/adamf/protocol_coco_full.json")),
-    dict(id="k_adapter", name="CLIP + Adapter-S (huấn luyện riêng)", short="Adapter-S", family="adapter",
+         ranks=("protocol", KF["CLIP+AdaMF-MAT"]["full"]["ranks"]),
+         official=official_from_protocol(KF["CLIP+AdaMF-MAT"], "results/adamf/protocol_coco_full.json")),
+    dict(id="adapter_s", name="CLIP + Adapter-S (huấn luyện riêng)", short="Adapter-S", family="adapter",
          desc="Hai phép chiếu tuyến tính 512×512 học bằng InfoNCE trên caption/ảnh train.",
          flags=dict(adapter=True, graph=False, relations=False, conceptnet=False, learned=True, gnn=None),
-         ranks=("khanh", KA["CLIP+Adapter"]["full"]["ranks"]), official=official_from_khanh(KA["CLIP+Adapter"], "results/adamf/protocol_coco_adapter.json")),
-    dict(id="k_adapter_lex", name="Adapter-S + presence matching", short="Adapter-S+Presence", family="lexical",
+         ranks=("protocol", KA["CLIP+Adapter"]["full"]["ranks"]), official=official_from_protocol(KA["CLIP+Adapter"], "results/adamf/protocol_coco_adapter.json")),
+    dict(id="adapter_s_lex", name="Adapter-S + presence matching", short="Adapter-S+Presence", family="lexical",
          desc="Adapter-S (huấn luyện riêng) + presence matching (không relation).",
          flags=dict(adapter=True, graph=False, relations=False, conceptnet=False, learned=True, gnn=None),
-         ranks=("khanh", KA["CLIP+Adapter+presence (no relations)"]["full"]["ranks"]),
-         official=official_from_khanh(KA["CLIP+Adapter+presence (no relations)"], "results/adamf/protocol_coco_adapter.json")),
-    dict(id="k_adapter_adamf", name="Adapter-S + AdaMF-MAT", short="Adapter-S+AdaMF", family="kgc",
+         ranks=("protocol", KA["CLIP+Adapter+presence (no relations)"]["full"]["ranks"]),
+         official=official_from_protocol(KA["CLIP+Adapter+presence (no relations)"], "results/adamf/protocol_coco_adapter.json")),
+    dict(id="adapter_s_adamf", name="Adapter-S + AdaMF-MAT", short="Adapter-S+AdaMF", family="kgc",
          desc="Adapter-S (huấn luyện riêng) + điểm AdaMF-MAT, ghép bằng α trên z-score.",
          flags=dict(adapter=True, graph=True, relations=True, conceptnet=False, learned=True, gnn=None),
-         ranks=("khanh", KA["CLIP+Adapter+AdaMF-MAT"]["full"]["ranks"]),
-         official=official_from_khanh(KA["CLIP+Adapter+AdaMF-MAT"], "results/adamf/protocol_coco_adapter.json")),
+         ranks=("protocol", KA["CLIP+Adapter+AdaMF-MAT"]["full"]["ranks"]),
+         official=official_from_protocol(KA["CLIP+Adapter+AdaMF-MAT"], "results/adamf/protocol_coco_adapter.json")),
 ]
 HUY = [
     ("vg_qa_ablation_no_edge", "CLIP + Adapter-J (học chung)", "Adapter-J", "adapter", "Adapter học chung, graph bị tắt (no_edge ⇒ s_G = 0). Mốc đúng để đo đóng góp của graph.",
@@ -160,7 +160,7 @@ HUY = [
 ]
 for exp, name, short, fam, desc, flags in HUY:
     MODELS.append(dict(id=exp, name=name, short=short, family=fam, desc=desc, flags=flags,
-                       ranks=("huy", rd(HR / f"{exp}.seed0.test_full.json")["ranks"]), official=official_from_huy(exp)))
+                       ranks=("qa_graph", rd(HR / f"{exp}.seed0.test_full.json")["ranks"]), official=official_from_qagraph(exp)))
 OFFICIAL_ONLY = [
     ("vg_qa_cn_gcn", "QA-Graph · GCN · + ConceptNet", "GCN+CN", dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GCN")),
     ("vg_qa_cn_no_sg_gcn", "QA-Graph · GCN · contains + ConceptNet", "GCN·CN−sg", dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GCN")),
@@ -168,7 +168,7 @@ OFFICIAL_ONLY = [
 for exp, name, short, flags in OFFICIAL_ONLY:
     MODELS.append(dict(id=exp, name=name, short=short, family="graph", flags=flags,
                        desc="Biến thể GNN = GCN (chỉ có số chính thức 3 seed, chưa có rank từng query).",
-                       ranks=None, official=official_from_huy(exp)))
+                       ranks=None, official=official_from_qagraph(exp)))
 
 # --------------------------------------------------------------------------- cross-checks (fail loudly)
 ranks_out, checks = {}, []
@@ -179,10 +179,10 @@ for m in MODELS:
     src, r = m["ranks"]
     assert len(r) == 10696, (m["id"], len(r))
     got = mrr(r)
-    if src == "khanh":
+    if src == "protocol":
         want = m["official"]["full"]["MRR"]["mean"]
-    else:  # Huy: seed-0 full-pool MRR is the first value of test_full.MRR
-        d = huy_official(m["id"])["metrics"]["test_full"]["MRR"]["values"][0]
+    else:  # QA-Graph: seed-0 full-pool MRR is the first value of test_full.MRR
+        d = qagraph_official(m["id"])["metrics"]["test_full"]["MRR"]["values"][0]
         want = round(d, 2)
     assert abs(got - want) < 0.02, (m["id"], got, want)
     checks.append({"model": m["id"], "mrr_from_ranks": round(got, 2), "reported": want})
@@ -196,10 +196,10 @@ kclip = KF["CLIP"]["full"]["by_group"]
 for gi, g in enumerate(["direct", "indirect"]):
     rr = [r for r, gg in zip(ranks_out["clip"], q_group) if gg == gi]
     assert abs(mrr(rr) - kclip[g]["MRR"]) < 0.01 and len(rr) == kclip[g]["n"], (g, mrr(rr), kclip[g])
-checks.append({"model": "clip", "check": "group alignment direct/indirect matches khanh by_group", "ok": True})
+checks.append({"model": "clip", "check": "group alignment direct/indirect matches protocol by_group", "ok": True})
 
 # --------------------------------------------------------------------------- other results
-PAIRED_ID = {"CLIP (Thắng)": "clip", "CLIP+khớp tên (Thắng/Khánh)": "clip_lex", "CLIP+AdaMF-MAT (Khánh)": "clip_adamf"}
+PAIRED_ID = {"CLIP": "clip", "CLIP+khớp tên": "clip_lex", "CLIP+AdaMF-MAT": "clip_adamf"}
 paired = {PAIRED_ID.get(k, k): v for k, v in rd(TEAM / "results/adamf/vs_qagraph_paired.json").items()}
 kq = rd(TEAM / "queries/eval_queries.json")
 lvl2 = []
@@ -233,9 +233,9 @@ meta = {
                 "test_queries": len(q_text), "test_images": len(test_imgs), "vocab": len(vocab)},
     "protocol": {"gallery_size": split["gallery_size"], "top_k": split["top_k"], "seeds": split["seeds"], "seed_data": split["seed_data"]},
     "checks": checks,
-    "sources": {"huy": "results/*/…kaggle-3seed.json, results/ranks/*.json, results/JOURNAL.md",
-                "khanh": "results/adamf/protocol_coco_full.json, protocol_coco_adapter.json, vs_qagraph_paired.json, adamf_mat_repro.md, level2_vg_own_experiment.md, queries/eval_queries.json",
-                "thang": "results/clip_baseline/results/clip_baseline.json, split/split.json"},
+    "sources": {"qa_graph": "results/*/…kaggle-3seed.json, results/ranks/*.json, results/JOURNAL.md",
+                "adamf": "results/adamf/protocol_coco_full.json, protocol_coco_adapter.json, vs_qagraph_paired.json, adamf_mat_repro.md, level2_vg_own_experiment.md, queries/eval_queries.json",
+                "clip_baseline": "results/clip_baseline/results/clip_baseline.json, split/split.json"},
 }
 results = {"paired": paired, "level2": lvl2, "repro": repro, "i2t": i2t, "kqueries": kq}
 

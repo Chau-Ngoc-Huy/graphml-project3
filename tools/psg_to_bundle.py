@@ -1,4 +1,4 @@
-"""PSG (Panoptic Scene Graph, ECCV 2022) + caption COCO → bundle cùng định dạng bundle Nhiệm vụ 1 của Thắng.
+"""PSG (Panoptic Scene Graph, ECCV 2022) + caption COCO → bundle cùng định dạng bundle VG.
 
 Đầu ra dùng thẳng được bởi mmxai_eval.Protocol, mmxai.data.bundle.load_bundle, các thí nghiệm vg_*/psg_* và UI.
 

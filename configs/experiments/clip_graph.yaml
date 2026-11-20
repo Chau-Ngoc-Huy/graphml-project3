@@ -1,4 +1,4 @@
-# CLIP + Graph (Nhiệm vụ 2, cấp 1). Thí nghiệm chính; các ablation_* và clip_graph_* kế thừa file này.
+# CLIP + Graph (xếp hạng lại bằng đồ thị, cấp 1). Thí nghiệm chính; các ablation_* và clip_graph_* kế thừa file này.
 extends: clip_baseline.yaml
 seeds: [0, 1, 2]          # đề: tối thiểu 3 seed, báo cáo mean ± std. --seed N để chạy 1 seed
 graph:

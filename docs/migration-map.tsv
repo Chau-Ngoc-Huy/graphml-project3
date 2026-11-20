@@ -37,8 +37,8 @@ khanh/queries/	queries/	moved
 khanh/results/	results/adamf/	moved
 khanh/docs/	docs/adamf/	moved
 khanh/README.md	docs/adamf.md	moved
-khanh/CLAUDE.md	legacy/khanh/CLAUDE.md	rewritten	gộp vào CLAUDE.md
-khanh/CONTRIBUTING.md	legacy/khanh/CONTRIBUTING.md	rewritten	gộp vào CONTRIBUTING.md
+khanh/CLAUDE.md	CLAUDE.md	rewritten	gộp vào CLAUDE.md (hướng dẫn chung)
+khanh/CONTRIBUTING.md	CONTRIBUTING.md	rewritten	gộp vào CONTRIBUTING.md
 khanh/Makefile	Makefile	rewritten	đã gộp: make queries, make notebooks, make test
 khanh/pyproject.toml	pyproject.toml	rewritten	đã gộp vào pyproject.toml
 khanh/.gitignore	.gitignore	rewritten	đã gộp vào .gitignore gốc
@@ -53,5 +53,11 @@ duong/README.md	docs/xai.md	moved
 duong/pyproject.toml	pyproject.toml	rewritten	đã gộp vào pyproject.toml (extra viz, script mmxai-xai-demo)
 duong/requirements.txt	pyproject.toml	rewritten	đã gộp vào pyproject.toml (extra viz)
 yen/relation_queries.json	queries/relation_queries.json	moved
-yen/README.md	docs/members/yen.md	moved
+yen/README.md	-	dropped	bỏ (README trống của thư mục cá nhân)
 shared/	docs/assignment/	moved	đề bài, phân công, hợp đồng dữ liệu
+huy/docs/plan.md	-	dropped	kế hoạch tuần cá nhân — bỏ trên final
+khanh/docs/plan.md	-	dropped	kế hoạch tuần cá nhân — bỏ trên final
+khanh/docs/design.md	-	dropped	thiết kế tuần 1 (phân việc theo người) — bỏ trên final
+shared/phan-cong.docx	-	dropped	bảng phân công thuộc báo cáo, không thuộc mã nguồn
+shared/data-contract.md	docs/data-contract.md	rewritten	bản trùng — giữ docs/data-contract.md
+shared/README.md	README.md	rewritten	gộp vào README.md

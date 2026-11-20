@@ -1,6 +1,6 @@
 # mmxai-lab — Truy vấn text→image có giải thích bằng đồ thị (Project 3, Graph ML)
 
-Pipeline Nhiệm vụ 2 cấp 1: **CLIP top-k → GNN (GCN/GAT/GraphSAGE) trên đồ thị ảnh–nhãn–khái niệm → xếp hạng lại
+Pipeline xếp hạng lại bằng đồ thị: **CLIP top-k → GNN (GCN/GAT/GraphSAGE) trên đồ thị ảnh–nhãn–khái niệm → xếp hạng lại
 α·cos + (1−α)·graph_score → đường đi giải thích + fidelity**. Chạy được ngay trên dữ liệu giả cùng định dạng Visual Genome;
 dữ liệu thật chỉ cần đổi đường dẫn (`docs/data-contract.md`).
 
@@ -53,7 +53,7 @@ Cần `data/vg_bundle/` và một lượt `runs/vg_qa/*_t1_qa-seed0/model.pt` (�
 | `alpha_curves.json` | metric val theo α (độ nhạy) |
 | `train_info.json` | loss, MRR val theo epoch, mỗi seed |
 | `ranks_test.json` | hạng của ảnh đúng cho từng caption test → phân tích 5 thành công / 5 thất bại |
-| `model.pt` | trọng số GNN seed đầu (cho Nhiệm vụ 3) |
+| `model.pt` | trọng số GNN seed đầu (cho (xAI)) |
 
 ## Cấu trúc
 
@@ -63,7 +63,7 @@ src/mmxai/graph/      build.py (đồ thị + biến thể ablation) · gnn.py (
 src/mmxai/retrieval/  core.py (top-k CLIP, rerank, R@K/MRR/nDCG, chọn α trên val) — dùng chung cho mọi mô hình
 src/mmxai/experiments/ clip_baseline, clip_graph(+_gcn, _sage), ablation_*  ·  configs/experiments/*.yaml
 tools/                make_split, fetch_conceptnet, extract_clip, report_table · make_kernel/pull_kernel (Kaggle)
-docs/                 plan.md, data-contract.md (bản chung: ../shared/) · đề bài: ../shared/  ·  results/JOURNAL.md
+docs/                 plan.md, data-contract.md (bản chung: docs/assignment/) · đề bài: docs/assignment/  ·  results/JOURNAL.md
 ```
 
 Harness dựng bằng skill `paper-lab` (run_id, metrics.json kèm môi trường + commit, Kaggle từ terminal).

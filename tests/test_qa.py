@@ -16,7 +16,7 @@ def setup(tmp_path_factory):
     generate(d, n_images=200, n_concepts=4, children_per_concept=3, n_extra=6, dim=32, seed=0)
     b = load(d)
     # khái niệm của caption = 2 nhãn đầu của ảnh đích (câu "trực tiếp")
-    # caption_id của dữ liệu thật là số nguyên (idx của Thắng) → dùng vị trí caption làm id
+    # caption_id của dữ liệu thật là số nguyên (idx) → dùng vị trí caption làm id
     cap_conc = {k: b.image_labels[c["image_id"]][:2] for k, c in enumerate(b.captions)}
     return b, cap_conc
 

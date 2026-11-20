@@ -1,4 +1,4 @@
-"""Baseline CLIP đóng băng (Nhiệm vụ 1): xếp hạng ảnh test chỉ bằng cosine CLIP. Không có tham số học → không phụ thuộc seed.
+"""Baseline CLIP đóng băng (baseline CLIP): xếp hạng ảnh test chỉ bằng cosine CLIP. Không có tham số học → không phụ thuộc seed.
 
 Dùng cùng loader, cùng split, cùng metric với clip_graph để bảng so sánh công bằng.
 """

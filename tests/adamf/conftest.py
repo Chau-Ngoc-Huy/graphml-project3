@@ -1,4 +1,4 @@
-"""Dữ liệu giả đúng định dạng đầu ra của Thắng (data/images.jsonl, captions.jsonl, split/split.json, features/clip_*.npz)."""
+"""Dữ liệu giả đúng định dạng đầu ra (data/images.jsonl, captions.jsonl, split/split.json, features/clip_*.npz)."""
 import hashlib
 import json
 

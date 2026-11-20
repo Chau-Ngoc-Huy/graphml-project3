@@ -2,7 +2,7 @@ import type { MetricKey } from "@/data/types";
 
 export type RankMetrics = Record<MetricKey, number> & { MedR: number; n: number };
 
-/** Same definitions as thang/mmxai_eval.py: rank of the single gold image, 1-based. */
+/** Same definitions as src/mmxai_eval.py: rank of the single gold image, 1-based. */
 export function rankMetrics(ranks: ArrayLike<number>, idx?: ArrayLike<number>): RankMetrics {
   const n = idx ? idx.length : ranks.length;
   let r1 = 0, r5 = 0, r10 = 0, rr = 0, nd = 0;

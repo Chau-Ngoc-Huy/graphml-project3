@@ -1,7 +1,7 @@
 """Điểm đồ thị PHỤ THUỘC TRUY VẤN (arch=qa): khái niệm của câu ↔ nhãn của ảnh, so khớp trên nhúng nhãn đã qua GNN.
 
 Vì sao (JOURNAL #4): gộp ~17 nhãn của ảnh thành MỘT vector (arch split) làm mất thông tin "nhãn nào khớp khái niệm nào";
-khớp tên đơn giản (Khánh, +1.06 MRR) còn hơn. Ở đây mỗi khái niệm của caption được so riêng với từng nhãn của ảnh:
+khớp tên đơn giản còn hơn. Ở đây mỗi khái niệm của caption được so riêng với từng nhãn của ảnh:
 
     H        = normalize(X_nhãn + gate · GNN(X_nhãn, đồ thị nhãn))     GNN CHỈ chạy trên nhãn/khái niệm (sg_rel, ConceptNet)
     u_c      = normalize(C · H_c)                                       khái niệm c của câu (là một đỉnh nhãn), C khởi tạo I

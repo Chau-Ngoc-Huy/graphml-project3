@@ -6,7 +6,7 @@
 
 Cách hoạt động (docs/migration-map.tsv, khớp tiền tố dài nhất):
   moved      file chỉ đổi chỗ → `git merge` (nhận diện đổi tên + directoryRenames=true) tự đưa thay đổi vào đường dẫn mới,
-             kể cả file MỚI tạo trong thư mục cũ đã đổi tên (vd khanh/src/x.py → src/adamf/x.py).
+             kể cả file MỚI tạo trong thư mục cũ đã đổi tên (vd khanh/src/x.py → src/mmxai/adamf/x.py).
   rewritten  file đã gộp/viết lại trên final → merge không tự chuyển được; script in diff của main và đích cần chuyển tay.
   dropped    đã bỏ trên final → chỉ báo (kèm diff), không mang sang.
   unmapped   file mới trên main không thuộc tiền tố nào trong bảng → script báo để xếp chỗ + thêm dòng vào bảng.

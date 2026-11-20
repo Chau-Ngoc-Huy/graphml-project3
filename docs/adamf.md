@@ -1,10 +1,10 @@
-# khanh/ — Nhiệm vụ 2 cấp 2: phương pháp mới (AdaMF-MAT) + bộ truy vấn trực tiếp/gián tiếp
+# AdaMF-MAT trên giao thức chung (phương pháp mới, cấp độ 2) + bộ truy vấn trực tiếp/gián tiếp
 
-Phần của Khánh trong project 3 (Graph ML). Chỉ chủ folder sửa trong đây.
+Phần trong project 3 (Graph ML). Chỉ chủ folder sửa trong đây.
 
-**Ý tưởng:** AdaMF-MAT (LREC-COLING 2024, multimodal KG completion) cắm vào pipeline chung của Thắng (`../thang/mmxai_eval.py`) như một
+**Ý tưởng:** AdaMF-MAT (LREC-COLING 2024, multimodal KG completion) cắm vào pipeline chung (`src/mmxai_eval.py`) như một
 `score_fn`: CLIP top-100 → điểm đồ thị từ AdaMF-MAT → `α·z(cos) + (1−α)·z(graph)` (α chọn trên val). Cùng split, cùng fold
-gallery 1K, cùng top-K với CLIP thuần và CLIP+Graph của Huy nên so sánh công bằng. Thiết kế đầy đủ: `docs/design.md`.
+gallery 1K, cùng top-K với CLIP thuần và CLIP+Graph nên so sánh công bằng. Thiết kế đầy đủ: `docs/design.md`.
 
 ## Trạng thái (cập nhật `docs/plan.md`)
 
@@ -12,9 +12,9 @@ gallery 1K, cùng top-K với CLIP thuần và CLIP+Graph của Huy nên so sán
 |---|---|
 | Tái lập AdaMF-MAT trên MKG-W, MKG-Y (khớp paper trong ±1 điểm) | ✅ `results/adamf_mat_repro.md` |
 | Bộ 24 truy vấn trực tiếp/gián tiếp + mô tả | ✅ `queries/` |
-| Bộ chuyển sang giao diện của Thắng (`score_fn`) + lượt chạy thật trên Kaggle | ✅ `results/protocol_coco_full.md` |
+| Bộ chuyển sang giao diện (`score_fn`) + lượt chạy thật trên Kaggle | ✅ `results/protocol_coco_full.md` |
 | Bảng trực tiếp vs gián tiếp | ✅ AdaMF-MAT > CLIP một chút (+0.64 MRR) nhưng chỉ ở nhóm direct; **không giúp nhóm indirect**, không hơn baseline khớp tên |
-| So sánh công bằng với Huy, báo cáo | ⬜ giao Huy số liệu + mã; viết báo cáo |
+| So sánh ghép cặp với QA-Graph (VG, PSG) | ✅ `results/adamf/vs_qagraph_paired.md`, `results/psg_vs_adamf.md` |
 
 ## Cài đặt
 
@@ -34,9 +34,9 @@ make queries DATA=../../data/scene_graphs.json   # sinh lại bộ truy vấn (c
 make notebooks                                    # sinh kaggle/*.ipynb từ src/ (notebook nhúng nguyên mã nguồn)
 ```
 
-Trên Kaggle (GPU T4 x2, Internet On): import `kaggle/protocol_adamf_kaggle.ipynb`, thêm input dataset `task1-bundle`
-(đầu ra của Thắng: `data/`, `split/`, `features/`), **Save Version → Save & Run All** (~3 giờ). Nếu không có bundle, notebook tự
-chạy lại notebook của Thắng (cần `yenphamnhu/visual-genome` + Internet). Lấy về `report_protocol.txt` + `results_COCO_full.json`.
+Trên Kaggle (GPU T4 x2, Internet On): import `notebooks/kaggle/adamf/protocol_adamf_kaggle.ipynb`, thêm input dataset `mmxai-vg-bundle`
+(đầu ra: `data/`, `split/`, `features/`), **Save Version → Save & Run All** (~3 giờ). Nếu không có bundle, notebook tự
+chạy lại notebook (cần `yenphamnhu/visual-genome` + Internet). Lấy về `report_protocol.txt` + `results_COCO_full.json`.
 
 Tái lập paper: `kaggle/adamf_mat_kaggle.ipynb` (MKG-W, MKG-Y; cần dataset embeddings của tác giả, xem notebook).
 
@@ -54,7 +54,7 @@ Tái lập paper: `kaggle/adamf_mat_kaggle.ipynb` (MKG-W, MKG-Y; cần dataset e
 ```
 src/                  common.py (split, metric) · features.py (OpenCLIP đóng băng) · build_eval_queries.py (bộ truy vấn)
                       export_vg_mmkg.py (đồ thị VG riêng → định dạng AdaMF-MAT) · adamf_protocol.py (build MMKG từ Protocol, AdamfScorer, evaluate_all)
-tests/                build MMKG từ dữ liệu giả đúng định dạng của Thắng, split, metric
+tests/                build MMKG từ dữ liệu giả đúng định dạng, split, metric
 tools/                make_notebooks.py (sinh notebook Kaggle từ src/)
 kaggle/               protocol_adamf_kaggle.ipynb (chính) · adamf_mat_kaggle.ipynb (tái lập paper) · exploratory/ (thí nghiệm riêng trên VG)
 queries/              bộ truy vấn đánh giá + mô tả
@@ -62,4 +62,4 @@ docs/                 plan.md · design.md · notes.md
 results/              JOURNAL.md, bảng kết quả (.md/.json nhỏ)
 ```
 
-Đề bài, phân công, hợp đồng dữ liệu: `../shared/`. Giao thức đánh giá chung: `../thang/mmxai_eval.py`.
+Đề bài, phân công, hợp đồng dữ liệu: `docs/assignment/`. Giao thức đánh giá chung: `src/mmxai_eval.py`.

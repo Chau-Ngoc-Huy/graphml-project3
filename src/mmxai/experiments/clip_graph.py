@@ -1,4 +1,4 @@
-"""CLIP + Graph (Nhiệm vụ 2, cấp 1): top-k CLIP → graph_score từ GNN → xếp hạng lại α·cos + (1−α)·graph_score.
+"""CLIP + Graph (xếp hạng lại bằng đồ thị, cấp 1): top-k CLIP → graph_score từ GNN → xếp hạng lại α·cos + (1−α)·graph_score.
 
 Một lượt chạy = một cấu hình đồ thị/GNN × nhiều seed (cfg.seeds, mặc định 3) → báo cáo mean ± std (đề mục 6).
 Ablation = cùng file này, chỉ đổi cfg.graph.variant (configs/experiments/ablation_*.yaml kế thừa clip_graph.yaml).
@@ -8,7 +8,7 @@ Quy trình (đúng đề mục 4.2):
   2. CLIP top-k ứng viên cho caption val/test (cố định, không phụ thuộc seed).
   3. Mỗi seed: huấn luyện GNN tương phản trên caption TRAIN, early stopping theo MRR(graph) trên val.
   4. Chọn α trên val (lưới cfg.alpha_grid), báo cáo test; lưu đường cong độ nhạy α.
-  5. Giải thích + fidelity cho cfg.n_explain truy vấn test (seed đầu) → explanations.json cho Nhiệm vụ 3.
+  5. Giải thích + fidelity cho cfg.n_explain truy vấn test (seed đầu) → explanations.json cho (xAI).
 """
 
 from __future__ import annotations

@@ -1,21 +1,21 @@
 # Hợp đồng dữ liệu (data contract)
 
-Pipeline của Nhiệm vụ 2 (Huy) đọc **một thư mục** có cấu trúc dưới đây. Dữ liệu giả (`mmxai.data.fake`) và dữ liệu thật
+Pipeline đồ thị đọc **một thư mục** có cấu trúc dưới đây. Dữ liệu giả (`mmxai.data.fake`) và dữ liệu thật
 dùng **cùng** cấu trúc này, nên khi có dữ liệu thật chỉ cần đổi đường dẫn: `--set data=<thư mục>` (máy local) hoặc
 `--set data=<tên dataset Kaggle>` (kernel tự tìm trong `/kaggle/input`).
 
-| File | Ai làm | Định dạng | Bắt buộc |
-|---|---|---|---|
-| `vg/objects.json` | Yến | Visual Genome gốc: `[{"image_id", "objects": [{"object_id", "names": [...]}]}]` (có thể là tập con) | ✔ |
-| `vg/relationships.json` | Yến | Visual Genome gốc: `[{"image_id", "relationships": [{"predicate", "subject": {"names"}, "object": {"names"}}]}]` | nên có |
-| `synonyms.json` | Yến | `{"men": "man", "t-shirt": "shirt", ...}` chuẩn hóa nhãn | tùy chọn |
-| `captions.json` | Yến/Thắng | `[{"caption_id", "image_id", "text", "group"?}]` — `group` = `direct`/`indirect` nếu có | ✔ |
-| `splits.json` | Yến | `{"seed", "train": [image_id], "val": [...], "test": [...]}` — chia theo ẢNH | ✔ |
-| `conceptnet.tsv` | Huy | `head<TAB>rel<TAB>tail`, đã lọc theo vocab (`tools/fetch_conceptnet.py`) | nên có |
-| `features/image_emb.npy` + `image_ids.json` | Thắng | float32 `[N_img, D]`, đã L2-normalize; `image_ids[i]` ↔ dòng i | ✔ |
-| `features/caption_emb.npy` + `caption_ids.json` | Thắng | float32 `[N_cap, D]`, L2-normalize | ✔ |
-| `features/label_emb.npy` + `labels.json` | Huy/Thắng | CLIP text của `"a photo of a {nhãn}"` cho mọi nhãn + khái niệm (`tools/extract_clip.py --labels`) | ✔ |
-| `features/clip_model.json` | Thắng | `{"model", "pretrained", "prompt"}` — **cả ba file emb phải cùng một model CLIP** | nên có |
+| File | Định dạng | Bắt buộc |
+|---|---|---|
+| `vg/objects.json` | Visual Genome gốc: `[{"image_id", "objects": [{"object_id", "names": [...]}]}]` (có thể là tập con) | ✔ |
+| `vg/relationships.json` | Visual Genome gốc: `[{"image_id", "relationships": [{"predicate", "subject": {"names"}, "object": {"names"}}]}]` | nên có |
+| `synonyms.json` | `{"men": "man", "t-shirt": "shirt", ...}` chuẩn hóa nhãn | tùy chọn |
+| `captions.json` | `[{"caption_id", "image_id", "text", "group"?}]` — `group` = `direct`/`indirect` nếu có | ✔ |
+| `splits.json` | `{"seed", "train": [image_id], "val": [...], "test": [...]}` — chia theo ẢNH | ✔ |
+| `conceptnet.tsv` | `head<TAB>rel<TAB>tail`, đã lọc theo vocab (`tools/fetch_conceptnet.py`) | nên có |
+| `features/image_emb.npy` + `image_ids.json` | float32 `[N_img, D]`, đã L2-normalize; `image_ids[i]` ↔ dòng i | ✔ |
+| `features/caption_emb.npy` + `caption_ids.json` | float32 `[N_cap, D]`, L2-normalize | ✔ |
+| `features/label_emb.npy` + `labels.json` | CLIP text của `"a photo of a {nhãn}"` cho mọi nhãn + khái niệm (`tools/extract_clip.py --labels`) | ✔ |
+| `features/clip_model.json` | `{"model", "pretrained", "prompt"}` — **cả ba file emb phải cùng một model CLIP** | nên có |
 
 ## Quy tắc
 

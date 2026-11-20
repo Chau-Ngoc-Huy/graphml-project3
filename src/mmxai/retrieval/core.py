@@ -1,7 +1,7 @@
 """Truy vấn text→image: top-k theo cosine CLIP, xếp hạng lại α·cos + (1−α)·graph_score, metric R@K / MRR / nDCG@10.
 
 Dùng chung cho mọi mô hình (CLIP, CLIP+Graph, phương pháp cấp 2) để cùng một cách đánh giá trên cùng split.
-Khi Thắng có FAISS index cho tập ảnh lớn: thay `clip_topk` bằng index.search — đầu ra giữ nguyên (scores, idx).
+Với tập ảnh lớn có FAISS index (bundle VG có sẵn): thay `clip_topk` bằng index.search — đầu ra giữ nguyên (scores, idx).
 """
 
 from __future__ import annotations

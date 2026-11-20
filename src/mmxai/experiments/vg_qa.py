@@ -1,7 +1,7 @@
-"""CLIP + điểm đồ thị phụ thuộc truy vấn (graph/qa.py) trên bundle Nhiệm vụ 1, đánh giá bằng mmxai_eval.Protocol của Thắng.
+"""CLIP + điểm đồ thị phụ thuộc truy vấn (graph/qa.py) trên bundle VG, đánh giá bằng mmxai_eval.Protocol.
 
 Cùng giao thức với vg_graph: seed s = gallery s + khởi tạo s; α chọn bằng tune_alpha trên VAL; test chỉ báo cáo.
-Khái niệm của caption lấy từ trường `concepts` trong captions.jsonl (Thắng đã chuẩn hóa về bộ nhãn object_vocab_train).
+Khái niệm của caption lấy từ trường `concepts` trong captions.jsonl (đã chuẩn hóa về bộ nhãn object_vocab_train khi dựng bundle).
 """
 
 from __future__ import annotations

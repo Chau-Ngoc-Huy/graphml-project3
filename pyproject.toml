@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 dependencies = ["pyyaml", "numpy", "torch", "torch_geometric"]
 
 [project.optional-dependencies]
-# gộp từ legacy/{khanh,duong,thang}: ijson (đọc scene_graphs.json lớn), open_clip/faiss (Nhiệm vụ 1), matplotlib/networkx (xAI)
+# gộp từ legacy/{khanh,duong,thang}: ijson (đọc scene_graphs.json lớn), open_clip/faiss (baseline CLIP), matplotlib/networkx (xAI)
 dev = ["pytest", "kaggle"]
 clip = ["open_clip_torch", "pillow", "faiss-cpu", "ijson"]
 ui = ["fastapi", "uvicorn[standard]", "open_clip_torch", "pyarrow"]
@@ -20,7 +20,7 @@ viz = ["matplotlib>=3.7", "networkx>=3.1"]
 mmxai-xai-demo = "mmxai.xai.cli:main"
 
 [tool.setuptools]
-py-modules = ["mmxai_eval"]          # module đánh giá chung của Nhiệm vụ 1 (src/mmxai_eval.py, import mmxai_eval)
+py-modules = ["mmxai_eval"]          # module đánh giá chung (giao thức) (src/mmxai_eval.py, import mmxai_eval)
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -28,6 +28,6 @@ include = ["mmxai*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-# tests/adamf: conftest của Khánh được import trực tiếp (`from conftest import ...`)
+# tests/adamf: conftest được import trực tiếp (`from conftest import ...`)
 pythonpath = ["src", "tests/adamf"]
 addopts = "--import-mode=importlib"

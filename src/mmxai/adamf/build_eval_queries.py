@@ -1,4 +1,4 @@
-"""Level 2 evaluation query set (Task 2, item 2): >=20 queries, direct vs indirect.
+"""Evaluation query set (spec level 2): >=20 queries, direct vs indirect.
 
 Needs only scene_graphs.json (no images, no GPU, no teammates).
 Usage: python src/build_eval_queries.py data/scene_graphs.json data [per_group=12] [seed=0]

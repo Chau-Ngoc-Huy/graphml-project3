@@ -1,4 +1,4 @@
-"""Bộ chuyển AdaMF-MAT: dựng MMKG từ Protocol của Thắng đúng định dạng và không rò rỉ."""
+"""Bộ chuyển AdaMF-MAT: dựng MMKG từ Protocol đúng định dạng và không rò rỉ."""
 import json
 
 import numpy as np

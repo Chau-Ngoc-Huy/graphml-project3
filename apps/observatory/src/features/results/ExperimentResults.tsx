@@ -97,7 +97,7 @@ function Official() {
             </TableBody>
           </Table>
         </div>
-        <SourceNote>{ds.meta.sources.huy} · {ds.meta.sources.khanh}</SourceNote>
+        <SourceNote>{ds.meta.sources.qa_graph} · {ds.meta.sources.adamf}</SourceNote>
       </Section>
     </div>
   );
@@ -125,7 +125,7 @@ function Ablation() {
             <p><span className="font-medium text-good">Bỏ edge → mất phần tăng.</span> Mọi biến thể có edge đều vượt mốc “Không edge” 1,4–1,9 MRR, CI95 không chứa 0.</p>
             <p><span className="font-medium text-bad">Edge shuffle → tụt dưới mốc.</span> Giữ số edge nhưng nối sai, MRR thấp hơn cả khi không có edge. Model dùng nội dung edge, không phải số tham số.</p>
             <p><span className="font-medium text-warn">Relation không phải nguồn tăng.</span> Chỉ edge contains đã đạt gần trọn mức tăng; thêm relation scene graph hay ConceptNet chênh ≤ 0,2 MRR, trong nhiễu.</p>
-            <SourceNote>huy/results/JOURNAL.md #9 · *kaggle-3seed.json</SourceNote>
+            <SourceNote>results/JOURNAL.md #9 · *kaggle-3seed.json</SourceNote>
           </div>
         </div>
       </Section>
@@ -146,7 +146,7 @@ function Paired() {
     <div className="space-y-8">
       <Section title="So với AdaMF-MAT, trên cùng 10 696 query" description="Δ MRR = phương pháp − CLIP+AdaMF-MAT, khoảng tin cậy 95 % bootstrap theo query. Phải 0 = tốt hơn AdaMF-MAT. Xanh: CI không chứa 0.">
         <div className="panel p-4"><CIPlot data={rows.map(([k, v]) => ({ name: nameOf(k), delta: v.vs_AdaMF!.all.delta, lo: v.vs_AdaMF!.all.ci95[0], hi: v.vs_AdaMF!.all.ci95[1] }))} /></div>
-        <SourceNote>khanh/results/vs_qagraph_paired.json (seed 0, toàn pool)</SourceNote>
+        <SourceNote>results/adamf/vs_qagraph_paired.json (seed 0, toàn pool)</SourceNote>
       </Section>
       <div className="panel">
         <Table>
@@ -189,7 +189,7 @@ function Repro() {
           );
         })}
       </div>
-      <SourceNote>khanh/results/adamf_mat_repro.md</SourceNote>
+      <SourceNote>results/adamf/adamf_mat_repro.md</SourceNote>
     </Section>
   );
 }
@@ -221,7 +221,7 @@ function KQueries() {
         <p className="text-[13px] leading-relaxed text-muted-foreground">
           Baseline chỉ đếm object có trong ảnh (<span className="text-foreground">presence-only</span>, không relation) vượt AdaMF-MAT rõ rệt. Theo ghi chú thực nghiệm: 12 query / nhóm là quá ít (1 query = 8 % R@1), 1 seed, và bộ query chưa được người kiểm tra ảnh — chưa đủ để kết luận về vai trò của relation.
         </p>
-        <SourceNote>khanh/results/level2_vg_own_experiment.md · khanh/queries/eval_queries.json</SourceNote>
+        <SourceNote>results/adamf/level2_vg_own_experiment.md · queries/eval_queries.json</SourceNote>
       </Section>
       <div className="flex flex-wrap gap-1.5">
         {ds.results.kqueries.map((q) => (
@@ -291,7 +291,7 @@ function Xai() {
         Trang này cố ý không hiển thị con số nào cho phần này cho tới khi có kết quả trên cấu hình chính.
       </p>
       <p className="text-[13px] leading-relaxed text-muted-foreground">Trong lúc chờ, trang Query graph cho thấy path concept → object → ảnh mà graph score dựa vào, dựng từ dữ liệu thật.</p>
-      <SourceNote>duong/xai/*, duong/tests/* · huy/src/mmxai/graph/explain.py</SourceNote>
+      <SourceNote>src/mmxai/xai/*, tests/xai/* · src/mmxai/graph/explain.py</SourceNote>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-# Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): bỏ cạnh ConceptNet
+# Ablation trên dữ liệu THẬT (bundle VG): bỏ cạnh ConceptNet
 extends: vg_graph.yaml
 graph: {variant: no_concept}
 save_model: false

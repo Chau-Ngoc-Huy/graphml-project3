@@ -4,6 +4,6 @@
   "explanation_top_k": [1, 3, 5],
   "random_repeats": 30,
   "candidate_pool_rule": "fixed_per_query",
-  "split_id": "shared_task1",
+  "split_id": "shared_split",
   "notes": "Tune alpha and k on validation only; report test over seeds 0, 1, 2."
 }

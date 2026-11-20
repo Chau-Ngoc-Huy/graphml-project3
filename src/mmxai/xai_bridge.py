@@ -1,12 +1,12 @@
-"""Cầu nối mô hình QA-Graph đã huấn luyện (Huy) ↔ khung xAI của Dương (`duong/xai`, Nhiệm vụ 3).
+"""Cầu nối mô hình QA-Graph đã huấn luyện ↔ khung xAI (`mmxai.xai`).
 
-Dương cần (duong/01_XAI_Explainability_Plan.md §8): graph schema, graph builder, checkpoint và một hàm forward nhận đồ thị đã
-bị xóa/mask cạnh. Module này cung cấp đúng hai thứ khung của Dương dùng:
+Khung xAI cần (docs/xai/01_XAI_Explainability_Plan.md §8): graph schema, graph builder, checkpoint và một hàm forward nhận đồ thị đã
+bị xóa/mask cạnh. Module này cung cấp đúng hai thứ khung xAI dùng:
 
     bridge = QAGraphBridge("runs/psg_qa_cn/<run>", "data/psg_bundle")
     cases  = bridge.cases(caption_ids, k=20)                 # truy vấn + ảnh đúng + top-k ứng viên CLIP (giao thức chung)
-    kg     = bridge.export_graph(cases)                      # dict JSON theo duong/xai/io.load_graph (nodes/edges)
-    scorer = CallableScorerAdapter(bridge.score_fn, bridge.local_edges_fn)   # của Dương
+    kg     = bridge.export_graph(cases)                      # dict JSON theo mmxai.xai.io.load_graph (nodes/edges)
+    scorer = CallableScorerAdapter(bridge.score_fn, bridge.local_edges_fn)   # mmxai.xai.scorer_adapter
 
 score_fn chạy LẠI mô hình trên đồ thị nhận vào — không có điểm tính sẵn:
   - cạnh `contains` (nhãn → ảnh) quyết định danh sách nhãn của ảnh ứng viên (img_labels);
@@ -19,7 +19,7 @@ score_fn chạy LẠI mô hình trên đồ thị nhận vào — không có đi
 
 Mã nút: ảnh = "img:<image_id>" (external_id = image_id, ứng viên truyền vào là str(image_id)); nhãn/khái niệm = "lab:<tên>".
 Mã cạnh: "lab:<k>" (k = chỉ số trong đồ thị nhãn của QAData), "contains:<image_id>:<k_nhãn>". Kiểu nút/quan hệ khớp
-duong/configs/graph_schema.json (image, concept; contains, sg_rel, concept).
+configs/xai/graph_schema.json (image, concept; contains, sg_rel, concept).
 """
 
 from __future__ import annotations
@@ -155,7 +155,7 @@ class QAGraphBridge:
         return edges
 
     def export_graph(self, cases: list[dict]) -> dict:
-        """Đồ thị con đủ để chấm mọi ứng viên của các truy vấn (JSON cho duong/xai/io.load_graph)."""
+        """Đồ thị con đủ để chấm mọi ứng viên của các truy vấn (JSON cho mmxai.xai.io.load_graph)."""
         imgs = sorted({int(i) for c in cases for i in c["candidate_image_ids"]})
         labs, contains = set(), []
         for iid in imgs:

@@ -1,57 +1,58 @@
-# Project 3 — Truy vấn đa phương thức có giải thích bằng đồ thị (Graph ML)
+# MMXAI — Truy vấn văn bản → ảnh xếp hạng lại bằng đồ thị, có giải thích (Graph ML, Project 3)
 
-Repo chung của nhóm. **Giai đoạn 1: mỗi người làm trong folder riêng**, push không ảnh hưởng người khác.
-Giai đoạn 2 (tuần 3–4): gộp thành một pipeline chung (xem cuối file).
+Cho một câu mô tả, hệ thống lấy top-100 ảnh theo CLIP rồi **xếp hạng lại bằng đồ thị** ảnh–nhãn–khái niệm (scene graph +
+ConceptNet, GNN GAT/GCN/GraphSAGE), và **giải thích** mỗi kết quả bằng chính các cạnh/đường đi đã đóng góp vào điểm, có đo
+fidelity / sparsity / validity. Đánh giá trên hai tập công khai: **Visual Genome ∩ MS-COCO** và **PSG ∩ MS-COCO**, so với
+CLIP đóng băng, adapter, khớp tên và **AdaMF-MAT** (LREC-COLING 2024) trên cùng giao thức. Đề bài: `docs/assignment/`.
 
-| Folder | Người | Nhiệm vụ (theo `shared/phan-cong.docx`) |
-|---|---|---|
-| `yen/` | Yến | Dữ liệu VG + FB15k-237-IMG, chuẩn hóa nhãn, **split** train/val/test, báo cáo, slide |
-| `thang/` | Thắng | Nhiệm vụ 1: đặc trưng OpenCLIP, FAISS, metric, baseline CLIP 3 seed |
-| `huy/` | Huy | Nhiệm vụ 2 cấp 1: dựng đồ thị, GNN (GCN/GAT/SAGE), xếp hạng lại, ablation |
-| `khanh/` | Khánh | Nhiệm vụ 2 cấp 2: tái lập NativE/AdaMF-MAT, bộ ≥ 20 truy vấn trực tiếp/gián tiếp |
-| `duong/` | Dương | Nhiệm vụ 3: giải thích (fidelity/validity/sparsity), MMKG tiếng Việt, demo |
-| `shared/` | cả nhóm | Đề bài, phân công, **hợp đồng dữ liệu** (`shared/data-contract.md`) |
-
-## Quy tắc (đọc 1 lần)
-
-1. **Chỉ sửa file trong folder của mình.** Hai người không bao giờ sửa cùng file → không bao giờ conflict.
-2. Muốn sửa `shared/` hoặc folder người khác: nhắn nhóm trước, hoặc tạo branch + Pull Request.
-3. Trước khi push luôn kéo về trước:
-   ```bash
-   git pull --rebase
-   git push
-   ```
-   Nếu push bị từ chối ("fetch first") chỉ là có người vừa push folder của họ → chạy lại 2 lệnh trên.
-4. **Không commit dữ liệu, model, ảnh, `.npy`** (đã chặn trong `.gitignore`). Dữ liệu để trên Kaggle Dataset, trong code chỉ ghi
-   tên dataset. File > 50 MB GitHub sẽ từ chối.
-5. Không commit token/khóa: `kaggle.json`, `.env`, `local.mk`.
-6. Commit nhỏ, message nói rõ làm gì (`huy: thêm ablation shuffle`). Lịch sử commit là minh chứng đóng góp khi vấn đáp.
-
-## Bắt đầu (lần đầu)
+## Chạy
 
 ```bash
-git clone https://github.com/Chau-Ngoc-Huy/graphml-project3.git
-cd graphml-project3/<folder-của-bạn>
-# làm việc, rồi:
-git add .
-git commit -m "<tên>: <làm gì>"
-git pull --rebase && git push
+make setup                       # .venv + torch CPU + gói mmxai
+make help                        # mọi lệnh
+make fetch-prebuilt              # đường tắt: bundle VG/PSG + 4 checkpoint dựng sẵn (Kaggle, riêng tư)
+make tables && make xai DS=psg   # bảng kết quả + giải thích trên mô hình thật
+make ui                          # MMXAI Lab — http://127.0.0.1:8765
+make web                         # MMXAI Observatory (trang trình bày kết quả)
 ```
 
-## Dữ liệu dùng chung
+Tái lập từ đầu (dữ liệu thô → bundle → huấn luyện 3 seed → AdaMF-MAT → bảng → giải thích; bước GPU chạy trên Kaggle qua
+kaggle CLI): `make all-psg`, `make all-vg` — chi tiết từng bước, thời gian, đầu vào/ra: **`docs/PIPELINE.md`**.
 
-Mọi người đọc/ghi dữ liệu theo **`shared/data-contract.md`** (tên file, định dạng, ai làm file nào) để khi gộp không phải
-viết lại. Dataset Kaggle hiện có:
+## Cấu trúc
 
-| Dataset | Có | Thiếu |
+| Thư mục | Nội dung |
+|---|---|
+| `src/mmxai_eval.py` | Giao thức đánh giá chung: split, gallery 1K theo seed, top-K CLIP, R@k / MRR / nDCG, nhóm truy vấn trực tiếp/gián tiếp, trộn điểm α, bootstrap ghép cặp |
+| `src/mmxai/data/` | Đọc bundle (ảnh, nhãn, quan hệ, caption, đặc trưng CLIP, phần bổ sung đồ thị) |
+| `src/mmxai/graph/` | Dựng đồ thị (contains, sg_rel từ ảnh train, ConceptNet), GNN, **QA-Graph** (điểm phụ thuộc truy vấn), giải thích theo đường đi |
+| `src/mmxai/experiments/` + `configs/experiments/` | Mỗi cấu hình thí nghiệm = 1 YAML (+ module 2 dòng); `vg_*` cho VG, `psg_*` cho PSG, `clip_graph`/`smoke` cho dữ liệu giả |
+| `src/mmxai/adamf/` | AdaMF-MAT trên giao thức chung (dựng MMKG, chấm điểm), adapter, bộ ≥ 20 truy vấn |
+| `src/mmxai/xai/`, `src/mmxai/xai_bridge.py` | Khung giải thích (bỏ từng cạnh, fidelity/sparsity/validity) + cầu nối tới mô hình thật |
+| `src/mmxai/core/` | Chạy thí nghiệm: cấu hình, run_id, ghi kết quả, đóng gói kernel Kaggle |
+| `tools/` | Dữ liệu (fetch, PSG, ConceptNet, vector nhãn), Kaggle (kaggle_job, make_kernel, publish), bảng, giải thích |
+| `notebooks/kaggle/` | Notebook GPU: dựng dữ liệu VG + baseline CLIP; AdaMF-MAT (chạy bằng `tools/kaggle_job.py`) |
+| `apps/lab/` | MMXAI Lab (FastAPI): thử từng biến thể, so sánh A/B, xem đồ thị + đường đi giải thích |
+| `apps/observatory/` | MMXAI Observatory (React): pipeline, playground, so sánh mô hình, kết quả |
+| `results/` | Kết quả đã chạy (JSON từng lượt, hạng từng truy vấn, bảng) + `JOURNAL.md` (nhật ký thí nghiệm) |
+| `queries/`, `docs/`, `report/`, `slides/` | Bộ truy vấn đánh giá, tài liệu, báo cáo IEEE, slide |
+
+`data/`, `runs/`, `models/` không commit (tải bằng `make fetch` / `make fetch-prebuilt` hoặc sinh lại bằng pipeline).
+
+## Kết quả chính (MRR %, toàn bộ ảnh test, 3 seed)
+
+| | VG ∩ COCO (2 138 ảnh) | PSG ∩ COCO (2 186 ảnh) |
 |---|---|---|
-| `yenphamnhu/visual-genome` | `scene_graphs.json` (đối tượng + quan hệ) | ảnh, caption |
-| `dannywu375/visualgenome` | ảnh VG (`images/VG_100K/`), `image_data.json` (có `coco_id`) | caption |
-| `mathurinache/visual-genome` | `objects.json`, `relationships.json`, `object_alias.txt`, `relationship_alias.txt` | ảnh, caption |
+| CLIP (đóng băng) | 60.40 | 59.59 |
+| CLIP + Adapter | 63.14 ± 0.02 | 62.67 ± 0.03 |
+| + QA-Graph (contains + sg_rel) | 64.76 ± 0.12 | 64.17 ± 0.09 |
+| QA-Graph, xáo cạnh (ablation) | 62.67 ± 0.06 | 62.12 ± 0.08 |
+| CLIP + Adapter + AdaMF-MAT | 63.00 (1 seed) | 62.22 (1 seed) |
 
-**Cần chốt:** nguồn caption (đề xuất: caption COCO cho ~51k ảnh VG có `coco_id`) → rồi mới tạo split.
+Bảng đầy đủ: `results/tables/` (`make tables`), kiểm định ghép cặp: `results/adamf/vs_qagraph_paired.md`,
+`results/psg_vs_adamf.md`; diễn giải: `results/JOURNAL.md`.
 
-## Gộp lại (giai đoạn 2)
+## Chống rò rỉ dữ liệu
 
-Khi các phần chạy được, chuyển dần vào một pipeline chung: `huy/` hiện đã có khung chạy thí nghiệm (config YAML, run_id,
-Kaggle từ terminal, metric dùng chung trong `huy/src/mmxai/retrieval/core.py`). Phương án gộp chốt sau, ghi vào đây.
+Split cố định theo ảnh (seed 0); cạnh thống kê chỉ từ ảnh train; α và early stopping chọn trên val; test chỉ để báo cáo;
+mọi phương pháp dùng chung `src/mmxai_eval.py`, cùng top-K CLIP và cùng gallery theo seed (có test trong `tests/`).

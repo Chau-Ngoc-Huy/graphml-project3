@@ -1,4 +1,4 @@
-"""Trích CLIP text cho nhãn đối tượng (+ khái niệm ConceptNet) bằng ĐÚNG model trong features/meta.json của bundle Thắng.
+"""Trích CLIP text cho nhãn đối tượng (+ khái niệm ConceptNet) bằng ĐÚNG model trong features/meta.json của bundle.
 
 Nhãn = data/object_vocab_train.json (2000 nhãn, đếm trên ảnh TRAIN) ∪ <extra>/concepts_added.json (nếu đã lọc ConceptNet).
 Ghi: <extra>/label_emb.npy (float32, L2-normalize), labels.json, label_emb_meta.json. Chạy CPU vài phút.

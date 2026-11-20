@@ -15,30 +15,30 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 - **Output:** `runs/<exp>/<run_id>/`
 ```
 
-## #11 · 2026-11-20 · AdaMF-MAT (Khánh) trên PSG + ablation, Kaggle T4 (`huychau/mmxai-adamf-psg` v1)
+## #11 · 2026-11-20 · AdaMF-MAT trên PSG + ablation, Kaggle T4 (`huychau/mmxai-adamf-psg` v1)
 
 - **Mục đích:** phương pháp cấp độ 2 (AdaMF-MAT) trên tập công khai thứ hai, cùng giao thức PSG với #10; thêm ablation của nó.
-- **Cấu hình:** notebook của Khánh nguyên vẹn (`results/adamf_psg/adamf_psg.ipynb`), chỉ đổi input = dataset riêng tư
+- **Cấu hình:** notebook nguyên vẹn (`results/adamf_psg/adamf_psg.ipynb`), chỉ đổi input = dataset riêng tư
   `huychau/mmxai-psg-bundle`, tên MMKG `PSG_*`, `RUN_ABLATIONS=True`. MMKG: 133 nhãn PSG + 9.186 ảnh (6.000 train + val/test),
   69.445 bộ ba (65.131 contains + 4.314 quan hệ khái niệm). 28 s/epoch → 300 epoch (trần), 1 seed huấn luyện; full ∥ shuffle trên
   2 GPU rồi drop; tổng ≈ 5 giờ GPU. Lưu ý: từ vựng của AdaMF-MAT chỉ gồm nhãn ảnh, nên khái niệm mở rộng (woman…) bị bỏ qua.
 - **Kết quả (MRR %, toàn pool 2186 ảnh, `results/psg_vs_adamf.md`):** CLIP 59.59 · +AdaMF-MAT 60.30 (+0.71 [0.47, 0.95] vs CLIP)
-  · khớp tên 60.52 · Adapter (Khánh) 61.40 → +AdaMF-MAT 62.22 (+0.82 vs adapter) ≈ Adapter+khớp tên 62.27 (Δ +0.05 [−0.13, 0.22]).
+  · khớp tên 60.52 · Adapter 61.40 → +AdaMF-MAT 62.22 (+0.82 vs adapter) ≈ Adapter+khớp tên 62.27 (Δ +0.05 [−0.13, 0.22]).
   Ablation AdaMF-MAT trên nền adapter: xáo cạnh 62.20, bỏ quan hệ 62.18 (Δ −0.02 / −0.04, CI chứa 0).
-  QA-Graph (Huy, seed 0) 64.29 → hơn Adapter+AdaMF-MAT **+2.07 [1.66, 2.48]** (indirect +2.19, direct +1.29).
+  QA-Graph 64.29 → hơn Adapter+AdaMF-MAT **+2.07 [1.66, 2.48]** (indirect +2.19, direct +1.29).
   KGC trên quan hệ khái niệm giữ lại: MRR 0.133 (full) / 0.090 (shuffle) / 0.004 (drop) — có học quan hệ, nhưng không giúp tìm ảnh.
-- **Nhận xét & kết luận:** lặp lại đúng kết luận của Khánh trên VG: lợi ích của AdaMF-MAT = thông tin hiện diện đối tượng
+- **Nhận xét & kết luận:** lặp lại đúng kết luận trên VG: lợi ích của AdaMF-MAT = thông tin hiện diện đối tượng
   (bằng baseline khớp tên); xáo/bỏ quan hệ không đổi kết quả → phần quan hệ không đóng góp vào xếp hạng. QA-Graph vẫn hơn rõ.
 - **Output:** `results/adamf_psg/` (report, results_PSG_*.json có hạng từng truy vấn, notebook), `tools/psg_vs_adamf.py`.
 
 ## #10 · 2026-11-20 · DATASET THỨ HAI: PSG — 8 cấu hình × 3 seed, máy local (tag `s0` + `s12`)
 
-- **Mục đích:** kiểm tra kết luận Task 1 trên bộ dữ liệu công khai thứ hai cùng cấu trúc VG (scene graph + caption COCO).
+- **Mục đích:** kiểm tra kết luận trên VG ở bộ dữ liệu công khai thứ hai cùng cấu trúc VG (scene graph + caption COCO).
 - **Dữ liệu:** PSG (ECCV 2022) ∩ caption Karpathy → `data/psg_bundle` (`tools/psg_to_bundle.py`): 18.186 ảnh
   (train 15.000 lấy mẫu seed 0 / val 1.000 / test 2.186), 90.974 caption; 133 nhãn ảnh (lớp panoptic đã chuẩn hoá) +
   674 khái niệm mở rộng (ConceptNet ∩ danh từ trong caption train, ≥20 lần) → truy vấn test indirect 9.645 / direct 1.199 /
   no_concept 89. ConceptNet: 3.743 cạnh. Bỏ 1 ảnh trùng train/val của bản HF. Đặc trưng CLIP: `tools/psg_extract_clip.py`.
-- **Cấu hình:** giống Task 1 (GAT, top-100, fuse α tune trên val) nhưng `graph.rel_merge: undirected` (sửa lỗi cạnh sg_rel
+- **Cấu hình:** giống VG (GAT, top-100, fuse α tune trên val) nhưng `graph.rel_merge: undirected` (sửa lỗi cạnh sg_rel
   bị nhân đôi khi cặp xuất hiện cả hai chiều; VG giữ `directed` để tái lập #9). CPU nice 19, 2 luồng,
   `tools/run_psg_local.sh` (≈4–16 phút/seed), bảng `tools/psg_table.py` → `results/tables/psg_official.md`.
 - **Kết quả (MRR %, toàn pool 2186 ảnh, mean ± std 3 seed · ΔMRR vs Adapter seed 0 bootstrap CI95):**
@@ -54,7 +54,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 
 ## #9 · 2026-11-18 · KẾT QUẢ CHÍNH THỨC — 11 cấu hình × 3 seed trên Kaggle T4 (tag `kaggle-3seed`)
 
-- **Cách chạy:** dataset Kaggle private `huychau/mmxai-task1-bundle` (bundle Thắng + `graph_extra` + `graph_extra_cn`), mỗi cấu hình
+- **Cách chạy:** dataset Kaggle private `huychau/mmxai-vg-bundle` (bundle + `graph_extra` + `graph_extra_cn`), mỗi cấu hình
   một kernel chạy seed 0,1,2 (seed = gallery + khởi tạo). Kaggle giới hạn 2 phiên GPU → `tools/run_worker.sh` (2 luồng, thử lại
   push). 4–12 phút/kernel trên T4 (CPU máy: 20–120 phút/seed). Bảng đầy đủ: `results/tables/vg_official.md` (`tools/vg_table.py`).
 - **Kết quả (MRR %, toàn pool 2138 ảnh test, mean ± std 3 seed · ΔMRR vs CLIP+Adapter seed 0 bootstrap CI95):**
@@ -72,7 +72,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
      giải được câu gián tiếp; khác biệt giữa có/không sg_rel, có/không CN ≤ 0.2 MRR, trong nhiễu.
   4. GNN: SAGE ≥ GAT ≥ GCN nhưng chênh ≤ 0.3 MRR (~1–2 std).
 - **Đề xuất cấu hình chính:** contains + ConceptNet · SAGE (`vg_qa_cn_no_sg_sage`): cao nhất (+1.93), đơn giản hơn (không sg_rel).
-- **Tiếp theo:** giải thích + fidelity cho cấu hình chính; giao số/ranks cho Khánh, model + đường đi cho Dương; viết báo cáo.
+- **Tiếp theo:** giải thích + fidelity cho cấu hình chính; nối mô hình với khung xAI; viết báo cáo.
 
 ## #8 · 2026-11-17 · `vg_qa --set extra=data/vg_bundle/graph_extra_cn` seed 0 — có ConceptNet
 
@@ -121,7 +121,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 ## #5 · 2026-11-17 · `vg_qa` — điểm đồ thị phụ thuộc truy vấn (khái niệm của câu ↔ nhãn của ảnh), seed 0
 
 - **Mục đích:** sửa nguyên nhân của #4 (gộp nhãn thành một vector mất thông tin khớp). `graph/qa.py`: GNN chỉ trên đồ thị nhãn,
-  m(c,i) = max mềm cos(u_c, H_l) trên nhãn l của ảnh, s_G = trung bình theo khái niệm của caption (`concepts` của Thắng, 100%
+  m(c,i) = max mềm cos(u_c, H_l) trên nhãn l của ảnh, s_G = trung bình theo khái niệm của caption (`concepts`, 100%
   nằm trong bộ 2000 nhãn); score = adapter + w·s_G. Test: no_edge ⇒ s_G = 0; đường đánh giá nhanh = đường huấn luyện.
 - **Cấu hình:** GAT, chưa ConceptNet, batch 512. Máy bị lag khi 4 lượt song song → chạy tuần tự `nice`, 2 luồng (~44 phút/lượt).
 - **Kết quả test seed 0 (toàn pool R@1 / MRR · gallery 1000 MRR):**
@@ -130,7 +130,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   MRR theo nhóm (gallery): adapter direct 73.46 / indirect 72.06 → qa **direct 80.54** / indirect 72.12.
 - **Nhận xét:** lần đầu đồ thị thêm được trên adapter: +1.04 MRR toàn pool, +1.4 gallery, +1.0 R@1 (1 seed). Toàn bộ phần
   tăng nằm ở nhóm **direct** (+7.1); indirect không đổi → chưa có bằng chứng lan truyền qua sg_rel giúp câu gián tiếp
-  (giống AdaMF-MAT của Khánh). Khớp nhãn không học gần như vô dụng (+0.07) → phần học (u_c, τ, w) là cần thiết.
+  (giống AdaMF-MAT). Khớp nhãn không học gần như vô dụng (+0.07) → phần học (u_c, τ, w) là cần thiết.
 - **Tiếp theo:** `no_rel` (bị ngắt khi phiên kết thúc) để biết cạnh nhãn–nhãn có góp gì; ConceptNet cho nhóm indirect;
   3 seed; kiểm định ghép cặp với adapter.
 - **Output:** `runs/vg_qa/20261117-032408_lab_vg_qa-seed0/`, `runs/vg_qa_ablation_no_edge/20261117-030513_*`
@@ -150,7 +150,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   MRR direct/indirect: no_edge 73.34/72.17 · full 73.79/72.18 · shuffle 73.30/71.83.
 - **Nhận xét:** kiến trúc đã đúng (dữ liệu giả) nhưng trên dữ liệu thật **đồ thị nhãn VG (chưa ConceptNet) không thêm gì
   trên adapter** (chênh ≤ 0.1 MRR, trong nhiễu 1 seed); trên CLIP thô chỉ +0.4 MRR toàn pool — dưới cả baseline khớp tên
-  của Khánh (+1.06). Giả thuyết: g_i gộp ~17 nhãn của ảnh thành MỘT vector không phụ thuộc truy vấn → mất thông tin
+  (+1.06). Giả thuyết: g_i gộp ~17 nhãn của ảnh thành MỘT vector không phụ thuộc truy vấn → mất thông tin
   "nhãn nào khớp khái niệm nào của câu", thứ mà khớp tên khai thác được; CLIP ảnh vốn đã mã hóa "túi đối tượng".
 - **Tiếp theo:** điểm đồ thị phụ thuộc truy vấn (khái niệm của caption `concepts` ↔ nhãn của ảnh qua đường đi trong đồ thị),
   thêm ConceptNet; cùng bộ ablation.
@@ -173,15 +173,15 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
 
 ## #2 · 2026-11-15 · 20261115-082025_lab_vg_graph-seed0-dau-tien — dữ liệu THẬT, 1 seed (chưa phải số báo cáo)
 
-- **Mục đích:** lượt CLIP+Graph đầu tiên trên bundle Nhiệm vụ 1 của Thắng (VG∩COCO, Karpathy split, train 15k ảnh /
-  75k caption, val 2126, test 2138), đánh giá bằng `mmxai_eval.Protocol` của Thắng (gallery 1000 theo seed + full pool,
+- **Mục đích:** lượt CLIP+Graph đầu tiên trên bundle VG (VG∩COCO, Karpathy split, train 15k ảnh /
+  75k caption, val 2126, test 2138), đánh giá bằng `mmxai_eval.Protocol` (gallery 1000 theo seed + full pool,
   `fuse` z-score, `tune_alpha` trên val bước 0.05).
-- **Kiểm tra trước:** `vg_clip` khớp tuyệt đối baseline của Thắng (R@1 57.36, MRR 69.23 mean 3 gallery; full 48.31 / 60.40);
+- **Kiểm tra trước:** `vg_clip` khớp tuyệt đối baseline (R@1 57.36, MRR 69.23 mean 3 gallery; full 48.31 / 60.40);
   `vg_untrained` (GNN khởi tạo đơn vị) cho đúng số CLIP → đường dữ liệu đúng.
 - **Cấu hình:** GAT 2 tầng, hidden 256, 4 head; đồ thị 19 264 ảnh + 2 000 nhãn (`object_vocab_train`), 334k cạnh contains,
   98.8k cạnh sg_rel (train, `min_rel_count=1`), CHƯA có ConceptNet. batch 512, lr 1e-3, tau 0.05, patience 4. CPU 4 luồng.
 - **Kết quả test (seed 0):** gallery 1000: CLIP R@1 58.17 / MRR 69.79 → **60.45 / 72.15** (+2.3 / +2.4);
-  full pool: 48.31 / 60.40 → **50.94 / 63.19** (+2.6 / +2.8). α = 0.35. Nhóm direct / indirect (định nghĩa của Thắng):
+  full pool: 48.31 / 60.40 → **50.94 / 63.19** (+2.6 / +2.8). α = 0.35. Nhóm direct / indirect (định nghĩa):
   MRR 72.84 / 71.99.
 - **Nhận xét:** cải thiện thật trên dữ liệu thật. MRR val (graph) đạt đỉnh ở epoch 1 rồi giảm → quá khớp sớm; còn chỗ dò
   lr/dropout/weight decay. CHƯA biết phần cải thiện đến từ cấu trúc đồ thị hay từ lớp chiếu học được → bắt buộc chạy
@@ -201,7 +201,7 @@ Viết tay, lượt mới nhất ở trên. Mỗi lượt đầy đủ (hoặc m
   của cấu trúc, đúng thiết kế dữ liệu giả. Hai lỗi sửa trong lúc làm: (1) huấn luyện cả đồ thị mỗi bước quá chậm → đồ thị con
   theo batch (chính xác, có test); (2) torch 16 luồng chậm ~15× → `cpu_threads: 4`. Kernel Kaggle sửa lỗi `VENDOR["name"]=None`
   và cài `torch_geometric` qua `vendor.yaml: pip`.
-- **Tiếp theo:** nhận dữ liệu VG thật (Yến) + features (Thắng) theo `docs/data-contract.md`; `make push --limit 5` trên Kaggle.
+- **Tiếp theo:** nhận dữ liệu VG thật + features theo `docs/data-contract.md`; `make push --limit 5` trên Kaggle.
 - **Output:** `runs/clip_graph/20261114-04*` (local, không commit).
 
 ## #0 · 2026-11-14 · khởi tạo

@@ -1,4 +1,4 @@
-# Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): cạnh ngẫu nhiên cùng số lượng
+# Ablation trên dữ liệu THẬT (bundle VG): cạnh ngẫu nhiên cùng số lượng
 extends: vg_graph.yaml
 graph: {variant: random}
 save_model: false

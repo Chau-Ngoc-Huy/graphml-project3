@@ -1,5 +1,5 @@
 /**
- * Narrative content. Numbers here are transcribed from the team's own logs and carry their source;
+ * Narrative content. Numbers here are transcribed from the project logs and carry their source;
  * everything that can be computed is computed from public/data instead.
  */
 export const PROBLEM = {
@@ -104,7 +104,7 @@ export const STAGES: Stage[] = [
   },
 ];
 
-/** Iterations of the graph model — from huy/results/JOURNAL.md (MRR %, full test pool, seed 0 unless noted). */
+/** Iterations of the graph model — from results/JOURNAL.md (MRR %, full test pool, seed 0 unless noted). */
 export const GRAPH_JOURNEY = [
   { id: "#2", date: "15/11", title: "Lượt graph đầu tiên", graph: 63.19, ref: 60.4, refLabel: "CLIP",
     finding: "+2,8 MRR so với CLIP — có vẻ graph giúp.", verdict: "nghi ngờ" },

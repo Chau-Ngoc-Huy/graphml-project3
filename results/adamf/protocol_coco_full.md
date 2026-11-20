@@ -1,7 +1,7 @@
-# AdaMF-MAT trên giao thức chung của Thắng (Karpathy COCO ∩ Visual Genome) — lượt chạy thật
+# AdaMF-MAT trên giao thức chung (Karpathy COCO ∩ Visual Genome) — lượt chạy thật
 
-Notebook: `kaggle/protocol_adamf_kaggle.ipynb` (Kaggle, T4, chạy 2026-11-16). Dữ liệu: bundle của Thắng (19,264 ảnh, 96,381 caption).
-Số liệu thô (có hạng từng truy vấn, dùng cho kiểm định ghép cặp với Huy): `protocol_coco_full.json`; báo cáo chạy: `protocol_coco_full_report.txt`.
+Notebook: `notebooks/kaggle/adamf/protocol_adamf_kaggle.ipynb` (Kaggle, T4, chạy 2026-11-16). Dữ liệu: bundle (19,264 ảnh, 96,381 caption).
+Số liệu thô (có hạng từng truy vấn, dùng cho kiểm định ghép cặp với QA-Graph): `protocol_coco_full.json`; báo cáo chạy: `protocol_coco_full_report.txt`.
 
 **Thiết lập.** MMKG: 2,000 concept + 10,264 ảnh (6,000 ảnh train + toàn bộ val/test), 31 quan hệ, 193,962 bộ ba train
 (176,736 `contains` + 17,226 quan hệ concept từ ảnh train). AdaMF-MAT huấn luyện 104 epoch (85.8 s/epoch, 1 seed, lr 1e-4, dim 200).
@@ -37,5 +37,5 @@ R@10 +0.57 ([0.20, 0.94]); khớp tên MRR +1.06 ([0.74, 1.37]).
 - Quan hệ học được yếu: kiểm tra KGC trên quan hệ concept giữ lại cho MRR 0.072, Hits@10 0.21, Hits@1 ≈ 0 (104 epoch trên 194k bộ ba, ít hơn nhiều
   so với 1000 epoch khi tái lập). Xếp hạng tính trên mọi thực thể gồm cả ảnh nên không so được với benchmark. Có thể là lý do không suy luận được quan hệ; chưa chứng minh.
 - Nhóm "indirect" do giao thức gán theo chú thích (có ≥1 concept không nằm trong danh sách đối tượng của ảnh), phần lớn là đồng nghĩa/thiếu chú thích, không phải suy luận quan hệ thật.
-- 1 seed huấn luyện; 3 seed của giao thức là 3 fold gallery. Chưa chạy ablation (xáo/bỏ cạnh): thuộc phần Huy, code đã sẵn (`--variant`).
+- 1 seed huấn luyện; 3 seed của giao thức là 3 fold gallery. Ablation (xáo/bỏ cạnh) chạy trong `make adamf` (RUN_ABLATIONS=True), code đã sẵn (`--variant`).
 - Chưa đánh giá bộ 24 truy vấn trên giao thức này.

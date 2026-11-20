@@ -1,4 +1,4 @@
-"""Giải thích mức cơ bản (cấp 1) + kiểm tra fidelity, làm nền cho Nhiệm vụ 3 (Dương).
+"""Giải thích mức cơ bản (cấp 1) + kiểm tra fidelity, làm nền cho khung xAI (mmxai.xai).
 
 Giải thích lấy từ CHÍNH cơ chế tính graph_score: z_ảnh do GNN 2 tầng tổng hợp từ láng giềng ≤ 2 bước, nên mọi đường đi
 nhãn → ảnh và khái niệm → nhãn → ảnh trong đồ thị con 2 bước của ảnh là thứ thực sự đi vào điểm. Đóng góp của một đường đi

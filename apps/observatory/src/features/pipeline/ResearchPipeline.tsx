@@ -83,7 +83,7 @@ export default function ResearchPipeline() {
                 <Line type="linear" dataKey="graph" name="Graph model" stroke={COLORS.primary} strokeWidth={2} dot={{ r: 3.5 }} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
-            <SourceNote>huy/results/JOURNAL.md · MRR % toàn pool test, seed 0 (lượt #9: 3 seed)</SourceNote>
+            <SourceNote>results/JOURNAL.md · MRR % toàn pool test, seed 0 (lượt #9: 3 seed)</SourceNote>
           </div>
           <ol className="relative space-y-4 border-l pl-5">
             {GRAPH_JOURNEY.map((j) => (

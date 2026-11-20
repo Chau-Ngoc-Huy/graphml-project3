@@ -1,4 +1,4 @@
-# Ablation trên dữ liệu THẬT (bundle Nhiệm vụ 1): bỏ cạnh quan hệ scene graph (sg_rel)
+# Ablation trên dữ liệu THẬT (bundle VG): bỏ cạnh quan hệ scene graph (sg_rel)
 extends: vg_graph.yaml
 graph: {variant: no_rel}
 save_model: false

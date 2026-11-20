@@ -1,21 +1,21 @@
 query_id,query_type,query_text,relevance_source,split_id
-i0,indirect,woman holding boy,../../khanh/queries/eval_queries.json,shared_task1
-i1,indirect,person sitting on horse,../../khanh/queries/eval_queries.json,shared_task1
-i2,indirect,truck pulling trailer,../../khanh/queries/eval_queries.json,shared_task1
-i3,indirect,person holding leash,../../khanh/queries/eval_queries.json,shared_task1
-i4,indirect,man pulling luggage,../../khanh/queries/eval_queries.json,shared_task1
-i5,indirect,person playing with snowboard,../../khanh/queries/eval_queries.json,shared_task1
-i6,indirect,person carrying luggage,../../khanh/queries/eval_queries.json,shared_task1
-i7,indirect,person holding donut,../../khanh/queries/eval_queries.json,shared_task1
-i8,indirect,horse carrying person,../../khanh/queries/eval_queries.json,shared_task1
-i9,indirect,man standing on floor,../../khanh/queries/eval_queries.json,shared_task1
-d0,direct,zebra standing on field,../../khanh/queries/eval_queries.json,shared_task1
-d1,direct,boy eating food,../../khanh/queries/eval_queries.json,shared_task1
-d2,direct,hand feeding giraffe,../../khanh/queries/eval_queries.json,shared_task1
-d3,direct,people standing on street,../../khanh/queries/eval_queries.json,shared_task1
-d4,direct,woman walking on sand,../../khanh/queries/eval_queries.json,shared_task1
-d5,direct,cow eating hay,../../khanh/queries/eval_queries.json,shared_task1
-d6,direct,person driving bus,../../khanh/queries/eval_queries.json,shared_task1
-d7,direct,elephant carrying man,../../khanh/queries/eval_queries.json,shared_task1
-d8,direct,people watching person,../../khanh/queries/eval_queries.json,shared_task1
-d9,direct,people riding bus,../../khanh/queries/eval_queries.json,shared_task1
+i0,indirect,woman holding boy,queries/eval_queries.json,shared_split
+i1,indirect,person sitting on horse,queries/eval_queries.json,shared_split
+i2,indirect,truck pulling trailer,queries/eval_queries.json,shared_split
+i3,indirect,person holding leash,queries/eval_queries.json,shared_split
+i4,indirect,man pulling luggage,queries/eval_queries.json,shared_split
+i5,indirect,person playing with snowboard,queries/eval_queries.json,shared_split
+i6,indirect,person carrying luggage,queries/eval_queries.json,shared_split
+i7,indirect,person holding donut,queries/eval_queries.json,shared_split
+i8,indirect,horse carrying person,queries/eval_queries.json,shared_split
+i9,indirect,man standing on floor,queries/eval_queries.json,shared_split
+d0,direct,zebra standing on field,queries/eval_queries.json,shared_split
+d1,direct,boy eating food,queries/eval_queries.json,shared_split
+d2,direct,hand feeding giraffe,queries/eval_queries.json,shared_split
+d3,direct,people standing on street,queries/eval_queries.json,shared_split
+d4,direct,woman walking on sand,queries/eval_queries.json,shared_split
+d5,direct,cow eating hay,queries/eval_queries.json,shared_split
+d6,direct,person driving bus,queries/eval_queries.json,shared_split
+d7,direct,elephant carrying man,queries/eval_queries.json,shared_split
+d8,direct,people watching person,queries/eval_queries.json,shared_split
+d9,direct,people riding bus,queries/eval_queries.json,shared_split

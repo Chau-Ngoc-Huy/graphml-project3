@@ -1,10 +1,10 @@
-"""Bảng kết quả chính thức (3 seed, Kaggle, tag kaggle-3seed) cho Nhiệm vụ 2 cấp 1 trên bundle của Thắng.
+"""Bảng kết quả chính thức (3 seed, Kaggle, tag kaggle-3seed) cho xếp hạng lại bằng đồ thị trên bundle.
 
 Đọc results/<exp>/*<tag>*.json mới nhất của mỗi thí nghiệm → results/tables/vg_official.md:
   - Bảng chính + ablation + GCN/GAT/SAGE: mean ± std 3 seed (gallery 1000) và toàn pool test (2138 ảnh).
-  - MRR theo nhóm direct / indirect (định nghĩa nhóm của Thắng).
+  - MRR theo nhóm direct / indirect (định nghĩa nhóm).
   - Kiểm định ghép cặp (bootstrap theo truy vấn, seed 0, toàn pool) so với CLIP+Adapter: ΔMRR và CI95.
-Dòng CLIP lấy từ baseline của Thắng (cùng giao thức; vg_clip của mình khớp tuyệt đối, JOURNAL #2).
+Dòng CLIP lấy từ baseline (cùng giao thức; vg_clip của mình khớp tuyệt đối, JOURNAL #2).
 
 Dùng: python tools/vg_table.py [--tag kaggle-3seed]
 """
@@ -70,7 +70,7 @@ def paired(exp):
     return f"{d.mean() * 100:+.2f} [{lo:+.2f}, {hi:+.2f}]"
 
 
-out = [f"# Kết quả chính thức Nhiệm vụ 2 cấp 1 (tag `{a.tag}`, 3 seed, Kaggle T4)\n",
+out = [f"# Kết quả chính thức xếp hạng lại bằng đồ thị (tag `{a.tag}`, 3 seed, Kaggle T4)\n",
        "Gallery 1000: mean ± std 3 seed (seed = gallery + khởi tạo). Toàn pool: 2138 ảnh test, mean ± std 3 mô hình.",
        "ΔMRR vs Adapter: seed 0, toàn pool, bootstrap 2000 lần theo truy vấn, [CI95]. MRR/R@k tính theo %.\n"]
 for table, title in (("main", "Bảng chính"), ("ablation", "Đối chứng"), ("gnn", "So sánh GNN")):
@@ -79,7 +79,7 @@ for table, title in (("main", "Bảng chính"), ("ablation", "Đối chứng"), 
             "|---|---|---|---|---|---|---|---|---|---|---|"]
     if table == "main":
         g = CLIP["gal"]
-        out.append("| CLIP (baseline Thắng) | " + " | ".join(f"{g[k][0]:.2f} ± {g[k][1]:.2f}" for k in ("R@1", "R@5", "R@10", "MRR", "nDCG@10"))
+        out.append("| CLIP (baseline) | " + " | ".join(f"{g[k][0]:.2f} ± {g[k][1]:.2f}" for k in ("R@1", "R@5", "R@10", "MRR", "nDCG@10"))
                    + f" | {CLIP['full']['R@1']:.2f} | {CLIP['full']['MRR']:.2f} | {CLIP['direct'][0]:.2f} ± {CLIP['direct'][1]:.2f}"
                    f" | {CLIP['indirect'][0]:.2f} ± {CLIP['indirect'][1]:.2f} | — |")
     for t, exp, name in ROWS:

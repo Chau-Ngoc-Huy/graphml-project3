@@ -27,7 +27,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 PKG = next(p.name for p in (ROOT / "src").iterdir() if (p / "run.py").exists())
 def _project_name() -> str:
-    """Tên project cố định từ paper-lab.config.json (thư mục đã đổi thành huy/ khi gộp repo nhóm)."""
+    """Tên project cố định từ paper-lab.config.json (cố định để tên kernel Kaggle không đổi)."""
     try:
         return json.loads((ROOT / "paper-lab.config.json").read_text())["project"]
     except (OSError, KeyError, ValueError):

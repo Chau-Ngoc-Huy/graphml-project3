@@ -1,17 +1,17 @@
-"""mmxai_eval — module đánh giá dùng chung cho Project 3 (Nhiệm vụ 1: truy vấn & đánh giá chuẩn).
+"""mmxai_eval — module đánh giá dùng chung cho Project 3 (giao thức truy vấn & đánh giá chuẩn).
 
-Mọi phương pháp (CLIP thuần, CLIP + Graph của Huy, phương pháp mới của Khánh) đều đi qua CÙNG MỘT
+Mọi phương pháp (CLIP thuần, CLIP + Graph, phương pháp mới) đều đi qua CÙNG MỘT
 giao thức: cùng file split, cùng gallery / fold theo seed, cùng top-K ứng viên CLIP, cùng hàm metric.
 Một phương pháp chỉ cần cung cấp hàm  ``score_fn(cands, protocol) -> np.ndarray (Nq, K)``:
 điểm cuối cùng của từng ứng viên trong top-K CLIP (điểm cao = xếp trước).
 
 Ví dụ:
-    P = Protocol.load("work_task1")                          # split + đặc trưng CLIP + nhóm truy vấn
+    P = Protocol.load("work_vg_data")                          # split + đặc trưng CLIP + nhóm truy vấn
     clip = lambda c, p: c["sim"]                              # baseline CLIP: điểm = cosine
     res = P.evaluate(clip, name="CLIP", split="test", seeds=[0, 1, 2])
     print(summary_table([res]))
 
-    def clip_graph(c, p):                                     # CLIP + Graph (Huy)
+    def clip_graph(c, p):                                     # CLIP + Graph
         sg = my_graph_score(c["q_cap"], c["cand"])            # (Nq, K) điểm đồ thị
         return fuse(c["sim"], sg, alpha=0.7)                  # α·z(cos) + (1−α)·z(s_G)
     res2 = P.evaluate(clip_graph, name="CLIP+GAT", split="test", seeds=[0, 1, 2])
@@ -149,7 +149,7 @@ class ConceptLinker:
 
 
 # Màu sắc / thuộc tính / danh từ chung chung xuất hiện như "đối tượng" trong VG nhưng không phải thực thể thị giác —
-# bỏ khỏi việc GÁN NHÓM truy vấn (đồ thị của Huy vẫn có thể dùng chúng).
+# bỏ khỏi việc GÁN NHÓM truy vấn (đồ thị vẫn có thể dùng chúng).
 GENERIC_CONCEPTS = set("""
 white black blue green brown yellow orange red pink gray grey purple gold silver tan dark light color colour
 group bunch area piece background foreground day night air body row part side top front middle number couple pair
@@ -192,7 +192,7 @@ def rank_metrics(ranks, ks=(1, 5, 10)):
 
 
 def multi_relevant_metrics(order, relevant, ks=(1, 5, 10)):
-    """Metric khi một truy vấn có NHIỀU ảnh liên quan (bộ ≥20 truy vấn của Khánh).
+    """Metric khi một truy vấn có NHIỀU ảnh liên quan (bộ ≥20 truy vấn).
 
     ``order``: danh sách id ảnh đã xếp hạng; ``relevant``: tập id ảnh liên quan.
     """
@@ -334,7 +334,7 @@ def full_sims(q, gal, batch=4096):
 class Protocol:
     """Giao thức đánh giá chung.
 
-    Dữ liệu (do notebook Nhiệm vụ 1 tạo ra trong ``work_dir``):
+    Dữ liệu (do notebook giao thức đánh giá tạo ra trong ``work_dir``):
         data/images.jsonl   : mỗi dòng 1 ảnh {idx, id, vg_id, coco_id, url, split, objects, relations}
         data/captions.jsonl : mỗi dòng 1 caption {idx, img, text, group}
         split/split.json    : {"train": [...coco_id], "val": [...], "test": [...], "meta": {...}}

@@ -8,10 +8,10 @@ Nguồn (đều công khai trừ bundles/models):
   conceptnet  ConceptNet 5 tiếng Anh, bản HF (CC BY-SA 4.0)   peandrew/conceptnet_en_simple → data/conceptnet/hf_en_simple/train.parquet
   psg         PSG (ECCV 2022): psg.json (có coco_image_id) từ HarborYuan/OpenPSG; ảnh + split từ maelic/PSG-coco-format
               (test, val, train shard 0–5 — đúng 6 shard dùng cho bundle PSG; psg_to_bundle lấy mẫu 15 000 ảnh train từ đó)
-  bundles     Kaggle datasets huychau/mmxai-task1-bundle (VG), huychau/mmxai-psg-bundle (PSG) → data/vg_bundle, data/psg_bundle
+  bundles     Kaggle datasets huychau/mmxai-vg-bundle (VG), huychau/mmxai-psg-bundle (PSG) → data/vg_bundle, data/psg_bundle
   models      Kaggle model huychau/mmxai-qa-graph (4 checkpoint seed 0) → models/<biến thể>/
-Visual Genome (scene_graphs.json) KHÔNG tải ở đây: notebook Nhiệm vụ 1 đọc trực tiếp dataset Kaggle yenphamnhu/visual-genome
-(`make kaggle JOB=task1` — xem docs/PIPELINE.md).
+Visual Genome (scene_graphs.json) KHÔNG tải ở đây: notebook giao thức đánh giá đọc trực tiếp dataset Kaggle yenphamnhu/visual-genome
+(`make data DS=vg` — xem docs/PIPELINE.md).
 """
 
 import argparse
@@ -78,7 +78,7 @@ def main():
             for f in PSG_FILES:
                 get(HF.format(repo="maelic/PSG-coco-format", path=f), DATA / "psg_raw" / f)
         elif w == "bundles":
-            for slug, d in (("huychau/mmxai-task1-bundle", "vg_bundle"), ("huychau/mmxai-psg-bundle", "psg_bundle")):
+            for slug, d in (("huychau/mmxai-vg-bundle", "vg_bundle"), ("huychau/mmxai-psg-bundle", "psg_bundle")):
                 if (DATA / d / "data" / "images.jsonl").exists():
                     print(f"  có rồi  data/{d}")
                 else:

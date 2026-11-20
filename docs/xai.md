@@ -1,4 +1,4 @@
-# Nhiệm vụ 3 — Explainability (xAI) cho Text-to-Image Retrieval
+# (xAI) — Explainability (xAI) cho Text-to-Image Retrieval
 
 > **Bài toán:** Knowledge Graph–Enhanced Text-to-Image Retrieval
 > **Mục đích tài liệu:** Mô tả phạm vi nhiệm vụ, kiến trúc tích hợp, tổ chức mã nguồn, đầu vào/đầu ra và tiêu chí nghiệm thu.
@@ -104,7 +104,7 @@ Fidelity cần báo riêng biến động **graph score** và **final score**. C
 
 ## 5. Tích hợp với pipeline của nhóm
 
-Các thành phần bên ngoài nhiệm vụ 3 được coi là **dependencies**, không phải phần cần triển khai lại:
+Các thành phần bên ngoài khung xAI được coi là **dependencies**, không phải phần cần triển khai lại:
 
 | Đầu vào cần nhận | Nguồn từ nhóm | Yêu cầu tích hợp |
 |---|---|---|
@@ -213,7 +213,7 @@ Với QA scorer hiện tại của nhóm, `contains` có hướng `concept → i
 
 ### Chạy thí nghiệm chính
 
-- Dùng `xai/queries.csv` làm catalog; relevance vẫn lấy từ `khanh/queries/eval_queries.json`, không suy ra từ model.
+- Dùng `xai/queries.csv` làm catalog; relevance vẫn lấy từ `queries/eval_queries.json`, không suy ra từ model.
 - Dùng `run_matrix(...)` với candidate pool cố định, `explanation_sizes=(1,3,5)` và `seeds=(0,1,2)`.
 - Chọn `alpha`, `k` và normalization trên validation. Test chỉ dùng để báo cáo.
 - Ghi một dòng cho từng `(query_id, image_id, seed, k)` vào `experiments/xai_results.csv`.

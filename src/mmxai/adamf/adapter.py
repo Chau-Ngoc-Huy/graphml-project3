@@ -1,10 +1,10 @@
-"""Adapter nhẹ trên đặc trưng CLIP đóng băng — phần MỞ RỘNG của Khánh, không thuộc AdaMF-MAT.
+"""Adapter nhẹ trên đặc trưng CLIP đóng băng — phần MỞ RỘNG, không thuộc AdaMF-MAT.
 
-Cùng ý tưởng adapter của Huy (`huy/src/mmxai/graph/qa.py`: q_proj / skip khởi tạo = ma trận đơn vị, InfoNCE, dừng sớm theo MRR val):
+Cùng ý tưởng adapter của QA-Graph (`src/mmxai/graph/qa.py`: q_proj / skip khởi tạo = ma trận đơn vị, InfoNCE, dừng sớm theo MRR val):
 hai phép tuyến tính D×D (caption, ảnh) khởi tạo = đơn vị, huấn luyện InfoNCE (tau 0.05) trên caption + ảnh của split TRAIN, chọn epoch theo MRR trên VAL.
 Test không được dùng. Điểm adapter thay cosine CLIP trong cùng top-K ứng viên của giao thức chung.
 
-Vì sao có file này: adapter tự nó đã tăng MRR (Huy: 60.40 → 63.14 toàn pool). Để biết AdaMF-MAT đóng góp bao nhiêu thì phải so
+Vì sao có file này: adapter tự nó đã tăng MRR (QA-Graph: 60.40 → 63.14 toàn pool). Để biết AdaMF-MAT đóng góp bao nhiêu thì phải so
 "CLIP+Adapter" với "CLIP+Adapter+AdaMF-MAT", không so với CLIP thô.
 """
 import copy

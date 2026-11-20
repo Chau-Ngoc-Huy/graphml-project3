@@ -1,10 +1,10 @@
 """Chạy các notebook Kaggle của pipeline bằng kaggle CLI (thay cho bấm tay trên web): push → chờ → tải kết quả.
 
-    python tools/kaggle_job.py run task1                    # Nhiệm vụ 1 (Thắng): VG∩COCO, split, CLIP, FAISS, baseline 3 seed
-    python tools/kaggle_job.py run adamf --dataset psg      # AdaMF-MAT (Khánh) + ablation trên bundle PSG (hoặc vg)
-    python tools/kaggle_job.py run task1 --smoke            # lượt thử nhanh (vài trăm ảnh / vài epoch)
+    python tools/kaggle_job.py run vg-data                    # dựng dữ liệu VG∩COCO: split, CLIP, FAISS, baseline CLIP 3 seed
+    python tools/kaggle_job.py run adamf --dataset psg      # AdaMF-MAT + ablation trên bundle PSG (hoặc vg)
+    python tools/kaggle_job.py run vg-data --smoke            # lượt thử nhanh (vài trăm ảnh / vài epoch)
     python tools/kaggle_job.py push|status|wait|pull <job> [--dataset ..] [--smoke]
-    python tools/kaggle_job.py pull adamf --dataset psg --install   # chép kết quả vào results/ (task1: giải nén vào data/)
+    python tools/kaggle_job.py pull adamf --dataset psg --install   # chép kết quả vào results/ (vg-data: giải nén vào data/)
 
 Huấn luyện QA-Graph trên Kaggle đã có lệnh riêng (`make push EXP=...`, tools/make_kernel.py) — không qua file này.
 Notebook gốc KHÔNG bị sửa: bản đẩy lên được sinh trong build/kaggle_jobs/<kernel>/ (vá cấu hình ở ô đầu nếu cần).
@@ -23,15 +23,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 KAGGLE = str(ROOT / ".venv" / "bin" / "kaggle") if (ROOT / ".venv" / "bin" / "kaggle").exists() else "kaggle"
-BUNDLE = {"vg": "huychau/mmxai-task1-bundle", "psg": "huychau/mmxai-psg-bundle"}
+BUNDLE = {"vg": "huychau/mmxai-vg-bundle", "psg": "huychau/mmxai-psg-bundle"}
 
 JOBS = {
-    "task1": dict(
+    "vg-data": dict(
         notebook="notebooks/kaggle/vg_data/vg_data_clip_baseline.ipynb",
         slug="mmxai-vg-data", datasets=lambda ds: ["yenphamnhu/visual-genome"], datasets_ok=("vg",),
         patches=lambda ds: [],
         smoke=[('SMOKE = bool(int(os.environ.get("MMXAI_SMOKE", "0")))', "SMOKE = True")],
-        outputs=r"^(vg_bundle\.zip|task1/results/.+)$"),  # không tải raw/ (dữ liệu thô ~200 MB)
+        outputs=r"^(vg_bundle\.zip|vg_data/results/.+)$"),  # không tải raw/ (dữ liệu thô ~200 MB)
     "adamf": dict(
         notebook="notebooks/kaggle/adamf/protocol_adamf_kaggle.ipynb",
         slug="mmxai-adamf-{ds}", datasets=lambda ds: [BUNDLE[ds]], datasets_ok=("vg", "psg"),
@@ -127,7 +127,7 @@ def pull(job, ds, smoke, install):
     print(f"→ {dst.relative_to(ROOT)}")
     if not install:
         return
-    if job == "task1":
+    if job == "vg-data":
         z = next(dst.rglob("vg_bundle.zip"), None)
         if not z:
             sys.exit("Không thấy vg_bundle.zip trong output")
@@ -150,7 +150,7 @@ def main():
     ap.add_argument("job", choices=list(JOBS))
     ap.add_argument("--dataset", default="vg", choices=list(BUNDLE))
     ap.add_argument("--smoke", action="store_true")
-    ap.add_argument("--install", action="store_true", help="pull/run: đưa kết quả vào data/ (task1) hoặc results/ (adamf)")
+    ap.add_argument("--install", action="store_true", help="pull/run: đưa kết quả vào data/ (vg-data) hoặc results/ (adamf)")
     a = ap.parse_args()
     name, kid = kernel(a.job, a.dataset, a.smoke)
     if a.action == "build":

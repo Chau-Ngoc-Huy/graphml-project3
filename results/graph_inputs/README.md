@@ -1,4 +1,4 @@
-# Đầu vào đồ thị của QA-Graph (Huy) — bản chép từ `data/<bundle>/graph_extra*` để cả nhóm xem được
+# Đầu vào đồ thị của QA-Graph — bản chép từ `data/<bundle>/graph_extra*` để cả nhóm xem được
 
 | Thư mục | Bundle | Nội dung |
 |---|---|---|
@@ -11,5 +11,5 @@
   CapableOf, HasA, Synonym; trọng số ≥ 1; hai đầu đều trong vocab).
 - `label_emb.npy` (vector CLIP chữ của từng nút, "a photo of a {}") **không** có ở đây vì `.gitignore` chặn `*.npy`;
   sinh lại bằng `tools/extract_label_emb.py --bundle <bundle> --extra <bundle>/graph_extra[_cn]`, hoặc lấy từ dataset Kaggle riêng tư
-  `huychau/mmxai-task1-bundle` / `huychau/mmxai-psg-bundle`.
+  `huychau/mmxai-vg-bundle` / `huychau/mmxai-psg-bundle`.
 - Nguồn: ConceptNet 5 (https://conceptnet.io), giấy phép **CC BY-SA 4.0** — trích dẫn khi dùng lại; dữ liệu dẫn xuất giữ cùng giấy phép.

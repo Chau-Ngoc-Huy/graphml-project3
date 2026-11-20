@@ -1,4 +1,4 @@
-"""Đặc trưng CLIP ĐÓNG BĂNG cho bundle PSG (tools/psg_to_bundle.py), cùng định dạng features/ của bundle VG (Thắng).
+"""Đặc trưng CLIP ĐÓNG BĂNG cho bundle PSG (tools/psg_to_bundle.py), cùng định dạng features/ của bundle VG.
 
 Ảnh đọc thẳng từ bytes trong parquet HF (maelic/PSG-coco-format), caption từ data/captions.jsonl.
 Ghi features/clip_<model>_<tag>.npz {img (N,D) f16, cap (Nc,D) f16, cap_img (Nc,) i32, ok (N,) bool} + meta.json.

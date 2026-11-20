@@ -65,7 +65,7 @@ function StageViz({ id }: { id: string }) {
         <div className="eyebrow">Kích thước split (ảnh)</div>
         <GroupedBars xKey="split" height={200} data={(["train", "val", "test"] as const).map((k) => ({ split: k, "Pool Karpathy ∩ VG": s.pool[k], "Dùng trong split": s.split[k] }))}
           series={[{ key: "Pool Karpathy ∩ VG", label: "Pool Karpathy ∩ VG", color: COLORS.muted }, { key: "Dùng trong split", label: "Dùng trong split", color: COLORS.primary }]} />
-        <SourceNote>thang/kaggle_results/split/split.json</SourceNote>
+        <SourceNote>results/clip_baseline/split/split.json</SourceNote>
       </div>
     );
   }
@@ -82,7 +82,7 @@ function StageViz({ id }: { id: string }) {
             <TableRow><TableCell>image→text · 1K, 3 fold</TableCell><TableCell className="text-right">{fmtStat(ds.results.i2t.test1k["R@1"])}</TableCell><TableCell className="text-right">{fmtStat(ds.results.i2t.test1k["R@10"])}</TableCell><TableCell className="text-right">{fmtStat(ds.results.i2t.test1k.MRR)}</TableCell></TableRow>
           </TableBody>
         </Table>
-        <SourceNote>khanh/results/protocol_coco_full.json (CLIP) · thang/kaggle_results/results/clip_baseline.json</SourceNote>
+        <SourceNote>results/adamf/protocol_coco_full.json (CLIP) · results/clip_baseline/results/clip_baseline.json</SourceNote>
       </div>
     );
   }
@@ -116,7 +116,7 @@ function StageViz({ id }: { id: string }) {
         <div className="eyebrow">Số edge theo loại</div>
         <GroupedBars xKey="cfg" height={220} data={rows.map(({ k, g }) => ({ cfg: m.get(k)!.short, contains: g?.E_contains ?? 0, sg_rel: g?.E_sg_rel ?? 0, ConceptNet: g?.E_concept ?? 0 }))}
           series={[{ key: "contains", label: "ảnh–chứa–label", color: COLORS.primary }, { key: "sg_rel", label: "relation scene graph", color: COLORS.warn }, { key: "ConceptNet", label: "ConceptNet", color: COLORS.flow }]} />
-        <SourceNote>run.extra.graph trong huy/results/*kaggle-3seed.json</SourceNote>
+        <SourceNote>run.extra.graph trong results/*kaggle-3seed.json</SourceNote>
       </div>
     );
   }
@@ -168,7 +168,7 @@ function StageViz({ id }: { id: string }) {
   return (
     <div className="space-y-2 text-[13px] leading-relaxed text-muted-foreground">
       <div className="eyebrow">Trạng thái</div>
-      <p>Khung trích path, nhiễu edge và metric fidelity / sparsity / validity đã có (thư mục <code className="font-mono">duong/</code>), nhưng mới chạy trên scorer giả. Chưa có số fidelity trên model thật — trang này không hiển thị số nào cho bước này.</p>
+      <p>Khung trích path, nhiễu edge và metric fidelity / sparsity / validity đã có (<code className="font-mono">src/mmxai/xai</code>) và đã nối với model thật qua <code className="font-mono">src/mmxai/xai_bridge.py</code> (<code className="font-mono">make xai</code>); trang này chưa hiển thị số fidelity cho bước này.</p>
     </div>
   );
 }

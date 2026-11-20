@@ -1,6 +1,6 @@
-AdaMF-MAT on the team protocol (Thang's mmxai_eval) report
+AdaMF-MAT on the team protocol (the mmxai_eval) report
 
-######## 1 locate Thang's WORK dir = PSG bundle ########
+######## 1 locate the WORK dir = PSG bundle ########
 what is attached in /kaggle/input:
 /kaggle/input
 /kaggle/input/datasets
@@ -33,7 +33,7 @@ split.json
 
 
 using the bundle's mmxai_eval.py
--- 1 locate Thang's WORK dir = PSG bundle took 2s
+-- 1 locate the WORK dir = PSG bundle took 2s
 
 ######## 2 clone AdaMF-MAT ########
 

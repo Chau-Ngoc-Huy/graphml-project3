@@ -1,4 +1,4 @@
-# CLIP + Graph trên bundle Nhiệm vụ 1 (Thắng), đánh giá bằng mmxai_eval.Protocol.
+# CLIP + Graph trên bundle VG, đánh giá bằng mmxai_eval.Protocol.
 # Local: data trỏ tới bản chép bundle; Kaggle: --set data=<tên dataset chứa bundle>
 extends: clip_graph.yaml
 data: data/vg_bundle
@@ -7,8 +7,8 @@ mode: graph               # clip | untrained | graph
 gnn:
   arch: split             # adapter + đồ thị tách rời (JOURNAL #3: legacy không dùng đồ thị)
   adapter: true           # false: P=S=I cố định → đồ thị trên nền CLIP thô
-seeds: [0, 1, 2]          # seed s = gallery s của Thắng + khởi tạo GNN s
-alpha_step: 0.05          # giống tune_alpha của Thắng
+seeds: [0, 1, 2]          # seed s = gallery s + khởi tạo GNN s
+alpha_step: 0.05          # giống tune_alpha
 train:
   batch_size: 512
   epochs: 20

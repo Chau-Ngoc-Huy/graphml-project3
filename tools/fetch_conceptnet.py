@@ -8,7 +8,7 @@ Nguồn dự phòng (khi S3 lỗi): huggingface.co/datasets/peandrew/conceptnet_
 Tải: https://s3.amazonaws.com/conceptnet/downloads/2019/edges/conceptnet-assertions-5.7.0.csv.gz
 Dùng: python tools/fetch_conceptnet.py --assertions conceptnet-assertions-5.7.0.csv.gz --data <data_dir> \
         [--relations IsA PartOf UsedFor AtLocation CapableOf HasA Synonym] [--min-weight 1.0] [--add-concepts 2000]
-Bundle Nhiệm vụ 1 (Thắng): --bundle data/vg_bundle  → vocab = data/object_vocab_train.json, ghi vào <bundle>/graph_extra/,
+Bundle giao thức đánh giá: --bundle data/vg_bundle  → vocab = data/object_vocab_train.json, ghi vào <bundle>/graph_extra/,
         sau đó chạy tools/extract_label_emb.py --bundle data/vg_bundle (tự gộp concepts_added.json).
 """
 
@@ -23,7 +23,7 @@ p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDes
 p.add_argument("--assertions", required=True)
 g = p.add_mutually_exclusive_group(required=True)
 g.add_argument("--data", help="thư mục dữ liệu theo hợp đồng (features/labels.json)")
-g.add_argument("--bundle", help="bundle Nhiệm vụ 1 của Thắng (đọc data/object_vocab_train.json, ghi graph_extra/)")
+g.add_argument("--bundle", help="bundle VG (đọc data/object_vocab_train.json, ghi graph_extra/)")
 p.add_argument("--relations", nargs="+", default=["IsA", "PartOf", "UsedFor", "AtLocation", "CapableOf", "HasA", "Synonym"])
 p.add_argument("--min-weight", type=float, default=1.0)
 p.add_argument("--out", help="thư mục ghi (mặc định <bundle>/graph_extra hoặc <data>)")

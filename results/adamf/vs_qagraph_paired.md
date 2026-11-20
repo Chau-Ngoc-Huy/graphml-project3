@@ -1,12 +1,12 @@
-# AdaMF-MAT (Khánh) vs các cấu hình của Huy: kiểm định ghép cặp, toàn pool test (seed 0), MRR %
+# AdaMF-MAT vs các cấu hình: kiểm định ghép cặp, toàn pool test (seed 0), MRR %
 
-10696 truy vấn, cùng thứ tự với giao thức của Thắng. Δ = (phương pháp trong hàng) − AdaMF-MAT; CI95 bootstrap theo truy vấn; Δ > 0 nghĩa là phương pháp trong hàng tốt hơn AdaMF-MAT.
+10696 truy vấn, cùng thứ tự với giao thức. Δ = (phương pháp trong hàng) − AdaMF-MAT; CI95 bootstrap theo truy vấn; Δ > 0 nghĩa là phương pháp trong hàng tốt hơn AdaMF-MAT.
 
 | Phương pháp | MRR all | MRR direct | MRR indirect | Δ all [CI95] | Δ direct [CI95] | Δ indirect [CI95] |
 |---|---|---|---|---|---|---|
-| **CLIP+AdaMF-MAT (Khánh)** | 61.04 | 66.39 | 59.89 | | | |
-| CLIP (Thắng) | 60.40 | 60.79 | 60.36 | -0.64 [-0.97, -0.33] | -5.60 [-6.29, -4.94] | +0.48 [+0.11, +0.83] |
-| CLIP+khớp tên (Thắng/Khánh) | 61.46 | 68.29 | 59.97 | +0.42 [+0.16, +0.67] | +1.90 [+1.41, +2.38] | +0.09 [-0.18, +0.38] |
+| **CLIP+AdaMF-MAT** | 61.04 | 66.39 | 59.89 | | | |
+| CLIP | 60.40 | 60.79 | 60.36 | -0.64 [-0.97, -0.33] | -5.60 [-6.29, -4.94] | +0.48 [+0.11, +0.83] |
+| CLIP+khớp tên | 61.46 | 68.29 | 59.97 | +0.42 [+0.16, +0.67] | +1.90 [+1.41, +2.38] | +0.09 [-0.18, +0.38] |
 | vg_qa | 64.92 | 70.21 | 63.76 | +3.88 [+3.50, +4.26] | +3.81 [+2.96, +4.66] | +3.88 [+3.45, +4.33] |
 | vg_qa_ablation_no_edge | 63.16 | 63.80 | 63.06 | +2.12 [+1.68, +2.54] | -2.59 [-3.51, -1.74] | +3.17 [+2.70, +3.64] |
 | vg_qa_ablation_no_rel | 64.66 | 71.22 | 63.22 | +3.62 [+3.18, +4.04] | +4.83 [+3.89, +5.77] | +3.33 [+2.88, +3.82] |

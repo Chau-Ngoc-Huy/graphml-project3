@@ -2,7 +2,7 @@
 # Một "luồng" chạy tuần tự trên Kaggle: với mỗi thí nghiệm, push (thử lại khi Kaggle báo đủ 2 phiên GPU) → wait → pull.
 # Kaggle cho tối đa 2 phiên GPU cùng lúc ⇒ chạy đúng 2 worker song song là tối đa mà không bị từ chối.
 # Mục có tiền tố "pull:" (vd. pull:vg_qa_cn) = kernel đã đẩy từ trước, chỉ chờ xong rồi tải kết quả.
-# Dùng: tools/run_worker.sh "pull:vg_qa_cn exp2 exp3" "--set data=mmxai-task1-bundle --tag kaggle-3seed"
+# Dùng: tools/run_worker.sh "pull:vg_qa_cn exp2 exp3" "--set data=mmxai-vg-bundle --tag kaggle-3seed"
 set -uo pipefail
 cd "$(dirname "$0")/.."
 ITEMS=${1:?"danh sách thí nghiệm"}

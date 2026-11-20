@@ -164,7 +164,7 @@
    }
   }
  },
- "CLIP + Adapter (Khánh)": {
+ "CLIP + Adapter": {
   "MRR": {
    "all": 61.39718557547299,
    "direct": 63.953902568936485,
@@ -303,7 +303,7 @@
    }
   }
  },
- "Huy: CLIP + Adapter (không đồ thị)": {
+ "CLIP + Adapter (không đồ thị)": {
   "MRR": {
    "all": 62.708158339745154,
    "direct": 65.21231774613028,
@@ -336,7 +336,7 @@
    }
   }
  },
- "Huy: QA-Graph (contains + sg_rel)": {
+ "QA-Graph (contains + sg_rel)": {
   "MRR": {
    "all": 64.28716771127219,
    "direct": 67.72339371593098,
@@ -369,7 +369,7 @@
    }
   }
  },
- "Huy: QA-Graph (chỉ contains)": {
+ "QA-Graph (chỉ contains)": {
   "MRR": {
    "all": 64.2994465303887,
    "direct": 68.27174754494186,
@@ -402,7 +402,7 @@
    }
   }
  },
- "Huy: QA-Graph + ConceptNet": {
+ "QA-Graph + ConceptNet": {
   "MRR": {
    "all": 64.26625331168246,
    "direct": 68.01458993868984,
@@ -435,7 +435,7 @@
    }
   }
  },
- "Huy: QA-Graph, xáo cạnh": {
+ "QA-Graph, xáo cạnh": {
   "MRR": {
    "all": 62.207834044261666,
    "direct": 65.25857221474928,

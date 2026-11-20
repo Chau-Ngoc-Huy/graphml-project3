@@ -1,11 +1,11 @@
-"""CLIP + Graph trên dữ liệu THẬT (bundle Nhiệm vụ 1 của Thắng), đánh giá bằng mmxai_eval.Protocol của Thắng.
+"""CLIP + Graph trên dữ liệu THẬT (bundle VG), đánh giá bằng mmxai_eval.Protocol.
 
 Giao thức chung (mmxai_eval): seed s = gallery s (1000 ảnh lấy mẫu từ pool test/val) VÀ khởi tạo GNN seed s;
 `full` = toàn bộ pool (tất định với một mô hình). Điểm cuối = fuse(cos, graph_score, α) = α·z(cos) + (1−α)·z(s_G),
 α chọn bằng tune_alpha trên VAL (gallery cùng seed). Test chỉ để báo cáo.
 
 cfg.mode:
-  clip      chỉ CLIP (điểm = cos) — để kiểm tra khớp baseline của Thắng (B2)
+  clip      chỉ CLIP (điểm = cos) — để kiểm tra khớp baseline (B2)
   untrained GNN khởi tạo đơn vị, không học — kiểm tra đường dữ liệu qua GNN (B3)
   graph     huấn luyện GNN như clip_graph (mặc định)
 """
@@ -26,7 +26,7 @@ from ..graph.gnn import GraphEncoder, graph_scores, train
 
 
 def load_eval_module(bundle: Path | None = None):
-    """Bộ đánh giá chung của Nhiệm vụ 1 (src/mmxai_eval.py — MỘT bản cho mọi phương pháp, mọi bộ dữ liệu).
+    """Bộ đánh giá chung của giao thức đánh giá (src/mmxai_eval.py — MỘT bản cho mọi phương pháp, mọi bộ dữ liệu).
 
     Bundle cũ có kèm bản chép `mmxai_eval.py`; nếu phần code (bỏ docstring) khác bản trong repo thì cảnh báo để không âm thầm
     chấm theo hai cách khác nhau. Không có bản trong repo (vd môi trường lạ) thì mới dùng bản chép trong bundle.

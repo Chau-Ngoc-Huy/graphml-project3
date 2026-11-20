@@ -2,7 +2,7 @@
 
 Trang web trình bày toàn bộ kết quả Project 3 (truy vấn đa phương thức có giải thích bằng đồ thị): bài toán, pipeline, playground chạy truy vấn trên các mô hình, so sánh mô hình, đồ thị truy vấn và kết quả đánh giá.
 
-**Mọi con số đều lấy từ file kết quả thật của nhóm.** `scripts/build_data.py` đọc kết quả của Thắng, Huy, Khánh và kiểm tra chéo: MRR tính lại từ hạng từng truy vấn phải khớp đúng số mỗi người đã báo cáo (15 kiểm tra), nếu lệch thì dừng.
+**Mọi con số đều lấy từ file kết quả thật của nhóm.** `scripts/build_data.py` đọc `results/` và kiểm tra chéo: MRR tính lại từ hạng từng truy vấn phải khớp đúng số mỗi người đã báo cáo (15 kiểm tra), nếu lệch thì dừng.
 
 ## Chạy
 
@@ -13,7 +13,7 @@ npm run dev                 # http://localhost:5173
 npm run build && npm run preview   # bản production trong dist/
 ```
 
-`npm run data` cần bundle Nhiệm vụ 1 đã giải nén ở `../../huy/data/vg_bundle/` (caption + đối tượng của ảnh test; không đọc đặc trưng). `public/data/` đã được commit nên chỉ cần chạy lại khi có kết quả mới.
+`npm run data` cần bundle VG đã giải nén ở `../../data/vg_bundle/` (caption + đối tượng của ảnh test; không đọc đặc trưng). `public/data/` đã được commit nên chỉ cần chạy lại khi có kết quả mới.
 
 ## Các trang
 
@@ -23,7 +23,7 @@ npm run build && npm run preview   # bản production trong dist/
 | Hành trình nghiên cứu | Pipeline 8 bước (React Flow) — bấm một bước để xem vào/ra, cách làm và số liệu thật; dòng thời gian các lượt thử của mô hình đồ thị |
 | Playground | Nhập câu hoặc chọn caption test, chọn nhiều mô hình, xem hạng ảnh đúng, Δ so với CLIP, độ trễ, chi phí ghi nhận; tab Raw (Monaco) |
 | So sánh mô hình | Chỉ số tính trực tiếp từ hạng từng truy vấn theo tập con (tất cả / direct / indirect), ma trận đối đầu, phân bố hạng, truy vấn bất đồng nhất |
-| Đồ thị truy vấn | Câu → khái niệm → đối tượng / quan hệ của ảnh đúng → hạng của từng mô hình; bộ 24 truy vấn của Khánh; mô hình × thành phần |
+| Đồ thị truy vấn | Câu → khái niệm → đối tượng / quan hệ của ảnh đúng → hạng của từng mô hình; bộ 24 truy vấn; mô hình × thành phần |
 | Kết quả & đánh giá | Bảng chính thức 16 cấu hình (3 seed), ablation, kiểm định ghép cặp, tái lập AdaMF-MAT, bộ 24 truy vấn, thành công / thất bại, trạng thái xAI |
 
 ## Cách "chạy" mô hình
@@ -31,7 +31,7 @@ npm run build && npm run preview   # bản production trong dist/
 Không có mô hình nào chạy trong trình duyệt. Playground có hai engine cùng một interface (`src/execution/types.ts`):
 
 - **Phát lại kết quả thật** (mặc định): với 10 696 caption test, trả về đúng hạng ảnh đúng mà từng mô hình đã đạt trong lượt chạy thật (seed 0, toàn pool 2 138 ảnh). Câu không thuộc tập test: chỉ chạy bước khớp khái niệm trong trình duyệt; các mô hình học trả về "không khả dụng" kèm gợi ý caption test gần nhất — không bịa kết quả.
-- **Live API**: gửi câu tới máy chủ MMXAI Lab của Huy (`huy/ui/server.py`, `POST /api/search`). Khi `npm run dev`, Vite chuyển tiếp `/api` tới `127.0.0.1:8765`. Chưa được kiểm thử với máy chủ đang chạy.
+- **Live API**: gửi câu tới máy chủ MMXAI Lab (`apps/lab/server.py`, `POST /api/search`). Khi `npm run dev`, Vite chuyển tiếp `/api` tới `127.0.0.1:8765`. Chưa được kiểm thử với máy chủ đang chạy.
 
 ## Cấu trúc
 

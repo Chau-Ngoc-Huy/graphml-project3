@@ -1,4 +1,4 @@
-/** Port of thang/mmxai_eval.py text normalisation + ConceptLinker (greedy longest n-gram match on the label vocabulary). */
+/** Port of src/mmxai_eval.py text normalisation + ConceptLinker (greedy longest n-gram match on the label vocabulary). */
 const STOPWORDS = new Set(
   `a an the and or but if then than so of at by for with about against between into through during before
 after above below to from up down in out on off over under again further once here there when where why how
