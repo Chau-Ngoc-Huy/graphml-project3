@@ -1,7 +1,7 @@
 import unittest
 
-from xai.demo_data import demo_graph
-from xai.scorer_adapter import CallableScorerAdapter, MockPathScorer, ScoreComponents
+from mmxai.xai.demo_data import demo_graph
+from mmxai.xai.scorer_adapter import CallableScorerAdapter, MockPathScorer, ScoreComponents
 
 
 class ScorerTests(unittest.TestCase):

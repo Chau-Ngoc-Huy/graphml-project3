@@ -49,3 +49,19 @@ env/
 .DS_Store
 .vscode/
 .idea/
+
+# --- gộp từ legacy/{huy,khanh,thang}/.gitignore (nhánh final, cấu trúc thống nhất)
+/models/
+/logs/
+.venv*/
+node_modules/
+apps/observatory/dist/
+results/*/SUMMARY.md
+results/*/index.csv
+results/tables/
+results/tex/
+checkpoint/
+external/
+results/raw/
+work_task1/
+*.index

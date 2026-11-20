@@ -1,6 +1,6 @@
 """MMXAI Lab UI — thử từng biến thể mô hình, xem dữ liệu từng bước, xem ablation trên dữ liệu THẬT.
 
-Chạy:   make ui            (hoặc: .venv/bin/python -m uvicorn ui.server:app --port 8765)
+Chạy:   make ui            (hoặc: .venv/bin/python -m uvicorn apps.lab.server:app --port 8765)
 Mở:     http://127.0.0.1:8765
 
 Biến thể = mọi thư mục runs/t1_qa*/<run_id>/ có model.pt (trừ lượt `smoke`). Nạp dần ở nền sau khi khởi động
@@ -38,7 +38,7 @@ from mmxai.experiments.t1_graph import load_eval_module
 from mmxai.graph.build import CONCEPT, CONTAINS, TYPE_NAMES, build_graph
 from mmxai.graph.qa import QAData, QAScorer
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]   # apps/lab/server.py → gốc repo
 STATIC = Path(__file__).resolve().parent / "static"
 torch.set_num_threads(int(os.environ.get("MMXAI_THREADS", "2")))
 K = 100  # số ứng viên CLIP được xếp hạng lại (giống giao thức của Thắng)

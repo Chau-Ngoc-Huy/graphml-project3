@@ -83,4 +83,4 @@ ablations:           ## chạy mọi ablation tuần tự trên Kaggle: make abl
 	tools/run_queue.sh "ablation_no_rel ablation_no_concept ablation_no_edge ablation_shuffle ablation_random" "$(ARGS)"
 
 ui:                  ## giao diện thử mô hình / xem dữ liệu / ablation: http://127.0.0.1:8765
-	OMP_NUM_THREADS=2 nice -n 10 $(PY) -m uvicorn ui.server:app --host 127.0.0.1 --port 8765
+	OMP_NUM_THREADS=2 nice -n 10 $(PY) -m uvicorn apps.lab.server:app --host 127.0.0.1 --port 8765

@@ -1,4 +1,4 @@
-"""Chạy khung xAI của Dương (duong/xai, KHÔNG sửa) trên mô hình QA-Graph thật qua mmxai.xai_bridge.
+"""Chạy khung xAI của Dương (src/mmxai/xai, KHÔNG sửa) trên mô hình QA-Graph thật qua mmxai.xai_bridge.
 
   python tools/xai_bridge_demo.py --model models/psg_qa_cn_seed0 --bundle data/psg_bundle --n 10 --k 20
   python tools/xai_bridge_demo.py --model models/vg_t1_qa_cn_seed0 --bundle data/task1_bundle --n 10
@@ -30,14 +30,13 @@ import torch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-sys.path.insert(0, str(ROOT.parent / "duong"))
 from mmxai.graph.qa import qa_scores  # noqa: E402
 from mmxai.xai_bridge import QAGraphBridge  # noqa: E402
-from xai.evaluate_xai import XAIEvaluator  # noqa: E402
-from xai.explain import EdgeContributionExplainer  # noqa: E402
-from xai.graph import Edge, KnowledgeGraph, Node  # noqa: E402
-from xai.io import load_schema  # noqa: E402
-from xai.scorer_adapter import CallableScorerAdapter  # noqa: E402
+from mmxai.xai.evaluate_xai import XAIEvaluator  # noqa: E402
+from mmxai.xai.explain import EdgeContributionExplainer  # noqa: E402
+from mmxai.xai.graph import Edge, KnowledgeGraph, Node  # noqa: E402
+from mmxai.xai.io import load_schema  # noqa: E402
+from mmxai.xai.scorer_adapter import CallableScorerAdapter  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--model", required=True, help="thư mục có model.pt, config.json, train_info.json (vd models/psg_qa_cn_seed0)")
@@ -81,7 +80,7 @@ print(f"kiểm tra: |final cầu nối − giao thức| = {err:.2e}", flush=True
 assert err < 1e-4
 
 scorer = CallableScorerAdapter(br.score_fn, br.local_edges_fn)
-schema = load_schema(ROOT.parent / "duong" / "configs" / "graph_schema.json")
+schema = load_schema(ROOT / "configs" / "xai" / "graph_schema.json")
 with open(out / "results.jsonl", "w", encoding="utf-8") as f:
     for c in cases:
         for k in a.sizes:

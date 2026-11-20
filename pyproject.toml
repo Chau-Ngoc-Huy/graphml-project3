@@ -4,19 +4,30 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mmxai-lab"
-version = "0.1.0"
-description = "Thực nghiệm paper: Project 3 - Truy vấn đa phương thức có giải thích bằng đồ thị (Graph ML)"
+version = "0.2.0"
+description = "Project 3 (Graph ML): truy vấn văn bản→ảnh xếp hạng lại bằng đồ thị, có giải thích — pipeline thống nhất của nhóm"
 requires-python = ">=3.10"
 dependencies = ["pyyaml", "numpy", "torch", "torch_geometric"]
 
 [project.optional-dependencies]
+# gộp từ legacy/{khanh,duong,thang}: ijson (đọc scene_graphs.json lớn), open_clip/faiss (Nhiệm vụ 1), matplotlib/networkx (xAI)
 dev = ["pytest", "kaggle"]
-clip = ["open_clip_torch", "pillow", "faiss-cpu"]
+clip = ["open_clip_torch", "pillow", "faiss-cpu", "ijson"]
 ui = ["fastapi", "uvicorn[standard]", "open_clip_torch", "pyarrow"]
+viz = ["matplotlib>=3.7", "networkx>=3.1"]
+
+[project.scripts]
+mmxai-xai-demo = "mmxai.xai.cli:main"
+
+[tool.setuptools]
+py-modules = ["mmxai_eval"]          # module đánh giá chung của Nhiệm vụ 1 (src/mmxai_eval.py, import mmxai_eval)
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["mmxai*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+# src/adamf: mã AdaMF-MAT/adapter của Khánh dùng import phẳng (`import adapter`, `from common import ...`) — đợt 2 sẽ đưa vào gói
+pythonpath = ["src", "src/adamf", "tests/adamf"]
+addopts = "--import-mode=importlib"

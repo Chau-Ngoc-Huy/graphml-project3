@@ -1,9 +1,9 @@
 import unittest
 
-from xai.demo_data import demo_graph, demo_schema
-from xai.evaluate_xai import XAIEvaluator
-from xai.explain import EdgeContributionExplainer
-from xai.scorer_adapter import MockPathScorer
+from mmxai.xai.demo_data import demo_graph, demo_schema
+from mmxai.xai.evaluate_xai import XAIEvaluator
+from mmxai.xai.explain import EdgeContributionExplainer
+from mmxai.xai.scorer_adapter import MockPathScorer
 
 
 class MetricTests(unittest.TestCase):

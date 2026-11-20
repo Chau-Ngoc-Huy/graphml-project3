@@ -1,8 +1,8 @@
 import unittest
 
-from xai.demo_data import demo_graph
-from xai.explain import EdgeContributionExplainer
-from xai.scorer_adapter import MockPathScorer
+from mmxai.xai.demo_data import demo_graph
+from mmxai.xai.explain import EdgeContributionExplainer
+from mmxai.xai.scorer_adapter import MockPathScorer
 
 
 class ExplainTests(unittest.TestCase):

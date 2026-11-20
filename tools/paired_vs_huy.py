@@ -12,15 +12,15 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-REPO = ROOT.parent
-sys.path.insert(0, str(REPO / "thang"))
+REPO = ROOT  # repo thống nhất: tools/ nằm ngay dưới gốc
+sys.path.insert(0, str(REPO / "src"))
 from mmxai_eval import Protocol, paired_bootstrap, rank_metrics  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--bundle", required=True)
-ap.add_argument("--mine", default=str(ROOT / "results" / "protocol_coco_full.json"))
-ap.add_argument("--huy", default=str(REPO / "huy" / "results" / "ranks"))
-ap.add_argument("--out", default=str(ROOT / "results" / "vs_huy_paired"))
+ap.add_argument("--mine", default=str(REPO / "results" / "adamf" / "protocol_coco_full.json"))
+ap.add_argument("--huy", default=str(REPO / "results" / "ranks"))
+ap.add_argument("--out", default=str(REPO / "results" / "adamf" / "vs_huy_paired"))
 a = ap.parse_args()
 
 mine = {k: np.array(v["full"]["ranks"]) for k, v in json.load(open(a.mine)).items()}

@@ -1,6 +1,6 @@
 import unittest
 
-from xai.graph import Edge, KnowledgeGraph, Node
+from mmxai.xai.graph import Edge, KnowledgeGraph, Node
 
 
 class GraphTests(unittest.TestCase):

@@ -168,7 +168,7 @@ Yêu cầu Python 3.10 trở lên.
 cd duong
 python -m pip install -e '.[dev,viz]'
 python -m pytest -q
-python -m xai.cli --output-dir experiments/demo --top-k 2 --seed 0
+python -m mmxai.xai.cli --output-dir experiments/demo --top-k 2 --seed 0
 ```
 
 Nếu chỉ muốn chạy test core mà chưa cài pytest: `python -m unittest discover -s tests -v`.
@@ -191,7 +191,7 @@ Lệnh demo dùng graph/scorer mẫu có thể kiểm toán và ghi `explanation
 `Scorer.score()` phải nhận toàn bộ candidate pool và trả đủ ba score cho mỗi ảnh:
 
 ```python
-from xai import CallableScorerAdapter, ScoreComponents
+from mmxai.xai import CallableScorerAdapter, ScoreComponents
 
 def score_fn(query, candidate_ids, perturbed_graph):
     # 1. Chuyển perturbed_graph thành edge_index/edge_type.

@@ -31,8 +31,8 @@ import numpy as np
 
 try:
     import mmxai_eval  # noqa: F401  (Kaggle notebook writes it next to this file)
-except ImportError:  # in the team repo the shared module lives in ../../thang (read only, never edit it from here)
-    sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "thang"))
+except ImportError:  # trong repo thống nhất, module chung nằm ở src/mmxai_eval.py (thư mục cha của src/adamf)
+    sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 SUFFIX = {"full": "", "shuffle": "_shuf", "drop": "_drop"}
 

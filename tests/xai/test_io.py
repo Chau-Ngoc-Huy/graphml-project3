@@ -3,8 +3,8 @@ import unittest
 from tempfile import TemporaryDirectory
 from pathlib import Path
 
-from xai.demo_data import demo_graph
-from xai.io import load_graph
+from mmxai.xai.demo_data import demo_graph
+from mmxai.xai.io import load_graph
 
 
 class IOTests(unittest.TestCase):

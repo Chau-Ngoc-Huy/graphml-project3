@@ -1,8 +1,8 @@
 import unittest
 
-from xai.demo_data import demo_graph, demo_schema
-from xai.experiment import QueryCase, run_matrix, select_balanced_case_studies
-from xai.scorer_adapter import MockPathScorer
+from mmxai.xai.demo_data import demo_graph, demo_schema
+from mmxai.xai.experiment import QueryCase, run_matrix, select_balanced_case_studies
+from mmxai.xai.scorer_adapter import MockPathScorer
 
 
 class ExperimentTests(unittest.TestCase):
