@@ -11,7 +11,7 @@ export PYTHONPATH := src
 export LAB_USER KAGGLE_USER DATASET PROJECT
 KERNEL = $(shell $(PY) -c "import sys; sys.path.insert(0,'tools'); from make_kernel import kernel_id; print(kernel_id('$(EXP)'))")
 
-.PHONY: sync table ablations help test local dry push kernel status wait logs pull queue summary compare tex vendor vendor-update colab check import ui
+.PHONY: queries notebooks sync table ablations help test local dry push kernel status wait logs pull queue summary compare tex vendor vendor-update colab check import ui
 
 help:                ## liệt kê lệnh
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/' | column -t -s $$'\t'
@@ -81,6 +81,14 @@ table:               ## bảng kết quả (Markdown + LaTeX) từ lượt đầ
 
 ablations:           ## chạy mọi ablation tuần tự trên Kaggle: make ablations ARGS="--set data=mmxai-vg"
 	tools/run_queue.sh "ablation_no_rel ablation_no_concept ablation_no_edge ablation_shuffle ablation_random" "$(ARGS)"
+
+# --- AdaMF-MAT / bộ truy vấn (gộp từ legacy/khanh/Makefile)
+SG ?= data/scene_graphs.json
+queries:             ## sinh lại bộ 24 truy vấn từ scene_graphs.json của VG (không commit file đó): SG=<đường dẫn>
+	$(PY) -m mmxai.adamf.build_eval_queries $(SG) queries 12 0
+
+notebooks:           ## nhúng lại src/mmxai/adamf + src/mmxai_eval.py vào notebooks/kaggle/adamf/*.ipynb
+	$(PY) tools/make_notebooks.py
 
 sync:                ## đồng bộ thay đổi của nhóm từ origin/main sang nhánh final (DRY=1: chỉ liệt kê)
 	$(PY) tools/sync_main.py $(if $(DRY),--dry-run)

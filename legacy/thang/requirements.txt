@@ -1,5 +1,0 @@
-# Kaggle đã có torch, torchvision, numpy, pandas, matplotlib, pillow, requests. Cần thêm:
-open_clip_torch>=2.24
-faiss-cpu>=1.7
-ijson>=3.2
-# Chạy local trên CPU: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu

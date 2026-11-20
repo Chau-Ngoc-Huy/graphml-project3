@@ -8,7 +8,9 @@ Cách hoạt động (docs/migration-map.tsv, khớp tiền tố dài nhất):
   moved      file chỉ đổi chỗ → `git merge` (nhận diện đổi tên + directoryRenames=true) tự đưa thay đổi vào đường dẫn mới,
              kể cả file MỚI tạo trong thư mục cũ đã đổi tên (vd khanh/src/x.py → src/adamf/x.py).
   rewritten  file đã gộp/viết lại trên final → merge không tự chuyển được; script in diff của main và đích cần chuyển tay.
+  dropped    đã bỏ trên final → chỉ báo (kèm diff), không mang sang.
   unmapped   file mới trên main không thuộc tiền tố nào trong bảng → script báo để xếp chỗ + thêm dòng vào bảng.
+Xung đột "sửa/xóa" trên file rewritten/dropped (main sửa, final đã gộp/bỏ) được giữ phía final (diff đã nằm trong báo cáo).
 Sau merge: báo file nào lại xuất hiện ở thư mục cũ (cần git mv), chạy pytest. Báo cáo: logs/sync/<ngày>_<sha>.md.
 Không bao giờ push; không sửa lịch sử (merge thường, giữ commit gốc của từng người).
 """
@@ -68,18 +70,19 @@ def main():
     rep = [f"# Đồng bộ {a.ref} ({head}) → final · {dt.datetime.now():%Y-%m-%d %H:%M}", "",
            f"Gốc chung: `{base[:9]}` · {len(commits)} commit mới, {len(changes)} file đổi.", "", "## Commit", ""]
     rep += [f"- {c}" for c in commits] or ["- (không có)"]
-    groups = {"moved": [], "same": [], "rewritten": [], "unmapped": []}
+    groups = {"moved": [], "same": [], "rewritten": [], "dropped": [], "unmapped": []}
     for st, path in changes:
         new, kind = locate(path, rows)
         groups[kind].append((st, path, new))
     label = {"moved": "Tự sang chỗ mới khi merge", "same": "Ngoài thư mục cá nhân (giữ đường dẫn)",
-             "rewritten": "PHẢI CHUYỂN TAY (file đã gộp/viết lại trên final)", "unmapped": "CHƯA CÓ CHỖ trong bảng ánh xạ"}
-    for k in ("rewritten", "unmapped", "moved", "same"):
+             "rewritten": "PHẢI CHUYỂN TAY (file đã gộp/viết lại trên final)", "unmapped": "CHƯA CÓ CHỖ trong bảng ánh xạ",
+             "dropped": "Đã bỏ trên final (chỉ báo)"}
+    for k in ("rewritten", "unmapped", "dropped", "moved", "same"):
         if groups[k]:
             rep += ["", f"## {label[k]} ({len(groups[k])})", ""]
             rep += [f"- `{st}` {p}" + (f" → `{n}`" if n != p else "") for st, p, n in groups[k]]
-    for st, p, n in groups["rewritten"]:
-        rep += ["", f"### diff `{p}` (chuyển sang `{n}`)", "", "```diff",
+    for st, p, n in groups["rewritten"] + groups["dropped"]:
+        rep += ["", f"### diff `{p}`" + (f" (chuyển sang `{n}`)" if n != "-" else " (đã bỏ trên final)"), "", "```diff",
                 git("diff", base, a.ref, "--", p).strip()[:6000], "```"]
 
     if not a.dry_run and commits:
@@ -87,6 +90,14 @@ def main():
         r = subprocess.run(["git", "-c", "merge.directoryRenames=true", "-c", "merge.renames=true", "-c", "diff.renameLimit=5000",
                             "merge", "--no-ff", "-m", msg, a.ref], cwd=ROOT, capture_output=True, text=True)
         rep += ["", "## Merge", "", "```", (r.stdout + r.stderr).strip()[-4000:], "```"]
+        handoff = {p for k in ("rewritten", "dropped") for _, p, _ in groups[k]}
+        for f in git("diff", "--name-only", "--diff-filter=U").split():
+            # sửa/xóa: main sửa file mà final đã gộp/bỏ (kể cả bản legacy/ của nó) → giữ phía final, diff đã ở báo cáo
+            if (f in handoff or f.startswith("legacy/")) and subprocess.run(["git", "cat-file", "-e", f"HEAD:{f}"], cwd=ROOT,
+                                                                           capture_output=True).returncode:
+                git("rm", "-q", "--cached", "--ignore-unmatch", f)
+                (ROOT / f).unlink(missing_ok=True)
+                rep += [f"- giữ phía final cho `{f}` (đã gộp/bỏ) — chuyển tay theo diff ở trên nếu cần"]
         if r.returncode and not git("diff", "--name-only", "--diff-filter=U").strip():
             # chỉ là cảnh báo "directory rename split" (file mới trong thư mục cũ bị tách ra nhiều nơi): nội dung đã gộp sạch,
             # file mới nằm lại thư mục cũ và được liệt kê bên dưới để git mv
