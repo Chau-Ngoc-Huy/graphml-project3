@@ -20,7 +20,7 @@ export function ModelSelector({ selected, onChange, focus, onFocus }: { selected
       })}
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-7 gap-1.5 text-muted-foreground"><Layers className="h-3.5 w-3.5" />{selected.length} / {ds.models.length} mô hình</Button>
+          <Button variant="ghost" size="sm" className="h-7 gap-1.5 text-muted-foreground"><Layers className="h-3.5 w-3.5" />{selected.length} / {ds.models.length} model</Button>
         </PopoverTrigger>
         <PopoverContent className="w-[340px] p-1">
           <div className="max-h-[420px] overflow-y-auto">
@@ -37,7 +37,7 @@ export function ModelSelector({ selected, onChange, focus, onFocus }: { selected
                         <span className={cn("grid h-4 w-4 place-items-center rounded-sm border", on ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground/40")}>{on && <Check className="h-3 w-3" strokeWidth={3} />}</span>
                         <ModelDot model={m} />
                         <span className="flex-1 truncate">{m.name}</span>
-                        <span className="text-[10px] text-muted-foreground">{m.hasRanks ? m.owner : "chỉ số 3 seed"}</span>
+                        <span className="text-[10px] text-muted-foreground">{m.hasRanks ? "" : "chỉ số 3 seed"}</span>
                       </button>
                     );
                   })}

@@ -27,9 +27,9 @@ export function CommandMenu() {
     <Dialog open={app.commandOpen} onOpenChange={app.setCommandOpen}>
       <DialogContent className="p-0">
         <DialogTitle className="sr-only">Tìm nhanh</DialogTitle>
-        <DialogDescription className="sr-only">Chuyển trang, mở ví dụ hoặc chọn mô hình</DialogDescription>
+        <DialogDescription className="sr-only">Chuyển trang, mở ví dụ hoặc chọn model</DialogDescription>
         <Command>
-          <CommandInput placeholder="Đi tới trang, ví dụ truy vấn, mô hình…" />
+          <CommandInput placeholder="Đi tới trang, ví dụ query, model…" />
           <CommandList>
             <CommandEmpty>Không có kết quả.</CommandEmpty>
             <CommandGroup heading="Trang">
@@ -39,7 +39,7 @@ export function CommandMenu() {
                 </CommandItem>
               ))}
             </CommandGroup>
-            <CommandGroup heading="Ví dụ truy vấn">
+            <CommandGroup heading="Ví dụ query">
               {examples.map((e) => (
                 <CommandItem key={e.id} value={`vi du ${e.label} ${e.text}`} onSelect={() => { app.setInput(e.text); app.setQueryIndex(e.queryIndex ?? null); app.go("playground"); close(); }}>
                   <Sparkles className="text-flow" />
@@ -48,10 +48,10 @@ export function CommandMenu() {
                 </CommandItem>
               ))}
             </CommandGroup>
-            <CommandGroup heading="Mô hình">
+            <CommandGroup heading="Model">
               {ds.models.map((m) => (
-                <CommandItem key={m.id} value={`mo hinh ${m.name} ${m.short} ${m.owner}`} onSelect={() => { app.setFocusModel(m.id); if (!app.playModels.includes(m.id)) app.setPlayModels([...app.playModels, m.id]); app.go("playground"); close(); }}>
-                  <ModelDot model={m} /> {m.name}<span className="ml-auto text-xs text-muted-foreground">{m.owner}</span>
+                <CommandItem key={m.id} value={`mo hinh ${m.name} ${m.short}`} onSelect={() => { app.setFocusModel(m.id); if (!app.playModels.includes(m.id)) app.setPlayModels([...app.playModels, m.id]); app.go("playground"); close(); }}>
+                  <ModelDot model={m} /> {m.name}
                   <FlaskConical className="text-muted-foreground" />
                 </CommandItem>
               ))}

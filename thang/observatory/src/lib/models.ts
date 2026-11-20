@@ -2,10 +2,10 @@ import type { Family, ModelInfo } from "@/data/types";
 
 export const FAMILY_LABEL: Record<Family, string> = {
   baseline: "Baseline",
-  lexical: "Khớp tên",
+  lexical: "Presence matching",
   kgc: "MMKG (AdaMF-MAT)",
   adapter: "Adapter",
-  graph: "Đồ thị (GNN)",
+  graph: "Graph (GNN)",
   ablation: "Ablation",
 };
 

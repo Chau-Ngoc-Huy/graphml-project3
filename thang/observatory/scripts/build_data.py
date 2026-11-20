@@ -8,7 +8,7 @@
           test-set captions, image objects/relations and the concept vocabulary (no features are read)
 
 Standard library only. Every per-query rank file is cross-checked: MRR recomputed from ranks must equal the MRR the
-owner reported, and group MRR from the CLIP ranks must match Khánh's group breakdown (proves query order alignment).
+owner reported, and group MRR from the CLIP ranks must match the group breakdown in protocol_coco_full.json (proves query order alignment).
 """
 import argparse
 import glob
@@ -111,63 +111,63 @@ def official_from_khanh(rec, src):
 
 MODELS = [
     # id, name, short, owner, family, flags, rank source, official
-    dict(id="clip", name="CLIP (đóng băng)", short="CLIP", owner="Thắng", family="baseline",
+    dict(id="clip", name="CLIP (đóng băng)", short="CLIP", family="baseline",
          desc="OpenCLIP ViT-B/32 laion2b, cosine văn bản–ảnh, không học gì. Mốc cho mọi phương pháp.",
          flags=dict(adapter=False, graph=False, relations=False, conceptnet=False, learned=False, gnn=None),
          ranks=("khanh", KF["CLIP"]["full"]["ranks"]), official=official_from_khanh(KF["CLIP"], "khanh/results/protocol_coco_full.json")),
-    dict(id="clip_lex", name="CLIP + khớp tên đối tượng", short="+Khớp tên", owner="Thắng/Khánh", family="lexical",
-         desc="α·z(cos) + (1−α)·z(tỉ lệ khái niệm của câu có trong danh sách đối tượng của ảnh). Không quan hệ, không học.",
+    dict(id="clip_lex", name="CLIP + presence matching", short="+Presence", family="lexical",
+         desc="α·z(cos) + (1−α)·z(tỉ lệ concept của câu có trong danh sách object của ảnh). Không relation, không học.",
          flags=dict(adapter=False, graph=False, relations=False, conceptnet=False, learned=False, gnn=None),
          ranks=("khanh", KF["CLIP+presence (no relations)"]["full"]["ranks"]),
          official=official_from_khanh(KF["CLIP+presence (no relations)"], "khanh/results/protocol_coco_full.json")),
-    dict(id="clip_adamf", name="CLIP + AdaMF-MAT", short="+AdaMF-MAT", owner="Khánh", family="kgc",
-         desc="AdaMF-MAT (LREC-COLING 2024) học MMKG ảnh–khái niệm; điểm = độ hợp lý của (ảnh, contains, khái niệm).",
+    dict(id="clip_adamf", name="CLIP + AdaMF-MAT", short="+AdaMF-MAT", family="kgc",
+         desc="AdaMF-MAT (LREC-COLING 2024) học MMKG ảnh–concept; điểm = độ hợp lý của (ảnh, contains, concept).",
          flags=dict(adapter=False, graph=True, relations=True, conceptnet=False, learned=True, gnn=None),
          ranks=("khanh", KF["CLIP+AdaMF-MAT"]["full"]["ranks"]),
          official=official_from_khanh(KF["CLIP+AdaMF-MAT"], "khanh/results/protocol_coco_full.json")),
-    dict(id="k_adapter", name="CLIP + Adapter (Khánh)", short="Adapter·K", owner="Khánh", family="adapter",
+    dict(id="k_adapter", name="CLIP + Adapter-S (huấn luyện riêng)", short="Adapter-S", family="adapter",
          desc="Hai phép chiếu tuyến tính 512×512 học bằng InfoNCE trên caption/ảnh train.",
          flags=dict(adapter=True, graph=False, relations=False, conceptnet=False, learned=True, gnn=None),
          ranks=("khanh", KA["CLIP+Adapter"]["full"]["ranks"]), official=official_from_khanh(KA["CLIP+Adapter"], "khanh/results/protocol_coco_adapter.json")),
-    dict(id="k_adapter_lex", name="Adapter·K + khớp tên", short="Adapter·K+Khớp", owner="Khánh", family="lexical",
-         desc="Adapter của Khánh + khớp tên đối tượng (không quan hệ).",
+    dict(id="k_adapter_lex", name="Adapter-S + presence matching", short="Adapter-S+Presence", family="lexical",
+         desc="Adapter-S (huấn luyện riêng) + presence matching (không relation).",
          flags=dict(adapter=True, graph=False, relations=False, conceptnet=False, learned=True, gnn=None),
          ranks=("khanh", KA["CLIP+Adapter+presence (no relations)"]["full"]["ranks"]),
          official=official_from_khanh(KA["CLIP+Adapter+presence (no relations)"], "khanh/results/protocol_coco_adapter.json")),
-    dict(id="k_adapter_adamf", name="Adapter·K + AdaMF-MAT", short="Adapter·K+AdaMF", owner="Khánh", family="kgc",
-         desc="Adapter của Khánh + điểm AdaMF-MAT, ghép bằng α trên z-score.",
+    dict(id="k_adapter_adamf", name="Adapter-S + AdaMF-MAT", short="Adapter-S+AdaMF", family="kgc",
+         desc="Adapter-S (huấn luyện riêng) + điểm AdaMF-MAT, ghép bằng α trên z-score.",
          flags=dict(adapter=True, graph=True, relations=True, conceptnet=False, learned=True, gnn=None),
          ranks=("khanh", KA["CLIP+Adapter+AdaMF-MAT"]["full"]["ranks"]),
          official=official_from_khanh(KA["CLIP+Adapter+AdaMF-MAT"], "khanh/results/protocol_coco_adapter.json")),
 ]
 HUY = [
-    ("t1_qa_ablation_no_edge", "CLIP + Adapter (Huy)", "Adapter·H", "adapter", "Adapter học chung, đồ thị bị tắt (no_edge ⇒ s_G = 0). Mốc đúng để đo đóng góp của đồ thị.",
+    ("t1_qa_ablation_no_edge", "CLIP + Adapter-J (học chung)", "Adapter-J", "adapter", "Adapter học chung, graph bị tắt (no_edge ⇒ s_G = 0). Mốc đúng để đo đóng góp của graph.",
      dict(adapter=True, graph=False, relations=False, conceptnet=False, learned=True, gnn=None)),
-    ("t1_qa", "QA-Graph · GAT · contains + sg_rel", "GAT", "graph", "Điểm đồ thị phụ thuộc truy vấn: khái niệm của câu ↔ nhãn của ảnh qua GNN trên đồ thị nhãn (cạnh contains + quan hệ scene graph).",
+    ("t1_qa", "QA-Graph · GAT · contains + sg_rel", "GAT", "graph", "Graph score phụ thuộc query: concept của câu ↔ label của ảnh qua GNN trên label graph (edge contains + relation scene graph).",
      dict(adapter=True, graph=True, relations=True, conceptnet=False, learned=True, gnn="GAT")),
-    ("t1_qa_ablation_no_rel", "QA-Graph · chỉ contains", "GAT·contains", "ablation", "Bỏ toàn bộ cạnh nhãn–nhãn (sg_rel); chỉ còn ảnh–chứa–nhãn.",
+    ("t1_qa_ablation_no_rel", "QA-Graph · chỉ contains", "GAT·contains", "ablation", "Bỏ toàn bộ edge label–label (sg_rel); chỉ còn ảnh–chứa–label.",
      dict(adapter=True, graph=True, relations=False, conceptnet=False, learned=True, gnn="GAT")),
-    ("t1_qa_cn", "QA-Graph · GAT · + ConceptNet", "GAT+CN", "graph", "Thêm 1 000 khái niệm và ~16k cạnh ConceptNet (IsA, AtLocation, Synonym…).",
+    ("t1_qa_cn", "QA-Graph · GAT · + ConceptNet", "GAT+CN", "graph", "Thêm 1 000 concept và ~16k edge ConceptNet (IsA, AtLocation, Synonym…).",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GAT")),
-    ("t1_qa_cn_no_sg", "QA-Graph · GAT · contains + ConceptNet", "GAT·CN−sg", "graph", "ConceptNet nhưng bỏ cạnh sg_rel.",
+    ("t1_qa_cn_no_sg", "QA-Graph · GAT · contains + ConceptNet", "GAT·CN−sg", "graph", "ConceptNet nhưng bỏ edge sg_rel.",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GAT")),
     ("t1_qa_cn_sage", "QA-Graph · SAGE · + ConceptNet", "SAGE+CN", "graph", "Như GAT+CN nhưng GNN = GraphSAGE.",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="SAGE")),
     ("t1_qa_cn_no_sg_sage", "QA-Graph · SAGE · contains + ConceptNet", "SAGE·CN−sg ★", "graph", "Cấu hình chính đề xuất (JOURNAL #9): cao nhất và đơn giản nhất.",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="SAGE")),
-    ("t1_qa_cn_shuffle", "QA-Graph · xáo trộn cạnh", "Shuffle", "ablation", "Ablation: giữ số cạnh nhưng xáo đầu cuối. Kiểm tra mô hình có dùng NỘI DUNG cạnh hay không.",
+    ("t1_qa_cn_shuffle", "QA-Graph · edge shuffle", "Shuffle", "ablation", "Ablation: giữ số edge nhưng xáo đầu cuối. Kiểm tra model có dùng NỘI DUNG edge hay không.",
      dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GAT")),
 ]
 for exp, name, short, fam, desc, flags in HUY:
-    MODELS.append(dict(id=exp, name=name, short=short, owner="Huy", family=fam, desc=desc, flags=flags,
+    MODELS.append(dict(id=exp, name=name, short=short, family=fam, desc=desc, flags=flags,
                        ranks=("huy", rd(HR / f"{exp}.seed0.test_full.json")["ranks"]), official=official_from_huy(exp)))
 OFFICIAL_ONLY = [
     ("t1_qa_cn_gcn", "QA-Graph · GCN · + ConceptNet", "GCN+CN", dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GCN")),
     ("t1_qa_cn_no_sg_gcn", "QA-Graph · GCN · contains + ConceptNet", "GCN·CN−sg", dict(adapter=True, graph=True, relations=True, conceptnet=True, learned=True, gnn="GCN")),
 ]
 for exp, name, short, flags in OFFICIAL_ONLY:
-    MODELS.append(dict(id=exp, name=name, short=short, owner="Huy", family="graph", flags=flags,
-                       desc="Biến thể GNN = GCN (chỉ có số chính thức 3 seed, chưa có hạng từng truy vấn).",
+    MODELS.append(dict(id=exp, name=name, short=short, family="graph", flags=flags,
+                       desc="Biến thể GNN = GCN (chỉ có số chính thức 3 seed, chưa có rank từng query).",
                        ranks=None, official=official_from_huy(exp)))
 
 # --------------------------------------------------------------------------- cross-checks (fail loudly)
@@ -199,7 +199,8 @@ for gi, g in enumerate(["direct", "indirect"]):
 checks.append({"model": "clip", "check": "group alignment direct/indirect matches khanh by_group", "ok": True})
 
 # --------------------------------------------------------------------------- other results
-paired = rd(TEAM / "khanh/results/vs_huy_paired.json")
+PAIRED_ID = {"CLIP (Thắng)": "clip", "CLIP+khớp tên (Thắng/Khánh)": "clip_lex", "CLIP+AdaMF-MAT (Khánh)": "clip_adamf"}
+paired = {PAIRED_ID.get(k, k): v for k, v in rd(TEAM / "khanh/results/vs_huy_paired.json").items()}
 kq = rd(TEAM / "khanh/queries/eval_queries.json")
 lvl2 = []
 md = (TEAM / "khanh/results/level2_vg_own_experiment.md").read_text(encoding="utf-8")

@@ -54,8 +54,8 @@ export function createReplayEngine(ds: Dataset): ExecutionEngine {
 
   return {
     id: "replay",
-    label: "Phát lại kết quả thật",
-    description: "Kết quả ghi sẵn của từng mô hình trên 10 696 caption test (seed 0, toàn pool 2 138 ảnh). Câu tự do: chỉ chạy bước khớp khái niệm trong trình duyệt.",
+    label: "Replay (kết quả thật)",
+    description: "Kết quả ghi sẵn của từng model trên 10 696 caption test (seed 0, toàn pool 2 138 ảnh). Free-text query: chỉ chạy bước concept matching trong trình duyệt.",
     async execute(input, modelIds, opts) {
       const t0 = performance.now();
       const key = norm(input);
@@ -69,14 +69,14 @@ export function createReplayEngine(ds: Dataset): ExecutionEngine {
       const runs: ModelRun[] = modelIds.map((id) => {
         const s = performance.now();
         const m = ds.models.find((x) => x.id === id);
-        if (!m) return { modelId: id, status: "error", latencyMs: 0, note: "Không có mô hình này trong dữ liệu" };
+        if (!m) return { modelId: id, status: "error", latencyMs: 0, note: "Không có model này trong dữ liệu" };
         if (qi == null)
           return {
             modelId: id, status: "unavailable", latencyMs: performance.now() - s,
-            note: "Câu không thuộc tập test: mô hình học (CLIP/Adapter/GNN) cần backend để chấm. Chọn một caption test hoặc bật Live API.",
+            note: "Câu không thuộc tập test: model học (CLIP/Adapter/GNN) cần backend để chấm. Chọn một caption test hoặc bật Live API.",
           };
         if (!m.hasRanks)
-          return { modelId: id, status: "unavailable", latencyMs: performance.now() - s, note: "Chỉ có số chính thức 3 seed, chưa có hạng từng truy vấn." };
+          return { modelId: id, status: "unavailable", latencyMs: performance.now() - s, note: "Chỉ có số chính thức 3 seed, chưa có rank từng query." };
         const r = ds.ranks[id][qi];
         return {
           modelId: id, status: "success", latencyMs: performance.now() - s, goldRank: r, baselineRank: base,

@@ -43,7 +43,7 @@ export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
       <div className="m-3 space-y-2 rounded-md border bg-surface p-3 text-[11px] leading-relaxed text-muted-foreground">
         <div className="flex items-center gap-1.5 text-foreground"><Database className="h-3.5 w-3.5 text-flow" />Dữ liệu thật của nhóm</div>
-        <div className="font-mono tabular">{models.length} cấu hình · {meta.dataset.test_queries.toLocaleString("vi-VN")} truy vấn test</div>
+        <div className="font-mono tabular">{models.length} cấu hình · {meta.dataset.test_queries.toLocaleString("vi-VN")} query test</div>
         <div>{meta.checks.length} kiểm tra chéo khớp số đã báo cáo</div>
       </div>
     </div>

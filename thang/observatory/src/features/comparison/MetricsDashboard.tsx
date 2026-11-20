@@ -18,10 +18,10 @@ export function MetricsDashboard({ rows, reference, layout }: { rows: ModelRow[]
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Mô hình</TableHead>
+              <TableHead>Model</TableHead>
               {METRIC_KEYS.map((k) => <TableHead key={k} className="text-right">{k}</TableHead>)}
               <TableHead className="text-right">MedR</TableHead>
-              <TableHead className="text-right">Thắng / Hoà / Thua</TableHead>
+              <TableHead className="text-right">Tốt hơn / Hoà / Kém hơn</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

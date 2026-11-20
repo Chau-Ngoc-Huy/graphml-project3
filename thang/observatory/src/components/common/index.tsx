@@ -52,7 +52,7 @@ export function InfoTip({ text }: { text: ReactNode }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <button type="button" aria-label="Giải thích" className="inline-flex text-muted-foreground/70 hover:text-foreground">
+        <button type="button" aria-label="Explanation" className="inline-flex text-muted-foreground/70 hover:text-foreground">
           <Info className="h-3.5 w-3.5" />
         </button>
       </TooltipTrigger>
@@ -77,7 +77,7 @@ export function ModelChip({ model, active, onClick, className }: { model: ModelI
       <TooltipTrigger asChild>{onClick ? <button type="button" onClick={onClick}>{body}</button> : body}</TooltipTrigger>
       <TooltipContent>
         <div className="font-medium">{model.name}</div>
-        <div className="text-muted-foreground">{FAMILY_LABEL[model.family]} · {model.owner}</div>
+        <div className="text-muted-foreground">{FAMILY_LABEL[model.family]}</div>
         <div className="mt-1">{model.desc}</div>
       </TooltipContent>
     </Tooltip>

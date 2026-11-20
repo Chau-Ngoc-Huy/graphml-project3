@@ -26,7 +26,7 @@ export function ModelOutputPanel({ run, focused, onFocus, index = 0 }: { run: Mo
             {m && <ModelDot model={m} />}
             <span className="truncate text-[13px] font-medium">{label}</span>
           </div>
-          {m && <div className="mt-0.5 text-[11px] text-muted-foreground">{FAMILY_LABEL[m.family]} · {m.owner}</div>}
+          {m && <div className="mt-0.5 text-[11px] text-muted-foreground">{FAMILY_LABEL[m.family]}</div>}
         </div>
         {run.status === "success" ? <RankPill rank={run.goldRank} /> : <Badge variant={run.status === "error" ? "bad" : "muted"}>{run.status === "error" ? "lỗi" : "không khả dụng"}</Badge>}
       </div>
@@ -37,11 +37,11 @@ export function ModelOutputPanel({ run, focused, onFocus, index = 0 }: { run: Mo
           <div className="mt-3 grid grid-cols-3 gap-2 text-[11px]">
             <div><div className="text-muted-foreground">So với CLIP</div>
               <div className={cn("font-mono tabular", delta == null || delta === 0 ? "text-muted-foreground" : delta > 0 ? "text-good" : "text-bad")}>
-                {delta == null ? "—" : delta === 0 ? "giữ nguyên" : `${delta > 0 ? "↑" : "↓"} ${Math.abs(delta)} hạng`}
+                {delta == null ? "—" : delta === 0 ? "giữ nguyên" : `${delta > 0 ? "↑" : "↓"} ${Math.abs(delta)} rank`}
               </div></div>
             <div><div className="text-muted-foreground">Trúng</div>
               <div className="flex gap-1 font-mono">{[1, 5, 10].map((k) => <span key={k} className={run.goldRank! <= k ? "text-good" : "text-muted-foreground/50"}>@{k}</span>)}</div></div>
-            <div><div className="text-muted-foreground">1 / hạng</div><div className="font-mono tabular">{fmt(1 / run.goldRank, 3)}</div></div>
+            <div><div className="text-muted-foreground">1 / rank</div><div className="font-mono tabular">{fmt(1 / run.goldRank, 3)}</div></div>
           </div>
         </>
       )}
@@ -58,7 +58,7 @@ export function ModelOutputPanel({ run, focused, onFocus, index = 0 }: { run: Mo
       )}
       <div className="mt-auto flex flex-wrap gap-x-4 gap-y-1 border-t border-border/60 pt-2.5 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1" title="Thời gian engine trả kết quả, đo trong trình duyệt"><Clock className="h-3 w-3" />{run.latencyMs < 1 ? "< 1" : fmt(run.latencyMs, 1)} ms</span>
-        {cost?.sec_per_sample != null && <span className="flex items-center gap-1" title={`Ghi nhận khi chạy thật: ${cost.device}`}><Cpu className="h-3 w-3" />{fmt(cost.sec_per_sample * 1000, 0)} ms/truy vấn (T4)</span>}
+        {cost?.sec_per_sample != null && <span className="flex items-center gap-1" title={`Ghi nhận khi chạy thật: ${cost.device}`}><Cpu className="h-3 w-3" />{fmt(cost.sec_per_sample * 1000, 0)} ms/query (T4)</span>}
         {cost?.wall_time_s != null && <span title={cost.scope}>huấn luyện + đánh giá {fmtDuration(cost.wall_time_s)}</span>}
       </div>
     </motion.div>

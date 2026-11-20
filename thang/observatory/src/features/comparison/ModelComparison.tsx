@@ -48,8 +48,8 @@ export default function ModelComparison() {
 
   return (
     <div className="mx-auto max-w-[1400px] space-y-10 px-4 py-8 md:px-8">
-      <PageHeader eyebrow="So sánh mô hình" title="Cùng truy vấn, nhiều mô hình — khác nhau ở đâu?"
-        description={`Mọi con số trên trang này được tính trực tiếp từ hạng ảnh đúng của từng truy vấn (seed 0, toàn pool ${ds.images.length} ảnh test), nên đổi tập con hay mô hình là số đổi theo ngay. Số chính thức 3 seed nằm ở trang Kết quả.`} />
+      <PageHeader eyebrow="So sánh model" title="Cùng query, nhiều model — khác nhau ở đâu?"
+        description={`Mọi con số trên trang này được tính trực tiếp từ rank gold image của từng query (seed 0, toàn pool ${ds.images.length} ảnh test), nên đổi tập con hay model là số đổi theo ngay. Số chính thức 3 seed nằm ở trang Kết quả.`} />
 
       <div className="panel sticky top-0 z-20 flex flex-col gap-3 p-3 backdrop-blur md:flex-row md:items-center">
         <div className="flex-1"><ModelSelector selected={app.compareModels} onChange={app.setCompareModels} /></div>
@@ -64,21 +64,21 @@ export default function ModelComparison() {
             <ToggleGroupItem value="indirect">Indirect</ToggleGroupItem>
           </ToggleGroup>
           <ToggleGroup type="single" value={layout} onValueChange={(v) => v && setLayout(v as "cards" | "table")}>
-            <ToggleGroupItem value="cards" aria-label="Cạnh nhau"><Columns3 /></ToggleGroupItem>
+            <ToggleGroupItem value="cards" aria-label="Edge nhau"><Columns3 /></ToggleGroupItem>
             <ToggleGroupItem value="table" aria-label="Bảng gọn"><Rows3 /></ToggleGroupItem>
           </ToggleGroup>
         </div>
       </div>
 
-      <Section title={`Chỉ số trên ${n.toLocaleString("vi-VN")} truy vấn`} description="Màu chàm = tốt nhất ở chỉ số đó. Δ và Thắng / Thua so với mô hình mốc, tính trên từng truy vấn.">
+      <Section title={`Chỉ số trên ${n.toLocaleString("vi-VN")} query`} description="Màu chàm = tốt nhất ở chỉ số đó. Δ và số query tốt hơn / kém hơn so với model mốc, tính trên từng query.">
         <MetricsDashboard rows={rows} reference={app.reference} layout={layout} />
       </Section>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <Section title="Direct và indirect" description="MRR theo nhóm truy vấn. Khoảng cách giữa hai nhóm cho biết mô hình dựa vào “đối tượng có trong ảnh” đến mức nào.">
+        <Section title="Direct và indirect" description="MRR theo nhóm query. Khoảng cách giữa hai nhóm cho biết model dựa vào “object có trong ảnh” đến mức nào.">
           <div className="panel p-3"><GroupedBars data={groupData} series={series} xKey="group" domain={[50, "auto"]} /></div>
         </Section>
-        <Section title="Phân bố hạng của ảnh đúng" description="% truy vấn theo khoảng hạng. Mô hình tốt dồn khối lượng về cột “1”.">
+        <Section title="Rank distribution của gold image" description="% query theo rank bin. Model tốt dồn khối lượng về cột “1”.">
           <div className="panel p-3"><GroupedBars data={histData} series={series} xKey="bin" unit="%" /></div>
         </Section>
       </div>
@@ -86,7 +86,7 @@ export default function ModelComparison() {
       <Section title="Điểm mạnh, điểm yếu so với mốc" description={`So với ${ds.modelById.get(app.reference)?.short}: Δ MRR theo nhóm và Δ R@1 / R@10 (điểm %).`}>
         <div className="panel">
           <Table>
-            <TableHeader><TableRow><TableHead>Mô hình</TableHead><TableHead className="text-right">Δ direct</TableHead><TableHead className="text-right">Δ indirect</TableHead><TableHead className="text-right">Δ R@1</TableHead><TableHead className="text-right">Δ R@10</TableHead><TableHead>Nhận xét</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>Model</TableHead><TableHead className="text-right">Δ direct</TableHead><TableHead className="text-right">Δ indirect</TableHead><TableHead className="text-right">Δ R@1</TableHead><TableHead className="text-right">Δ R@10</TableHead><TableHead>Nhận xét</TableHead></TableRow></TableHeader>
             <TableBody>
               {strengths.map((s) => {
                 const m = ds.modelById.get(s.id)!;
@@ -104,14 +104,14 @@ export default function ModelComparison() {
         </div>
       </Section>
 
-      <Section title="Đối đầu từng cặp" description="Không chỉ trung bình: trên bao nhiêu truy vấn một mô hình thật sự tốt hơn mô hình kia.">
+      <Section title="Đối đầu từng cặp" description="Không chỉ trung bình: trên bao nhiêu query một model thật sự tốt hơn model kia.">
         <div className="panel p-4"><HeadToHeadMatrix ids={ids} matrix={matrix} /></div>
       </Section>
 
-      <Section title="Cùng một truy vấn, cạnh nhau" description="Chọn truy vấn mà các mô hình đang chọn bất đồng nhiều nhất (chênh lệch log hạng lớn nhất), hoặc truy vấn đang dùng ở Playground."
+      <Section title="Cùng một query, cạnh nhau" description="Chọn query mà các model đang chọn bất đồng nhiều nhất (chênh lệch log rank lớn nhất), hoặc query đang dùng ở Playground."
         aside={
           <div className="flex gap-2">
-            {app.queryIndex != null && <Button variant="outline" size="sm" onClick={() => setQSel(app.queryIndex)}><Search />Truy vấn ở Playground</Button>}
+            {app.queryIndex != null && <Button variant="outline" size="sm" onClick={() => setQSel(app.queryIndex)}><Search />Query ở Playground</Button>}
             <Button variant="outline" size="sm" onClick={() => setQSel(Math.floor(Math.random() * ds.queries.text.length))}><Shuffle />Ngẫu nhiên</Button>
           </div>
         }>
@@ -128,7 +128,7 @@ export default function ModelComparison() {
       <Section title="Chi phí tính toán đã ghi nhận" description="Từ chính các lượt chạy thật; ô trống nghĩa là chưa đo — trang không ước lượng thay.">
         <div className="panel">
           <Table>
-            <TableHeader><TableRow><TableHead>Mô hình</TableHead><TableHead className="text-right">Thời gian (3 seed)</TableHead><TableHead className="text-right">VRAM đỉnh</TableHead><TableHead className="text-right">ms / truy vấn</TableHead><TableHead>Ghi chú</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>Model</TableHead><TableHead className="text-right">Thời gian (3 seed)</TableHead><TableHead className="text-right">VRAM node</TableHead><TableHead className="text-right">ms / query</TableHead><TableHead>Ghi chú</TableHead></TableRow></TableHeader>
             <TableBody>
               {ids.map((id) => {
                 const m = ds.modelById.get(id)!;
@@ -163,8 +163,8 @@ function SameQuery({ q, ids }: { q: number; ids: string[] }) {
       <div className="panel space-y-2 p-3">
         <div className="text-[13px] leading-relaxed">“{ds.queries.text[q]}”</div>
         <div className="flex gap-1.5"><Badge variant="outline">#{q}</Badge><Badge variant="muted">{ds.queries.groups[ds.queries.group[q]]}</Badge></div>
-        <ImageThumb url={gold.url} alt="ảnh đúng" className="aspect-[4/3]" />
-        <div className="text-[10px] text-muted-foreground">Ảnh đúng · VG {gold.vg}</div>
+        <ImageThumb url={gold.url} alt="gold image" className="aspect-[4/3]" />
+        <div className="text-[10px] text-muted-foreground">Gold image · VG {gold.vg}</div>
       </div>
       <div className="overflow-x-auto">
         <div className="grid min-w-[480px] gap-1.5">
@@ -181,7 +181,7 @@ function SameQuery({ q, ids }: { q: number; ids: string[] }) {
             );
           })}
         </div>
-        <p className="mt-2 text-[11px] text-muted-foreground">Thanh dài hơn = ảnh đúng bị xếp thấp hơn (thang log, 1 … {ds.images.length}). Viền xanh / đỏ: tốt nhất / kém nhất.</p>
+        <p className="mt-2 text-[11px] text-muted-foreground">Thanh dài hơn = gold image bị xếp thấp hơn (thang log, 1 … {ds.images.length}). Viền xanh / đỏ: tốt nhất / kém nhất.</p>
       </div>
     </div>
   );

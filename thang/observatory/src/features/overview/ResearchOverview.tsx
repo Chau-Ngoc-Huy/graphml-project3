@@ -2,11 +2,10 @@ import { useMemo } from "react";
 import { ArrowRight, CheckCircle2, CircleDashed, CircleDot } from "lucide-react";
 import { useData } from "@/data/DataProvider";
 import { useApp } from "@/state/AppState";
-import { PROBLEM, STAGES, TEAM } from "@/content/story";
+import { PROBLEM, STAGES } from "@/content/story";
 import { ADAPTER_ID, BASELINE_ID, BEST_ID, SHUFFLE_ID, modelColor } from "@/lib/models";
 import { fmt, fmtInt } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FadeIn, InfoTip, Section, SourceNote, Stat } from "@/components/common";
 import { MetricBars } from "@/components/charts/MetricBars";
@@ -27,23 +26,23 @@ export default function ResearchOverview() {
 
   const findings = [
     {
-      title: "Đồ thị có đóng góp thật, nhưng nhỏ",
+      title: "Graph có đóng góp thật, nhưng nhỏ",
       body: `Cấu hình chính hơn CLIP + Adapter ${fmt(full(BEST_ID).mean - full(ADAPTER_ID).mean)} MRR toàn pool (3 seed), và hơn CLIP ${fmt(full(BEST_ID).mean - full(BASELINE_ID).mean)} MRR.`,
       to: "results" as const,
     },
     {
-      title: "Cấu trúc cạnh là yếu tố quyết định",
-      body: `Xáo trộn cạnh làm MRR tụt xuống ${fmt(full(SHUFFLE_ID).mean)}, thấp hơn cả Adapter (${fmt(full(ADAPTER_ID).mean)}): mô hình dùng đúng nội dung cạnh, không chỉ nhờ thêm tham số.`,
+      title: "Cấu trúc edge là yếu tố quyết định",
+      body: `Edge shuffle làm MRR tụt xuống ${fmt(full(SHUFFLE_ID).mean)}, thấp hơn cả Adapter (${fmt(full(ADAPTER_ID).mean)}): model dùng đúng nội dung edge, không chỉ nhờ thêm tham số.`,
       to: "results" as const,
     },
     {
-      title: "Lợi ích nằm ở truy vấn trực tiếp",
-      body: `Trên gallery 1K, nhóm direct tăng ${fmt(g(best, "direct") - g(ad, "direct"))} MRR so với Adapter; nhóm indirect chỉ tăng ${fmt(g(best, "indirect") - g(ad, "indirect"))}. Thông tin có ích là “ảnh chứa đối tượng nào”, chưa phải suy luận quan hệ.`,
+      title: "Lợi ích nằm ở query trực tiếp",
+      body: `Trên gallery 1K, nhóm direct tăng ${fmt(g(best, "direct") - g(ad, "direct"))} MRR so với Adapter; nhóm indirect chỉ tăng ${fmt(g(best, "indirect") - g(ad, "indirect"))}. Thông tin có ích là “ảnh chứa object nào”, chưa phải suy luận relation.`,
       to: "compare" as const,
     },
     {
       title: "Hai hướng độc lập cùng kết luận",
-      body: `AdaMF-MAT (MMKG, 2024) chỉ hơn CLIP ${fmt(full("clip_adamf").mean - full(BASELINE_ID).mean)} MRR và vẫn kém baseline khớp tên không dùng quan hệ (${fmt(full("clip_lex").mean)}).`,
+      body: `AdaMF-MAT (MMKG, 2024) chỉ hơn CLIP ${fmt(full("clip_adamf").mean - full(BASELINE_ID).mean)} MRR và vẫn kém baseline presence matching không dùng relation (${fmt(full("clip_lex").mean)}).`,
       to: "compare" as const,
     },
   ];
@@ -61,25 +60,25 @@ export default function ResearchOverview() {
             </h1>
             <p className="max-w-[60ch] text-[15px] leading-relaxed text-muted-foreground">{PROBLEM.oneLiner}</p>
             <div className="flex flex-wrap gap-2 pt-1">
-              <Button onClick={() => go("playground")}>Thử một truy vấn <ArrowRight /></Button>
+              <Button onClick={() => go("playground")}>Thử một query <ArrowRight /></Button>
               <Button variant="outline" onClick={() => go("journey")}>Xem pipeline</Button>
             </div>
             <div className="flex flex-wrap gap-x-6 gap-y-2 pt-3 text-xs text-muted-foreground">
               <span><span className="font-mono text-foreground">{fmtInt(ds.meta.dataset.images_encoded)}</span> ảnh VG ∩ COCO</span>
               <span><span className="font-mono text-foreground">{fmtInt(ds.meta.dataset.captions)}</span> caption</span>
-              <span><span className="font-mono text-foreground">{ds.models.length}</span> cấu hình mô hình</span>
-              <span><span className="font-mono text-foreground">{fmtInt(ds.meta.dataset.test_queries)}</span> truy vấn test</span>
+              <span><span className="font-mono text-foreground">{ds.models.length}</span> cấu hình model</span>
+              <span><span className="font-mono text-foreground">{fmtInt(ds.meta.dataset.test_queries)}</span> query test</span>
             </div>
           </FadeIn>
           <FadeIn delay={0.08}>
             <div className="rounded-lg border bg-background/60 p-5">
               <div className="mb-4 flex items-center justify-between">
                 <div className="eyebrow">MRR toàn pool test (2 138 ảnh)</div>
-                <InfoTip text="Mean Reciprocal Rank của ảnh đúng, %. Số chính thức: 3 seed (Huy) hoặc 3 fold / 1 seed (Khánh, CLIP tất định). Thanh lỗi = ± std." />
+                <InfoTip text="Mean Reciprocal Rank của gold image, %. Số chính thức: 3 seed (QA-Graph) hoặc 3 fold gallery / 1 seed huấn luyện (AdaMF-MAT, Adapter-S); CLIP tất định. Thanh lỗi = ± std." />
               </div>
               <MetricBars data={ladder} domain={[58, 66]} reference={clip.official.full.MRR!.mean} referenceLabel="CLIP" height={230} />
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                Bậc thang từ CLIP đóng băng tới cấu hình đồ thị tốt nhất. Thanh “Shuffle” là cùng mô hình nhưng xáo trộn cạnh.
+                Bậc thang từ CLIP đóng băng tới cấu hình graph tốt nhất. Thanh “Shuffle” là cùng model nhưng edge shuffle.
               </p>
             </div>
           </FadeIn>
@@ -102,8 +101,8 @@ export default function ResearchOverview() {
       <section className="grid grid-cols-2 gap-x-8 gap-y-8 border-y py-8 md:grid-cols-4">
         <Stat label="CLIP (mốc)" value={fmt(full(BASELINE_ID).mean)} sub="MRR toàn pool · tất định" />
         <Stat label="Cấu hình chính" tone="primary" value={fmt(full(BEST_ID).mean)} sub={`± ${fmt(full(BEST_ID).std)} · ${best.short}`} hint={best.desc} />
-        <Stat label="Δ so với Adapter" tone="good" value={`+${fmt(full(BEST_ID).mean - full(ADAPTER_ID).mean)}`} sub="phần đóng góp của đồ thị" hint="Adapter = cùng mô hình nhưng tắt đồ thị (no_edge). Đây là mốc đúng để đo đóng góp của đồ thị." />
-        <Stat label="Xáo trộn cạnh" tone="bad" value={fmt(full(SHUFFLE_ID).mean)} sub={`thấp hơn Adapter ${fmt(full(ADAPTER_ID).mean - full(SHUFFLE_ID).mean)}`} />
+        <Stat label="Δ so với Adapter" tone="good" value={`+${fmt(full(BEST_ID).mean - full(ADAPTER_ID).mean)}`} sub="phần đóng góp của graph" hint="Adapter-J = cùng model nhưng tắt graph (no_edge). Đây là mốc đúng để đo đóng góp của graph." />
+        <Stat label="Edge shuffle" tone="bad" value={fmt(full(SHUFFLE_ID).mean)} sub={`thấp hơn Adapter ${fmt(full(ADAPTER_ID).mean - full(SHUFFLE_ID).mean)}`} />
       </section>
 
       {/* Findings */}
@@ -122,12 +121,12 @@ export default function ResearchOverview() {
         </div>
         <SourceNote>
           MRR toàn pool: huy/results/*kaggle-3seed.json (3 seed), khanh/results/protocol_coco_*.json · nhóm direct/indirect: gallery 1K, mean 3 seed ·
-          {paired["t1_qa_cn_no_sg_sage"] ? " kiểm định ghép cặp: khanh/results/vs_huy_paired.json" : ""}
+          {paired["t1_qa_cn_no_sg_sage"] ? " paired bootstrap test: khanh/results/vs_huy_paired.json" : ""}
         </SourceNote>
       </Section>
 
       {/* Pipeline strip */}
-      <Section title="Pipeline trong một dòng" description="Truy vấn đi qua 8 bước; bấm một bước để mở chi tiết." aside={<Button variant="ghost" size="sm" onClick={() => go("journey")}>Hành trình đầy đủ <ArrowRight /></Button>}>
+      <Section title="Pipeline trong một dòng" description="Query đi qua 8 bước; bấm một bước để mở chi tiết." aside={<Button variant="ghost" size="sm" onClick={() => go("journey")}>Hành trình đầy đủ <ArrowRight /></Button>}>
         <div className="overflow-x-auto pb-2">
           <ol className="flex min-w-[900px] items-stretch">
             {STAGES.map((s, i) => (
@@ -144,24 +143,6 @@ export default function ResearchOverview() {
         </div>
       </Section>
 
-      {/* Team */}
-      <Section title="Đóng góp của nhóm" description="Trạng thái theo những gì đã có trong repo nhóm (graphml-project3).">
-        <div className="divide-y rounded-lg border">
-          {TEAM.map((t) => (
-            <div key={t.name} className="grid gap-3 p-4 md:grid-cols-[180px_1fr_auto] md:items-center">
-              <div>
-                <div className="text-sm font-medium">{t.name}</div>
-                <div className="text-xs text-muted-foreground">{t.role}</div>
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {t.done.map((d) => <Badge key={d} variant="muted">{d}</Badge>)}
-                {"gap" in t && t.gap && <Badge variant="warn">{t.gap}</Badge>}
-              </div>
-              <StatusBadge status={t.status} />
-            </div>
-          ))}
-        </div>
-      </Section>
     </div>
   );
 }

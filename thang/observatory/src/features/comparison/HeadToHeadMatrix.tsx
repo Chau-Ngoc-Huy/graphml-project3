@@ -30,7 +30,7 @@ export function HeadToHeadMatrix({ ids, matrix }: { ids: string[]; matrix: (Head
                   const decided = h.wins + h.losses;
                   const p = decided ? (100 * h.wins) / decided : 50;
                   return (
-                    <td key={j} className="h-9 w-16 rounded text-center font-mono" style={{ background: color(p) }} title={`${m.short} tốt hơn ${ds.modelById.get(live[j])?.short} ở ${h.wins} truy vấn, kém hơn ở ${h.losses}, hoà ${h.ties}`}>
+                    <td key={j} className="h-9 w-16 rounded text-center font-mono" style={{ background: color(p) }} title={`${m.short} tốt hơn ${ds.modelById.get(live[j])?.short} ở ${h.wins} query, kém hơn ở ${h.losses}, hoà ${h.ties}`}>
                       {p.toFixed(0)}%
                     </td>
                   );
@@ -40,7 +40,7 @@ export function HeadToHeadMatrix({ ids, matrix }: { ids: string[]; matrix: (Head
           })}
         </tbody>
       </table>
-      <p className="mt-2 text-[11px] text-muted-foreground">Ô (hàng A, cột B): trong các truy vấn hai mô hình xếp khác nhau, tỉ lệ A xếp ảnh đúng cao hơn B. Xanh = A thường thắng.</p>
+      <p className="mt-2 text-[11px] text-muted-foreground">Ô (hàng A, cột B): trong các query hai model xếp khác nhau, tỉ lệ A xếp gold image cao hơn B. Xanh = A thường thắng.</p>
     </div>
   );
 }

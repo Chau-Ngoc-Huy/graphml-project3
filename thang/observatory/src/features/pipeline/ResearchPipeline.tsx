@@ -20,9 +20,9 @@ export default function ResearchPipeline() {
   const { nodes, edges } = useMemo(() => {
     const ns: Node<StageNodeData>[] = STAGES.map((s, i) => ({
       id: s.id, type: "stage", position: { x: (i % 4) * COL, y: i < 4 ? 0 : 150 },
-      data: { index: i + 1, title: s.short, owner: s.owner, status: s.status, selected: s.id === sel },
+      data: { index: i + 1, title: s.short, sub: s.status === "done" ? "hoàn thành" : s.status === "partial" ? "một phần" : "chưa có", status: s.status, selected: s.id === sel },
     }));
-    ns.push({ id: "adamf", type: "stage", position: { x: 2 * COL + 20, y: 300 }, data: { index: 0, title: "AdaMF-MAT (MMKG)", owner: "Khánh · nhánh song song", status: "done", selected: false, branch: true } });
+    ns.push({ id: "adamf", type: "stage", position: { x: 2 * COL + 20, y: 300 }, data: { index: 0, title: "AdaMF-MAT (MMKG)", sub: "nhánh song song", status: "done", selected: false, branch: true } });
     const es: Edge[] = STAGES.filter((s) => s.next).map((s) => ({
       id: `${s.id}-${s.next}`, source: s.id, target: s.next!, animated: s.id === sel || s.next === sel,
       style: { stroke: "hsl(var(--flow))", strokeWidth: s.id === sel || s.next === sel ? 1.8 : 1, opacity: s.id === sel || s.next === sel ? 1 : 0.45 },
@@ -37,7 +37,7 @@ export default function ResearchPipeline() {
 
   return (
     <div className="mx-auto max-w-[1400px] space-y-12 px-4 py-8 md:px-8">
-      <PageHeader eyebrow="Hành trình nghiên cứu" title="Từ một câu mô tả đến thứ hạng có thể kiểm chứng"
+      <PageHeader eyebrow="Hành trình nghiên cứu" title="Từ một câu mô tả đến rank có thể kiểm chứng"
         description="Pipeline đầy đủ của nhóm. Mỗi bước nhận đầu ra của bước trước; chọn một bước để xem nó làm gì, vì sao cần, dữ liệu vào/ra và số liệu thật của bước đó." />
 
       <div className="grid gap-6 xl:grid-cols-[1.25fr_1fr]">
@@ -69,8 +69,8 @@ export default function ResearchPipeline() {
         </div>
       </div>
 
-      <Section title="Mô hình đồ thị đã thay đổi thế nào qua từng lượt thử"
-        description="Nhật ký thực nghiệm của Huy. Đường xanh là mô hình đồ thị, đường xám là mốc so sánh đúng ở lượt đó. Lượt #3 cho thấy mức tăng ban đầu không đến từ đồ thị — một kết quả âm được giữ lại.">
+      <Section title="Graph model đã thay đổi thế nào qua từng lượt thử"
+        description="Nhật ký thực nghiệm của graph model. Đường xanh là graph model, đường xám là mốc so sánh đúng ở lượt đó. Lượt #3 cho thấy mức tăng ban đầu không đến từ graph — một kết quả âm được giữ lại.">
         <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
           <div className="panel p-4">
             <ResponsiveContainer width="100%" height={280}>
@@ -80,7 +80,7 @@ export default function ResearchPipeline() {
                 <YAxis domain={[60, 66]} {...AXIS} tickLine={false} axisLine={false} />
                 <Tooltip {...TOOLTIP_STYLE} formatter={(v: number, n) => [v.toFixed(2), n]} />
                 <Line type="linear" dataKey="ref" name="Mốc so sánh" stroke={COLORS.muted} strokeWidth={2} dot={{ r: 3 }} isAnimationActive={false} />
-                <Line type="linear" dataKey="graph" name="Mô hình đồ thị" stroke={COLORS.primary} strokeWidth={2} dot={{ r: 3.5 }} isAnimationActive={false} />
+                <Line type="linear" dataKey="graph" name="Graph model" stroke={COLORS.primary} strokeWidth={2} dot={{ r: 3.5 }} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
             <SourceNote>huy/results/JOURNAL.md · MRR % toàn pool test, seed 0 (lượt #9: 3 seed)</SourceNote>
@@ -92,7 +92,7 @@ export default function ResearchPipeline() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-mono text-[11px] text-muted-foreground">{j.id} · {j.date}</span>
                   <span className="text-[13px] font-medium">{j.title}</span>
-                  <Badge variant={j.verdict === "bác bỏ" || j.verdict === "không giúp" || j.verdict === "quan hệ không giúp" ? "bad" : j.verdict === "kết luận" || j.verdict === "có tác dụng" ? "good" : "muted"}>{j.verdict}</Badge>
+                  <Badge variant={j.verdict === "bác bỏ" || j.verdict === "không giúp" || j.verdict === "relation không giúp" ? "bad" : j.verdict === "kết luận" || j.verdict === "có tác dụng" ? "good" : "muted"}>{j.verdict}</Badge>
                 </div>
                 <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{j.finding}</p>
               </li>

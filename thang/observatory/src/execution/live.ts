@@ -3,7 +3,7 @@ import { linkConcepts } from "@/lib/linker";
 import type { ExecutionEngine, ExecutionResult, ModelRun, RetrievedImage } from "./types";
 
 /**
- * Live engine: forwards the query to Huy's MMXAI Lab server (huy/ui/server.py, POST /api/search).
+ * Live engine: forwards the query to the MMXAI Lab server (huy/ui/server.py, POST /api/search).
  * In dev, vite proxies /api → http://127.0.0.1:8765 (see vite.config.ts); otherwise set the base URL.
  * The server's variants are its own trained runs (runs/t1_qa*), listed by GET /api/variants.
  */
@@ -34,8 +34,8 @@ export function createLiveEngine(ds: Dataset, baseUrl: string): ExecutionEngine 
   const vocab = new Set(ds.vocab);
   return {
     id: "live",
-    label: "Live API (máy chủ của Huy)",
-    description: `Gửi truy vấn tới ${baseUrl || "(cùng origin)"}/api/search — chạy CLIP + Adapter + đồ thị thật trên server.`,
+    label: "Live API (máy chủ MMXAI Lab)",
+    description: `Gửi query tới ${baseUrl || "(cùng origin)"}/api/search — chạy CLIP + Adapter + graph thật trên server.`,
     async execute(input, modelIds) {
       const t0 = performance.now();
       const runs: ModelRun[] = [];

@@ -47,7 +47,7 @@ export function QueryInput({ value, onChange, onRun, running }: { value: string;
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-[min(640px,90vw)] p-1" onOpenAutoFocus={(e) => e.preventDefault()}>
-          <div className="px-2 py-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">Caption test khớp — có kết quả thật của mọi mô hình</div>
+          <div className="px-2 py-1.5 text-[11px] uppercase tracking-wider text-muted-foreground">Caption test khớp — có kết quả thật của mọi model</div>
           {matches.map((i) => (
             <button key={i} onClick={() => { onChange(ds.queries.text[i]); setOpen(false); onRun(i); }} className="flex w-full items-start gap-2 rounded px-2 py-1.5 text-left text-[13px] hover:bg-accent">
               <Badge variant="outline" className="mt-0.5 shrink-0 font-mono">#{i}</Badge>

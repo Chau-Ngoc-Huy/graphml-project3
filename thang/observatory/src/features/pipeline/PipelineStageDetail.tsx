@@ -32,7 +32,6 @@ export function PipelineStageDetail({ stage }: { stage: Stage }) {
     <div className="space-y-6">
       <div className="space-y-2">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="outline">{stage.owner}</Badge>
           <StatusBadge status={stage.status} />
         </div>
         <h3 className="text-lg font-semibold tracking-tight">{stage.title}</h3>
@@ -92,15 +91,15 @@ function StageViz({ id }: { id: string }) {
     const link = linkConcepts(text, new Set(ds.vocab));
     return (
       <div className="space-y-4">
-        <div className="eyebrow">Thử ngay: liên kết khái niệm chạy trong trình duyệt</div>
+        <div className="eyebrow">Thử ngay: concept linking chạy trong trình duyệt</div>
         <Input value={app.input} placeholder={ds.queries.text[0]} onChange={(e) => app.setInput(e.target.value)} />
         <div className="flex flex-wrap gap-1 rounded-md border bg-background/60 p-3 font-mono text-[13px] leading-7">
           {link.tokens.map((t, i) => (
             <span key={i} className={t.concept ? "rounded bg-flow/15 px-1 text-flow" : t.stop ? "text-muted-foreground/60" : ""}>{t.text}</span>
           ))}
         </div>
-        <div className="flex flex-wrap gap-1.5">{link.concepts.length ? link.concepts.map((c) => <Badge key={c} variant="flow">{c}</Badge>) : <span className="text-xs text-muted-foreground">Không có khái niệm nào trong từ vựng 2 000 nhãn.</span>}</div>
-        <div className="eyebrow pt-2">Phân bố nhóm trên {fmtInt(ds.meta.dataset.test_queries)} truy vấn test</div>
+        <div className="flex flex-wrap gap-1.5">{link.concepts.length ? link.concepts.map((c) => <Badge key={c} variant="flow">{c}</Badge>) : <span className="text-xs text-muted-foreground">Không có concept nào trong từ vựng 2 000 label.</span>}</div>
+        <div className="eyebrow pt-2">Phân bố nhóm trên {fmtInt(ds.meta.dataset.test_queries)} query test</div>
         <div className="flex h-3 overflow-hidden rounded-sm">
           {groupCounts.map((c, i) => <div key={i} style={{ width: `${(100 * c) / ds.queries.group.length}%`, background: [COLORS.primary, COLORS.warn, COLORS.muted][i] }} />)}
         </div>
@@ -114,9 +113,9 @@ function StageViz({ id }: { id: string }) {
     const rows = ["t1_qa", "t1_qa_cn", "t1_qa_cn_no_sg"].map((k) => ({ k, g: m.get(k)!.official.graph }));
     return (
       <div className="space-y-3">
-        <div className="eyebrow">Số cạnh theo loại (đồ thị Huy dựng)</div>
+        <div className="eyebrow">Số edge theo loại</div>
         <GroupedBars xKey="cfg" height={220} data={rows.map(({ k, g }) => ({ cfg: m.get(k)!.short, contains: g?.E_contains ?? 0, sg_rel: g?.E_sg_rel ?? 0, ConceptNet: g?.E_concept ?? 0 }))}
-          series={[{ key: "contains", label: "ảnh–chứa–nhãn", color: COLORS.primary }, { key: "sg_rel", label: "quan hệ scene graph", color: COLORS.warn }, { key: "ConceptNet", label: "ConceptNet", color: COLORS.flow }]} />
+          series={[{ key: "contains", label: "ảnh–chứa–label", color: COLORS.primary }, { key: "sg_rel", label: "relation scene graph", color: COLORS.warn }, { key: "ConceptNet", label: "ConceptNet", color: COLORS.flow }]} />
         <SourceNote>run.extra.graph trong huy/results/*kaggle-3seed.json</SourceNote>
       </div>
     );
@@ -145,7 +144,7 @@ function StageViz({ id }: { id: string }) {
             </div>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground">Mô hình đồ thị của Huy dựa nhiều vào điểm đồ thị (α ≈ 0,35), còn ghép bằng α tuyến tính như AdaMF-MAT hay khớp tên thì vẫn dựa chủ yếu vào CLIP (α ≥ 0,75).</p>
+        <p className="text-xs text-muted-foreground">QA-Graph dựa nhiều vào graph score (α ≈ 0,35), còn ghép bằng α tuyến tính như AdaMF-MAT hay presence matching thì vẫn dựa chủ yếu vào CLIP (α ≥ 0,75).</p>
       </div>
     );
   }
@@ -161,7 +160,7 @@ function StageViz({ id }: { id: string }) {
             </div>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground">MRR tính lại từ hạng từng truy vấn khớp đúng số mỗi người đã báo cáo; nhóm direct/indirect khớp bảng của Khánh → mọi file dùng chung thứ tự truy vấn.</p>
+        <p className="text-xs text-muted-foreground">MRR tính lại từ rank từng query khớp đúng số đã báo cáo trong file kết quả; nhóm direct/indirect khớp bảng trong protocol_coco_full.json → mọi file dùng chung thứ tự query.</p>
         <Button variant="outline" size="sm" onClick={() => app.go("results")}>Xem kết quả đầy đủ</Button>
       </div>
     );
@@ -169,7 +168,7 @@ function StageViz({ id }: { id: string }) {
   return (
     <div className="space-y-2 text-[13px] leading-relaxed text-muted-foreground">
       <div className="eyebrow">Trạng thái</div>
-      <p>Khung trích đường đi, nhiễu cạnh và metric fidelity / sparsity / validity đã có (thư mục <code className="font-mono">duong/</code>), nhưng mới chạy trên scorer giả. Chưa có số fidelity trên mô hình thật — trang này không hiển thị số nào cho bước này.</p>
+      <p>Khung trích path, nhiễu edge và metric fidelity / sparsity / validity đã có (thư mục <code className="font-mono">duong/</code>), nhưng mới chạy trên scorer giả. Chưa có số fidelity trên model thật — trang này không hiển thị số nào cho bước này.</p>
     </div>
   );
 }

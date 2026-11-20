@@ -52,7 +52,6 @@ export interface ModelInfo {
   id: string;
   name: string;
   short: string;
-  owner: string;
   family: Family;
   desc: string;
   flags: ModelFlags;
