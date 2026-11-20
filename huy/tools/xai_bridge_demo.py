@@ -8,6 +8,12 @@ Chọn n caption test (nửa direct, nửa indirect, cố định theo seed), �
 XAIEvaluator (fidelity so với xóa ngẫu nhiên, sparsity, validity theo duong/configs/graph_schema.json).
 Kiểm tra đầu tiên: final_score của cầu nối khớp điểm giao thức (qa_scores + fuse) trên đồ thị đầy đủ.
 Ra: <out>/graph.json, cases.json, results.jsonl. CPU ~1–2 phút / truy vấn / giá trị k.
+
+Cần (không có trong git):
+  checkpoint  Kaggle riêng tư huychau/mmxai-huy-models  → models/{vg_t1_qa,vg_t1_qa_cn,psg_qa,psg_qa_cn}_seed0/
+  bundle      Kaggle riêng tư huychau/mmxai-task1-bundle (VG) → data/task1_bundle/,
+              huychau/mmxai-psg-bundle (PSG) → data/psg_bundle/
+  vd: kaggle datasets download huychau/mmxai-huy-models -p models --unzip
 """
 
 import argparse
