@@ -29,7 +29,7 @@ multimodal retrieval, CLIP, graph neural network, multimodal knowledge graph, ex
 \section{Giới thiệu}\label{sec:intro}
 CLIP~\cite{clip} biểu diễn câu và ảnh trong cùng một không gian vectơ và xếp hạng ảnh theo độ tương đồng cosine. Cách làm này nhanh nhưng chỉ dựa trên độ giống nhau của biểu diễn: nó không dùng quan hệ có cấu trúc giữa đối tượng và khái niệm, và không cho biết vì sao một ảnh được trả về. Với truy vấn ``a child playing football'', nếu ảnh chỉ nhận ra được \emph{ball} và \emph{field}, một đường đi trong đồ thị tri thức có thể nối truy vấn với đúng ảnh.
 
-Mục tiêu của báo cáo là đo vai trò của đồ thị, không phải huấn luyện một mô hình thị giác lớn. Đồ án gồm ba nhiệm vụ: (1) truy vấn bằng CLIP đóng băng và pipeline đánh giá chuẩn; (2) xếp hạng lại bằng điểm đồ thị ở hai cấp, gồm mạng nơ-ron đồ thị (GNN) trên đồ thị dựng từ dữ liệu và phương pháp hoàn thiện đồ thị tri thức đa phương thức (MMKG) AdaMF-MAT; (3) giải thích kết quả và xây một MMKG tiếng Việt nhỏ. Báo cáo đóng góp một giao thức đánh giá chống rò rỉ dùng chung cho mọi mô hình (mục~\ref{sec:data}); bằng chứng ablation rằng lợi ích của đồ thị đến từ nội dung cạnh chứ không từ số tham số, lặp lại trên bộ dữ liệu thứ hai (mục~\ref{sec:r-main}--\ref{sec:r-abl}); việc tái lập AdaMF-MAT và so sánh với GNN, tách truy vấn trực tiếp và gián tiếp (mục~\ref{sec:r-group}--\ref{sec:r-repro}); và phân tích vì sao đồ thị chưa giúp nhóm gián tiếp (mục~\ref{sec:disc}).
+Mục tiêu của báo cáo là đo vai trò của đồ thị, không phải huấn luyện một mô hình thị giác lớn. Đồ án gồm ba nhiệm vụ: (1) truy vấn bằng CLIP đóng băng và pipeline đánh giá chuẩn; (2) xếp hạng lại bằng điểm đồ thị ở hai cấp, gồm mạng nơ-ron đồ thị (GNN) trên đồ thị dựng từ dữ liệu và phương pháp hoàn thiện đồ thị tri thức đa phương thức (MMKG) AdaMF-MAT; (3) giải thích kết quả và xây một MMKG tiếng Việt nhỏ. Báo cáo đóng góp một quy trình đánh giá chống rò rỉ dùng chung cho mọi mô hình (mục~\ref{sec:data}); bằng chứng ablation rằng lợi ích của đồ thị đến từ nội dung cạnh chứ không từ số tham số, lặp lại trên bộ dữ liệu thứ hai (mục~\ref{sec:r-main}--\ref{sec:r-abl}); việc tái lập AdaMF-MAT và so sánh với GNN, tách truy vấn trực tiếp và gián tiếp (mục~\ref{sec:r-group}--\ref{sec:r-repro}); và phân tích vì sao đồ thị chưa giúp nhóm gián tiếp (mục~\ref{sec:disc}).
 
 \section{Công trình liên quan}\label{sec:rel}
 \textbf{Truy vấn ảnh bằng ngôn ngữ.} CLIP~\cite{clip} học chung không gian ảnh--câu bằng đối sánh tương phản trên lượng lớn cặp ảnh--văn bản, và OpenCLIP~\cite{openclip} cung cấp bản huấn luyện lại trên dữ liệu mở. CLIP được giữ đóng băng trong toàn bộ báo cáo; mọi cải thiện đến từ phần xếp hạng lại.
@@ -42,27 +42,20 @@ Mục tiêu của báo cáo là đo vai trò của đồ thị, không phải hu
 
 \textbf{Giải thích.} GNNExplainer~\cite{gnnexp} tìm đồ thị con và đặc trưng quan trọng cho dự đoán của một GNN. Vì giải thích phải đến từ chính cơ chế xếp hạng, nhóm dùng đóng góp của cạnh vào điểm đồ thị làm giải thích và xem GNNExplainer chỉ như tham chiếu.
 
-\section{Dữ liệu và giao thức đánh giá}\label{sec:data}
+\section{Dữ liệu và độ đo}\label{sec:data}
 \subsection{Dữ liệu}
 \textbf{VG$\cap$COCO.} Ảnh Visual Genome (VG)~\cite{vg} có \texttt{coco\_id} (51\,208 ảnh) kết hợp 5 caption MS-COCO~\cite{coco} mỗi ảnh theo chia Karpathy. Truy vấn là caption; phía đồ thị là scene graph VG (đối tượng và quan hệ, tên đã chuẩn hóa). Chia: train 15\,000 ảnh (lấy mẫu, seed 0), val 2\,126, test 2\,138; 96\,381 caption. \textbf{PSG$\cap$COCO.} Bộ dữ liệu thứ hai, PSG~\cite{psg}, cùng cấu trúc (scene graph panoptic + caption Karpathy): 18\,186 ảnh (train 15\,000, val 1\,000, test 2\,186), 90\,974 caption, 133 nhãn ảnh và 674 khái niệm mở rộng từ ConceptNet~\cite{cn}.
 
-\textbf{Bộ 24 truy vấn trực tiếp/gián tiếp.} Từ \texttt{scene\_graphs.json} (108\,077 ảnh), nhóm sinh 24 truy vấn dạng ``chủ thể -- vị từ -- đối tượng'' (ví dụ ``hand feeding giraffe''): 12 trực tiếp, 12 gián tiếp. Chỉ dùng vị từ hành động; mỗi vị từ tối đa 3 truy vấn; hai thực thể đều xuất hiện $\ge200$ ảnh; loại các đối tượng mơ hồ. \emph{Trực tiếp}: ảnh dương là ảnh có bộ ba $s\!-\!p\!-\!o$ được chú thích (5--60 ảnh). \emph{Gián tiếp}: $s$ và $o$ nối với nhau chỉ qua một đối tượng thứ ba $x$ ($s\!\to\!x\!\to\!o$) và không có quan hệ $s$--$o$ nào trong chú thích. Các kiểm tra tự động đều đạt: không trùng truy vấn, không trùng cặp $(s,o)$, hai tập ảnh dương không giao nhau. Danh sách đầy đủ ở Phụ lục A. Hạn chế: chưa có ai xem ảnh, nên ảnh gián tiếp chỉ là ứng viên (đường đi hai bước không chứng minh ảnh thể hiện $s\,p\,o$); chú thích VG thưa nên có ảnh trực tiếp bị thiếu. Bộ này chỉ dùng để đánh giá, và các ảnh dương bị loại khỏi huấn luyện.
-
-\subsection{Giao thức}
-Hình~\ref{fig:pipe} tóm tắt pipeline. Mọi phương pháp dùng cùng tệp chia ảnh, cùng một mô hình CLIP (ViT-B/32, \texttt{laion2b\_s34b\_b79k}, đóng băng) và cùng bước chọn ứng viên: top-$K{=}100$ theo cosine; ảnh đúng nằm ngoài top-$K$ giữ nguyên hạng của CLIP. Điểm cuối là
-\begin{equation}\label{eq:fuse}
-s=\alpha\,z(\cos)+(1-\alpha)\,z(\text{đồ thị})
-\end{equation}
-với $z(\cdot)$ là chuẩn hóa z-score theo truy vấn (đề bài viết $\alpha\cdot\cos+(1-\alpha)\cdot$ điểm đồ thị; chúng tôi chuẩn hóa z-score trước khi trộn vì hai điểm khác thang đo), và $\alpha$ \emph{chỉ} chọn trên val. Số liệu báo cáo ở hai dạng: (a) gallery 1\,000 ảnh theo 3 seed (trung bình $\pm$ độ lệch chuẩn, kiểu COCO 1K); (b) toàn pool test (tất định) kèm kiểm định bootstrap ghép cặp theo truy vấn cho hiệu MRR giữa hai mô hình. Với mô hình học, seed điều khiển cả fold gallery và khởi tạo.
-
 Tệp chia cố định (seed 0, Karpathy) và mã tạo chia nằm trong kho mã của nhóm (Phụ lục B).
 
-\subsection{Độ đo}
-Với mỗi truy vấn có đúng một ảnh đúng (ảnh có caption đó), gọi $r$ là hạng của ảnh. Recall@$k=\mathbf{1}[r\le k]$ lấy trung bình trên truy vấn; hạng nghịch đảo trung bình $\mathrm{MRR}=\overline{1/r}$; $\mathrm{nDCG@}10=\overline{\mathbf{1}[r\le10]/\log_2(r+1)}$. Với bộ 24 truy vấn có nhiều ảnh dương, hạng được tính theo ảnh dương đứng đầu. Khoảng tin cậy 95\% (CI95) ở các bảng ghép cặp được tính bằng bootstrap lấy lại mẫu theo truy vấn, trên cùng thứ tự truy vấn của hai mô hình.
+\textbf{Bộ 24 truy vấn trực tiếp/gián tiếp.} Từ \texttt{scene\_graphs.json} (108\,077 ảnh), nhóm sinh 24 truy vấn dạng ``chủ thể -- vị từ -- đối tượng'' (ví dụ ``hand feeding giraffe''): 12 trực tiếp, 12 gián tiếp. Chỉ dùng vị từ hành động; mỗi vị từ tối đa 3 truy vấn; hai thực thể đều xuất hiện $\ge200$ ảnh; loại các đối tượng mơ hồ. \emph{Trực tiếp}: ảnh dương là ảnh có bộ ba $s\!-\!p\!-\!o$ được chú thích (5--60 ảnh). \emph{Gián tiếp}: $s$ và $o$ nối với nhau chỉ qua một đối tượng thứ ba $x$ ($s\!\to\!x\!\to\!o$) và không có quan hệ $s$--$o$ nào trong chú thích. Các kiểm tra tự động đều đạt: không trùng truy vấn, không trùng cặp $(s,o)$, hai tập ảnh dương không giao nhau. Danh sách đầy đủ ở Phụ lục A. Hạn chế: chưa có ai xem ảnh, nên ảnh gián tiếp chỉ là ứng viên (đường đi hai bước không chứng minh ảnh thể hiện $s\,p\,o$); chú thích VG thưa nên có ảnh trực tiếp bị thiếu. Bộ này chỉ dùng để đánh giá, và các ảnh dương bị loại khỏi huấn luyện.
 
 \textbf{Chống rò rỉ.} Từ vựng đối tượng, cạnh đồng xuất hiện và nhóm truy vấn chỉ tính từ ảnh train; ảnh val/test chỉ \emph{nhận} thông tin từ đồ thị (không đẩy thông tin ngược vào đồ thị); caption val/test không tạo thống kê nào; bộ 24 truy vấn của cấp~2 chỉ dùng để đánh giá.
 
-\textbf{Nhóm truy vấn.} Giao thức tự gán: \emph{direct} nếu mọi khái niệm trong caption có mặt trong danh sách đối tượng của ảnh đúng, \emph{indirect} nếu có ít nhất một khái niệm không có mặt (cần suy ra qua từ đồng nghĩa hoặc quan hệ), còn lại là \emph{no\_concept}.
+\subsection{Độ đo}
+Với mỗi truy vấn có đúng một ảnh đúng (ảnh có caption đó), gọi $r$ là hạng của ảnh. Recall@$k=\mathbf{1}[r\le k]$ lấy trung bình trên truy vấn; hạng nghịch đảo trung bình $\mathrm{MRR}=\overline{1/r}$; $\mathrm{nDCG@}10=\overline{\mathbf{1}[r\le10]/\log_2(r+1)}$. Với bộ 24 truy vấn có nhiều ảnh dương, hạng được tính theo ảnh dương đứng đầu. Khoảng tin cậy 95\% (CI95) ở các bảng ghép cặp được tính bằng bootstrap lấy lại mẫu theo truy vấn, trên cùng thứ tự truy vấn của hai mô hình. Số liệu báo cáo ở hai dạng: (a) gallery 1\,000 ảnh theo 3 seed (trung bình $\pm$ độ lệch chuẩn, kiểu COCO 1K); (b) toàn pool test (tất định) kèm kiểm định bootstrap ghép cặp theo truy vấn cho hiệu MRR giữa hai mô hình. Với mô hình học, seed điều khiển cả fold gallery và khởi tạo.
+
+\textbf{Nhóm truy vấn.} Gán tự động: \emph{direct} nếu mọi khái niệm trong caption có mặt trong danh sách đối tượng của ảnh đúng, \emph{indirect} nếu có ít nhất một khái niệm không có mặt (cần suy ra qua từ đồng nghĩa hoặc quan hệ), còn lại là \emph{no\_concept}.
 
 \begin{figure*}[t]
 \centering
@@ -92,7 +85,13 @@ Với mỗi truy vấn có đúng một ảnh đúng (ảnh có caption đó), g
 \end{figure*}
 
 \section{Phương pháp}\label{sec:method}
-\subsection{CLIP và tập ứng viên top-$K$}\label{sec:m-clip}
+\subsection{CLIP, tập ứng viên và trộn điểm}\label{sec:m-clip}
+Hình~\ref{fig:pipe} tóm tắt pipeline. Mọi phương pháp dùng cùng tệp chia ảnh, cùng một mô hình CLIP (ViT-B/32, \texttt{laion2b\_s34b\_b79k}, đóng băng) và cùng bước chọn ứng viên: top-$K{=}100$ theo cosine; ảnh đúng nằm ngoài top-$K$ giữ nguyên hạng của CLIP. Điểm cuối là
+\begin{equation}\label{eq:fuse}
+s=\alpha\,z(\cos)+(1-\alpha)\,z(\text{đồ thị})
+\end{equation}
+với $z(\cdot)$ là chuẩn hóa z-score theo truy vấn (đề bài viết $\alpha\cdot\cos+(1-\alpha)\cdot$ điểm đồ thị; chúng tôi chuẩn hóa z-score trước khi trộn vì hai điểm khác thang đo), và $\alpha$ \emph{chỉ} chọn trên val.
+
 Đặc trưng ảnh/caption mã hóa một lần bằng OpenCLIP, lập chỉ mục FAISS~\cite{faiss} (\texttt{IndexFlatIP}).
 
 \subsection{Đồ thị nhãn--ảnh}\label{sec:m-graph}
@@ -103,10 +102,10 @@ Lần thử đầu dùng GAT nhận cả đặc trưng ảnh và cho MRR $+2{,}8
 
 Mô hình cuối (\emph{QA-Graph}): GNN (GCN/GAT/GraphSAGE, 2 tầng) chạy trên đồ thị \emph{nhãn} để cho vectơ $H_l$ mỗi nhãn $l$. Với truy vấn có tập khái niệm $\mathcal C$ (trích từ caption) và ảnh $i$ có tập nhãn $\mathcal L_i$, độ khớp của khái niệm $c$ với ảnh là $m(c,i)=\operatorname{softmax\text{-}max}_{l\in\mathcal L_i}\cos(u_c,H_l)$, và điểm đồ thị là trung bình $s_G=\frac1{|\mathcal C|}\sum_{c}m(c,i)$, cộng vào điểm adapter với một trọng số học được. Thiết kế này phụ thuộc truy vấn nên giữ được thông tin ``nhãn nào của ảnh khớp khái niệm nào của câu'' mà việc gộp mọi nhãn thành một vectơ ảnh làm mất. Bài kiểm tra cấu trúc trong mã: khi không có cạnh thì $s_G=0$ và thứ hạng trùng nền adapter. Huấn luyện bằng InfoNCE với caption train; $\alpha$ và siêu tham số chọn trên val.
 
-\subsection{AdaMF-MAT trên giao thức chung}\label{sec:m-adamf}
+\subsection{AdaMF-MAT cho truy vấn ảnh}\label{sec:m-adamf}
 AdaMF-MAT (LREC-COLING 2024) giải bài toán hoàn thiện đồ thị tri thức đa phương thức: dự đoán thực thể còn thiếu của bộ ba $(h,r,?)$ khi mỗi thực thể có thêm ảnh và văn bản. Quan sát của tác giả là các phương thức đóng góp không đều cho từng thực thể, nên mô hình hợp nhất có trọng số thích nghi giữa cấu trúc, ảnh và văn bản, và huấn luyện bằng cách tạo mẫu âm đối kháng (\emph{modality-adversarial training}) để cân bằng phương thức. Chúng tôi dùng nó như một bộ chấm điểm tính hợp lý của bộ ba (ảnh, \texttt{contains}, khái niệm).
 
-Một MMKG được dựng từ cùng giao thức: 2\,000 khái niệm, 10\,264 ảnh, 31 quan hệ, 193\,962 bộ ba train (176\,736 \texttt{contains} và 17\,226 quan hệ khái niệm từ ảnh train). Điểm đồ thị của ảnh là tổng độ hợp lý của \texttt{contains} trên các khái niệm của caption; kết hợp theo công thức~(\ref{eq:fuse}) ($\alpha{=}0{,}75$ chọn trên val). Huấn luyện 104 epoch, 1 seed.
+Một MMKG được dựng từ cùng dữ liệu và cách chia: 2\,000 khái niệm, 10\,264 ảnh, 31 quan hệ, 193\,962 bộ ba train (176\,736 \texttt{contains} và 17\,226 quan hệ khái niệm từ ảnh train). Điểm đồ thị của ảnh là tổng độ hợp lý của \texttt{contains} trên các khái niệm của caption; kết hợp theo công thức~(\ref{eq:fuse}) ($\alpha{=}0{,}75$ chọn trên val). Huấn luyện 104 epoch, 1 seed.
 
 \textbf{Adapter cho AdaMF-MAT.} Để so sánh công bằng hơn với cấp~1 (vốn có adapter), nhóm thêm một adapter hai phép tuyến tính $512\times512$ khởi tạo bằng đơn vị cho caption và ảnh, huấn luyện bằng InfoNCE ($\tau=0{,}05$, AdamW, lr $10^{-3}$) trên dữ liệu train, chọn epoch theo MRR val. Adapter này là phần mở rộng của nhóm, không thuộc AdaMF-MAT, mới chạy 1 seed và chưa tinh chỉnh siêu tham số.
 
@@ -114,7 +113,7 @@ Một MMKG được dựng từ cùng giao thức: 2\,000 khái niệm, 10\,264 
 Giải thích phải đến từ chính cơ chế xếp hạng. Trong QA-Graph, điểm đồ thị của ảnh là tổng các đóng góp $m(c,i)$ theo khái niệm, mỗi $m(c,i)$ do nhãn khớp nhất và các cạnh GNN đã lan truyền đến nhãn đó. Vì vậy có thể trích cặp (nhãn khớp, đường đi cạnh trong đồ thị nhãn) làm giải thích. Mã trích xuất và can thiệp nằm ở \texttt{src/mmxai/xai} (\texttt{explain}, \texttt{perturbation}, \texttt{evaluate\_xai}); \texttt{src/mmxai/xai\_bridge.py} nối khung này với mô hình QA-Graph đã huấn luyện. Để kiểm chứng, các cạnh được chọn bị xóa hoặc làm nhiễu rồi điểm đồ thị được tính lại; fidelity là độ giảm điểm và thay đổi hạng so với xóa ngẫu nhiên cùng số cạnh; sparsity là $1-\#\text{cạnh giải thích}/\#\text{cạnh ứng viên cục bộ}$; validity là việc cạnh tồn tại trong đồ thị và đúng lược đồ.
 
 \section{Thiết lập thực nghiệm}\label{sec:setup}
-Bảng~\ref{tab:impl} tóm tắt thiết lập của từng thành phần; giao thức chia dữ liệu, chọn ứng viên và trộn điểm ở mục~\ref{sec:data}.
+Bảng~\ref{tab:impl} tóm tắt thiết lập của từng thành phần; cách chia dữ liệu ở mục~\ref{sec:data}; chọn ứng viên và trộn điểm ở mục~\ref{sec:m-clip}.
 
 \begin{table}[t]
 \caption{Thiết lập chính của từng thành phần.}\label{tab:impl}
@@ -309,14 +308,14 @@ TB & no\_concept & 1\,291 & I am unable to see the image above. & dot, table, gl
 \end{table*}
 
 \section{Thảo luận}\label{sec:disc}
-\textbf{Vì sao đồ thị chưa giúp nhóm gián tiếp.} Phần tăng của QA-Graph nằm ở direct ($+6{,}4$ đến $+7{,}4$ MRR theo gallery) còn indirect chỉ $+0{,}3$ đến $+0{,}7$ (khoảng 1 std). Có ba cách giải thích, chưa được kiểm chứng riêng: (a) định nghĩa ``indirect'' của giao thức đo thiếu chú thích và từ đồng nghĩa nhiều hơn là suy luận quan hệ thật; (b) \texttt{sg\_rel} gộp từ đồng xuất hiện trên train rất dày (khoảng 50 láng giềng mỗi nhãn) nên làm nhòe danh tính nhãn, và khi chỉ giữ cạnh thưa (xuất hiện $\ge5$ lần) kết quả không khá hơn; (c) CLIP vốn đã mã hóa ``túi đối tượng'' tốt. ConceptNet là thứ duy nhất nhích nhóm indirect ($+0{,}5$ đến $+0{,}8$ ở seed~0) nhưng chênh vẫn trong nhiễu. Vì vậy chưa thể khẳng định đồ thị giúp truy vấn gián tiếp.
+\textbf{Vì sao đồ thị chưa giúp nhóm gián tiếp.} Phần tăng của QA-Graph nằm ở direct ($+6{,}4$ đến $+7{,}4$ MRR theo gallery) còn indirect chỉ $+0{,}3$ đến $+0{,}7$ (khoảng 1 std). Có ba cách giải thích, chưa được kiểm chứng riêng: (a) định nghĩa ``indirect'' của quy trình đánh giá đo thiếu chú thích và từ đồng nghĩa nhiều hơn là suy luận quan hệ thật; (b) \texttt{sg\_rel} gộp từ đồng xuất hiện trên train rất dày (khoảng 50 láng giềng mỗi nhãn) nên làm nhòe danh tính nhãn, và khi chỉ giữ cạnh thưa (xuất hiện $\ge5$ lần) kết quả không khá hơn; (c) CLIP vốn đã mã hóa ``túi đối tượng'' tốt. ConceptNet là thứ duy nhất nhích nhóm indirect ($+0{,}5$ đến $+0{,}8$ ở seed~0) nhưng chênh vẫn trong nhiễu. Vì vậy chưa thể khẳng định đồ thị giúp truy vấn gián tiếp.
 
 \textbf{Bài học phương pháp.} Ở cả hai cấp, nền so sánh quyết định kết luận: so với CLIP thô, hầu hết mô hình có học đều tốt hơn, nhưng phần lớn mức tăng đến từ lớp chiếu học được. Một baseline không dùng quan hệ (khớp tên đối tượng) là phép thử rẻ: nếu phương pháp dùng quan hệ không vượt nó thì chưa có bằng chứng quan hệ đóng góp. Ablation xáo cạnh thuyết phục hơn ablation bỏ cạnh vì giữ nguyên số tham số và mật độ đồ thị.
 
-\textbf{Các yếu tố ảnh hưởng đến tính hợp lệ.} (i) Nhóm direct/indirect do giao thức gán dựa trên chính danh sách nhãn mà đồ thị dùng, nên có nguy cơ vòng lặp: khái niệm có mặt trong nhãn thì được xếp ``direct'' và đồ thị dễ khớp. (ii) Chú thích scene graph thưa, nên nhãn thiếu có thể bị tính là lỗi của mô hình. (iii) Caption COCO chỉ có một ảnh đúng, trong khi nhiều ảnh khác cũng mô tả đúng; các độ đo thứ hạng vì thế bị đánh giá thấp một cách hệ thống và giống nhau cho mọi phương pháp. (iv) Ba seed của giao thức chủ yếu là ba fold gallery, và với CLIP đóng băng độ lệch chuẩn rất nhỏ (ví dụ $\pm0{,}02$ cho adapter), nên không phản ánh đầy đủ bất định của việc huấn luyện.
+\textbf{Các yếu tố ảnh hưởng đến tính hợp lệ.} (i) Nhóm direct/indirect được gán tự động dựa trên chính danh sách nhãn mà đồ thị dùng, nên có nguy cơ vòng lặp: khái niệm có mặt trong nhãn thì được xếp ``direct'' và đồ thị dễ khớp. (ii) Chú thích scene graph thưa, nên nhãn thiếu có thể bị tính là lỗi của mô hình. (iii) Caption COCO chỉ có một ảnh đúng, trong khi nhiều ảnh khác cũng mô tả đúng; các độ đo thứ hạng vì thế bị đánh giá thấp một cách hệ thống và giống nhau cho mọi phương pháp. (iv) Ba seed của quy trình đánh giá chủ yếu là ba fold gallery, và với CLIP đóng băng độ lệch chuẩn rất nhỏ (ví dụ $\pm0{,}02$ cho adapter), nên không phản ánh đầy đủ bất định của việc huấn luyện.
 
 \section{Hạn chế và hướng phát triển}\label{sec:limit}
-\textbf{Hạn chế.} (1) AdaMF-MAT chỉ huấn luyện 1 seed (3 seed của giao thức là 3 fold gallery); chất lượng suy luận quan hệ trên đồ thị COCO yếu (MRR $0{,}072$, Hits@1 $\approx0$ khi kiểm tra các quan hệ khái niệm giữ lại) vì chỉ 104 epoch so với 1000 epoch khi tái lập; chưa chứng minh đây là nguyên nhân. (2) Bộ 24 truy vấn chưa được kiểm tra bằng mắt và chưa đánh giá theo giao thức chung. (3) Giải thích định lượng và MMKG tiếng Việt chưa có số liệu (mục~\ref{sec:r-xai}). (4) Cấp~2 trên pipeline chung mới có một tập (VG$\cap$COCO).
+\textbf{Hạn chế.} (1) AdaMF-MAT chỉ huấn luyện 1 seed (3 seed của quy trình đánh giá là 3 fold gallery); chất lượng suy luận quan hệ trên đồ thị COCO yếu (MRR $0{,}072$, Hits@1 $\approx0$ khi kiểm tra các quan hệ khái niệm giữ lại) vì chỉ 104 epoch so với 1000 epoch khi tái lập; chưa chứng minh đây là nguyên nhân. (2) Bộ 24 truy vấn chưa được kiểm tra bằng mắt và chưa đánh giá theo quy trình đánh giá chung. (3) Giải thích định lượng và MMKG tiếng Việt chưa có số liệu (mục~\ref{sec:r-xai}). (4) Cấp~2 trên pipeline chung mới có một tập (VG$\cap$COCO).
 
 \textbf{Hướng phát triển.} (1) Thí nghiệm ẩn đối tượng (để presence-only thất bại và chỉ quan hệ mới suy ra được) đã chuẩn bị nhưng chưa chạy. (2) Chưa chạy đồ thị ngẫu nhiên thay thế, chưa vẽ độ nhạy theo $\alpha$ và chưa dùng Wikidata hay NativE. (3) MMKG tiếng Việt: \todo{Dương: mô tả nguồn ảnh/văn bản có giấy phép, 50--150 thực thể, 300--1\,000 triple, 200--500 ảnh, cách liên kết ảnh--thực thể, data card, kết quả chạy phương pháp tốt nhất của cấp 1/2 và phân tích khả năng chuyển giao. Chưa có trong kho tại thời điểm viết.}
 
@@ -333,7 +332,7 @@ Thành viên & Phần việc\\\midrule
 Yến & Dữ liệu, chuẩn hóa nhãn, tổng hợp báo cáo, slide\\
 Thắng & Đặc trưng OpenCLIP, FAISS, metric, baseline 3 seed, module đánh giá chung, trang kết quả\\
 Huy & Dựng đồ thị, GNN, QA-Graph, ablation, ConceptNet, bộ dữ liệu PSG\\
-Khánh & Tái lập AdaMF-MAT, tích hợp giao thức chung, bộ 24 truy vấn, so sánh trực tiếp/gián tiếp\\
+Khánh & Tái lập AdaMF-MAT, tích hợp vào quy trình đánh giá chung, bộ 24 truy vấn, so sánh trực tiếp/gián tiếp\\
 Dương & Giải thích, đánh giá fidelity/validity/sparsity, MMKG tiếng Việt, demo\\\bottomrule
 \end{tabular}
 \end{adjustbox}
@@ -341,7 +340,6 @@ Dương & Giải thích, đánh giá fidelity/validity/sparsity, MMKG tiếng Vi
 
 \section{Khai báo}\label{sec:declare}
 Mã nguồn, lệnh chạy và README: \url{https://github.com/Chau-Ngoc-Huy/graphml-project3}. Trang kết quả Nhiệm vụ 1: \url{https://minhthang03.github.io/mmxai-task1-clip-baseline/web/}. \todo{liên kết Weights \& Biases công khai cho từng bảng; hiện các lượt chạy được ghi trong \texttt{JOURNAL.md}, chưa có dự án W\&B} Nhóm dùng mã nguồn mở của tác giả AdaMF-MAT và OpenCLIP, và dùng công cụ trợ giúp AI để viết mã và bản nháp báo cáo. Mọi số liệu lấy từ các tệp kết quả trong kho mã; mỗi thành viên chịu trách nhiệm giải thích phần của mình. Dữ liệu dùng theo giấy phép công khai của Visual Genome, MS-COCO, PSG và ConceptNet.
-
 
 \section*{Phụ lục A: Bộ 24 truy vấn đánh giá}
 \begin{table}[H]
@@ -391,7 +389,6 @@ Chung & $\ge3$ seed, mean $\pm$ std; chọn $\alpha$ trên val; không rò rỉ 
 Chung & Notebook demo; video $\le5$ phút; liên kết W\&B công khai & Chưa có & Notebook demo xAI có trong kho; chưa có video và W\&B.\\\bottomrule
 \end{tabular}
 \end{table*}
-
 
 \begin{thebibliography}{99}
 \bibitem{clip} A. Radford \emph{et al.}, ``Learning transferable visual models from natural language supervision,'' in \emph{Proc. Int. Conf. Mach. Learn. (ICML)}, 2021.
