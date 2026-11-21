@@ -52,10 +52,12 @@ class XAIEvaluator:
         *,
         random_repeats: int = 30,
         seed: int = 0,
+        match_random_edge_type: bool = False,
     ) -> None:
         self.schema = schema
         self.random_repeats = random_repeats
         self.seed = seed
+        self.match_random_edge_type = match_random_edge_type
 
     def evaluate(
         self,
@@ -83,11 +85,15 @@ class XAIEvaluator:
         rank_after = rank_of(after_scores, image_id, candidate_ids)
 
         random_graph, random_final, random_rank = [], [], []
+        strata = ({e: str(graph.edges[e].metadata.get("edge_type", graph.edges[e].relation))
+                  for e in explanation.local_edge_ids} if self.match_random_edge_type else None)
         for edge_set in random_edge_sets(
             explanation.local_edge_ids,
             len(explanation.edge_ids),
             self.random_repeats,
             self.seed,
+            matched_to=explanation.edge_ids if strata is not None else None,
+            strata_by_id=strata,
         ):
             scores = score_without_edges(scorer, query, candidate_ids, graph, edge_set).scores
             rd = score_drop(before, scores[image_id])

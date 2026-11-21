@@ -1,14 +1,13 @@
 import unittest
 
-from xai.demo_data import demo_graph
 from xai.explain import EdgeContributionExplainer
-from xai.scorer_adapter import MockPathScorer
+from _fixtures import tiny_graph, tiny_scorer
 
 
 class ExplainTests(unittest.TestCase):
     def test_explainer_selects_positive_edges_and_records_loo_scores(self):
-        graph = demo_graph()
-        scorer = MockPathScorer({"1": 0.72, "2": 0.69}, alpha=0.6, max_hops=2)
+        graph = tiny_graph()
+        scorer = tiny_scorer()
         explanation = EdgeContributionExplainer(top_k=2).explain(
             "person riding horse", "1", ["1", "2"], graph, scorer
         )

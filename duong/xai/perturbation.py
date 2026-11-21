@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from typing import Iterable, Sequence
+from typing import Iterable, Mapping, Sequence
 
 from .graph import KnowledgeGraph
 from .scorer_adapter import ScoreComponents, ScoreMap, Scorer
@@ -48,7 +48,8 @@ def score_with_only_edges(
 
 
 def random_edge_sets(
-    local_edge_ids: Sequence[str], size: int, repeats: int, seed: int
+    local_edge_ids: Sequence[str], size: int, repeats: int, seed: int,
+    *, matched_to: Sequence[str] | None = None, strata_by_id: Mapping[str, str] | None = None,
 ) -> list[tuple[str, ...]]:
     pool = tuple(dict.fromkeys(local_edge_ids))
     if size < 0 or size > len(pool):
@@ -56,6 +57,18 @@ def random_edge_sets(
     if repeats < 1:
         raise ValueError("random_repeats must be positive")
     rng = random.Random(seed)
+    if matched_to is not None:
+        if strata_by_id is None or len(matched_to) != size or not set(matched_to) <= set(pool):
+            raise ValueError("matched_to must be local edges and requires strata_by_id")
+        if not set(pool) <= set(strata_by_id):
+            raise ValueError("strata_by_id omitted local edges")
+        counts: dict[str, int] = {}
+        for edge_id in matched_to:
+            stratum = strata_by_id[edge_id]
+            counts[stratum] = counts.get(stratum, 0) + 1
+        pools = {stratum: tuple(e for e in pool if strata_by_id[e] == stratum) for stratum in counts}
+        return [tuple(e for stratum, count in counts.items() for e in rng.sample(pools[stratum], count))
+                for _ in range(repeats)]
     return [tuple(rng.sample(pool, size)) for _ in range(repeats)]
 
 

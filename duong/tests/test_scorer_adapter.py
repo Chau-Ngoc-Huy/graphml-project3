@@ -1,13 +1,13 @@
 import unittest
 
-from xai.demo_data import demo_graph
-from xai.scorer_adapter import CallableScorerAdapter, MockPathScorer, ScoreComponents
+from xai.scorer_adapter import CallableScorerAdapter, ScoreComponents
+from _fixtures import tiny_graph, tiny_scorer
 
 
 class ScorerTests(unittest.TestCase):
-    def test_mock_scorer_recomputes_graph_branch_but_keeps_clip_fixed(self):
-        graph = demo_graph()
-        scorer = MockPathScorer({"1": 0.7, "2": 0.6}, alpha=0.5, max_hops=2)
+    def test_adapter_recomputes_graph_branch_but_keeps_clip_fixed(self):
+        graph = tiny_graph()
+        scorer = tiny_scorer()
         before = scorer.score("person riding horse", ["1", "2"], graph)["1"]
         after = scorer.score("person riding horse", ["1", "2"], graph.without_edges(["e3"]))["1"]
         self.assertEqual(before.clip_score, after.clip_score)
@@ -15,10 +15,10 @@ class ScorerTests(unittest.TestCase):
         self.assertGreater(before.final_score, after.final_score)
 
 
-    def test_local_edges_are_actual_scoring_paths(self):
-        scorer = MockPathScorer({"1": 0.7}, max_hops=2)
+    def test_local_edges_are_actual_scoring_edges(self):
+        scorer = tiny_scorer()
         self.assertEqual(
-            set(scorer.local_edge_ids("person riding horse", "1", demo_graph())),
+            set(scorer.local_edge_ids("person riding horse", "1", tiny_graph())),
             {"e1", "e2", "e3"},
         )
 
@@ -31,7 +31,7 @@ class ScorerTests(unittest.TestCase):
                     for image in candidates}
 
         adapter = CallableScorerAdapter(score_fn, lambda query, image, graph: tuple(graph.edges))
-        graph = demo_graph()
+        graph = tiny_graph()
         adapter.score("horse", ["1"], graph)
         adapter.score("horse", ["1"], graph.without_edges(["e3"]))
         self.assertEqual(seen_edge_counts, [4, 3])

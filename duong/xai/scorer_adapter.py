@@ -1,9 +1,7 @@
-"""Scorer contract, callback adapter, and an auditable mock path scorer."""
+"""Scorer contract and callback adapter for trained retrieval models."""
 
 from __future__ import annotations
 
-import math
-import re
 from dataclasses import dataclass
 from typing import Callable, Mapping, Protocol, Sequence, runtime_checkable
 
@@ -64,87 +62,3 @@ class CallableScorerAdapter:
         if unknown:
             raise ValueError(f"local edge selector returned unknown IDs: {sorted(unknown)}")
         return edge_ids
-
-
-class MockPathScorer:
-    """Transparent development scorer; never a substitute for the trained model.
-
-    Query terms link to concept labels. Graph score is the saturating sum of
-    products of edge weights along simple undirected paths to an image node.
-    CLIP scores remain fixed under graph perturbation.
-    """
-
-    def __init__(
-        self,
-        clip_scores: Mapping[str, float] | Mapping[str, Mapping[str, float]],
-        *,
-        alpha: float = 0.6,
-        max_hops: int = 2,
-    ) -> None:
-        if not 0 <= alpha <= 1:
-            raise ValueError("alpha must be in [0, 1]")
-        if max_hops < 1:
-            raise ValueError("max_hops must be positive")
-        self.clip_scores = clip_scores
-        self.alpha = alpha
-        self.max_hops = max_hops
-
-    @staticmethod
-    def _tokens(text: str) -> set[str]:
-        return set(re.findall(r"[a-z0-9]+", text.lower()))
-
-    def _query_nodes(self, query: str, graph: KnowledgeGraph) -> list[str]:
-        qt = self._tokens(query)
-        return [
-            n.id for n in graph.nodes.values()
-            if n.type != "image" and self._tokens(n.label) and self._tokens(n.label) <= qt
-        ]
-
-    def paths(self, query: str, image_id: str, graph: KnowledgeGraph) -> list[tuple[tuple[str, ...], float]]:
-        target = graph.image_node_id(str(image_id))
-        adjacency = graph.adjacency(undirected=True)
-        found: list[tuple[tuple[str, ...], float]] = []
-        for start in self._query_nodes(query, graph):
-            stack = [(start, (start,), tuple(), 1.0)]
-            while stack:
-                node, seen_nodes, edge_ids, weight = stack.pop()
-                if node == target and edge_ids:
-                    found.append((edge_ids, weight / len(edge_ids)))
-                    continue
-                if len(edge_ids) >= self.max_hops:
-                    continue
-                for nxt, edge_id in adjacency[node]:
-                    if nxt in seen_nodes:
-                        continue
-                    if graph.nodes[nxt].type == "image" and nxt != target:
-                        continue
-                    edge = graph.edges[edge_id]
-                    stack.append((nxt, seen_nodes + (nxt,), edge_ids + (edge_id,), weight * max(0.0, edge.weight)))
-        unique: dict[tuple[str, ...], float] = {}
-        for edge_ids, weight in found:
-            unique[edge_ids] = max(weight, unique.get(edge_ids, 0.0))
-        return sorted(unique.items())
-
-    def _clip(self, query: str, image_id: str) -> float:
-        nested = self.clip_scores.get(query)
-        if isinstance(nested, Mapping):
-            return float(nested.get(image_id, 0.0))
-        return float(self.clip_scores.get(image_id, 0.0))
-
-    def score(self, query: str, candidate_image_ids: Sequence[str], graph: KnowledgeGraph) -> ScoreMap:
-        out = {}
-        for raw_id in candidate_image_ids:
-            image_id = str(raw_id)
-            raw_graph = sum(weight for _, weight in self.paths(query, image_id, graph))
-            graph_score = 1.0 - math.exp(-raw_graph)
-            clip_score = self._clip(query, image_id)
-            out[image_id] = ScoreComponents(
-                clip_score=clip_score,
-                graph_score=graph_score,
-                final_score=self.alpha * clip_score + (1.0 - self.alpha) * graph_score,
-            )
-        return out
-
-    def local_edge_ids(self, query: str, image_id: str, graph: KnowledgeGraph) -> Sequence[str]:
-        return tuple(dict.fromkeys(e for path, _ in self.paths(query, str(image_id), graph) for e in path))
-

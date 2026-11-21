@@ -3,13 +3,13 @@ import unittest
 from tempfile import TemporaryDirectory
 from pathlib import Path
 
-from xai.demo_data import demo_graph
 from xai.io import load_graph
+from _fixtures import tiny_graph
 
 
 class IOTests(unittest.TestCase):
     def test_json_graph_loader(self):
-        graph = demo_graph()
+        graph = tiny_graph()
         with TemporaryDirectory() as directory:
             path = Path(directory) / "graph.json"
             path.write_text(json.dumps({
