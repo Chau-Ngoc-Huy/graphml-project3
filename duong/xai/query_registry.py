@@ -126,8 +126,8 @@ def validated_registry_rows(path: Path) -> list[dict]:
     return rows
 
 
-def import_reviewed_queries(registry: Path, workbook: Path, output: Path) -> Path:
-    """Transfer human Excel judgements into a new CSV; keep the frozen source intact."""
+def read_case_review_workbook(workbook: Path) -> list[dict[str, str]]:
+    """Read Case review cells from a workbook saved by this project or Excel."""
     ns = {'m': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
     with zipfile.ZipFile(workbook) as z:
         shared = []
@@ -155,15 +155,22 @@ def import_reviewed_queries(registry: Path, workbook: Path, output: Path) -> Pat
             cells[index - 1] = value
         table.append(cells)
     headers = {v: k for k, v in table[0].items()}
+    return [{name: str(cells.get(index, '')).strip() for name, index in headers.items()}
+            for cells in table[1:]]
+
+
+def import_reviewed_queries(registry: Path, workbook: Path, output: Path) -> Path:
+    """Transfer human Excel judgements into a new CSV; keep the frozen source intact."""
+    reviewed_rows = read_case_review_workbook(workbook)
     needed = ('dataset', 'query_id', 'verified_group', 'claim_subject', 'claim_predicate',
               'claim_object', 'review_status', 'reviewer', 'gt_relevance',
               'retrieved_relevance', 'hard_negative_same_objects', 'relation_differs',
               'visual_reason')
-    if not set(needed) <= set(headers):
+    if not reviewed_rows or not set(needed) <= set(reviewed_rows[0]):
         raise ValueError('review workbook is missing required case columns')
     reviews = {}
-    for cells in table[1:]:
-        review = {name: str(cells.get(headers[name], '')).strip() for name in needed}
+    for item in reviewed_rows:
+        review = {name: item[name] for name in needed}
         key = (review['dataset'], review['query_id'])
         if key in reviews:
             raise ValueError(f'duplicate review row: {key}')

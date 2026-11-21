@@ -1,7 +1,7 @@
 """Create a self-contained Excel review pack without optional dependencies.
 
-The workbook embeds local GT/retrieved JPEGs and keeps all judgement fields
-blank. Existing model labels and path hints are context, never gold evidence.
+The workbook embeds local GT/retrieved JPEGs. Existing model labels and path
+hints are context, never gold evidence.
 """
 
 from __future__ import annotations
@@ -72,7 +72,9 @@ def create_review_workbook(cases: list[dict], steps: list[dict], output: Path,
                     "gt_rank", "target_rank", "explanation_level", "path_or_edge_text",
                     "gt_source_url", "retrieved_source_url", "GT image", "Retrieved image",
                     "reviewer", "gt_relevance", "retrieved_relevance", "hard_negative_same_objects",
-                    "relation_differs", "visual_reason", "review_timestamp"]
+                    "relation_differs", "visual_reason", "review_timestamp",
+                    "validation_origin", "vlm_confidence", "vlm_uncertainty",
+                    "vlm_image_a_observation", "vlm_image_b_observation"]
     case_rows = [case_headers]
     drawings = []
     media = []
@@ -81,7 +83,12 @@ def create_review_workbook(cases: list[dict], steps: list[dict], output: Path,
                "verified_group", "claim_subject", "claim_predicate", "claim_object", "review_status", "model_seed",
                "gt_image_id", "retrieved_image_id", "retrieval_outcome", "gt_rank", "target_rank",
                "explanation_level", "path_or_edge_text", "gt_source_url", "retrieved_source_url")]
-        row.extend(["embedded below", "embedded below", "", "", "", "", "", "", ""])
+        row.extend(["embedded below", "embedded below"] +
+                   [case.get(k, "") for k in ("reviewer", "gt_relevance", "retrieved_relevance",
+                                               "hard_negative_same_objects", "relation_differs",
+                                               "visual_reason", "review_timestamp",
+                                               "validation_origin", "vlm_confidence", "vlm_uncertainty",
+                                               "vlm_image_a_observation", "vlm_image_b_observation")])
         case_rows.append(row)
         for col, field in ((19, "gt_image_file"), (20, "retrieved_image_file")):
             path_text = case.get(field, "")
@@ -141,7 +148,8 @@ def create_review_workbook(cases: list[dict], steps: list[dict], output: Path,
                    + ''.join(anchors) + '</xdr:wsDr>')
     sheets = [
         _sheet(case_rows, [12, 14, 55, 16, 18, 20, 22, 20, 16, 12, 16, 20, 18, 11, 12,
-                           24, 65, 38, 38, 28, 28, 18, 18, 20, 22, 18, 60, 22],
+                           24, 65, 38, 38, 28, 28, 18, 18, 20, 22, 18, 60, 22,
+                           20, 16, 50, 55, 55],
                image_rows=range(2, len(case_rows) + 1),
                dropdown_columns=(23, 24, 25, 26)),
         _sheet(step_rows, [12, 14, 20, 30, 12, 14, 30, 28, 30, 15, 28, 18, 18,
