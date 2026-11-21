@@ -12,10 +12,11 @@ Mỗi người giữ trọn một khối liền nhau từ trên xuống trong `r
 
 ## Quy ước chung (giữ đúng như bản hiện tại để các khối liền mạch)
 
+**Thuật ngữ: đọc `report/THUAT_NGU.md` trước khi viết** (bảng các từ dịch sát chữ không dùng và từ thay thế).
+
 - Tên bộ dữ liệu: **VG∩COCO**, **PSG∩COCO**.
 - Tên mô hình: **CLIP**, **CLIP + Adapter**, **QA-Graph**, **CLIP + khớp tên**, **AdaMF-MAT**.
 - Ký hiệu: $r$ (hạng ảnh đúng), $K$ (số ứng viên), $\alpha$, $s$ và công thức (1) ở mục IV-A.
-- Thuật ngữ: "quy trình đánh giá", "truy vấn trực tiếp / gián tiếp", "toàn bộ ảnh test", "phân tích loại bỏ (ablation)".
 - Số liệu: MRR tính theo %, dấu phẩy thập phân (64,76).
 
 ## Cách làm
