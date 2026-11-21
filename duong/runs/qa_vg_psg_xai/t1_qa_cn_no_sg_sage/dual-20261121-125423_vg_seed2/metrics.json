@@ -1,0 +1,387 @@
+{
+ "metrics": {
+  "test": {
+   "seed": {
+    "mean": 2.0,
+    "std": 0.0,
+    "values": [
+     2.0
+    ]
+   },
+   "gallery_size": {
+    "mean": 1000.0,
+    "std": 0.0,
+    "values": [
+     1000.0
+    ]
+   },
+   "R@1": {
+    "mean": 62.327534493101375,
+    "std": 0.0,
+    "values": [
+     62.327534493101375
+    ]
+   },
+   "R@5": {
+    "mean": 88.1623675264947,
+    "std": 0.0,
+    "values": [
+     88.1623675264947
+    ]
+   },
+   "R@10": {
+    "mean": 94.38112377524494,
+    "std": 0.0,
+    "values": [
+     94.38112377524494
+    ]
+   },
+   "MRR": {
+    "mean": 73.67278023056473,
+    "std": 0.0,
+    "values": [
+     73.67278023056473
+    ]
+   },
+   "nDCG@10": {
+    "mean": 78.45958030051078,
+    "std": 0.0,
+    "values": [
+     78.45958030051078
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "n": 5001
+  },
+  "test_full": {
+   "gallery_size": {
+    "mean": 2138.0,
+    "std": 0.0,
+    "values": [
+     2138.0
+    ]
+   },
+   "R@1": {
+    "mean": 52.608451757666415,
+    "std": 0.0,
+    "values": [
+     52.608451757666415
+    ]
+   },
+   "R@5": {
+    "mean": 79.92707554225879,
+    "std": 0.0,
+    "values": [
+     79.92707554225879
+    ]
+   },
+   "R@10": {
+    "mean": 87.82722513089006,
+    "std": 0.0,
+    "values": [
+     87.82722513089006
+    ]
+   },
+   "MRR": {
+    "mean": 64.7616733677209,
+    "std": 0.0,
+    "values": [
+     64.7616733677209
+    ]
+   },
+   "nDCG@10": {
+    "mean": 69.8653126335011,
+    "std": 0.0,
+    "values": [
+     69.8653126335011
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "n": 10696
+  },
+  "by_group": {
+   "direct": {
+    "R@1": {
+     "mean": 67.2846237731734,
+     "std": 0.0,
+     "values": [
+      67.2846237731734
+     ]
+    },
+    "R@5": {
+     "mean": 92.0392584514722,
+     "std": 0.0,
+     "values": [
+      92.0392584514722
+     ]
+    },
+    "R@10": {
+     "mean": 96.72846237731734,
+     "std": 0.0,
+     "values": [
+      96.72846237731734
+     ]
+    },
+    "MRR": {
+     "mean": 77.91756452135577,
+     "std": 0.0,
+     "values": [
+      77.91756452135577
+     ]
+    },
+    "nDCG@10": {
+     "mean": 82.36521565428288,
+     "std": 0.0,
+     "values": [
+      82.36521565428288
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 917
+   },
+   "indirect": {
+    "R@1": {
+     "mean": 61.2736660929432,
+     "std": 0.0,
+     "values": [
+      61.2736660929432
+     ]
+    },
+    "R@5": {
+     "mean": 87.4108679616425,
+     "std": 0.0,
+     "values": [
+      87.4108679616425
+     ]
+    },
+    "R@10": {
+     "mean": 93.97590361445783,
+     "std": 0.0,
+     "values": [
+      93.97590361445783
+     ]
+    },
+    "MRR": {
+     "mean": 72.79841366948273,
+     "std": 0.0,
+     "values": [
+      72.79841366948273
+     ]
+    },
+    "nDCG@10": {
+     "mean": 77.6709955849101,
+     "std": 0.0,
+     "values": [
+      77.6709955849101
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 4067
+   },
+   "no_concept": {
+    "R@1": {
+     "mean": 47.05882352941176,
+     "std": 0.0,
+     "values": [
+      47.05882352941176
+     ]
+    },
+    "R@5": {
+     "mean": 58.82352941176471,
+     "std": 0.0,
+     "values": [
+      58.82352941176471
+     ]
+    },
+    "R@10": {
+     "mean": 64.70588235294117,
+     "std": 0.0,
+     "values": [
+      64.70588235294117
+     ]
+    },
+    "MRR": {
+     "mean": 53.88346312851361,
+     "std": 0.0,
+     "values": [
+      53.88346312851361
+     ]
+    },
+    "nDCG@10": {
+     "mean": 56.44231082633087,
+     "std": 0.0,
+     "values": [
+      56.44231082633087
+     ]
+    },
+    "MedR": {
+     "mean": 2.0,
+     "std": 0.0,
+     "values": [
+      2.0
+     ]
+    },
+    "n": 17
+   }
+  },
+  "alpha": {
+   "mean": 0.3,
+   "values": [
+    0.3
+   ]
+  }
+ },
+ "n": 10696,
+ "paper": {
+  "table": "gnn",
+  "row": "t1_qa_cn_no_sg SAGE — VG∩COCO"
+ },
+ "run": {
+  "exp": "t1_qa_cn_no_sg_sage",
+  "run_id": "dual-20261121-125423_vg_seed2",
+  "tag": null,
+  "user": "duong",
+  "args": {
+   "exp": "t1_qa_cn_no_sg_sage",
+   "config": null,
+   "config_dir": "/content/drive/MyDrive/graphml-project3/huy/configs",
+   "set": [
+    "data=/content/drive/MyDrive/mmxai_vg_bundle",
+    "extra=/content/drive/MyDrive/mmxai_vg_bundle/huy_extra_cn",
+    "save_model=true"
+   ],
+   "limit": null,
+   "seed": 2,
+   "tag": null,
+   "runs_dir": "/content/drive/MyDrive/graphml-project3/duong/runs/qa_vg_psg_xai",
+   "run_id": "dual-20261121-125423_vg_seed2",
+   "no_publish": true,
+   "dry_run": false
+  },
+  "config": {
+   "data": "/content/drive/MyDrive/mmxai_vg_bundle",
+   "fake": {},
+   "max_images": null,
+   "topk": 100,
+   "seed": 2,
+   "paper": {
+    "table": "gnn",
+    "row": "t1_qa_cn_no_sg SAGE — VG∩COCO"
+   },
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "graph": {
+    "variant": "no_sg",
+    "min_rel_count": 1
+   },
+   "gnn": {
+    "kind": "sage",
+    "hidden": 256,
+    "layers": 2,
+    "heads": 4,
+    "dropout": 0.1,
+    "arch": "split",
+    "adapter": true,
+    "graph_weight": 1.0,
+    "tau_match": 0.1
+   },
+   "train": {
+    "epochs": 20,
+    "patience": 4,
+    "batch_size": 512,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "tau": 0.05
+   },
+   "alpha_step": 0.05,
+   "n_explain": 0,
+   "explain_top_m": 3,
+   "save_model": true,
+   "extra": "/content/drive/MyDrive/mmxai_vg_bundle/huy_extra_cn",
+   "mode": "graph",
+   "exp": "t1_qa_cn_no_sg_sage"
+  },
+  "started_at": "2026-11-21T12:58:52+00:00",
+  "finished_at": "2026-11-21T12:59:53+00:00",
+  "wall_time_s": 60.61,
+  "sec_per_sample": 0.006,
+  "peak_vram_gb": 4.29,
+  "error": null,
+  "extra": {
+   "seeds": [
+    2
+   ],
+   "graph": {
+    "n_img": 19264,
+    "n_label": 3000,
+    "variant": "no_sg",
+    "E_contains": 336581,
+    "E_sg_rel": 0,
+    "E_concept": 32826,
+    "missing_labels": 23406,
+    "missing_top": [
+     "overall",
+     "ski goggle",
+     "destination",
+     "wire fence",
+     "waterway",
+     "spotlight",
+     "little boy",
+     "life preserver",
+     "parade",
+     "udder"
+    ],
+    "lab_edges": 32826,
+    "contains": 336581,
+    "labels_per_img_max": 52,
+    "imgs_without_labels": 174,
+    "caps_without_concepts": 224,
+    "concepts_dropped": 0
+   },
+   "device": "cuda"
+  }
+ },
+ "environment": {
+  "python": "3.13.16",
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "compute": "colab",
+  "gpu": "Tesla T4",
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "numpy": "2.4.6",
+   "pyyaml": "6.0.3",
+   "torch_geometric": "2.8.1",
+   "open_clip_torch": null,
+   "faiss-cpu": null
+  },
+  "git_commit": "a8789ff02134c86a17a5dab4ce25ad5ec96927e3",
+  "vendor_commit": null
+ }
+}

@@ -1,0 +1,194 @@
+[
+  {
+    "dataset": "vg",
+    "candidate_row": 702,
+    "caption_id": 6120,
+    "group": "direct",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 1223
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 6816,
+    "caption_id": 60916,
+    "group": "direct",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 12175
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 8031,
+    "caption_id": 71077,
+    "group": "direct",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 14206
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 1672,
+    "caption_id": 14843,
+    "group": "direct",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 2966
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 8914,
+    "caption_id": 78769,
+    "group": "direct",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 15743
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 9548,
+    "caption_id": 85390,
+    "group": "direct",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 17067
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 5720,
+    "caption_id": 51590,
+    "group": "indirect",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 10311
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 7803,
+    "caption_id": 68975,
+    "group": "indirect",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 13786
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 10431,
+    "caption_id": 93829,
+    "group": "indirect",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 18754
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 1563,
+    "caption_id": 14193,
+    "group": "indirect",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 2836
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 5341,
+    "caption_id": 47795,
+    "group": "indirect",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 9552
+  },
+  {
+    "dataset": "vg",
+    "candidate_row": 8493,
+    "caption_id": 75397,
+    "group": "indirect",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 15069
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 960,
+    "caption_id": 7789,
+    "group": "direct",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 1557
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 6906,
+    "caption_id": 58392,
+    "group": "direct",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 11672
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 8404,
+    "caption_id": 70654,
+    "group": "direct",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 14123
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 1055,
+    "caption_id": 8542,
+    "group": "direct",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 1707
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 7677,
+    "caption_id": 64704,
+    "group": "direct",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 12934
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 9230,
+    "caption_id": 76884,
+    "group": "direct",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 15368
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 5702,
+    "caption_id": 46969,
+    "group": "indirect",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 9388
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 7930,
+    "caption_id": 66698,
+    "group": "indirect",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 13333
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 10614,
+    "caption_id": 88545,
+    "group": "indirect",
+    "seed0_outcome": "success",
+    "ground_truth_image_id": 17700
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 1576,
+    "caption_id": 12954,
+    "group": "indirect",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 2589
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 5604,
+    "caption_id": 46151,
+    "group": "indirect",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 9224
+  },
+  {
+    "dataset": "psg",
+    "candidate_row": 8787,
+    "caption_id": 73603,
+    "group": "indirect",
+    "seed0_outcome": "failure",
+    "ground_truth_image_id": 14713
+  }
+]

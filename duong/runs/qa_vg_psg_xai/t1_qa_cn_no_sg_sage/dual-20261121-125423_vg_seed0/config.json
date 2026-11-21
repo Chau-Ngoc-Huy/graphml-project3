@@ -1,0 +1,46 @@
+{
+ "data": "/content/drive/MyDrive/mmxai_vg_bundle",
+ "fake": {},
+ "max_images": null,
+ "topk": 100,
+ "seed": 0,
+ "paper": {
+  "table": "gnn",
+  "row": "t1_qa_cn_no_sg SAGE — VG∩COCO"
+ },
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "graph": {
+  "variant": "no_sg",
+  "min_rel_count": 1
+ },
+ "gnn": {
+  "kind": "sage",
+  "hidden": 256,
+  "layers": 2,
+  "heads": 4,
+  "dropout": 0.1,
+  "arch": "split",
+  "adapter": true,
+  "graph_weight": 1.0,
+  "tau_match": 0.1
+ },
+ "train": {
+  "epochs": 20,
+  "patience": 4,
+  "batch_size": 512,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "tau": 0.05
+ },
+ "alpha_step": 0.05,
+ "n_explain": 0,
+ "explain_top_m": 3,
+ "save_model": true,
+ "extra": "/content/drive/MyDrive/mmxai_vg_bundle/huy_extra_cn",
+ "mode": "graph",
+ "exp": "t1_qa_cn_no_sg_sage"
+}

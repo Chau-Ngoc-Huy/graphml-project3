@@ -1,4 +1,4 @@
-# Dữ liệu, model, kết quả thô — để trên Kaggle/Drive, KHÔNG commit
+# Mặc định bỏ qua dữ liệu/model/kết quả mới; snapshot duong/runs/qa_vg_psg_xai được commit riêng.
 /data/
 /*/data/
 runs/

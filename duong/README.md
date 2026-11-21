@@ -52,11 +52,17 @@ duong/
 │   └── queries.csv         # Catalog truy vấn tham khảo, chưa dùng ở hai notebook
 ├── notebooks/
 │   ├── train_vg_psg_for_xai_colab.ipynb
-│   └── xai_vg_psg_colab.ipynb
+│   ├── xai_vg_psg_colab.ipynb
+│   └── summarize_vg_psg_xai_colab.ipynb
+├── runs/qa_vg_psg_xai/   # Snapshot checkpoint và XAI tải từ MyDrive, đã commit
+│   ├── dual-*_manifest.json
+│   ├── t1_qa_cn_no_sg_sage/   # 3 lượt huấn luyện VG
+│   ├── psg_qa_cn/             # 3 lượt huấn luyện PSG
+│   └── xai-*/                 # XAI thô và analysis/
 └── tests/                  # Fixture nhỏ và test cho lõi XAI
 ```
 
-Checkpoint, bundle và kết quả lớn nằm trên MyDrive; repo chỉ giữ mã và notebook.
+Hai bundle nằm ngoài repo. Snapshot `runs/qa_vg_psg_xai/` đã được commit cùng mã nguồn để xem checkpoint và kết quả XAI; `.gitignore` vẫn bỏ qua các lượt `runs/` mới cho đến khi được thêm tường minh.
 
 ## 4. Các module cần thực hiện
 
@@ -145,13 +151,30 @@ python -m unittest discover -s tests -v
 
 Notebook chọn caption và ground truth từ `mmxai_eval.Protocol` của từng bundle. `xai/queries.csv` vẫn là catalog tham khảo, không được notebook hai bundle sử dụng. `EvidenceSupportRate` coi trạng thái `uncertain` là chưa được hỗ trợ; provenance của cạnh và hỗ trợ thị giác/ngữ nghĩa cần được phân biệt. Đóng góp leave-one-out không được cộng như một phân rã tuyến tính khi scorer phi tuyến.
 
-## 10. VG và PSG trên Colab
+## 10. Notebook Colab và kết quả đã chạy
 
-Đặt `mmxai_vg_bundle/`, `mmxai_psg_bundle/` và repo `graphml-project3/` tại gốc MyDrive. Hai bundle đã có `huy_extra_cn`; không cần dựng lại nhãn hoặc tải ConceptNet. Chạy theo thứ tự:
+Trên MyDrive, đặt `graphml-project3/`, `mmxai_vg_bundle/` và `mmxai_psg_bundle/` ở cùng cấp. Hai bundle đã có `huy_extra_cn`; không cần tải lại ConceptNet hoặc trích embedding nhãn. Chạy notebook theo thứ tự sau khi đồng bộ mã `duong/xai/` lên bản repo trên Drive:
 
-1. `notebooks/train_vg_psg_for_xai_colab.ipynb`: huấn luyện VG với SAGE + ConceptNet (`t1_qa_cn_no_sg_sage`) và PSG với GAT + scene graph + ConceptNet (`psg_qa_cn`), mỗi bộ 3 seed; lưu sáu checkpoint và manifest có SHA256.
-2. `notebooks/xai_vg_psg_colab.ipynb`: kiểm tra SHA256 và replay hạng gốc, rồi gọi `EdgeContributionExplainer`, `XAIEvaluator` và adapter trong `xai/model.py` trên checkpoint thật. Xóa cạnh được đo trên cùng top-100 ứng viên, random baseline khớp loại cạnh. Xuất CSV/JSON theo dataset, seed, caption và k.
+| Notebook | Runtime | Công việc và đầu ra |
+|---|---|---|
+| [`train_vg_psg_for_xai_colab.ipynb`](notebooks/train_vg_psg_for_xai_colab.ipynb) | Colab GPU | Huấn luyện 3 seed/bộ. VG dùng SAGE + ConceptNet (`t1_qa_cn_no_sg_sage`); PSG dùng GAT + scene graph + ConceptNet (`psg_qa_cn`). Lưu `model.pt`, config, metric, ranks và manifest SHA256. |
+| [`xai_vg_psg_colab.ipynb`](notebooks/xai_vg_psg_colab.ipynb) | Colab GPU | Kiểm tra bundle/checkpoint và tái hiện hạng gốc, rồi dùng `xai/model.py`, `EdgeContributionExplainer` và `XAIEvaluator` để xóa cạnh trên top-100 cố định. Chọn 12 caption/bộ, xét k=1/3/5 và 20 lượt xóa ngẫu nhiên khớp loại cạnh. |
+| [`summarize_vg_psg_xai_colab.ipynb`](notebooks/summarize_vg_psg_xai_colab.ipynb) | Colab CPU | Đọc kết quả XAI, khôi phục model seed của lượt hiện tại, kiểm tra 216 dòng, xuất bảng theo seed/nhóm/k, bootstrap CI theo caption, hình và `report.md`. Không chạy lại model. |
 
-`xai/model.py` dùng chung kiến trúc QA của Huy và định nghĩa hai cấu hình bundle; trọng số, graph và α được lưu riêng theo dataset/seed. Đồ thị XAI chỉ chứa các cạnh được sàng lọc để can thiệp; khi chấm điểm, model vẫn giữ toàn bộ cạnh còn lại. Kết quả là case study chọn theo seed 0, không đại diện cho toàn bộ test. Notebook XAI dọn run, notebook và module demo cũ của Dương trên Drive chỉ sau khi đủ kết quả mới; không xóa bundle hoặc kết quả gốc của Huy.
+### Thư mục `runs/qa_vg_psg_xai`
 
-Hai cấu hình dùng GNN và tập cạnh khác nhau, nên chênh lệch fidelity giữa VG và PSG không thể quy riêng cho dataset. Muốn so sánh tác động dataset, cần thêm một cặp thí nghiệm với cùng kiến trúc và cùng biến thể graph.
+Lượt hiện có dùng manifest [`dual-20261121-125423_manifest.json`](runs/qa_vg_psg_xai/dual-20261121-125423_manifest.json) và kết quả XAI `xai-20261121-130842/`:
+
+| Đường dẫn | Nội dung |
+|---|---|
+| `t1_qa_cn_no_sg_sage/dual-20261121-125423_vg_seed{0,1,2}/` | Ba checkpoint VG; mỗi thư mục có `model.pt`, `config.json`, `train_info.json`, `metrics.json`, `protocol_result.json`, `ranks_test_full.json`. |
+| `psg_qa_cn/dual-20261121-125423_psg_seed{0,1,2}/` | Ba checkpoint PSG cùng bộ file. |
+| `xai-20261121-130842/xai_results.csv` | 216 dòng XAI thô: 2 bộ × 12 caption × 3 model seed × 3 mức k. |
+| `xai-20261121-130842/selected_cases.json`, `explanations.json`, `summary.json` | Case đã chọn, cạnh/đường đi giải thích và 24 nhóm số liệu tổng hợp. |
+| [`xai-20261121-130842/analysis/`](runs/qa_vg_psg_xai/xai-20261121-130842/analysis/) | CSV đã sửa seed, sáu JSON theo model seed, bảng theo nhóm/seed, hai hình, bootstrap CI, `case_studies_10.csv`, 15 ảnh minh họa trong `case_images/` và [`report.md`](runs/qa_vg_psg_xai/xai-20261121-130842/analysis/report.md). |
+
+**Đọc kết quả của lượt này:** cột `seed` trong CSV thô chứa seed của random baseline, nên sáu file `xai-20261121-130842/{vg,psg}_seed{0,1,2}.json` rỗng. Dùng `analysis/xai_results_corrected.csv` hoặc `analysis/*_seed*_corrected.json` khi phân tích theo **model seed**. `summary.json` thô vẫn tổng hợp đủ 216 dòng; notebook tổng hợp giữ nguyên dữ liệu thô và ghi bản sửa riêng trong `analysis/`. Mã notebook XAI đã sửa cách ghi seed cho lượt chạy sau.
+
+Xem [`analysis/report.md`](runs/qa_vg_psg_xai/xai-20261121-130842/analysis/report.md) để đọc đầy đủ metric và giới hạn. Ở k=3, mức giảm điểm fuse trung bình của cạnh giải thích so với cạnh ngẫu nhiên là **0,902 so với 0,173** trên VG và **1,723 so với 0,726** trên PSG. Đây là điểm fuse đã chuẩn hóa, không phải mức tăng MRR. Mỗi bộ chỉ có 12 caption được chọn theo kết quả seed 0; coverage vùng cạnh 2-hop được xét dưới 1%. Hai cấu hình dùng GNN và tập cạnh khác nhau nên không quy chênh lệch giữa hai bộ riêng cho dataset.
+
+Sau khi clone commit chứa snapshot, các bảng/checkpoint/ảnh của lượt này đã có sẵn trong `duong/runs/`. Manifest vẫn ghi đường dẫn tuyệt đối `/content/drive/MyDrive/...`; muốn chạy lại notebook ở máy local cần đổi đường dẫn và có hai bundle VG/PSG bên ngoài `runs/`. Chạy lại cell cuối của notebook tổng hợp sẽ tạo lại bản `report.md` ngắn và ghi đè phần diễn giải đã bổ sung thủ công.

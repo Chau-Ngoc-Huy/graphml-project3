@@ -1,0 +1,9 @@
+dataset,group,seed0_outcome,caption_id,query,top_image_id,gt_image_id,gt_rank_before,gt_rank_after,top_rank_after,advantage,edges
+psg,direct,failure,76884,A person sits on top of a motorcycle with others.,4491,15368,13,12,46,0.8868470167874443,motorcycle -[contains]-> image:4491; person -[contains]-> image:4491; road -[contains]-> image:4491
+psg,direct,success,58392,A horse walks between cars in a parking lot.,11672,11672,1,1,1,1.041289343247825,horse -[contains]-> image:11672; car -[contains]-> image:11672; road -[contains]-> image:11672
+psg,indirect,failure,73603,A group of women playing video games together,14686,14713,13,12,13,1.062060102803491,remote -[contains]-> image:14686; person -[contains]-> image:14686; tv -[contains]-> image:14686
+psg,indirect,success,66698,A man walking down the street carrying a suitcase.,13333,13333,1,4,4,0.9074854983397652,suitcase -[contains]-> image:13333; person -[contains]-> image:13333; pavement -[contains]-> image:13333
+vg,direct,failure,85390,Two zebras and another animal grazing in the grass.,18104,17067,11,10,15,0.9353114575588166,zebra -[contains]-> image:18104; antelope -[contains]-> image:18104; grass -[contains]-> image:18104
+vg,direct,success,6120,several people hold umbrellas in a rain storm,1223,1223,1,8,8,0.9058013493012356,umbrella -[contains]-> image:1223; rain -[contains]-> image:1223; people -[contains]-> image:1223
+vg,indirect,failure,47795,a giraffe in an enclosure at an animal park.,4068,9552,20,20,7,0.4504259394011268,giraffe -[contains]-> image:4068; zebra -[contains]-> image:4068; fence -[contains]-> image:4068
+vg,indirect,success,68975,Car buried in snow next to what might be a gas pump.,13786,13786,1,1,1,0.5832440536606068,car -[contains]-> image:13786; snow -[contains]-> image:13786; meter -[contains]-> image:13786
