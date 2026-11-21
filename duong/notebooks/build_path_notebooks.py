@@ -21,6 +21,7 @@ ROOT = Path('/content/drive/MyDrive') if Path('/content/drive/MyDrive/graphml-pr
 DUONG = ROOT/'graphml-project3/duong'
 sys.path.insert(0,str(DUONG))
 from xai.review_workbook import baseline_review_pack, create_review_workbook
+from xai.image_download import fetch_review_image
 from xai.query_registry import validated_registry_rows, import_reviewed_queries
 SNAP = DUONG/'runs/qa_vg_psg_xai/xai-20261121-130842'
 REG = DUONG/'review/queries_relational_candidates.csv'
@@ -50,22 +51,30 @@ M('''## 3 · Excel kiểm chứng
 
 Workbook baseline nhúng 10 cặp ảnh GT/top-1 đã tải và các cạnh mô hình chọn. Workbook query mới chứa URL và nhúng ảnh khi tải được. Hai reviewer chấm độc lập; đưa bản đã hòa giải vào `REVIEWED_WORKBOOK`, nhập thành CSV mới và giữ registry nguồn bất biến.'''),
 C('''baseline_review_pack(SNAP,DUONG/'review/baseline_case_review_10.xlsx')
-import urllib.request
 DOWNLOAD_QUERY_IMAGES=Path('/content').is_dir()
+ALLOW_UNVERIFIED_TLS=True  # public dataset images only; each fallback is recorded in the manifest
 image_dir=DUONG/'review/query_images'; image_dir.mkdir(exist_ok=True)
-cases=[]
+cases=[]; download_records=[]
 for r in registry.to_dict('records'):
     case={'dataset':r['dataset'],'query_id':r['query_id'],'query':r['query'],'source_group':r['source_group'],'gt_image_id':r['gt_image_id'],'retrieved_image_id':r['hard_negative_candidate_id'],'retrieval_outcome':'pending visual review','explanation_level':'pre-XAI candidate','path_or_edge_text':'annotate claim before XAI','gt_source_url':r['gt_source_url'],'retrieved_source_url':r['hard_negative_source_url'],'review_status':'pending'}
     if DOWNLOAD_QUERY_IMAGES:
         for role,url_key,file_key in [('gt','gt_source_url','gt_image_file'),('negative','retrieved_source_url','retrieved_image_file')]:
             path=image_dir/f"{r['dataset']}_{r['query_id']}_{role}.jpg"
             try:
-                if not path.is_file(): urllib.request.urlretrieve(case[url_key],path)
-                case[file_key]=str(path) if path.stat().st_size>0 else ''
-            except Exception as exc: print('Image unavailable:',r['query_id'],role,str(exc)[:80])
+                info=fetch_review_image(case[url_key],path,allow_unverified_tls=ALLOW_UNVERIFIED_TLS)
+                case[file_key]=str(path)
+                download_records.append({'dataset':r['dataset'],'query_id':r['query_id'],'role':role,**info})
+            except Exception as exc:
+                download_records.append({'dataset':r['dataset'],'query_id':r['query_id'],'role':role,'source_url':case[url_key],'status':'failed','error':str(exc)})
+                print('Image unavailable:',r['query_id'],role,str(exc)[:180])
     cases.append(case)
 create_review_workbook(cases,[],DUONG/'review/query_candidates_40.xlsx',DUONG)
 print(DUONG/'review/baseline_case_review_10.xlsx',DUONG/'review/query_candidates_40.xlsx')
+if DOWNLOAD_QUERY_IMAGES:
+    pd.DataFrame(download_records).to_csv(DUONG/'review/image_download_manifest.csv',index=False)
+    downloaded=sum(record['status']!='failed' for record in download_records)
+    print('Downloaded/available images:',downloaded,'/',len(download_records))
+    if downloaded==0: raise RuntimeError('No images could be downloaded; inspect image_download_manifest.csv')
 REVIEWED_WORKBOOK=None  # Path('.../adjudicated_query_review.xlsx')
 if REVIEWED_WORKBOOK:
     verified=import_reviewed_queries(REG,REVIEWED_WORKBOOK,DUONG/'review/queries_relational_verified.csv')
@@ -208,7 +217,7 @@ M('''# E · Phân tích fidelity, coverage và validity độc lập
 
 **Câu hỏi:** đường có là lý do hợp lý cho truy vấn–ảnh không? Notebook CPU đọc một lượt `path-*` hoàn tất. Bootstrap theo **query**, giữ seed trong cụm; coverage tính trên mọi case đăng ký, kể cả `no_relational_explanation`. Fidelity chỉ so với random path khớp cấu trúc khi có đối chứng độc lập. Logic và căn cứ ảnh chờ hai người chấm; score drop không tự cho nhãn validity.'''),
 C('''from pathlib import Path
-import json,sys,urllib.request
+import json,sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -216,6 +225,7 @@ ROOT=Path('/content/drive/MyDrive') if Path('/content/drive/MyDrive/graphml-proj
 DUONG=ROOT/'graphml-project3/duong'; RUNS=DUONG/'runs/qa_vg_psg_xai'
 sys.path.insert(0,str(DUONG))
 from xai.review_workbook import create_review_workbook
+from xai.image_download import fetch_review_image
 RESULTS_DIR=None  # set an explicit completed path-* directory for the report
 if RESULTS_DIR is None:
     complete=sorted(p.parent for p in RUNS.glob('path-*/complete.json'))
@@ -302,10 +312,11 @@ def choose_outcome(outcome):
 chosen=pd.concat([choose_outcome('success'),choose_outcome('failure')])
 assert len(chosen)==10,'Need five success and five failure.'
 image_dir=analysis/'case_images'; image_dir.mkdir(exist_ok=True)
+ALLOW_UNVERIFIED_TLS=True  # public dataset images only; provenance is saved below
 path_index={}
 for p in paths:
     if p.get('model_seed')==0 and p.get('screen_path_limit')==limit: path_index.setdefault((p['dataset'],str(p['query_id'])),[]).append(p)
-review_cases=[]; review_steps=[]
+review_cases=[]; review_steps=[]; download_records=[]
 for row in chosen.to_dict('records'):
     ps=[p for p in path_index.get((row['dataset'],str(row['query_id'])),[]) if 3 in p.get('selected_at_budgets',[])]
     row['explanation_level']='relational_connectivity' if ps else 'no_relational_explanation'
@@ -313,16 +324,20 @@ for row in chosen.to_dict('records'):
     for role,url_key,file_key in [('gt','gt_source_url','gt_image_file'),('retrieved','retrieved_source_url','retrieved_image_file')]:
         path=image_dir/f"{row['dataset']}_{row['query_id']}_{role}.jpg"
         try:
-            if not path.is_file(): urllib.request.urlretrieve(row[url_key],path)
-            row[file_key]=str(path) if path.stat().st_size>0 else ''
+            info=fetch_review_image(row[url_key],path,allow_unverified_tls=ALLOW_UNVERIFIED_TLS)
+            row[file_key]=str(path)
+            download_records.append({'dataset':row['dataset'],'query_id':row['query_id'],'role':role,**info})
         except Exception as exc:
-            row[file_key]=''; print('Image unavailable:',row['query_id'],str(exc)[:80])
+            row[file_key]=''; download_records.append({'dataset':row['dataset'],'query_id':row['query_id'],'role':role,'source_url':row[url_key],'status':'failed','error':str(exc)})
+            print('Image unavailable:',row['query_id'],role,str(exc)[:180])
     review_cases.append(row)
     if not ps: review_steps.append({'dataset':row['dataset'],'query_id':row['query_id'],'target_image_id':row['retrieved_image_id'],'path_id':'no_path'})
     for p in ps:
         for i,e in enumerate(p['edge_ids']):
             review_steps.append({'dataset':row['dataset'],'query_id':row['query_id'],'target_image_id':row['retrieved_image_id'],'path_id':p['path_id'],'step_index':i+1,'edge_id':e,'source_node':p['node_ids'][i],'target_node':p['node_ids'][i+1],'predicate_hint':p['predicates'][i],'edge_type':p['edge_types'][i],'edge_provenance':p['sources'][i],'model_score_drop':p['final_score_drop']})
 workbook=create_review_workbook(review_cases,review_steps,analysis/'validity_case_review_10.xlsx',analysis)
+pd.DataFrame(download_records).to_csv(analysis/'image_download_manifest.csv',index=False)
+print('Downloaded/available images:',sum(r['status']!='failed' for r in download_records),'/',len(download_records))
 annotations=pd.DataFrame(review_steps)
 for col in ['reviewer','object_supported','predicate_direction_valid','new_information','visual_evidence','step_decision','support_source','evidence_reason','whole_path_decision','adjudicated_decision']:
     annotations[col]=''

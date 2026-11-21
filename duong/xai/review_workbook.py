@@ -12,6 +12,8 @@ import zipfile
 from pathlib import Path
 from xml.sax.saxutils import escape
 
+from .image_download import _candidates
+
 
 def _col(index: int) -> str:
     result = ""
@@ -27,7 +29,7 @@ def _cell(value, address: str, style: int = 0) -> str:
     if isinstance(value, (int, float)) and not isinstance(value, bool):
         return f'<c r="{address}" s="{style}"><v>{value}</v></c>'
     if isinstance(value, str) and value.startswith(('https://', 'http://')):
-        url = escape(value.replace('"', '""'))
+        url = escape(_candidates(value)[0].replace('"', '""'))
         return f'<c r="{address}" s="{style}"><f>HYPERLINK("{url}","open image")</f><v></v></c>'
     safe = escape(str(value), {'"': '&quot;'})
     return f'<c r="{address}" s="{style}" t="inlineStr"><is><t xml:space="preserve">{safe}</t></is></c>'

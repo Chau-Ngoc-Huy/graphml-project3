@@ -1,4 +1,6 @@
 # Colab notebooks install the trained model dependencies from huy/pyproject.toml.
 # The XAI core tests use only the standard library; pytest is optional.
 pytest>=7.4
+requests>=2.31
+certifi>=2024.2.2
 
