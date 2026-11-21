@@ -17,7 +17,7 @@ Mục tiêu là giải thích vì sao một ảnh được xếp hạng cao bằ
 | xAI extractor | Trích xuất các cạnh/đường đi có đóng góp cho từng `(query, image)` | Edge/path list, contribution, graph con |
 | xAI evaluation | Fidelity, sparsity, structural validity, evidence support; baseline xóa cạnh ngẫu nhiên | Bảng metric và phân tích trường hợp |
 | Truy vấn đánh giá | Tối thiểu 10 truy vấn phân tích định lượng; ưu tiên dùng bộ ≥20 truy vấn trực tiếp/gián tiếp của nhóm | `queries.csv`, case studies |
-| Demo | Nhập truy vấn → hiển thị top-k ảnh → giải thích → kiểm tra thay đổi score/rank | Notebook chạy lại được |
+| Thí nghiệm Colab | Chạy checkpoint VG/PSG → giải thích → kiểm tra thay đổi score/rank | Notebook và CSV/JSON chạy lại được |
 
 ## 2. Kiến trúc tổng thể
 
@@ -31,65 +31,41 @@ flowchart TD
     G --> X
     X --> M[Đánh giá Fidelity / Sparsity / Validity]
     R --> M
-    O --> D[Notebook demo]
+    O --> D[Notebook XAI trên Colab]
     X --> D
 ```
 
 Module xAI nhận graph, danh sách ảnh ứng viên và scorer; tạo explanation, can thiệp lên graph rồi đo ảnh hưởng đến score/rank. Điểm tích hợp với pipeline của nhóm là `image_id`, `query_id`, graph schema, scorer interface, split/seed và các bảng kết quả được thống nhất.
 
-## 3. Cấu trúc thư mục mã nguồn đề xuất
-
-Đây là **cấu trúc cần tạo khi bắt đầu triển khai**, không phải tuyên bố các module Python đã được viết sẵn.
+## 3. Cấu trúc hiện dùng
 
 ```text
-task3/
-├── README.md                         # Nội dung tổng quan (tài liệu này)
-├── 01_XAI_Explainability_Plan.md      # Checklist triển khai xAI
-├── requirements.txt                   # Các thư viện cần thiết
-├── .gitignore                         # Bỏ qua cache, model weights, ảnh lớn
-│
-├── configs/
-│   ├── config.yaml                    # Đường dẫn dữ liệu, seed, alpha, top-k...
-│   ├── graph_schema.json              # Node types, relation types, ràng buộc cạnh
-│   └── relation_vocab.json            # Danh sách quan hệ và mapping chuẩn hóa
-│
+duong/
 ├── xai/
-│   ├── __init__.py
-│   ├── scorer_adapter.py              # Interface score(); mock scorer và model thật
-│   ├── explain.py                     # Trích top edges / paths theo đóng góp
-│   ├── perturbation.py                # Mask/remove edges và chạy lại scoring
-│   ├── evaluate_xai.py                # Fidelity, sparsity, validity, random baseline
-│   ├── visualize.py                   # Vẽ explanation graph, score/rank trước-sau
-│   └── queries.csv                    # Bộ truy vấn đánh giá và ground truth
-│
-├── integration/
-│   ├── graph_io.py                    # Đọc/ghi graph từ dữ liệu nhóm
-│   └── retrieval_adapter.py           # Kết nối CLIP / GNN / reranker của nhóm
-│
-├── experiments/
-│   ├── xai_results.csv                # Metric theo query/image/seed/k
-│   ├── figures/                       # Biểu đồ phân tích
-│   └── case_studies/                  # 5 success + 5 failure, evidence liên quan
-│
+│   ├── model.py            # QA scorer thật cho VG/PSG và graph can thiệp
+│   ├── graph.py            # Node, Edge, schema, local graph
+│   ├── scorer_adapter.py   # Giao diện score trên tập ứng viên cố định
+│   ├── perturbation.py     # Xóa cạnh, chấm điểm lại, random baseline, rank
+│   ├── explain.py          # Leave-one-edge-out và top-k cạnh
+│   ├── evaluate_xai.py     # Fidelity, sparsity, validity
+│   ├── io.py               # Xuất explanation
+│   └── queries.csv         # Catalog truy vấn tham khảo, chưa dùng ở hai notebook
 ├── notebooks/
-│   └── demo_task3.ipynb               # Truy vấn → top-k → giải thích → perturbation
-│
-└── tests/
-    ├── test_scorer_adapter.py
-    └── test_xai_metrics.py
+│   ├── train_vg_psg_for_xai_colab.ipynb
+│   └── xai_vg_psg_colab.ipynb
+└── tests/                  # Fixture nhỏ và test cho lõi XAI
 ```
 
-**Lưu ý tổ chức repo:** Nếu nhóm có repo chung, có thể đặt toàn bộ cấu trúc trên dưới `task3/` hoặc `src/task3/`. Không cần sao chép mô hình CLIP/GNN và dataset lớn vào đây: sử dụng checkpoint/path và adapter trỏ sang artifact chung. Các tệp `.csv` trong sơ đồ là **đầu ra dự kiến**, không bắt buộc commit ảnh hoặc dữ liệu có hạn chế phân phối.
+Checkpoint, bundle và kết quả lớn nằm trên MyDrive; repo chỉ giữ mã và notebook.
 
 ## 4. Các module cần thực hiện
 
 ### 4.1. Module xAI
 
-- **`scorer_adapter.py`:** Thống nhất API tính `clip_score`, `graph_score`, `final_score`. Hỗ trợ scorer mẫu để kiểm thử và adapter cho scorer GNN/reranker thật của nhóm.
+- **`scorer_adapter.py`:** Thống nhất API tính `clip_score`, `graph_score`, `final_score` và kết nối scorer GNN thật.
 - **`explain.py`:** Xác định đồ thị con ảnh hưởng tới dự đoán, đo đóng góp từng cạnh/đường đi và chọn explanation ngắn gọn.
 - **`perturbation.py`:** Thực hiện xóa/mask cạnh explanation hoặc cạnh ngẫu nhiên; **tính lại graph-dependent score** trên graph sau can thiệp.
 - **`evaluate_xai.py`:** Đo giảm score, đổi hạng, sparsity, validity và so sánh với random baseline.
-- **`visualize.py`:** Hiển thị graph/path và các giá trị giải thích được trong notebook.
 
 Các metric cốt lõi:
 
@@ -144,7 +120,7 @@ Khi thành phần upstream chưa sẵn sàng, dùng graph/scorer mẫu **chỉ �
 
 - [ ] Có xAI extractor gắn với **cơ chế score thật**, không chỉ tạo đường đi hậu kiểm.
 - [ ] Có fidelity, sparsity, validity và phép thử explanation-vs-random trên **ít nhất 10 truy vấn**.
-- [ ] Có phân tích **5 retrieval success + 5 retrieval failure** và notebook hiển thị explanation.
+- [ ] Có phân tích **5 retrieval success + 5 retrieval failure** và notebook xuất explanation có provenance.
 - [ ] Có split/seed cố định, không dùng test để tuning hoặc tạo cạnh thống kê, và các thí nghiệm chính có thể chạy lại.
 - [ ] Có hướng dẫn cài dependencies và các entry point chạy; không cần dựng web app hoàn chỉnh.
 
@@ -156,67 +132,26 @@ Khi thành phần upstream chưa sẵn sàng, dùng graph/scorer mẫu **chỉ �
 - Không nhầm **tính hợp lệ của cạnh** với **mức ảnh hưởng thực tế của cạnh lên quyết định xếp hạng**.
 - Ưu tiên mã có thể kiểm thử, kết quả tái lập, nguồn dữ liệu minh bạch và demo ngắn gọn.
 
-## 9. Implementation xAI hiện có
+## 9. Lõi XAI hiện có
 
-Phần xAI đã được cài đặt trong `xai/` và chạy độc lập. Core không phụ thuộc thư viện ngoài; `matplotlib` và `networkx` chỉ cần khi xuất hình.
+Các module `graph.py`, `scorer_adapter.py`, `perturbation.py`, `explain.py`, `evaluate_xai.py` và `io.py` được notebook XAI gọi trực tiếp hoặc gián tiếp. `model.py` chuyển graph can thiệp thành phép xóa cạnh thật trong QA scorer của Huy. Xóa cạnh quan hệ làm chạy lại `label_h`; xóa cạnh `contains` cập nhật nhãn ảnh, sau đó `graph_matrix` và phép fuse được tính lại trên đủ top-100 ứng viên. Cạnh ngoài tập sàng lọc vẫn giữ nguyên trong model.
 
-### Cài đặt và chạy nhanh
-
-Yêu cầu Python 3.10 trở lên.
+Test lõi dùng fixture nhỏ trong `tests/`, không phải kết quả thực nghiệm:
 
 ```bash
 cd duong
-python -m pip install -e '.[dev,viz]'
-python -m pytest -q
-python -m xai.cli --output-dir experiments/demo --top-k 2 --seed 0
+python -m unittest discover -s tests -v
 ```
 
-Nếu chỉ muốn chạy test core mà chưa cài pytest: `python -m unittest discover -s tests -v`.
+Notebook chọn caption và ground truth từ `mmxai_eval.Protocol` của từng bundle. `xai/queries.csv` vẫn là catalog tham khảo, không được notebook hai bundle sử dụng. `EvidenceSupportRate` coi trạng thái `uncertain` là chưa được hỗ trợ; provenance của cạnh và hỗ trợ thị giác/ngữ nghĩa cần được phân biệt. Đóng góp leave-one-out không được cộng như một phân rã tuyến tính khi scorer phi tuyến.
 
-Lệnh demo dùng graph/scorer mẫu có thể kiểm toán và ghi `explanation.json`, `xai_results.csv`. Đây chỉ là smoke test, không phải kết quả thực nghiệm của scorer GNN thật.
+## 10. VG và PSG trên Colab
 
-### Module
+Đặt `mmxai_vg_bundle/`, `mmxai_psg_bundle/` và repo `graphml-project3/` tại gốc MyDrive. Hai bundle đã có `huy_extra_cn`; không cần dựng lại nhãn hoặc tải ConceptNet. Chạy theo thứ tự:
 
-| Module | Vai trò |
-|---|---|
-| `xai/graph.py` | Node/edge ID ổn định, provenance, evidence status, schema và graph bất biến khi perturb |
-| `xai/scorer_adapter.py` | `Scorer` protocol, callback adapter cho model thật, mock path scorer |
-| `xai/explain.py` | Leave-one-edge-out, đóng góp graph/final score, chỉ tạo path khi cạnh thật sự nối nhau |
-| `xai/perturbation.py` | Delete/retain edge, score lại toàn candidate pool, rank ổn định |
-| `xai/evaluate_xai.py` | Fidelity, rank drop, random baseline, sparsity, structural/path validity, evidence support |
-| `xai/experiment.py` | Ma trận `k={1,3,5}`, nhiều seed, direct/indirect và chọn case success/failure |
-| `xai/io.py` | Đọc graph/schema JSON, ghi explanation JSON và results CSV |
-| `xai/visualize.py` | Tóm tắt text và vẽ explanation graph tùy chọn |
+1. `notebooks/train_vg_psg_for_xai_colab.ipynb`: huấn luyện VG với SAGE + ConceptNet (`t1_qa_cn_no_sg_sage`) và PSG với GAT + scene graph + ConceptNet (`psg_qa_cn`), mỗi bộ 3 seed; lưu sáu checkpoint và manifest có SHA256.
+2. `notebooks/xai_vg_psg_colab.ipynb`: kiểm tra SHA256 và replay hạng gốc, rồi gọi `EdgeContributionExplainer`, `XAIEvaluator` và adapter trong `xai/model.py` trên checkpoint thật. Xóa cạnh được đo trên cùng top-100 ứng viên, random baseline khớp loại cạnh. Xuất CSV/JSON theo dataset, seed, caption và k.
 
-`Scorer.score()` phải nhận toàn bộ candidate pool và trả đủ ba score cho mỗi ảnh:
+`xai/model.py` dùng chung kiến trúc QA của Huy và định nghĩa hai cấu hình bundle; trọng số, graph và α được lưu riêng theo dataset/seed. Đồ thị XAI chỉ chứa các cạnh được sàng lọc để can thiệp; khi chấm điểm, model vẫn giữ toàn bộ cạnh còn lại. Kết quả là case study chọn theo seed 0, không đại diện cho toàn bộ test. Notebook XAI dọn run, notebook và module demo cũ của Dương trên Drive chỉ sau khi đủ kết quả mới; không xóa bundle hoặc kết quả gốc của Huy.
 
-```python
-from xai import CallableScorerAdapter, ScoreComponents
-
-def score_fn(query, candidate_ids, perturbed_graph):
-    # 1. Chuyển perturbed_graph thành edge_index/edge_type.
-    # 2. Chạy LẠI model/QAData và graph score trên graph này.
-    # 3. Chuẩn hóa/fuse trên đúng candidate_ids như retrieval gốc.
-    return {
-        image_id: ScoreComponents(clip[image_id], graph_score[image_id], final[image_id])
-        for image_id in candidate_ids
-    }
-
-def local_edges_fn(query, image_id, graph):
-    # Trả đúng các cạnh trong receptive field/path mà scorer có thể sử dụng.
-    return edge_ids_in_model_receptive_field(query, image_id, graph)
-
-scorer = CallableScorerAdapter(score_fn, local_edges_fn)
-```
-
-Với QA scorer hiện tại của nhóm, `contains` có hướng `concept → image`; các cạnh `sg_rel`/`concept` nối concept với concept. Khi adapter nhận graph đã xóa cạnh, cần dựng lại tensor `edge_index`, danh sách label của ảnh và chạy lại `label_h`/`concept_image_match`. Không được tái sử dụng graph embedding đã cache từ full graph.
-
-### Chạy thí nghiệm chính
-
-- Dùng `xai/queries.csv` làm catalog; relevance vẫn lấy từ `khanh/queries/eval_queries.json`, không suy ra từ model.
-- Dùng `run_matrix(...)` với candidate pool cố định, `explanation_sizes=(1,3,5)` và `seeds=(0,1,2)`.
-- Chọn `alpha`, `k` và normalization trên validation. Test chỉ dùng để báo cáo.
-- Ghi một dòng cho từng `(query_id, image_id, seed, k)` vào `experiments/xai_results.csv`.
-- `select_balanced_case_studies(...)` chỉ chọn từ nhãn success/failure đã tính theo ground truth; không tự tạo relevance.
-
-`EvidenceSupportRate` coi `uncertain` là chưa được hỗ trợ, còn `EvidenceKnownRate` cho biết tỷ lệ đã được kiểm chứng (`supported` hoặc `unsupported`). Điều này tránh biến dữ liệu thiếu provenance thành bằng chứng dương. Đóng góp từng cạnh là leave-one-out và không được cộng lại như một decomposition tuyến tính khi scorer phi tuyến.
+Hai cấu hình dùng GNN và tập cạnh khác nhau, nên chênh lệch fidelity giữa VG và PSG không thể quy riêng cho dataset. Muốn so sánh tác động dataset, cần thêm một cặp thí nghiệm với cùng kiến trúc và cùng biến thể graph.

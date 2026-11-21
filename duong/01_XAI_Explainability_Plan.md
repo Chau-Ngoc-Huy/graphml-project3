@@ -6,8 +6,8 @@
 - [ ] Đánh giá định lượng ba khía cạnh: **fidelity**, **sparsity**, **validity**.
 - [ ] So sánh can thiệp lên cạnh quan trọng với can thiệp lên cạnh ngẫu nhiên.
 - [ ] Phân tích tối thiểu **10 truy vấn**, gồm trường hợp truy xuất đúng và sai; chuẩn bị **5 case thành công + 5 case thất bại**.
-- [ ] Tạo notebook minh họa: nhập truy vấn → kết quả top-k → explanation → điểm/thứ hạng thay đổi sau can thiệp.
-- [ ] Cho phép chạy độc lập bằng scorer mẫu trước khi tích hợp GNN/reranker của nhóm; **không** sử dụng kết quả scorer mẫu làm kết luận thực nghiệm cuối.
+- [ ] Tạo notebook chạy checkpoint thật: truy vấn test → top-k → explanation → điểm/thứ hạng thay đổi sau can thiệp.
+- [ ] Kiểm tra lõi XAI bằng scorer nhỏ trong `tests/`; **không** sử dụng kết quả fixture làm kết luận thực nghiệm cuối.
 
 **Ngoài phạm vi:** huấn luyện mô hình thị giác mới; xây thêm nhiều explainer; xây web app đầy đủ; đánh giá người dùng diện rộng.
 
@@ -23,8 +23,7 @@
 - [ ] Định nghĩa interface `explain(query, image_id, graph, scorer) -> [edge_id/path_id, contribution]`.
 - [ ] Định nghĩa interface `evaluate(query, image_id, explanation, scorer) -> metrics`.
 - [ ] Chuẩn hóa ID cạnh để không nhầm giữa cạnh quan hệ và cạnh ảnh–thực thể; lưu loại cạnh và nguồn gốc.
-- [ ] Viết scorer mẫu minh bạch: ví dụ graph score là tổng trọng số các đường đi query–entity–image phù hợp, chuẩn hóa về cùng thang với CLIP score.
-- [ ] Tạo adapter riêng để thay scorer mẫu bằng GCN/GAT/GraphSAGE hoặc phương pháp của nhóm, không sửa mã metric.
+- [ ] Tạo adapter cho QA scorer GAT/GraphSAGE của Huy mà không sửa mã metric.
 
 **Điều kiện bắt buộc:** khi xóa cạnh để kiểm tra fidelity, phải **tính lại graph score/forward pass với graph bị can thiệp**. Không chỉ xóa cạnh khỏi hình vẽ rồi giữ embedding/score cũ.
 
@@ -109,13 +108,13 @@
 
 ## 7. Đầu ra và báo cáo
 
-- [ ] `xai/scorer_adapter.py`: scorer mẫu + adapter scorer thật.
+- [ ] `xai/scorer_adapter.py` và `xai/model.py`: adapter scorer thật cho VG/PSG.
 - [ ] `xai/explain.py`: trích xuất top edges/paths dựa trên đóng góp.
 - [ ] `xai/evaluate_xai.py`: fidelity, sparsity, validity; random baseline.
 - [ ] `xai/queries.csv`: truy vấn, loại truy vấn, ground truth/relevance provenance.
 - [ ] `experiments/xai_results.csv`: một dòng cho mỗi `(query_id, image_id, method, seed, k, perturbation)`.
 - [ ] `experiments/case_studies/`: ≥10 case, gồm 5 success và 5 failure.
-- [ ] `demo_xai.ipynb`: hiển thị top-k ảnh, graph/path, edge contributions, score/rank trước và sau perturbation.
+- [ ] `notebooks/xai_vg_psg_colab.ipynb`: xuất explanation và score/rank trước và sau perturbation trên checkpoint thật.
 - [ ] Biểu đồ: fidelity explained vs random; fidelity–sparsity theo k; metric theo direct/indirect.
 - [ ] README: lệnh chạy, dependencies, schema, cách chọn split/seed và giới hạn của từng metric.
 
@@ -132,4 +131,4 @@
 - **Từ bộ phận baseline:** `image_ids`, CLIP scores, candidate selection, split IDs và metric retrieval.
 - **Từ bộ phận graph/GNN:** graph schema, graph builder, model checkpoint và hàm forward có thể nhận graph bị mask/xóa cạnh.
 - **Từ bộ phận phương pháp mới:** scorer tốt nhất và bộ truy vấn trực tiếp/gián tiếp dùng chung.
-- **Nếu chưa nhận được:** chạy đầy đủ unit test và phương pháp perturbation với scorer mẫu; để trống kết luận định lượng về GNN thật đến khi tích hợp được scorer.
+- **Nếu chưa nhận được:** chạy unit test với fixture nhỏ; để trống kết luận định lượng về GNN thật đến khi tích hợp được scorer.
