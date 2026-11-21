@@ -1,12 +1,15 @@
 \documentclass[conference]{IEEEtran}
 \usepackage{fontspec}
 \IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
-\usepackage{adjustbox,array,xurl,float}
+\usepackage{adjustbox,array,xurl,float,listings}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,breakatwhitespace=false,columns=fullflexible,keepspaces=true,frame=none,aboveskip=4pt,belowskip=4pt}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage{graphicx,booktabs,amsmath,url,multirow,tikz}
 \usetikzlibrary{arrows.meta,positioning,fit}
 \usepackage[hidelinks]{hyperref}
+\DeclareUrlCommand\fp{\urlstyle{tt}}
 \begin{document}
+\raggedbottom
 
 \title{Truy vấn văn bản--hình ảnh có khai thác đồ thị: so sánh CLIP, mạng nơ-ron đồ thị và AdaMF-MAT}
 
@@ -45,11 +48,11 @@ Nghiên cứu tập trung vào vai trò của thông tin quan hệ trong truy v�
 \textbf{VG$\cap$COCO.} Ảnh Visual Genome (VG)~\cite{vg} có \texttt{coco\_id} (51\,208 ảnh) kết hợp 5 caption MS-COCO~\cite{coco} mỗi ảnh theo chia Karpathy. Truy vấn là caption; phía đồ thị là scene graph VG (đối tượng và quan hệ, tên đã chuẩn hóa). Chia: train 15\,000 ảnh (lấy mẫu, seed 0), val 2\,126, test 2\,138; 96\,381 caption. \textbf{PSG$\cap$COCO.} Bộ dữ liệu thứ hai, PSG~\cite{psg}, cùng cấu trúc (scene graph panoptic + caption Karpathy): 18\,186 ảnh (train 15\,000, val 1\,000, test 2\,186), 90\,974 caption, 133 nhãn ảnh và 674 khái niệm mở rộng từ ConceptNet~\cite{cn}.
 
 \subsection{Tiền xử lý và trích đặc trưng VG}
-Mã tiền xử lý \texttt{yen/prepare\_visual\_genome.py} nhận \texttt{scene\_graphs.json}, \texttt{image\_data.json} và \texttt{dataset\_coco.json} (Karpathy). Mã ghép ảnh VG với caption bằng \texttt{coco\_id}, xuất scene graph con vào \texttt{vg/objects.json} và \texttt{vg/relationships.json}, cùng \texttt{captions.json} và \texttt{splits.json} theo hợp đồng dữ liệu chung. Khi object thiếu khỏi danh sách nhưng quan hệ còn chứa tên endpoint, object được khôi phục từ tên đó; nếu chỉ còn ID thì quan hệ được ghi vào \texttt{preprocess\_report.json} và không tự gán nhãn suy đoán.
+Mã tiền xử lý \fp{yen/prepare_visual_genome.py} nhận \texttt{scene\_graphs.json}, \texttt{image\_data.json} và \texttt{dataset\_coco.json} (Karpathy). Mã ghép ảnh VG với caption bằng \texttt{coco\_id}, xuất scene graph con vào \fp{vg/objects.json} và \fp{vg/relationships.json}, cùng \texttt{captions.json} và \texttt{splits.json} theo hợp đồng dữ liệu chung. Khi object thiếu khỏi danh sách nhưng quan hệ còn chứa tên endpoint, object được khôi phục từ tên đó; nếu chỉ còn ID thì quan hệ được ghi vào \texttt{preprocess\_report.json} và không tự gán nhãn suy đoán.
 
-Mặc định, mã dùng split COCO-ID cố định \texttt{thang/kaggle\_results/split/split.json}: train 15\,000, val 2\,126 và test 2\,138 ảnh. Các ID này được ánh xạ sang VG-ID qua \texttt{image\_data.json}; mã kiểm tra split không giao nhau và dừng nếu thiếu ảnh, caption hoặc scene graph bắt buộc. Thay thế, \texttt{--random-split --seed 0 --ratios 0.8 0.1 0.1} tạo split xác định từ danh sách COCO-ID đã sắp xếp rồi xáo trộn; các VG-ID cùng COCO-ID luôn thuộc một tập. Kết quả và seed được lưu trong \texttt{splits.json} để các lần chạy dùng chung, không chia lại theo caption hay theo mô hình.
+Mặc định, mã dùng split COCO-ID cố định \fp{thang/kaggle_results/split/split.json}: train 15\,000, val 2\,126 và test 2\,138 ảnh. Các ID này được ánh xạ sang VG-ID qua \texttt{image\_data.json}; mã kiểm tra split không giao nhau và dừng nếu thiếu ảnh, caption hoặc scene graph bắt buộc. Thay thế, \texttt{--random-split --seed 0 --ratios 0.8 0.1 0.1} tạo split xác định từ danh sách COCO-ID đã sắp xếp rồi xáo trộn; các VG-ID cùng COCO-ID luôn thuộc một tập. Kết quả và seed được lưu trong \texttt{splits.json} để các lần chạy dùng chung, không chia lại theo caption hay theo mô hình.
 
-Mã \texttt{yen/extract\_visual\_genome\_features.py} dùng OpenCLIP đóng băng (mặc định ViT-B/32, \texttt{laion2b\_s34b\_b79k}) để mã hóa ảnh, caption và tên nhãn. Kết quả float32 đã chuẩn hóa L2 được lưu trong \texttt{features/image\_emb.npy}, \texttt{caption\_emb.npy}, \texttt{label\_emb.npy}, kèm các tệp ID, \texttt{labels.json} và \texttt{clip\_model.json}. Từ vựng dùng để tạo embedding nhãn chỉ lấy từ object của ảnh train; caption và ảnh val/test được mã hóa bằng encoder đóng băng, không dùng để cập nhật trọng số.
+Mã \fp{yen/extract_visual_genome_features.py} dùng OpenCLIP đóng băng (mặc định ViT-B/32, \texttt{laion2b\_s34b\_b79k}) để mã hóa ảnh, caption và tên nhãn. Kết quả float32 đã chuẩn hóa L2 được lưu trong \fp{features/image_emb.npy}, \texttt{caption\_emb.npy}, \texttt{label\_emb.npy}, kèm các tệp ID, \texttt{labels.json} và \texttt{clip\_model.json}. Từ vựng dùng để tạo embedding nhãn chỉ lấy từ object của ảnh train; caption và ảnh val/test được mã hóa bằng encoder đóng băng, không dùng để cập nhật trọng số.
 
 \subsection{Giao thức}
 Hình~\ref{fig:pipe} tóm tắt pipeline. Mọi phương pháp dùng cùng tệp chia ảnh, cùng một mô hình CLIP (ViT-B/32, \texttt{laion2b\_s34b\_b79k}, đóng băng) và cùng bước chọn ứng viên: top-$K{=}100$ theo cosine; ảnh đúng nằm ngoài top-$K$ giữ nguyên hạng của CLIP. Điểm cuối là $s=\alpha\,z(\cos)+(1-\alpha)\,z(\text{đồ thị})$, trong đó $z(\cdot)$ là chuẩn hóa z-score theo truy vấn nhằm đưa hai thành phần về cùng thang đo; $\alpha$ \emph{chỉ} được chọn trên val. Số liệu báo cáo ở hai dạng: (a) gallery 1\,000 ảnh theo 3 seed (trung bình $\pm$ độ lệch chuẩn, kiểu COCO 1K); (b) toàn pool test (tất định) kèm kiểm định bootstrap ghép cặp theo truy vấn cho hiệu MRR giữa hai mô hình. Với mô hình học, seed điều khiển cả fold gallery và khởi tạo.
@@ -277,7 +280,7 @@ QA-Graph xáo cạnh & 62,75 & $+1{,}71$ [1,30; 2,14]\\\bottomrule
 \end{figure}
 
 \section{Giải thích mô hình và phạm vi MMKG}\label{sec:xai}
-\textbf{Phương pháp giải thích.} Giải thích phải đến từ chính cơ chế xếp hạng. Trong QA-Graph, điểm đồ thị của ảnh là tổng các đóng góp $m(c,i)$ theo khái niệm, mỗi $m(c,i)$ do nhãn khớp nhất và các cạnh GNN đã lan truyền đến nhãn đó. Vì vậy có thể trích cặp (nhãn khớp, đường đi cạnh trong đồ thị nhãn) làm giải thích. Mã trích xuất và can thiệp nằm ở \texttt{duong/xai} (\texttt{explain}, \texttt{perturbation}, \texttt{evaluate\_xai}). Để kiểm chứng, các cạnh được chọn bị xóa hoặc làm nhiễu rồi điểm đồ thị được tính lại; fidelity là độ giảm điểm và thay đổi hạng so với xóa ngẫu nhiên cùng số cạnh; sparsity là $1-\#\text{cạnh giải thích}/\#\text{cạnh ứng viên cục bộ}$; validity là việc cạnh tồn tại trong đồ thị và đúng lược đồ.
+\textbf{Phương pháp giải thích.} Giải thích phải đến từ chính cơ chế xếp hạng. Trong QA-Graph, điểm đồ thị của ảnh là tổng các đóng góp $m(c,i)$ theo khái niệm, mỗi $m(c,i)$ do nhãn khớp nhất và các cạnh GNN đã lan truyền đến nhãn đó. Vì vậy có thể trích cặp (nhãn khớp, đường đi cạnh trong đồ thị nhãn) làm giải thích. Mã trích xuất và can thiệp nằm ở \fp{duong/xai} (\texttt{explain}, \texttt{perturbation}, \texttt{evaluate\_xai}). Để kiểm chứng, các cạnh được chọn bị xóa hoặc làm nhiễu rồi điểm đồ thị được tính lại; fidelity là độ giảm điểm và thay đổi hạng so với xóa ngẫu nhiên cùng số cạnh; sparsity là $1-\#\text{cạnh giải thích}/\#\text{cạnh ứng viên cục bộ}$; validity là việc cạnh tồn tại trong đồ thị và đúng lược đồ.
 
 \textbf{Kết quả định lượng.} Chưa có kết quả fidelity, validity và sparsity trên các truy vấn thực với mô hình QA-Graph đã huấn luyện. Thử nghiệm trên dữ liệu tổng hợp chỉ kiểm tra đường chạy, không được xem là bằng chứng thực nghiệm và không được đưa vào so sánh định lượng.
 
@@ -309,7 +312,7 @@ Chênh lệch & $+6{,}81$ & $+0{,}64$\\\bottomrule
 \end{adjustbox}
 \end{table}
 
-\textbf{Trường hợp cần suy luận quan hệ.} Cách phân nhóm tự động ở trên khác với benchmark quan hệ: direct yêu cầu bộ ba $(s,p,o)$ có trong annotation; indirect yêu cầu ảnh dương chỉ có đường nối hai bước $s\!\to\!x\!\to\!o$ và không có cạnh đích $(s,p,o)$. Ví dụ direct đối chứng trong \texttt{yen/relation\_queries.json} là ``A man is playing tennis'' (truy vấn d01, cạnh \texttt{man--playing--tennis}). Ví dụ indirect minh họa là $(\text{child},\text{plays},\text{football})$: chỉ thấy các thực thể riêng lẻ chưa đủ, mô hình phải dùng cấu trúc quan hệ đã học để phân biệt ảnh dương với ảnh âm có cùng thực thể nhưng thiếu cạnh cần thiết. Bộ sinh truy vấn trong \texttt{khanh/src/build\_eval\_queries.py} mô tả tiêu chí này; các truy vấn trong \texttt{yen/relation\_queries.json} hiện chưa được kiểm tra bằng mắt và chưa có kết quả xếp hạng đã căn chỉnh theo từng câu. Do đó hai truy vấn trên chỉ minh họa định nghĩa, không được tính là một trong 5 thành công hay 5 thất bại và không gán hạng dự đoán cho chúng.
+\textbf{Trường hợp cần suy luận quan hệ.} Cách phân nhóm tự động ở trên khác với benchmark quan hệ: direct yêu cầu bộ ba $(s,p,o)$ có trong annotation; indirect yêu cầu ảnh dương chỉ có đường nối hai bước $s\!\to\!x\!\to\!o$ và không có cạnh đích $(s,p,o)$. Ví dụ direct đối chứng trong \fp{yen/relation_queries.json} là ``A man is playing tennis'' (truy vấn d01, cạnh \texttt{man--playing--tennis}). Ví dụ indirect minh họa là $(\text{child},\text{plays},\text{football})$: chỉ thấy các thực thể riêng lẻ chưa đủ, mô hình phải dùng cấu trúc quan hệ đã học để phân biệt ảnh dương với ảnh âm có cùng thực thể nhưng thiếu cạnh cần thiết. Bộ sinh truy vấn trong \fp{khanh/src/build_eval_queries.py} mô tả tiêu chí này; các truy vấn trong \fp{yen/relation_queries.json} hiện chưa được kiểm tra bằng mắt và chưa có kết quả xếp hạng đã căn chỉnh theo từng câu. Do đó hai truy vấn trên chỉ minh họa định nghĩa, không được tính là một trong 5 thành công hay 5 thất bại và không gán hạng dự đoán cho chúng.
 
 
 \begin{table*}[t]
@@ -346,7 +349,7 @@ TB & no\_concept & 1\,291 & I am unable to see the image above. & dot, table, gl
 Đồ thị cải thiện truy vấn ảnh một cách đo được và được ablation xác nhận: $+1{,}4$ đến $+1{,}9$ MRR so với nền có adapter trên hai bộ dữ liệu, và xáo cạnh làm điểm thấp hơn nền. Lợi ích tập trung ở truy vấn trực tiếp. AdaMF-MAT tái lập đúng bài báo nhưng không vượt baseline khớp tên khi dùng cho truy vấn ảnh. Các bước tiếp theo là kiểm tra truy vấn gián tiếp bằng cách ẩn đối tượng, thêm tri thức từ Wikidata và hoàn thành giải thích định lượng.
 
 \section{Tái lập và khai báo}
-Mã nguồn, lệnh chạy và hướng dẫn tái lập được lưu tại \url{https://github.com/Chau-Ngoc-Huy/graphml-project3}; giao diện kết quả CLIP tại \url{https://minhthang03.github.io/mmxai-task1-clip-baseline/web/}. Nhật ký thí nghiệm được lưu trong kho mã; hiện chưa có liên kết Weights \& Biases công khai. Nghiên cứu sử dụng mã nguồn mở của AdaMF-MAT và OpenCLIP, cùng các bộ dữ liệu có giấy phép công khai được nêu tại mục~\ref{sec:data}. Công cụ AI được sử dụng để hỗ trợ viết mã và biên tập bản thảo; các tác giả chịu trách nhiệm về nội dung và số liệu được báo cáo.
+Mã nguồn, lệnh chạy và hướng dẫn tái lập được lưu tại \url{https://github.com/Chau-Ngoc-Huy/graphml-project3}; các đường dẫn tệp trong báo cáo đều tính từ gốc kho này (ví dụ \fp{thang/web/} cho giao diện kết quả CLIP). Nhật ký thí nghiệm được lưu trong kho mã; hiện chưa có liên kết Weights \& Biases công khai. Nghiên cứu sử dụng mã nguồn mở của AdaMF-MAT và OpenCLIP, cùng các bộ dữ liệu có giấy phép công khai được nêu tại mục~\ref{sec:data}. Công cụ AI được sử dụng để hỗ trợ viết mã và biên tập bản thảo; các tác giả chịu trách nhiệm về nội dung và số liệu được báo cáo.
 
 
 \section*{Phụ lục A: Các truy vấn đánh giá trực tiếp và gián tiếp}
@@ -354,7 +357,7 @@ Mã nguồn, lệnh chạy và hướng dẫn tái lập được lưu tại \ur
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
 \begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{L{3.9cm}L{3.9cm}}
+\begin{tabular}{L{3.9cm}L{4.4cm}}
 \toprule
 Trực tiếp (số ảnh dương) & Gián tiếp (số ảnh dương)\\\midrule
 zebra standing on field (6) & woman holding boy (28)\\
@@ -375,11 +378,11 @@ boy watching tv (5) & broccoli sitting on plate (38)\\\bottomrule
 
 \section*{Phụ lục B: Tái lập thí nghiệm}
 Môi trường gồm Python 3, PyTorch, \texttt{open\_clip}, PyTorch Geometric và FAISS; các thí nghiệm chính chạy trên GPU T4, một số lượt chạy cục bộ dùng CPU. Để tạo bundle Visual Genome theo hợp đồng MMXAI, chạy:
-\begin{verbatim}
+\begin{lstlisting}
 python yen/prepare_visual_genome.py --scene-graphs <scene_graphs.json> --image-data <image_data.json> --coco-captions <dataset_coco.json>
 python yen/extract_visual_genome_features.py --data yen/data/visual_genome_mmxai --images-dir <VG_100K> <VG_100K_2>
-\end{verbatim}
-Lệnh đầu mặc định dùng split COCO-ID cố định; dùng \texttt{--random-split --seed 0 --ratios 0.8 0.1 0.1} để tạo split riêng. Đặc tả đầu vào, đầu ra và biện pháp chống rò rỉ ở mục~\ref{sec:data}; dữ liệu gốc và embedding không được đưa vào Git. Notebook \texttt{thang/task1\_clip\_baseline\_kaggle.ipynb} tái tạo benchmark, split và \texttt{task1\_bundle}. Pipeline GNN nằm trong \texttt{huy/} (lệnh \texttt{make local}/\texttt{make push}, cấu hình trong \texttt{src/mmxai/experiments}); các notebook AdaMF-MAT là \texttt{khanh/kaggle/protocol\_adamf\_kaggle.ipynb} (khoảng 3 giờ trên T4$\times$2) và \texttt{khanh/kaggle/adamf\_mat\_kaggle.ipynb}; so sánh ghép cặp được thực hiện bằng \texttt{khanh/tools/paired\_vs\_huy.py}. Chi tiết phụ thuộc từng thành phần được mô tả trong README tương ứng.
+\end{lstlisting}
+{\raggedright Lệnh đầu mặc định dùng split COCO-ID cố định; dùng \texttt{--random-split --seed 0 --ratios 0.8 0.1 0.1} để tạo split riêng. Đặc tả đầu vào, đầu ra và biện pháp chống rò rỉ ở mục~\ref{sec:data}; dữ liệu gốc và embedding không được đưa vào Git. Notebook \fp{thang/task1_clip_baseline_kaggle.ipynb} tái tạo benchmark, split và \texttt{task1\_bundle}. Pipeline GNN nằm trong \fp{huy/} (lệnh \texttt{make local}/\texttt{make push}, cấu hình trong \fp{huy/src/mmxai/experiments}); các notebook AdaMF-MAT là \fp{khanh/kaggle/protocol_adamf_kaggle.ipynb} (khoảng 3 giờ trên T4$\times$2) và \fp{khanh/kaggle/adamf_mat_kaggle.ipynb}; so sánh ghép cặp được thực hiện bằng \fp{khanh/tools/paired_vs_huy.py}. Chi tiết phụ thuộc từng thành phần được mô tả trong README tương ứng.\par}
 
 \begin{thebibliography}{99}
 \bibitem{clip} A. Radford \emph{et al.}, ``Learning transferable visual models from natural language supervision,'' in \emph{Proc. Int. Conf. Mach. Learn. (ICML)}, 2021.
