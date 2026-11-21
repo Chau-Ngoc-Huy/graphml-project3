@@ -66,7 +66,7 @@ Với mỗi truy vấn có đúng một ảnh đúng (ảnh có caption đó), g
   grp/.style={draw, dashed, rounded corners=3pt, inner sep=5pt},
   arr/.style={->, thick}]
 \node[box] (q) at (0,0) {Truy vấn\\(văn bản)};
-\node[box] (c) at (3.2,0) {Mã hóa CLIP\\(giữ nguyên trọng số)};
+\node[box] (c) at (3.2,0) {CLIP tạo\\vectơ đặc trưng};
 \node[box] (k) at (6.6,0) {Top-$k$ ứng viên\\theo cosine (FAISS)};
 \node[box, fill=green!12] (g) at (11.5,0) {Điểm đồ thị từng ứng viên\\(GNN, AdaMF-MAT)};
 \node[box, minimum width=4.2cm] (r) at (15.8,0) {Xếp hạng lại\\$s=\alpha\,z(\cos)+(1-\alpha)\,z(g)$};
@@ -86,14 +86,14 @@ Với mỗi truy vấn có đúng một ảnh đúng (ảnh có caption đó), g
 
 \section{Phương pháp}\label{sec:method}
 \subsection{Tìm ảnh bằng CLIP rồi xếp hạng lại}\label{sec:m-clip}
-Hệ thống làm hai bước (Hình~\ref{fig:pipe}). \textbf{Bước 1: CLIP tìm ảnh.} Ảnh và caption được mã hóa một lần bằng CLIP ViT-B/32 (\texttt{laion2b\_s34b\_b79k}, OpenCLIP~\cite{openclip}, giữ nguyên trọng số, chuẩn hóa L2) và lưu trong chỉ mục FAISS~\cite{faiss} (\texttt{IndexFlatIP}, tính cosine chính xác). Với mỗi câu truy vấn $q$, CLIP lấy ra $K{=}100$ ảnh giống câu truy vấn nhất, tức 100 ảnh có độ tương đồng cosine cao nhất giữa vectơ CLIP của ảnh và vectơ CLIP của câu truy vấn; gọi đó là các \emph{ảnh ứng viên}. \textbf{Bước 2: xếp hạng lại.} Mỗi phương pháp chỉ chấm lại điểm và sắp xếp lại đúng 100 ảnh này; nếu ảnh đúng không nằm trong 100 ảnh thì giữ nguyên hạng mà CLIP đã cho. Điểm dùng để sắp xếp ảnh ứng viên $i$ kết hợp điểm của CLIP với điểm của phương pháp:
+Hệ thống làm hai bước (Hình~\ref{fig:pipe}). \textbf{Bước 1: CLIP tìm ảnh.} CLIP ViT-B/32 (\texttt{laion2b\_s34b\_b79k}, OpenCLIP~\cite{openclip}, giữ nguyên trọng số) chuyển mỗi ảnh và mỗi caption thành một vectơ đặc trưng 512 chiều (\emph{embedding}, đã chuẩn hóa L2); việc này làm một lần và các vectơ được lưu trong chỉ mục FAISS~\cite{faiss} (\texttt{IndexFlatIP}, tính cosine chính xác). Với mỗi câu truy vấn $q$, CLIP lấy ra $K{=}100$ ảnh giống câu truy vấn nhất, tức 100 ảnh có độ tương đồng cosine cao nhất giữa vectơ đặc trưng của ảnh và vectơ đặc trưng của câu truy vấn; gọi đó là các \emph{ảnh ứng viên}. \textbf{Bước 2: xếp hạng lại.} Mỗi phương pháp chỉ chấm lại điểm và sắp xếp lại đúng 100 ảnh này; nếu ảnh đúng không nằm trong 100 ảnh thì giữ nguyên hạng mà CLIP đã cho. Điểm dùng để sắp xếp ảnh ứng viên $i$ kết hợp điểm của CLIP với điểm của phương pháp:
 \begin{equation}\label{eq:fuse}
 s(q,i)=\alpha\,z\big(\cos(q,i)\big)+(1-\alpha)\,z\big(g(q,i)\big),
 \end{equation}
 trong đó $g(q,i)$ là điểm do phương pháp chấm (QA-Graph ở mục~\ref{sec:m-qa}, AdaMF-MAT ở mục~\ref{sec:m-adamf}, hoặc với baseline khớp tên là tỉ lệ khái niệm của câu truy vấn có trong danh sách đối tượng của ảnh), còn $z(\cdot)$ đưa hai loại điểm về cùng thang đo bằng chuẩn hóa z-score trên 100 ảnh ứng viên của cùng truy vấn (trừ trung bình, chia độ lệch chuẩn). Đề bài viết $\alpha\cos+(1-\alpha)g$; chúng tôi chuẩn hóa trước khi kết hợp vì cosine và $g$ có thang đo khác nhau. Trọng số $\alpha$ cho biết tin vào CLIP bao nhiêu phần; $\alpha$ được chọn trên val (thử các giá trị cách nhau $0{,}05$ từ 0 đến 1, lấy giá trị cho MRR cao nhất), \emph{không} chọn trên test.
 
 \subsection{Đồ thị nhãn-ảnh}\label{sec:m-graph}
-Đồ thị có hai loại đỉnh: \emph{ảnh} và \emph{nhãn}. Nhãn gồm nhãn đối tượng của ảnh (VG: 2\,000 nhãn phổ biến nhất trên ảnh train; PSG: 133 lớp panoptic) và, khi dùng ConceptNet, các khái niệm mở rộng (VG: 1\,000 khái niệm có nhiều cạnh nhất; PSG: 674 danh từ xuất hiện $\ge20$ lần trong caption train). Đặc trưng của đỉnh nhãn là vectơ CLIP của cụm từ ``a photo of a \{nhãn\}'' (ví dụ ``a photo of a horse''). Có ba loại cạnh có hướng:
+Đồ thị có hai loại đỉnh: \emph{ảnh} và \emph{nhãn}. Nhãn gồm nhãn đối tượng của ảnh (VG: 2\,000 nhãn phổ biến nhất trên ảnh train; PSG: 133 lớp panoptic) và, khi dùng ConceptNet, các khái niệm mở rộng (VG: 1\,000 khái niệm có nhiều cạnh nhất; PSG: 674 danh từ xuất hiện $\ge20$ lần trong caption train). Mỗi đỉnh nhãn mang vectơ đặc trưng do CLIP tạo từ cụm từ ``a photo of a \{nhãn\}'' (ví dụ ``a photo of a horse''). Có ba loại cạnh có hướng:
 \begin{itemize}
 \item \texttt{contains} (nhãn $\to$ ảnh): nhãn có trong scene graph của ảnh. Đây là dữ liệu quan sát của chính ứng viên nên có cho mọi ảnh, kể cả val/test; cạnh chỉ đi \emph{vào} ảnh nên đặc trưng ảnh val/test không lan sang đỉnh khác.
 \item \texttt{sg\_rel} (nhãn $\leftrightarrow$ nhãn): cặp nhãn có quan hệ trong scene graph, gộp \emph{chỉ từ ảnh train}; tên cạnh là vị từ hay gặp nhất của cặp (dùng khi hiển thị giải thích). Với PSG mỗi cặp không hướng cho đúng một cạnh mỗi chiều; với VG giữ cách gộp có hướng của các lượt đã báo cáo.
@@ -118,7 +118,7 @@ PSG + ConceptNet & 18\,186 & 807 & 125\,247 & 6\,378 & 7\,486\\\bottomrule
 \subsection{QA-Graph}\label{sec:m-qa}
 \textbf{Vì sao điểm phải phụ thuộc truy vấn.} Lần thử đầu cho GAT chạy trên cả đỉnh ảnh và gộp các nhãn của ảnh thành \emph{một} vectơ ảnh; mô hình tăng MRR $+2{,}8$ so với CLIP, nhưng mức tăng không đổi khi bỏ toàn bộ cạnh hoặc xáo cạnh. Mức tăng đó đến từ phép chiếu tuyến tính học được (\emph{adapter}), vì GAT với cạnh tự nối (\emph{self-loop}) trên ảnh chỉ tương đương một MLP. Do đó (i) mốc so sánh của mọi hiệu số trong báo cáo là CLIP kèm adapter \emph{không có cạnh}, và (ii) điểm đồ thị phải giữ được thông tin ``nhãn nào của ảnh khớp khái niệm nào của câu truy vấn'' thay vì gộp nhãn thành một vectơ.
 
-\textbf{Mô hình.} GNN 2 tầng (GCN~\cite{gcn}, GAT~\cite{gat} hoặc GraphSAGE~\cite{sage}) chạy \emph{chỉ} trên đồ thị nhãn (cạnh \texttt{sg\_rel}, \texttt{concept}), không chứa đỉnh ảnh. Với $X$ là đặc trưng nhãn, vectơ nhãn sau lan truyền là
+\textbf{Mô hình.} GNN 2 tầng (GCN~\cite{gcn}, GAT~\cite{gat} hoặc GraphSAGE~\cite{sage}) chạy \emph{chỉ} trên đồ thị nhãn (cạnh \texttt{sg\_rel}, \texttt{concept}), không chứa đỉnh ảnh. Với $X$ là vectơ đặc trưng của các nhãn, vectơ nhãn sau lan truyền là
 \begin{equation}\label{eq:H}
 H=\mathrm{norm}\big(X+\gamma\,\mathrm{GNN}(X)\big),
 \end{equation}
@@ -130,7 +130,7 @@ với $u_c=\mathrm{norm}(C\,H_c)$ là vectơ của khái niệm sau phép chiế
 \begin{equation}\label{eq:qa}
 g(q,i)=\cos(Pq,\,Sx_i)+w\cdot\frac{1}{|\mathcal C_q|}\sum_{c\in\mathcal C_q}m(c,i),
 \end{equation}
-trong đó $\cos(Pq,Sx_i)$ là adapter (hai phép chiếu $P,S$ khởi tạo đơn vị trên vectơ CLIP của câu truy vấn và của ảnh) và $w$ là trọng số học được (khởi tạo $1$). Với khái niệm có mặt trong ảnh ($c\in\mathcal L_i$), $m(c,i)\approx1$; với khái niệm không có mặt, điểm đến từ nhãn của ảnh có $H_l$ gần $H_c$ sau lan truyền, tức đường đi khái niệm $\to$ nhãn láng giềng $\to$ ảnh. Khi bỏ hết cạnh \texttt{contains} thì $\mathcal L_i=\emptyset$, $m=0$ và $g$ trùng với mốc CLIP + adapter; mã có kiểm thử cho tính chất này.
+trong đó $\cos(Pq,Sx_i)$ là adapter (hai phép chiếu $P,S$ khởi tạo đơn vị trên vectơ đặc trưng của câu truy vấn và của ảnh) và $w$ là trọng số học được (khởi tạo $1$). Với khái niệm có mặt trong ảnh ($c\in\mathcal L_i$), $m(c,i)\approx1$; với khái niệm không có mặt, điểm đến từ nhãn của ảnh có $H_l$ gần $H_c$ sau lan truyền, tức đường đi khái niệm $\to$ nhãn láng giềng $\to$ ảnh. Khi bỏ hết cạnh \texttt{contains} thì $\mathcal L_i=\emptyset$, $m=0$ và $g$ trùng với mốc CLIP + adapter; mã có kiểm thử cho tính chất này.
 
 \textbf{Huấn luyện.} Mỗi batch gồm $B$ caption train $q_1,\dots,q_B$ và ảnh đúng $i_1,\dots,i_B$ của chúng. Với mỗi caption, ảnh đúng của nó là \textbf{mẫu dương} (\emph{positive sample}), còn các ảnh khác trong cùng batch là \textbf{mẫu âm} (\emph{negative sample}), tức các ví dụ sai để mô hình đối chiếu; mọi caption của cùng một ảnh đều tính là dương. Gọi $g_{bj}=g(q_b,i_j)$ và $\mathcal P_b=\{j: i_j=i_b\}$ là vị trí các mẫu dương của caption $b$. Hàm mất mát InfoNCE hai chiều (từ câu truy vấn tìm ảnh và từ ảnh tìm câu truy vấn, $\tau_{\text{nce}}=0{,}05$) dạy mô hình cho mẫu dương điểm cao hơn mọi mẫu âm, lấy trung bình trên batch:
 \begin{equation}\label{eq:nce}
@@ -141,7 +141,7 @@ GNN chạy trên toàn bộ đồ thị nhãn ở mỗi bước (2\,000-3\,000 �
 \subsection{AdaMF-MAT cho truy vấn ảnh}\label{sec:m-adamf}
 AdaMF-MAT~\cite{adamf} (LREC-COLING 2024) giải bài toán hoàn thiện đồ thị tri thức đa phương thức: dự đoán thực thể còn thiếu của bộ ba $(h,r,?)$ khi mỗi thực thể có thêm ảnh và văn bản. Quan sát của tác giả là các phương thức đóng góp không đều cho từng thực thể, nên mô hình hợp nhất có trọng số thích nghi giữa cấu trúc, ảnh và văn bản, và huấn luyện với các bộ ba sai (mẫu âm) được sinh có chủ đích cho sát với bộ ba đúng (\emph{modality-adversarial training}) để không phương thức nào lấn át. Bộ ba sai tạo bằng cách thay một vế, ví dụ (ảnh 42, \texttt{contains}, horse) thành (ảnh 42, \texttt{contains}, pizza). Chúng tôi dùng nó để chấm điểm mức đúng của bộ ba (ảnh, \texttt{contains}, khái niệm).
 
-Một MMKG được dựng từ cùng dữ liệu và cách chia. Thực thể gồm các khái niệm (từ vựng nhãn train) và ảnh (6\,000 ảnh train lấy mẫu cùng toàn bộ ảnh val/test); quan hệ gồm \texttt{contains} và 30 vị từ phổ biến nhất; bộ ba quan hệ giữa khái niệm chỉ lấy từ ảnh train (xuất hiện $\ge2$ lần). Đặc trưng ảnh của thực thể là vectơ CLIP ảnh (khái niệm: trung bình trên các ảnh train chứa nó); đặc trưng chữ là vectơ CLIP của tên khái niệm (ảnh: trung bình trên các khái niệm của nó). Trên VG, MMKG có 2\,000 khái niệm, 10\,264 ảnh, 31 quan hệ, 193\,962 bộ ba train (176\,736 \texttt{contains} và 17\,226 quan hệ khái niệm); trên PSG là 133 khái niệm, 9\,186 ảnh, 69\,445 bộ ba (65\,131 \texttt{contains} và 4\,314 quan hệ khái niệm). Điểm của ảnh là tổng điểm AdaMF-MAT chấm cho các bộ ba (ảnh, \texttt{contains}, $c$) trên các khái niệm $c$ của caption (điểm càng cao, bộ ba càng được coi là đúng; \emph{plausibility}),
+Một MMKG được dựng từ cùng dữ liệu và cách chia. Thực thể gồm các khái niệm (từ vựng nhãn train) và ảnh (6\,000 ảnh train lấy mẫu cùng toàn bộ ảnh val/test); quan hệ gồm \texttt{contains} và 30 vị từ phổ biến nhất; bộ ba quan hệ giữa khái niệm chỉ lấy từ ảnh train (xuất hiện $\ge2$ lần). Vectơ đặc trưng ảnh của thực thể lấy từ CLIP (khái niệm: trung bình vectơ của các ảnh train chứa nó); vectơ đặc trưng chữ do CLIP tạo từ tên khái niệm (ảnh: trung bình trên các khái niệm của nó). Trên VG, MMKG có 2\,000 khái niệm, 10\,264 ảnh, 31 quan hệ, 193\,962 bộ ba train (176\,736 \texttt{contains} và 17\,226 quan hệ khái niệm); trên PSG là 133 khái niệm, 9\,186 ảnh, 69\,445 bộ ba (65\,131 \texttt{contains} và 4\,314 quan hệ khái niệm). Điểm của ảnh là tổng điểm AdaMF-MAT chấm cho các bộ ba (ảnh, \texttt{contains}, $c$) trên các khái niệm $c$ của caption (điểm càng cao, bộ ba càng được coi là đúng; \emph{plausibility}),
 \begin{equation}\label{eq:adamf}
 g_{\text{AdaMF}}(q,i)=\sum_{c\in\mathcal C_q}\phi(i,\texttt{contains},c),
 \end{equation}
@@ -167,7 +167,7 @@ Bảng~\ref{tab:impl} tóm tắt thiết lập. Mọi thí nghiệm QA-Graph ch�
 Thành phần & Thiết lập\\\midrule
 CLIP & ViT-B/32, \texttt{laion2b\_s34b\_b79k}, 512 chiều, chuẩn hóa L2, giữ nguyên trọng số\\
 Ảnh ứng viên & 100 ảnh có cosine cao nhất (FAISS \texttt{IndexFlatIP}); kết hợp điểm theo~(\ref{eq:fuse})\\
-Đặc trưng nhãn & CLIP chữ của ``a photo of a \{nhãn\}''\\
+Vectơ đặc trưng nhãn & do CLIP tạo từ ``a photo of a \{nhãn\}''\\
 GNN của QA-Graph & 2 tầng, ẩn 256, dropout 0,1; GAT 4 attention heads; GCN, GraphSAGE cùng kích thước\\
 Tham số học được & $P,S,C$ khởi tạo đơn vị; $\gamma=0{,}1$, $\tau=0{,}1$, $w=1$ lúc khởi tạo\\
 Huấn luyện QA-Graph & InfoNCE (\ref{eq:nce}), $\tau_{\text{nce}}=0{,}05$, AdamW lr $10^{-3}$, weight decay $10^{-4}$, batch 512 caption, tối đa 20 epoch, dừng sớm khi MRR val không tăng 4 epoch liên tiếp\\
@@ -354,7 +354,7 @@ TB & no\_concept & 1\,291 & I am unable to see the image above. & dot, table, gl
 \end{table*}
 
 \section{Thảo luận}\label{sec:disc}
-\textbf{Vì sao đồ thị chưa giúp nhóm gián tiếp.} Phần tăng của QA-Graph nằm ở direct ($+6{,}4$ đến $+7{,}4$ MRR theo gallery) còn indirect chỉ $+0{,}3$ đến $+0{,}7$ (khoảng 1 std). Có ba cách giải thích, chưa được kiểm chứng riêng: (a) định nghĩa ``indirect'' của quy trình đánh giá đo thiếu chú thích và từ đồng nghĩa nhiều hơn là suy luận quan hệ thật; (b) \texttt{sg\_rel} gộp từ đồng xuất hiện trên train rất dày (khoảng 50 láng giềng mỗi nhãn) nên làm các nhãn khó phân biệt với nhau, và khi chỉ giữ cạnh thưa (xuất hiện $\ge5$ lần) kết quả không khá hơn; (c) CLIP vốn đã mã hóa tốt tập đối tượng có trong ảnh (\emph{bag of objects}). ConceptNet là thứ duy nhất nhích nhóm indirect ($+0{,}5$ đến $+0{,}8$ ở seed~0) nhưng chênh vẫn trong nhiễu. Vì vậy chưa thể khẳng định đồ thị giúp truy vấn gián tiếp.
+\textbf{Vì sao đồ thị chưa giúp nhóm gián tiếp.} Phần tăng của QA-Graph nằm ở direct ($+6{,}4$ đến $+7{,}4$ MRR theo gallery) còn indirect chỉ $+0{,}3$ đến $+0{,}7$ (khoảng 1 std). Có ba cách giải thích, chưa được kiểm chứng riêng: (a) định nghĩa ``indirect'' của quy trình đánh giá đo thiếu chú thích và từ đồng nghĩa nhiều hơn là suy luận quan hệ thật; (b) \texttt{sg\_rel} gộp từ đồng xuất hiện trên train rất dày (khoảng 50 láng giềng mỗi nhãn) nên làm các nhãn khó phân biệt với nhau, và khi chỉ giữ cạnh thưa (xuất hiện $\ge5$ lần) kết quả không khá hơn; (c) vectơ đặc trưng của CLIP vốn đã thể hiện tốt tập đối tượng có trong ảnh (\emph{bag of objects}). ConceptNet là thứ duy nhất nhích nhóm indirect ($+0{,}5$ đến $+0{,}8$ ở seed~0) nhưng chênh vẫn trong nhiễu. Vì vậy chưa thể khẳng định đồ thị giúp truy vấn gián tiếp.
 
 \textbf{Bài học phương pháp.} Ở cả hai cấp, mốc so sánh quyết định kết luận: so với CLIP thô, hầu hết mô hình có học đều tốt hơn, nhưng phần lớn mức tăng đến từ phép chiếu học được (adapter). Một baseline không dùng quan hệ (khớp tên đối tượng) là phép thử rẻ: nếu phương pháp dùng quan hệ không vượt nó thì chưa có bằng chứng quan hệ đóng góp. Ablation xáo cạnh thuyết phục hơn ablation bỏ cạnh vì giữ nguyên số tham số và mật độ đồ thị.
 

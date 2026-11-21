@@ -18,6 +18,8 @@ Mục đích: viết tiếng Việt tự nhiên, không dịch từng chữ từ
 | CLIP đóng băng | frozen CLIP | CLIP **giữ nguyên trọng số** (không huấn luyện thêm) | lần đầu kèm *frozen* |
 | điểm cuối của ứng viên $i$ | final score of candidate $i$ | **điểm xếp hạng** của ảnh $i$ / "ảnh $i$ được xếp hạng theo điểm…" | |
 | câu (trống, không rõ câu nào) | query | **câu truy vấn** (câu người dùng gõ để tìm ảnh); caption = câu mô tả có sẵn của ảnh | luôn nói rõ là câu nào |
+| mã hóa (ảnh/câu) bằng CLIP | encode | **CLIP chuyển ảnh/câu thành vectơ đặc trưng** | "mã hóa" dễ hiểu nhầm là encryption |
+| vectơ CLIP, biểu diễn CLIP | CLIP embedding | **vectơ đặc trưng** (do CLIP tạo); lần đầu kèm *embedding* | |
 | trộn điểm | score fusion | **kết hợp điểm** (của CLIP với điểm của phương pháp) | |
 | tập ứng viên, top-$K$ ứng viên | candidate set, top-K | **100 ảnh ứng viên do CLIP chọn** (100 ảnh có cosine cao nhất) | |
 | hệ số trộn $\gamma$ | gate | **hệ số** $\gamma$ quyết định phần thông tin từ GNN được cộng thêm nhiều hay ít | |
