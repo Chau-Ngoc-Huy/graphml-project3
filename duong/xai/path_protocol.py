@@ -58,7 +58,8 @@ def _path_record(case, edge_numbers, node_numbers, query_id: str) -> dict[str, A
 def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
                   model_seed: int, query_id: str, group: str, budgets=(2, 3, 5),
                   random_repeats: int = 20, random_seed: int = 0,
-                  hard_negative_image_id: str | None = None) -> tuple[list[dict], list[dict]]:
+                  hard_negative_image_id: str | None = None,
+                  explanation_mode: str = "relational") -> tuple[list[dict], list[dict]]:
     """Score every screened candidate path, select positive paths and run controls.
 
     Returns flat result rows and JSONL-ready path rows. A missing relational
@@ -68,6 +69,8 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
     """
     if random_repeats < 1:
         raise ValueError("random_repeats must be positive")
+    if explanation_mode not in ("relational", "object"):
+        raise ValueError("explanation_mode must be relational or object")
     graph, scorer = case.intervention_graph, case.scorer
     ids = tuple(map(str, case.ids))
     target, gt = str(case.top_id), str(ground_truth_image_id)
@@ -95,6 +98,9 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
         scored_paths.append(path)
     relational = [p for p in scored_paths if p["level"] == "relational_connectivity"]
     positive_relational = [p for p in relational if p["final_score_drop"] > 0]
+    object_paths = [p for p in scored_paths if p["level"] == "object"]
+    candidate_paths = relational if explanation_mode == "relational" else object_paths
+    positive_paths = [p for p in candidate_paths if p["final_score_drop"] > 0]
     contains = [e for e in graph.edges if _edge_kind(graph, e) == "contains"]
     rng = random.Random(random_seed)
 
@@ -108,10 +114,14 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
         eligible = case.eligible_type_counts
         e_total = len(case.eligible_edge_ids)
         e_rel = eligible.get("concept", 0) + eligible.get("sg_rel", 0)
+        e_explanation = eligible.get("contains", 0) if explanation_mode == "object" else e_total
+        screened_explanation = (case.screened_type_counts.get("contains", 0)
+                                if explanation_mode == "object" else len(case.screened))
         n_rel = kinds.get("concept", 0) + kinds.get("sg_rel", 0)
         return {
             "dataset": dataset, "query_id": str(query_id), "query": query,
             "group_source": group, "model_seed": model_seed,
+            "explanation_mode": explanation_mode,
             "target_image_id": target,
             "target_role": ("top1_and_ground_truth" if target == gt else
                             "top1_and_verified_hard_negative" if target == negative else
@@ -126,7 +136,9 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
             "n_screened_out_paths": case.all_path_count - len(case.path_candidates),
             "n_candidate_relational_paths": len(relational),
             "has_positive_relational_path": bool(positive_relational),
+            "has_positive_object_path": any(p["final_score_drop"] > 0 for p in object_paths),
             "n_eligible": e_total, "n_eligible_relation": e_rel,
+            "n_eligible_explanation": e_explanation,
             "n_screened": len(case.screened),
             "n_eligible_contains": eligible.get("contains", 0),
             "n_eligible_concept": eligible.get("concept", 0),
@@ -141,9 +153,11 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
             "n_paths": len(selected_paths), "selected_path_ids": "|".join(p["path_id"] for p in selected_paths),
             "structural_validity": all(p["structural_validity"] for p in selected_paths) if selected_paths else None,
             "removed_edge_ids": "|".join(removed),
-            "sparsity": 1 - len(removed) / e_total if e_total and removed else None,
+            "sparsity": (1 - len(removed) / e_explanation
+                         if e_explanation and removed and
+                         (explanation_mode == "relational" or n_rel == 0) else None),
             "relation_selected_fraction": n_rel / e_rel if e_rel else None,
-            "screen_coverage": len(case.screened) / e_total if e_total else None,
+            "screen_coverage": screened_explanation / e_explanation if e_explanation else None,
             "graph_score_before": before[target].graph_score,
             "graph_score_after": after[target].graph_score,
             "graph_score_drop": before[target].graph_score - after[target].graph_score,
@@ -170,7 +184,7 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
         selected, selected_edges = [], set()
         while True:
             options = []
-            for path in positive_relational:
+            for path in positive_paths:
                 extra = set(path["edge_ids"]) - selected_edges
                 if not extra or len(selected_edges) + len(extra) > budget:
                     continue
@@ -189,18 +203,21 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
             path["selection_reason"] = "positive_marginal_path"
         if selected:
             status = "ok"
-        elif not relational:
-            status = "no_relational_path"
-        elif not positive_relational:
-            status = "no_positive_relational_path"
-        elif not any(len(p['edge_ids']) <= budget for p in positive_relational):
+        elif not candidate_paths:
+            status = f"no_{explanation_mode}_path"
+        elif not positive_paths:
+            status = f"no_positive_{explanation_mode}_path"
+        elif not any(len(p['edge_ids']) <= budget for p in positive_paths):
             status = "budget_too_small"
         else:
-            status = "no_relational_explanation"
+            status = f"no_{explanation_mode}_explanation"
         matched = []
         if selected:
             signatures = [tuple(p["edge_types"]) for p in selected]
-            alternatives = [[p for p in relational if tuple(p["edge_types"]) == sig
+            random_pool = (candidate_paths if explanation_mode == "relational" else
+                           [{"path_id": str(e), "edge_ids": [str(e)], "edge_types": ["contains"]}
+                            for e in contains])
+            alternatives = [[p for p in random_pool if tuple(p["edge_types"]) == sig
                              and p["path_id"] not in {s["path_id"] for s in selected}]
                             for sig in signatures]
             if all(alternatives):
@@ -216,7 +233,8 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
             after = score_without_edges(scorer, query, ids, graph, edge_set).scores
             random_drops.append(before[target].final_score - after[target].final_score)
         random_mean = statistics.fmean(random_drops) if random_drops else None
-        rows.append(measure(sorted(selected_edges), "relational_path", budget,
+        rows.append(measure(sorted(selected_edges),
+                            "relational_path" if explanation_mode == "relational" else "object_path", budget,
                             random_mean=random_mean, random_n=len(random_drops),
                             random_unique_n=len(set(matched)),
                             selected_paths=selected, status=status))
@@ -227,25 +245,31 @@ def evaluate_case(case, query: str, ground_truth_image_id: str, *, dataset: str,
                 rows.append(row)
         elif selected:
             rows[-1]["random_status"] = "no_independent_matched_path"
-        # Contains-only control uses the same number of unique edges when possible.
-        if len(contains) >= len(selected_edges) and selected_edges:
-            ranked_contains = sorted(contains, key=lambda e: (
-                -(before[target].final_score - score_without_edges(
-                    scorer, query, ids, graph, (e,)).scores[target].final_score), e))
-            rows.append(measure(ranked_contains[:len(selected_edges)], "contains_only", budget))
-        else:
-            rows.append(measure((), "contains_only", budget, status="budget_unavailable"))
-    for kind in ("contains", "concept", "sg_rel"):
+        if explanation_mode == "relational":
+            # Contains-only control uses the same number of unique edges when possible.
+            if len(contains) >= len(selected_edges) and selected_edges:
+                ranked_contains = sorted(contains, key=lambda e: (
+                    -(before[target].final_score - score_without_edges(
+                        scorer, query, ids, graph, (e,)).scores[target].final_score), e))
+                rows.append(measure(ranked_contains[:len(selected_edges)], "contains_only", budget))
+            else:
+                rows.append(measure((), "contains_only", budget, status="budget_unavailable"))
+    ablation_kinds = ("contains",) if explanation_mode == "object" else ("contains", "concept", "sg_rel")
+    for kind in ablation_kinds:
         edges = [e for e in graph.edges if _edge_kind(graph, e) == kind]
         rows.append(measure(edges, f"ablate_{kind}", len(edges), status="ok" if edges else "no_edges"))
     if not raw_paths:
         scored_paths.append({"query_id": str(query_id), "target_image_id": target,
                              "path_id": "no_path", "edge_ids": [], "node_ids": [],
                              "selection_reason": "no_path_in_screened_graph"})
-    elif not relational:
+    elif explanation_mode == "relational" and not relational:
         scored_paths.append({"query_id": str(query_id), "target_image_id": target,
                              "path_id": "no_relational_path", "edge_ids": [], "node_ids": [],
                              "selection_reason": "no_relational_path_in_screened_graph"})
+    elif explanation_mode == "object" and not object_paths:
+        scored_paths.append({"query_id": str(query_id), "target_image_id": target,
+                             "path_id": "no_object_path", "edge_ids": [], "node_ids": [],
+                             "selection_reason": "no_object_path_in_screened_graph"})
     if case.all_path_count > len(case.path_candidates):
         scored_paths.append({"query_id": str(query_id), "target_image_id": target,
                              "path_id": "screen_budget_excluded", "edge_ids": [], "node_ids": [],

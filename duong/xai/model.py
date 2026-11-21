@@ -191,9 +191,13 @@ class HuyQAPathCaseModel(HuyQACaseModel):
     every edge outside the intervention graph.
     """
 
-    def __init__(self, *args, target_image_id=None, max_paths=200, **kwargs):
+    def __init__(self, *args, target_image_id=None, max_paths=200,
+                 path_mode="relational", **kwargs):
         self.target_image_id = target_image_id
         self.max_paths = int(max_paths)
+        if path_mode not in ("relational", "object"):
+            raise ValueError("path_mode must be relational or object")
+        self.path_mode = path_mode
         if self.max_paths < 1:
             raise ValueError("max_paths must be positive")
         super().__init__(*args, **kwargs)
@@ -235,6 +239,8 @@ class HuyQAPathCaseModel(HuyQACaseModel):
         for q in sorted(query_labels):
             for c in contains_by_label.get(q, ()):
                 candidates.append(((c,), (q, target_row)))
+            if self.path_mode == "object":
+                continue
             for e1 in outgoing.get(q, ()):
                 v = int(ei[1, e1])
                 if e1 not in eligible_rel or v == q:
@@ -247,9 +253,12 @@ class HuyQAPathCaseModel(HuyQACaseModel):
                         continue
                     for c in contains_by_label.get(w, ()):
                         candidates.append(((e1, e2, c), (q, v, w, target_row)))
-        # Score relational paths first. Contains-only paths are covered by their
-        # own control and must not consume the relational screen budget.
-        candidates = sorted(set(candidates), key=lambda p: (len(p[0]) == 1, len(p[0]), p[0]))
+        if self.path_mode == "object":
+            candidates = sorted({p for p in candidates if len(p[0]) == 1}, key=lambda p: p[0])
+        else:
+            # Contains-only paths are covered by their own control and must not
+            # consume the relational screen budget.
+            candidates = sorted(set(candidates), key=lambda p: (len(p[0]) == 1, len(p[0]), p[0]))
         self.all_path_count = len(candidates)
         self.all_relational_path_count = sum(len(edges) > 1 for edges, _ in candidates)
         self.path_candidates = tuple(candidates[:self.max_paths])

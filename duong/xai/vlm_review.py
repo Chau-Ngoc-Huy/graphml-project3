@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import zipfile
 from pathlib import Path
 
 from .image_download import _is_jpeg
@@ -24,6 +25,24 @@ def image_paths(image_dir: Path, row: dict) -> tuple[Path, Path]:
     stem = f"{row['dataset']}_{row['query_id']}"
     root = Path(image_dir).resolve()
     return root / f"{stem}_gt.jpg", root / f"{stem}_negative.jpg"
+
+
+def extract_embedded_images(workbook_path: Path, image_dir: Path) -> Path:
+    """Rebuild the optional local JPEG cache from the approved workbook."""
+    rows = read_case_review_workbook(workbook_path)
+    image_dir = Path(image_dir)
+    image_dir.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(workbook_path) as workbook:
+        for index, row in enumerate(rows):
+            for offset, path in enumerate(image_paths(image_dir, row), 1):
+                name = f"xl/media/image{2 * index + offset}.jpg"
+                if name not in workbook.namelist():
+                    raise ValueError(f"review workbook lacks embedded image {name}")
+                data = workbook.read(name)
+                if not _is_jpeg(data):
+                    raise ValueError(f"invalid embedded JPEG {name}")
+                path.write_bytes(data)
+    return image_dir
 
 
 def load_queue(registry_path: Path, workbook_path: Path, image_dir: Path):

@@ -1,4 +1,4 @@
-"""Build reproducible, output-free XAI path notebooks."""
+"""Build reproducible, output-free XAI notebooks."""
 import json
 from pathlib import Path
 
@@ -10,10 +10,11 @@ def save(name,cells):
     nb={'cells':cells,'metadata':{'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'},'language_info':{'name':'python'}},'nbformat':4,'nbformat_minor':5}
     (ROOT/name).write_text(json.dumps(nb,ensure_ascii=False,indent=1)+'\n')
 
-save('01_xai_audit_and_query_review.ipynb',[
-M('''# A–B · Audit baseline và kiểm chứng query
+save('04_direct_query_audit.ipynb',[
+M('''# A–B · Audit baseline và kiểm chứng direct retrieval
 
-**Mục tiêu:** khóa kết quả 24 caption cũ và chuẩn bị 40 truy vấn mới trước khi xem path XAI. Chạy CPU local hoặc Colab. `source_group` là nhãn từ bundle, chưa phải nhãn direct/relational đã kiểm chứng. Ảnh âm là ứng viên cùng đối tượng, chưa phải ground truth. Không ghi đè snapshot cũ.'''),
+**Mục tiêu:** giữ nguyên snapshot 24 caption, kiểm tra 40 ứng viên đã khóa và chọn các query direct có ảnh dương được người chấm xác minh. `source_group` là nhãn bundle, không phải mức suy luận đã kiểm chứng. Ảnh âm chỉ là ứng viên tham khảo. Notebook không tái tạo hoặc ghi đè workbook đã điền.
+'''),
 C('''from pathlib import Path
 import hashlib, sys
 import pandas as pd
@@ -22,9 +23,9 @@ DUONG = ROOT/'graphml-project3/duong'
 sys.path.insert(0,str(DUONG))
 from xai.review_workbook import baseline_review_pack, create_review_workbook
 from xai.image_download import fetch_review_image
-from xai.query_registry import validated_registry_rows, import_reviewed_queries
+from xai.query_registry import validated_registry_rows, import_reviewed_queries, read_case_review_workbook, direct_eligibility_reason
 SNAP = DUONG/'runs/qa_vg_psg_xai/xai-20261121-130842'
-REG = DUONG/'review/queries_relational_candidates.csv'
+REG = DUONG/'registry/query_candidates_frozen.csv'
 assert SNAP.is_dir() and REG.is_file()
 print('Frozen registry SHA256:',hashlib.sha256(REG.read_bytes()).hexdigest())
 '''),
@@ -35,56 +36,48 @@ C('''old=pd.read_csv(SNAP/'analysis/xai_results_corrected.csv')
 assert len(old)==216 and old.groupby('dataset').caption_id.nunique().to_dict()=={'vg':12,'psg':12}
 display(old[old.requested_k==3].groupby('dataset').agg(n=('caption_id','size'),query_count=('caption_id','nunique'),screen_coverage=('screen_coverage','mean'),final_drop=('final_score_drop','mean'),random_drop=('random_final_score_drop_mean','mean'),evidence_known=('evidence_known_rate','mean')))
 '''),
-M('''## 2 · Cổng query/ảnh
+M('''## 2 · Cổng query/ảnh direct
 
-Bộ ứng viên có 10 `direct` nguồn và 10 `indirect` nguồn mỗi dataset. Hai người xem ảnh dương và ảnh âm khó, điền claim subject/predicate/object, `verified_group`, relevance, đối tượng chung/quan hệ khác và căn cứ ảnh. Duyệt CSV chỉ sau khi đối chiếu Excel; `validated_registry_rows` chặn mọi query chưa qua cổng. Embedding CLIP và concepts được lấy theo caption ID của chính bundle.'''),
+40 ứng viên được chọn trước khi xem XAI. Chỉ `verified_group=direct`, `gt_relevance=supported` và `review_status=approved` với người chấm rõ ràng mới vào lượt mới; cần ít nhất 10 query mỗi dataset. Ảnh âm khác quan hệ không còn là điều kiện của thí nghiệm này. Giữ mọi nhãn nguồn và kết quả không đủ điều kiện để báo cáo attrition.
+'''),
 C('''registry=pd.read_csv(REG,keep_default_na=False)
 assert len(registry)==40
 display(registry.groupby(['dataset','source_group']).size())
-display(registry[['dataset','query_id','query','gt_image_id','hard_negative_candidate_id','gt_source_url','hard_negative_source_url','review_status']].head(10))
-try:
-    print('Approved:',len(validated_registry_rows(REG)))
-except ValueError as exc:
-    print('Visual verification pending:',exc)
+review_path=DUONG/'review/query_candidates_40.xlsx'
+review_rows=read_case_review_workbook(review_path)
+review=pd.DataFrame(review_rows)
+display(review.groupby(['dataset','verified_group','review_status'],dropna=False).size())
+review['direct_gt_candidate']=(review.verified_group=='direct') & (review.gt_relevance=='supported')
+review['eligibility_reason']=review.apply(direct_eligibility_reason,axis=1)
+display(review.groupby(['dataset','eligibility_reason']).size())
+display(review.groupby('dataset').agg(direct_gt_candidates=('direct_gt_candidate','sum'),approved=('review_status',lambda x:(x=='approved').sum())))
+print('Direct with GT supported:',review.direct_gt_candidate.sum(),'/ 40')
 '''),
-M('''## 3 · Excel kiểm chứng
+M('''## 3 · Xuất registry đã duyệt
 
-Workbook baseline nhúng 10 cặp ảnh GT/top-1 đã tải và các cạnh mô hình chọn. Workbook query mới chứa URL và nhúng ảnh khi tải được. Hai reviewer chấm độc lập; đưa bản đã hòa giải vào `REVIEWED_WORKBOOK`, nhập thành CSV mới và giữ registry nguồn bất biến.'''),
-C('''baseline_review_pack(SNAP,DUONG/'review/baseline_case_review_10.xlsx')
-DOWNLOAD_QUERY_IMAGES=Path('/content').is_dir()
-ALLOW_UNVERIFIED_TLS=True  # public dataset images only; each fallback is recorded in the manifest
-image_dir=DUONG/'review/query_images'; image_dir.mkdir(exist_ok=True)
-cases=[]; download_records=[]
-for r in registry.to_dict('records'):
-    case={'dataset':r['dataset'],'query_id':r['query_id'],'query':r['query'],'source_group':r['source_group'],'gt_image_id':r['gt_image_id'],'retrieved_image_id':r['hard_negative_candidate_id'],'retrieval_outcome':'pending visual review','explanation_level':'pre-XAI candidate','path_or_edge_text':'annotate claim before XAI','gt_source_url':r['gt_source_url'],'retrieved_source_url':r['hard_negative_source_url'],'review_status':'pending'}
-    if DOWNLOAD_QUERY_IMAGES:
-        for role,url_key,file_key in [('gt','gt_source_url','gt_image_file'),('negative','retrieved_source_url','retrieved_image_file')]:
-            path=image_dir/f"{r['dataset']}_{r['query_id']}_{role}.jpg"
-            try:
-                info=fetch_review_image(case[url_key],path,allow_unverified_tls=ALLOW_UNVERIFIED_TLS)
-                case[file_key]=str(path)
-                download_records.append({'dataset':r['dataset'],'query_id':r['query_id'],'role':role,**info})
-            except Exception as exc:
-                download_records.append({'dataset':r['dataset'],'query_id':r['query_id'],'role':role,'source_url':case[url_key],'status':'failed','error':str(exc)})
-                print('Image unavailable:',r['query_id'],role,str(exc)[:180])
-    cases.append(case)
-create_review_workbook(cases,[],DUONG/'review/query_candidates_40.xlsx',DUONG)
-print(DUONG/'review/baseline_case_review_10.xlsx',DUONG/'review/query_candidates_40.xlsx')
-if DOWNLOAD_QUERY_IMAGES:
-    pd.DataFrame(download_records).to_csv(DUONG/'review/image_download_manifest.csv',index=False)
-    downloaded=sum(record['status']!='failed' for record in download_records)
-    print('Downloaded/available images:',downloaded,'/',len(download_records))
-    if downloaded==0: raise RuntimeError('No images could be downloaded; inspect image_download_manifest.csv')
-REVIEWED_WORKBOOK=None  # Path('.../adjudicated_query_review.xlsx')
-if REVIEWED_WORKBOOK:
-    verified=import_reviewed_queries(REG,REVIEWED_WORKBOOK,DUONG/'review/queries_relational_verified.csv')
-    print('Verified query count:',len(validated_registry_rows(verified)))
-''')])
+`query_candidates_40.xlsx` chứa 40 nhãn đã duyệt. Notebook xuất registry đầy đủ và audit lý do chọn/loại; 34 query direct có GT `supported` đi tiếp. Nếu sửa nhãn, chạy lại cell này để làm mới CSV.
+'''),
+C('''REVIEWED_WORKBOOK=DUONG/'review/query_candidates_40.xlsx'
+assert REVIEWED_WORKBOOK.is_file(), REVIEWED_WORKBOOK
+EXPORT_DIRECT_REGISTRY=True  # workbook chuẩn đã được duyệt
+if EXPORT_DIRECT_REGISTRY:
+    verified=import_reviewed_queries(REG,REVIEWED_WORKBOOK,DUONG/'registry/queries_direct_verified.csv')
+    audit=pd.read_csv(verified,keep_default_na=False)
+    audit['eligibility_reason']=audit.apply(direct_eligibility_reason,axis=1)
+    audit.to_csv(DUONG/'registry/direct_query_eligibility_audit.csv',index=False)
+    selected=validated_registry_rows(verified)
+    print('Approved direct queries:',len(selected))
+    display(pd.DataFrame(selected).groupby('dataset').size())
+else:
+    print('Workbook hiện tại được giữ nguyên. Chưa xuất registry đã duyệt.')
+'''),
+])
 
-save('02_xai_path_perturbation_colab.ipynb',[
-M('''# C–D · Path search và perturbation trên QA scorer thật
+save('05_direct_object_xai_colab.ipynb',[
+M('''# C–D · Direct retrieval: can thiệp cạnh đối tượng
 
-**Câu hỏi:** xóa đường có làm đổi điểm/hạng của ảnh đích trên cùng top-100 không? Chạy Colab GPU. `label_h` chỉ nhận `edge_index`, do đó kết quả chỉ chứng minh **relational connectivity**, không chứng minh mô hình hiểu tên predicate. Đường 2–3 cạnh đi có hướng từ concept query qua nhãn ảnh rồi `contains`; đường một cạnh `contains` là object evidence. Mọi case, kể cả không có đường, ở trong mẫu số coverage.'''),
+**Câu hỏi:** các cạnh `contains` nối khái niệm query với ảnh top-1 có ảnh hưởng tới điểm và hạng trên cùng top-100 không? Chạy Colab GPU. Mọi query, kể cả không có cạnh phù hợp, nằm trong mẫu số coverage. Kết quả đo tác động của bằng chứng đối tượng; cạnh `contains` không tự chứng minh toàn bộ hành động hay vị trí trong caption.
+'''),
 C('''from pathlib import Path
 from datetime import datetime, timezone
 import csv, hashlib, importlib.util, json, subprocess, sys
@@ -113,9 +106,10 @@ print('Device:',DEVICE)
 '''),
 M('''## 1 · Chốt protocol và provenance
 
-Mặc định chạy lại đúng 24 caption baseline. Chỉ chọn `verified40` sau khi ảnh dương/âm và nhóm query đã duyệt. Hai mức screen là phân tích độ nhạy được đặt trước. Budget là **số cạnh duy nhất**, random path khớp loại cạnh/độ dài/budget; thiếu đối chứng ghi N/A. Hash nguồn huấn luyện, bundle và checkpoint được xác minh; hash XAI mới khác baseline là có chủ đích.'''),
-C('''QUERY_MODE='baseline24'  # 'verified40' only after visual review
-MODEL_SEEDS=(0,1,2); PATH_SCREEN_LIMITS=(40,120); EDGE_BUDGETS=(2,3,5)
+Mặc định chạy 34 query direct đã duyệt từ notebook 01; dùng `baseline24` nếu muốn kiểm tra code trên tập cũ. Budget 1/2/3 là số cạnh `contains` duy nhất. Random control chọn cạnh `contains` khác trên **cùng ảnh đích** và cùng budget; thiếu đối chứng độc lập ghi N/A. Hash bundle/checkpoint được xác minh; lượt mới không ghi đè baseline.
+'''),
+C('''QUERY_MODE='verified_direct'  # approved direct set; use 'baseline24' for smoke test
+MODEL_SEEDS=(0,1,2); PATH_SCREEN_LIMITS=(40,); EDGE_BUDGETS=(1,2,3)
 RANDOM_REPEATS=20; RANDOM_SEED=20261121
 MANIFEST=RUNS/'dual-20261121-125423_manifest.json'
 manifest=json.loads(MANIFEST.read_text())
@@ -135,27 +129,29 @@ for dataset,spec in MODEL_SPECS.items():
         rec=records[dataset,seed]
         ckpt=RUNS/spec.experiment/Path(rec['run_dir']).name/'model.pt'
         assert sha256(ckpt)==rec['checkpoint_sha256']
+assert QUERY_MODE in ('baseline24','verified_direct')
 if QUERY_MODE=='baseline24':
     selected=json.loads((RUNS/'xai-20261121-130842/selected_cases.json').read_text())
 else:
-    selected=validated_registry_rows(DUONG/'review/queries_relational_verified.csv')
-assert len(selected)==(24 if QUERY_MODE=='baseline24' else 40)
+    selected=validated_registry_rows(DUONG/'registry/queries_direct_verified.csv')
+assert len(selected)==24 if QUERY_MODE=='baseline24' else len(selected)>=20
 for dataset,spec in MODEL_SPECS.items():
     seed0_dir=RUNS/spec.experiment/Path(records[dataset,0]['run_dir']).name
     ranks0=json.loads((seed0_dir/'ranks_test_full.json').read_text())['ranks']
     subset=[r for r in selected if r['dataset']==dataset]
     success=sum(int(ranks0[int(r['candidate_row'])])==1 for r in subset)
     failure=sum(int(ranks0[int(r['candidate_row'])])>1 for r in subset)
-    assert success>=5 and failure>=5,(dataset,success,failure)
     print(dataset,'seed-0 success/failure:',success,failure)
+    if success<5 or failure<5: print('Case-study quota unavailable for',dataset,'; main run continues')
 OUT=RUNS/('path-'+datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S'))
 OUT.mkdir(parents=True,exist_ok=False)
-(OUT/'protocol.json').write_text(json.dumps({'query_mode':QUERY_MODE,'manifest':str(MANIFEST),'seeds':MODEL_SEEDS,'path_screen_limits':PATH_SCREEN_LIMITS,'edge_budgets':EDGE_BUDGETS,'random_repeats':RANDOM_REPEATS,'random_seed':RANDOM_SEED,'selected_query_ids':{d:[int(r['caption_id'] if QUERY_MODE=='baseline24' else r['query_id']) for r in selected if r['dataset']==d] for d in MODEL_SPECS}},indent=2))
+(OUT/'protocol.json').write_text(json.dumps({'query_mode':QUERY_MODE,'explanation_mode':'object','manifest':str(MANIFEST),'seeds':MODEL_SEEDS,'path_screen_limits':PATH_SCREEN_LIMITS,'edge_budgets':EDGE_BUDGETS,'random_repeats':RANDOM_REPEATS,'random_seed':RANDOM_SEED,'selected_query_ids':{d:[int(r['caption_id'] if QUERY_MODE=='baseline24' else r['query_id']) for r in selected if r['dataset']==d] for d in MODEL_SPECS}},indent=2))
 print('Output:',OUT)
 '''),
-M('''## 2 · Score gốc, vùng đủ điều kiện và candidate path
+M('''## 2 · Score gốc và cạnh đối tượng đủ điều kiện
 
-`E_eligible` gồm mọi `contains` của ảnh đích và các cạnh nhãn–nhãn trong incoming receptive field thật (số tầng GNN). Screen chỉ dùng topology và giới hạn path đã khóa; cạnh ngoài screen vẫn hiện diện trong scorer. Với từng seed/query/screen, kiểm tra QA score và hạng GT so với checkpoint.'''),
+`E_eligible` gồm mọi cạnh `contains` của ảnh đích và vùng nhãn–nhãn có thể ảnh hưởng đến scorer, nhưng explanation chính chỉ chọn cạnh `contains` khớp khái niệm query. Vùng screen không dùng score can thiệp hoặc relevance test. Kiểm tra QA score và hạng GT so với checkpoint cho từng query/seed.
+'''),
 C('''result_rows=[]; path_rows=[]; case_rows=[]
 for dataset,spec in MODEL_SPECS.items():
     bundle_dir=ROOT/spec.bundle_dir
@@ -182,25 +178,26 @@ for dataset,spec in MODEL_SPECS.items():
             query=protocol.captions[cap_id]['text']
             assert QUERY_MODE=='baseline24' or query==item['query']
             gt_id=str(int(cands['q_img'][j]))
-            group=str(cands['group'][j]) if QUERY_MODE=='baseline24' else item['verified_group']
+            group=str(cands['group'][j]) if QUERY_MODE=='baseline24' else item['source_group']
             for screen_limit in PATH_SCREEN_LIMITS:
-                case=HuyQAPathCaseModel(model,graph,qd,bundle,protocol,cands,ev,j,rec['alpha'],DEVICE,max_paths=screen_limit,image_tensor=image_tensor)
+                case=HuyQAPathCaseModel(model,graph,qd,bundle,protocol,cands,ev,j,rec['alpha'],DEVICE,max_paths=screen_limit,path_mode='object',image_tensor=image_tensor)
                 reference=qa_scores(model,qd,image_tensor,np.asarray(protocol.cap[cap_id:cap_id+1]),np.asarray([cap_id]),case.rows_np[None],DEVICE)[0]
                 np.testing.assert_allclose(case.score_removed()['qa'],reference,rtol=1e-4,atol=1e-5)
                 ids=tuple(map(str,case.ids)); before=case.scorer.score(query,ids,case.intervention_graph)
                 if gt_id in ids: assert rank_of(before,gt_id,ids)==int(saved_ranks[j])
                 else: assert int(saved_ranks[j])>len(ids)
-                rr,pp=evaluate_case(case,query,gt_id,dataset=dataset,model_seed=seed,query_id=str(cap_id),group=group,budgets=EDGE_BUDGETS,random_repeats=RANDOM_REPEATS,random_seed=RANDOM_SEED+seed*100000+j*10+screen_limit,hard_negative_image_id=(item['hard_negative_candidate_id'] if QUERY_MODE=='verified40' else None))
+                rr,pp=evaluate_case(case,query,gt_id,dataset=dataset,model_seed=seed,query_id=str(cap_id),group=group,budgets=EDGE_BUDGETS,random_repeats=RANDOM_REPEATS,random_seed=RANDOM_SEED+seed*100000+j*10+screen_limit,hard_negative_image_id=None,explanation_mode='object')
                 for r in rr: r['screen_path_limit']=screen_limit
                 for p in pp: p.update(dataset=dataset,model_seed=seed,screen_path_limit=screen_limit,query=query,ground_truth_image_id=gt_id)
                 result_rows.extend(rr); path_rows.extend(pp)
                 def source_url(im): return im.get('url') or ('https://images.cocodataset.org/'+im['coco_file'] if im.get('coco_file') else im.get('coco_url',''))
-                case_rows.append({'dataset':dataset,'query_id':cap_id,'query':query,'source_group':group,'model_seed':seed,'screen_path_limit':screen_limit,'gt_image_id':gt_id,'retrieved_image_id':case.top_id,'retrieval_outcome':'success' if case.top_id==int(gt_id) else 'failure','gt_rank':int(saved_ranks[j]),'target_rank':1,'gt_source_url':source_url(protocol.images[int(gt_id)]),'retrieved_source_url':source_url(protocol.images[case.top_id])})
+                case_rows.append({'dataset':dataset,'query_id':cap_id,'query':query,'source_group':group,'model_seed':seed,'screen_path_limit':screen_limit,'gt_image_id':gt_id,'retrieved_image_id':case.top_id,'exact_id_outcome':'match' if case.top_id==int(gt_id) else 'mismatch','retrieval_outcome':'success' if case.top_id==int(gt_id) else 'failure','gt_rank':int(saved_ranks[j]),'target_rank':1,'gt_source_url':source_url(protocol.images[int(gt_id)]),'retrieved_source_url':source_url(protocol.images[case.top_id])})
         print('Completed:',dataset,seed,len(chosen),'queries')
 '''),
 M('''## 3 · Lưu artifact bất biến
 
-`paths.jsonl`: mọi path đã sàng lọc, contribution cả path, lý do chọn và `no_path`. `xai_results.csv`: mỗi can thiệp trên cùng candidate pool, score graph/QA/fuse, hạng ảnh đích và GT riêng, mẫu số eligible/screened theo loại. `case_manifest.csv` giữ URL ảnh cho workbook. Không ghi đè baseline.'''),
+`paths.jsonl` lưu ứng viên cạnh đối tượng, đóng góp và lý do chọn. `xai_results.csv` lưu can thiệp thật, random cùng ảnh đích, score/hạng trước–sau và mẫu số cạnh đủ điều kiện. `case_manifest.csv` giữ ảnh cho workbook chấm. Lượt baseline cũ không bị ghi đè.
+'''),
 C('''assert result_rows and path_rows and case_rows
 with (OUT/'xai_results.csv').open('w',newline='',encoding='utf8') as f:
     keys=list(dict.fromkeys(k for row in result_rows for k in row)); w=csv.DictWriter(f,fieldnames=keys); w.writeheader(); w.writerows(result_rows)
@@ -210,12 +207,14 @@ with (OUT/'paths.jsonl').open('w',encoding='utf8') as f:
     for row in path_rows: f.write(json.dumps(row,ensure_ascii=False)+'\\n')
 (OUT/'complete.json').write_text(json.dumps({'n_result_rows':len(result_rows),'n_path_rows':len(path_rows),'n_cases':len(case_rows)},indent=2))
 print('Saved:',OUT,len(result_rows),len(path_rows),len(case_rows))
-''')])
+'''),
+])
 
-save('03_xai_path_analysis_and_validity.ipynb',[
-M('''# E · Phân tích fidelity, coverage và validity độc lập
+save('06_direct_xai_analysis.ipynb',[
+M('''# E · Direct retrieval: fidelity, coverage và căn cứ ảnh
 
-**Câu hỏi:** đường có là lý do hợp lý cho truy vấn–ảnh không? Notebook CPU đọc một lượt `path-*` hoàn tất. Bootstrap theo **query**, giữ seed trong cụm; coverage tính trên mọi case đăng ký, kể cả `no_relational_explanation`. Fidelity chỉ so với random path khớp cấu trúc khi có đối chứng độc lập. Logic và căn cứ ảnh chờ hai người chấm; score drop không tự cho nhãn validity.'''),
+Notebook CPU đọc lượt `path-*` có `explanation_mode=object`. Bootstrap theo query, giữ seed trong cụm; coverage gồm cả query không có cạnh đối tượng phù hợp. Fidelity so với cạnh `contains` khác trên cùng ảnh đích khi có đối chứng độc lập. Chấm ảnh riêng để biết đối tượng có thật; score drop không phải validity ngữ nghĩa của toàn caption. `failure` trong benchmark cũ chỉ nghĩa là top-1 khác ID GT; ảnh đó vẫn có thể phù hợp với query. Các output lưu trong notebook từ lượt cũ cần chạy lại sau thay đổi này.
+'''),
 C('''from pathlib import Path
 import json,sys
 import numpy as np
@@ -228,32 +227,42 @@ from xai.review_workbook import create_review_workbook
 from xai.image_download import fetch_review_image
 RESULTS_DIR=None  # set an explicit completed path-* directory for the report
 if RESULTS_DIR is None:
-    complete=sorted(p.parent for p in RUNS.glob('path-*/complete.json'))
-    assert complete,'Run notebook 02 first.'
+    complete=sorted(p.parent for p in RUNS.glob('path-*/complete.json')
+                    if json.loads((p.parent/'protocol.json').read_text()).get('explanation_mode')=='object')
+    assert complete,'Run notebook 02 in object mode first.'
     RESULTS_DIR=complete[-1]
 RESULTS_DIR=Path(RESULTS_DIR)
+assert json.loads((RESULTS_DIR/'protocol.json').read_text()).get('explanation_mode')=='object'
 results=pd.read_csv(RESULTS_DIR/'xai_results.csv')
 cases=pd.read_csv(RESULTS_DIR/'case_manifest.csv')
+cases['exact_id_outcome']=np.where(cases.gt_image_id.astype(str)==cases.retrieved_image_id.astype(str),'match','mismatch')
+if 'retrieval_outcome' in cases:
+    legacy=np.where(cases.retrieval_outcome=='success','match','mismatch')
+    assert (legacy==cases.exact_id_outcome).all(), 'Legacy success/failure must mean exact GT ID match only'
 paths=[json.loads(line) for line in (RESULTS_DIR/'paths.jsonl').open(encoding='utf8')]
 meta=json.loads((RESULTS_DIR/'complete.json').read_text())
 assert len(results)==meta['n_result_rows'] and len(paths)==meta['n_path_rows']
 analysis=RESULTS_DIR/'analysis'; analysis.mkdir(exist_ok=True)
 print(RESULTS_DIR,len(results),len(cases),len(paths))
 '''),
-M('''## 1 · Denominator, path yield và random matching
+M('''## 1 · Mẫu số, object yield và đối chứng
 
-Mỗi `dataset × screen limit × budget` giữ cùng số case. Sparsity = 1 − số cạnh explanation duy nhất / `E_eligible`; `E_screened / E_eligible` được báo riêng. Nếu `E_eligible_relation = 0`, relation fraction là N/A. Random thiếu cấu trúc khớp được báo thiếu đối chứng.'''),
-C('''main=results[results.intervention=='relational_path'].copy()
+Mỗi `dataset × budget` giữ toàn bộ case đã đăng ký. `exact_id_outcome` chỉ so ID top-1 với GT và không đo mức phù hợp ngữ nghĩa. Sparsity = 1 − số cạnh explanation duy nhất / `E_eligible_contains`; báo thêm số cạnh `contains` đủ điều kiện. Random control chỉ lấy cạnh `contains` khác trên chính ảnh đích. Thiếu cạnh đối chứng thì fidelity advantage là N/A, không loại case khỏi coverage.
+'''),
+C('''main=results[results.intervention=='object_path'].copy()
 assert not main.duplicated(['dataset','query_id','model_seed','screen_path_limit','budget']).any()
-assert (main.n_screened<=main.n_eligible).all() and (main.n_removed_unique<=main.budget).all()
+assert (main.n_screened_contains<=main.n_eligible_explanation).all() and (main.n_removed_unique<=main.budget).all()
 main['matched_advantage']=main.final_score_drop-main.random_final_drop_mean
-coverage=main.groupby(['dataset','screen_path_limit','budget']).agg(n_cases=('query_id','size'),n_queries=('query_id','nunique'),positive_path_rate=('has_positive_relational_path','mean'),selected_path_rate=('n_paths',lambda x:(x>0).mean()),no_explanation_rate=('status',lambda x:(x!='ok').mean()),structural_no_path_rate=('status',lambda x:(x=='no_relational_path').mean()),mean_eligible=('n_eligible','mean'),mean_screen_coverage=('screen_coverage','mean'),mean_sparsity=('sparsity','mean'),matched_cases=('random_n',lambda x:(x>0).sum()),unique_random_sets=('random_unique_n','sum'),mean_fidelity_advantage=('matched_advantage','mean')).reset_index()
+coverage=main.groupby(['dataset','screen_path_limit','budget']).agg(n_cases=('query_id','size'),n_queries=('query_id','nunique'),positive_object_rate=('has_positive_object_path','mean'),selected_path_rate=('n_paths',lambda x:(x>0).mean()),no_explanation_rate=('status',lambda x:(x!='ok').mean()),structural_no_path_rate=('status',lambda x:x.isin(['no_object_path','no_path']).mean()),mean_eligible=('n_eligible_explanation','mean'),mean_screen_coverage=('screen_coverage','mean'),mean_sparsity=('sparsity','mean'),matched_cases=('random_n',lambda x:(x>0).sum()),unique_random_sets=('random_unique_n','sum'),mean_fidelity_advantage=('matched_advantage','mean')).reset_index()
 display(coverage)
-display(main.groupby(['dataset','screen_path_limit','budget','group_source']).status.value_counts())
+exact_id_summary=cases.groupby('dataset').agg(n_rows=('query_id','size'),n_queries=('query_id','nunique'),exact_id_match_rate=('exact_id_outcome',lambda x:(x=='match').mean())).reset_index()
+display(exact_id_summary)
+display(main.groupby(['dataset','screen_path_limit','budget']).status.value_counts())
 '''),
 M('''## 2 · CI 95% theo query và hình fidelity–sparsity–coverage
 
-Lấy lại query ID, không lấy lại từng dòng seed. CI fidelity chỉ tính trên query có random match và đi kèm `n_matched_queries`. Yield/coverage dùng toàn bộ query. Không so trực tiếp thang fuse VG và PSG.'''),
+Lấy lại query ID, không lấy lại từng dòng seed. CI fidelity chỉ tính trên query có random match và kèm `n_matched_queries`. Yield/coverage dùng toàn bộ query. Không so trực tiếp thang fuse VG và PSG.
+'''),
 C('''rng=np.random.default_rng(20261121); ci=[]
 for key,part in main.groupby(['dataset','screen_path_limit','budget']):
     by_query=part.groupby('query_id').agg(coverage=('n_paths',lambda x:(x>0).mean()),advantage=('matched_advantage','mean'))
@@ -271,15 +280,23 @@ fig,axes=plt.subplots(1,3,figsize=(15,4))
 for (dataset,limit),sub in coverage.groupby(['dataset','screen_path_limit']):
     sub=sub.sort_values('budget'); label=f'{dataset.upper()} screen={limit}'
     for ax,y in zip(axes,['mean_fidelity_advantage','mean_sparsity','selected_path_rate']): ax.plot(sub.budget,sub[y],marker='o',label=label)
-for ax,title in zip(axes,['Matched final drop advantage','Sparsity / eligible edges','Relational yield / all cases']):
+for ax,title in zip(axes,['Matched final drop advantage','Sparsity / target contains edges','Object evidence yield / all cases']):
     ax.set_title(title); ax.set_xlabel('Unique-edge budget'); ax.grid(alpha=.3)
 axes[0].legend(fontsize=7); fig.tight_layout(); fig.savefig(analysis/'fidelity_sparsity_coverage.png',dpi=160)
 display(fig); plt.close(fig)
 '''),
-C('''report=f"""# Path XAI report — {RESULTS_DIR.name}
+C('''report=f"""# Direct object XAI report — {RESULTS_DIR.name}
 
 Protocol: {json.loads((RESULTS_DIR/'protocol.json').read_text())['query_mode']}; fixed top-100 candidates, frozen QA checkpoints and alpha.
-The current scorer consumes edge_index, not predicate identity; relational paths describe connectivity only.
+The main explanation is a query-matched object-to-image contains edge. It does not establish the full caption relation. A top-1 image with a different GT ID is an exact-ID mismatch, not automatically a semantic retrieval error.
+
+## Exact-ID benchmark (not semantic relevance)
+
+```
+{exact_id_summary.to_string(index=False)}
+```
+
+The 10-case review deliberately samples GT-ID matches and mismatches; its semantic relevance rate cannot be extrapolated to the full query set.
 
 ## Coverage and fidelity by dataset, screen and unique-edge budget
 
@@ -287,7 +304,7 @@ The current scorer consumes edge_index, not predicate identity; relational paths
 {coverage.to_string(index=False)}
 ```
 
-Matched fidelity is conditional on an independent random path with the same edge-type/length signature and unique-edge budget. The `matched_cases` column gives its denominator. `mean_sparsity` is conditional on an explanation existing; no-path cases remain in yield/coverage denominators. VG and PSG use different graph/model configurations, so their fuse-score magnitudes are not directly compared.
+Matched fidelity is conditional on independent contains edges of the same target image and unique-edge budget. The `matched_cases` column gives its denominator. `mean_sparsity` is conditional on an explanation existing; no-path cases remain in yield/coverage denominators. VG and PSG use different graph/model configurations, so their fuse-score magnitudes are not directly compared.
 
 ## Query-cluster bootstrap 95% CI
 
@@ -295,34 +312,45 @@ Matched fidelity is conditional on an independent random path with the same edge
 {ci.to_string(index=False)}
 ```
 
-Logical and visual validity remain pending independent review. Structural validity confirms graph continuity only. `no_relational_explanation` is a result, not an exclusion.
+Top-1 semantic relevance and object/visual validity remain pending independent review. See `semantic_case_review.csv` after the Case review sheet is completed. Structural validity confirms graph continuity only. `no_object_explanation` is a result, not an exclusion.
 """
 (analysis/'report.md').write_text(report,encoding='utf8')
 print('Report:',analysis/'report.md')
 '''),
-M('''## 3 · 10 case study và Excel chấm ảnh
+M('''## 3 · Tối đa 10 case study và Excel chấm ảnh
 
-Chọn 5 success/5 failure theo seed 0 và screen lớn nhất, gồm cả case không có đường. Tải GT và top-1 từ URL nguồn, nhúng vào workbook khi tải được; giữ URL nếu mạng lỗi. Các cột đánh giá và rubric để trống. Hai người chấm riêng từng bước: đối tượng, predicate/chiều, thông tin mới, căn cứ ảnh, toàn path. Mỗi bản là một reviewer độc lập.'''),
+Chọn 5 GT-ID match/5 GT-ID mismatch theo seed 0, gồm cả case không có cạnh đối tượng giải thích. Nhúng GT và top-1 vào workbook khi tải được. Ở tab Case review, chấm riêng `retrieved_relevance` cho ảnh top-1 khác ID GT, ghi `visual_reason` và `reviewer`. Phần bằng chứng đối tượng có thể chấm trên một workbook; cạnh `contains` không tự xác minh hành động/vị trí của cả caption.
+'''),
 C('''limit=int(cases.screen_path_limit.max()); pool=cases[(cases.model_seed==0)&(cases.screen_path_limit==limit)]
 def choose_outcome(outcome):
-    part=pool[pool.retrieval_outcome==outcome].sort_values(['dataset','query_id'])
+    part=pool[pool.exact_id_outcome==outcome].sort_values(['dataset','query_id'])
     preferred=pd.concat([x.head(2) for _,x in part.groupby('dataset')]) if len(part) else part
     remaining=part.drop(preferred.index).sort_values(['query_id','dataset'])
     return pd.concat([preferred,remaining.head(max(0,5-len(preferred)))]).head(5)
-chosen=pd.concat([choose_outcome('success'),choose_outcome('failure')])
-assert len(chosen)==10,'Need five success and five failure.'
+chosen=pd.concat([choose_outcome('match'),choose_outcome('mismatch')])
+print('Case studies:',len(chosen),'| GT-ID match:',(chosen.exact_id_outcome=='match').sum(),'| GT-ID mismatch:',(chosen.exact_id_outcome=='mismatch').sum())
+if len(chosen)<10: print('Insufficient GT-ID match/mismatch cases; reporting the available cases only')
 image_dir=analysis/'case_images'; image_dir.mkdir(exist_ok=True)
 ALLOW_UNVERIFIED_TLS=True  # public dataset images only; provenance is saved below
 path_index={}
 for p in paths:
     if p.get('model_seed')==0 and p.get('screen_path_limit')==limit: path_index.setdefault((p['dataset'],str(p['query_id'])),[]).append(p)
+verified=pd.read_csv(DUONG/'registry/queries_direct_verified.csv',keep_default_na=False,dtype={'query_id':str})
+gt_labels={(r['dataset'],r['query_id']):r['gt_relevance'] for r in verified.to_dict('records')}
 review_cases=[]; review_steps=[]; download_records=[]
 for row in chosen.to_dict('records'):
-    ps=[p for p in path_index.get((row['dataset'],str(row['query_id'])),[]) if 3 in p.get('selected_at_budgets',[])]
-    row['explanation_level']='relational_connectivity' if ps else 'no_relational_explanation'
-    row['path_or_edge_text']='; '.join(' → '.join(p['node_ids'])+' ['+','.join(p['predicates'])+']' for p in ps) or 'no path selected'
+    row['gt_relevance']=gt_labels.get((row['dataset'],str(row['query_id'])),'')
+    row['retrieved_relevance']='supported' if row['exact_id_outcome']=='match' and row['gt_relevance']=='supported' else ''
+    row['retrieval_outcome']='GT ID match' if row['exact_id_outcome']=='match' else 'GT ID mismatch'
+    ps=[p for p in path_index.get((row['dataset'],str(row['query_id'])),[]) if p.get('level')=='object' and 2 in p.get('selected_at_budgets',[])]
+    row['explanation_level']='object_evidence' if ps else 'no_object_explanation'
+    row['path_or_edge_text']='; '.join(' → '.join(p['node_ids']) for p in ps) or 'no path selected'
     for role,url_key,file_key in [('gt','gt_source_url','gt_image_file'),('retrieved','retrieved_source_url','retrieved_image_file')]:
         path=image_dir/f"{row['dataset']}_{row['query_id']}_{role}.jpg"
+        if path.is_file():
+            row[file_key]=str(path)
+            download_records.append({'dataset':row['dataset'],'query_id':row['query_id'],'role':role,'status':'cached'})
+            continue
         try:
             info=fetch_review_image(row[url_key],path,allow_unverified_tls=ALLOW_UNVERIFIED_TLS)
             row[file_key]=str(path)
@@ -335,70 +363,105 @@ for row in chosen.to_dict('records'):
     for p in ps:
         for i,e in enumerate(p['edge_ids']):
             review_steps.append({'dataset':row['dataset'],'query_id':row['query_id'],'target_image_id':row['retrieved_image_id'],'path_id':p['path_id'],'step_index':i+1,'edge_id':e,'source_node':p['node_ids'][i],'target_node':p['node_ids'][i+1],'predicate_hint':p['predicates'][i],'edge_type':p['edge_types'][i],'edge_provenance':p['sources'][i],'model_score_drop':p['final_score_drop']})
-workbook=create_review_workbook(review_cases,review_steps,analysis/'validity_case_review_10.xlsx',analysis)
+workbook=analysis/'validity_case_review_10.xlsx'
+if workbook.exists():
+    existing=pd.read_excel(workbook,sheet_name='Case review',keep_default_na=False,dtype={'query_id':str})
+    expected_ids={(r['dataset'],str(r['query_id'])) for r in review_cases}
+    actual_ids={(r['dataset'],str(r['query_id'])) for r in existing.to_dict('records')}
+    assert len(existing)==len(review_cases) and actual_ids==expected_ids, 'Existing workbook has a different case set'
+    print('Keeping existing review workbook and its annotations:',workbook)
+else:
+    create_review_workbook(review_cases,review_steps,workbook,analysis)
 pd.DataFrame(download_records).to_csv(analysis/'image_download_manifest.csv',index=False)
 print('Downloaded/available images:',sum(r['status']!='failed' for r in download_records),'/',len(download_records))
 annotations=pd.DataFrame(review_steps)
-for col in ['reviewer','object_supported','predicate_direction_valid','new_information','visual_evidence','step_decision','support_source','evidence_reason','whole_path_decision','adjudicated_decision']:
+for col in ['reviewer','object_supported','visual_evidence','step_decision','support_source','evidence_reason']:
     annotations[col]=''
-annotations.to_csv(analysis/'validity_annotations.csv',index=False)
+annotations_path=analysis/'validity_annotations.csv'
+if not annotations_path.exists(): annotations.to_csv(annotations_path,index=False)
 pd.DataFrame(review_cases).to_csv(analysis/'case_studies_10.csv',index=False)
 print('Review workbook:',workbook,'step rows:',len(review_steps))
 '''),
-M('''## 4 · Hai reviewer và hòa giải
+M('''## 4 · Chấm mức phù hợp của ảnh top-1
 
-Sau khi chấm độc lập, chỉ định hai workbook. Tính tỷ lệ đồng thuận và Cohen κ trên `step_decision` gồm cả `uncertain`. Đưa bất đồng vào bảng hòa giải; chỉ báo logical/visual supported sau khi `adjudicated_decision` đầy đủ. Không dùng graph schema hoặc provenance làm nhãn ảnh.'''),
-C('''REVIEWER_A=None  # Path('.../reviewer_a.xlsx')
-REVIEWER_B=None  # Path('.../reviewer_b.xlsx')
-if REVIEWER_A and REVIEWER_B:
-    keys=['dataset','query_id','target_image_id','path_id','step_index','edge_id']
-    a=pd.read_excel(REVIEWER_A,sheet_name='Step review',keep_default_na=False)
-    b=pd.read_excel(REVIEWER_B,sheet_name='Step review',keep_default_na=False)
-    ab=a.merge(b,on=keys,suffixes=('_a','_b'),validate='one_to_one')
-    assert len(ab)==len(a)==len(b)
-    assert (ab.step_decision_a!='').all() and (ab.step_decision_b!='').all()
-    labels=['supported','contradicted','uncertain']
-    assert ab.step_decision_a.isin(labels).all() and ab.step_decision_b.isin(labels).all()
-    po=(ab.step_decision_a==ab.step_decision_b).mean()
-    pe=sum((ab.step_decision_a==label).mean()*(ab.step_decision_b==label).mean() for label in labels)
-    kappa=(po-pe)/(1-pe) if pe<1 else float('nan')
-    print('Agreement:',po,'Cohen kappa:',kappa,'n:',len(ab))
-    ab.to_csv(analysis/'validity_annotations_two_reviewers.csv',index=False)
+Một ảnh top-1 **khác ID GT** vẫn có thể hỗ trợ toàn query. Trong workbook `validity_case_review_10.xlsx`, tab **Case review**, các ô `retrieved_relevance` (`supported`/`contradicted`/`uncertain`), `visual_reason` và `reviewer` có thể lưu nhãn từng dòng. Người dùng đã xác nhận bằng mắt rằng cả năm mismatch của lượt `path-20261121-184857` hỗ trợ query; cell dưới dùng xác nhận này cho ô còn trống, nhưng nhãn đã điền trong workbook được ưu tiên. Chạy lại cell sau khi lưu Excel nếu có sửa nhãn. Tỷ lệ thu được chỉ mô tả **10 case được chọn cân bằng theo ID**, không phải semantic@1 của toàn bộ 34 query.
+'''),
+C('''RELEVANCE_WORKBOOK=analysis/'validity_case_review_10.xlsx'  # dùng workbook đã điền; có thể đặt đường dẫn khác
+reviewed=pd.read_excel(RELEVANCE_WORKBOOK,sheet_name='Case review',keep_default_na=False,dtype={'query_id':str})
+reviewed['query_id']=reviewed.query_id.astype(str)
+expected=chosen[['dataset','query_id','exact_id_outcome']].copy()
+expected['query_id']=expected.query_id.astype(str)
+fields=['dataset','query_id','retrieved_relevance','visual_reason','reviewer']
+assert set(fields) <= set(reviewed.columns)
+semantic=expected.merge(reviewed[fields],on=['dataset','query_id'],how='left',validate='one_to_one')
+assert len(semantic)==len(chosen) and semantic.retrieved_relevance.notna().all()
+semantic['relevance_source']='case_review_workbook'
+match_without_label=(semantic.exact_id_outcome=='match') & semantic.retrieved_relevance.eq('')
+semantic.loc[match_without_label,'retrieved_relevance']='supported'  # same verified GT image
+semantic.loc[match_without_label,'relevance_source']='verified_gt_same_image'
+USER_CONFIRMED_MISMATCH_RUN='path-20261121-184857'
+if RESULTS_DIR.name==USER_CONFIRMED_MISMATCH_RUN:
+    confirmed=(semantic.exact_id_outcome=='mismatch') & semantic.retrieved_relevance.eq('')
+    semantic.loc[confirmed,'retrieved_relevance']='supported'
+    semantic.loc[confirmed,'relevance_source']='user_visual_confirmation'
+    supported_mismatch=(semantic.exact_id_outcome=='mismatch') & semantic.retrieved_relevance.eq('supported')
+    auto_provenance=supported_mismatch & (semantic.visual_reason.eq('') | semantic.reviewer.eq(''))
+    semantic.loc[auto_provenance,'relevance_source']='user_visual_confirmation'
+    semantic.loc[supported_mismatch & semantic.visual_reason.eq(''),'visual_reason']='User visually confirmed retrieved image supports the full query in the case workbook.'
+    semantic.loc[supported_mismatch & semantic.reviewer.eq(''),'reviewer']='user_visual_confirmation'
+missing=semantic[(semantic.exact_id_outcome=='mismatch') & (
+    ~semantic.retrieved_relevance.isin(['supported','contradicted','uncertain']) |
+    semantic.visual_reason.eq('') | semantic.reviewer.eq(''))]
+if len(missing):
+    print('Cần chấm ảnh top-1 khác ID GT cho các query:')
+    display(missing[['dataset','query_id','retrieved_relevance','visual_reason','reviewer']])
 else:
-    print('Validity pending independent human annotation; no logical/visual support rate reported.')
-ADJUDICATED_WORKBOOK=None  # Path('.../adjudicated_validity.xlsx')
-if ADJUDICATED_WORKBOOK:
-    final=pd.read_excel(ADJUDICATED_WORKBOOK,sheet_name='Step review',keep_default_na=False)
-    assert len(final)==len(review_steps)
-    assert final.adjudicated_decision.isin(['supported','contradicted','uncertain']).all()
-    final.to_csv(analysis/'validity_annotations.csv',index=False)
-    real=final[final.path_id!='no_path']
-    for field in ['object_supported','predicate_direction_valid','new_information','visual_evidence','whole_path_decision']:
-        assert real[field].isin(['supported','contradicted','uncertain']).all(),field
-    real=real.copy()
-    real['logical_supported']=real[['predicate_direction_valid','new_information','adjudicated_decision']].eq('supported').all(axis=1)
-    real['visual_supported']=real[['object_supported','visual_evidence','adjudicated_decision']].eq('supported').all(axis=1)
-    real['step_known']=real.adjudicated_decision.ne('uncertain')
-    path_scores=real.groupby(['dataset','query_id','path_id']).agg(
-        logical_steps=('logical_supported','all'),visual_steps=('visual_supported','all'),
-        known_steps=('step_known','all'),whole_supported=('whole_path_decision',lambda x:x.eq('supported').all()),
-        whole_known=('whole_path_decision',lambda x:x.ne('uncertain').all())).reset_index()
-    path_scores['supported']=path_scores.logical_steps & path_scores.visual_steps & path_scores.whole_supported
-    path_scores['known']=path_scores.known_steps & path_scores.whole_known
-    path_scores.to_csv(analysis/'validity_path_scores.csv',index=False)
-    print('Known step rate:',real.step_known.mean(),'Logical step support:',real.logical_supported.mean(),
-          'Visual step support:',real.visual_supported.mean(),'Known path rate:',path_scores.known.mean(),
-          'Supported path rate:',path_scores.supported.mean(),
-          'No-path cases:',(final.path_id=='no_path').sum())
-    with (analysis/'report.md').open('a',encoding='utf8') as f:
-        f.write(f"""
+    assert semantic.loc[semantic.exact_id_outcome=='match','retrieved_relevance'].eq('supported').all()
+    semantic.to_csv(analysis/'semantic_case_review.csv',index=False)
+    counts=semantic.retrieved_relevance.value_counts().reindex(['supported','contradicted','uncertain'],fill_value=0)
+    text=f"""# Top-1 relevance on stratified case studies
 
-## Independently adjudicated validity (10 case studies)
+GT-ID match: {(semantic.exact_id_outcome=='match').sum()}/{len(semantic)}.
+GT-ID mismatch: {(semantic.exact_id_outcome=='mismatch').sum()}/{len(semantic)}.
+Top-1 supported: {counts['supported']}/{len(semantic)}; contradicted: {counts['contradicted']}; uncertain: {counts['uncertain']}.
 
-Step known: {real.step_known.mean():.3f}; logical step support: {real.logical_supported.mean():.3f}; visual step support: {real.visual_supported.mean():.3f}.
-Path known: {path_scores.known.mean():.3f}; whole-path support: {path_scores.supported.mean():.3f}; no-path cases: {(final.path_id=='no_path').sum()}.
-These rates use every selected step/path in the 10-case workbook; uncertain counts in the denominator.
-""")
-''')])
+These ten cases were selected to balance exact-ID match/mismatch. Blank mismatch labels for run path-20261121-184857 were filled from the user's visual confirmation; explicit workbook labels take precedence. This is not a semantic accuracy estimate for all 34 queries. Exact-ID ranking metrics remain valid for the dataset benchmark.
+"""
+    (analysis/'semantic_case_review.md').write_text(text,encoding='utf8')
+    display(semantic)
+    print(text)
+'''),
+M('''## 5 · Bằng chứng đối tượng (một workbook, tùy chọn)
 
-print('Built three notebooks.')
+Nếu muốn báo object/visual support của cạnh `contains`, điền `object_supported`, `visual_evidence`, `step_decision`, `evidence_reason` và `reviewer` trong tab **Step review**. Cell dưới chỉ tính trên nhãn đã điền; không tính đồng thuận giữa người chấm và không yêu cầu bản hòa giải.
+'''),
+C('''STEP_REVIEW_WORKBOOK=analysis/'validity_case_review_10.xlsx'
+step_review=pd.read_excel(STEP_REVIEW_WORKBOOK,sheet_name='Step review',keep_default_na=False,dtype={'query_id':str})
+real=step_review[step_review.edge_id.astype(str).str.strip().ne('')].copy()
+labels=['supported','contradicted','uncertain']
+judgements=['object_supported','visual_evidence','step_decision']
+ready=(len(real)>0 and all(real[field].isin(labels).all() for field in judgements)
+       and real.reviewer.astype(str).str.strip().ne('').all()
+       and real.evidence_reason.astype(str).str.strip().ne('').all())
+if not ready:
+    print('Object/visual support chưa có đủ nhãn trong Step review; báo cáo fidelity và semantic relevance vẫn hợp lệ.')
+else:
+    real['object_step_supported']=real[['object_supported','step_decision']].eq('supported').all(axis=1)
+    real['visual_step_supported']=real[['visual_evidence','step_decision']].eq('supported').all(axis=1)
+    real['step_known']=real.step_decision.ne('uncertain')
+    paths_review=real.groupby(['dataset','query_id','path_id']).agg(
+        object_supported=('object_step_supported','all'),
+        visual_supported=('visual_step_supported','all'),
+        known=('step_known','all')).reset_index()
+    real.to_csv(analysis/'object_step_review.csv',index=False)
+    paths_review.to_csv(analysis/'object_path_review.csv',index=False)
+    summary=f"""# Object evidence on selected case studies
+
+Reviewed steps: {len(real)}; object step support: {real.object_step_supported.mean():.3f}; visual step support: {real.visual_step_supported.mean():.3f}.
+Reviewed paths: {len(paths_review)}; object path support: {paths_review.object_supported.mean():.3f}; visual path support: {paths_review.visual_supported.mean():.3f}.
+These labels concern object evidence only; a contains edge does not verify the full caption.
+"""
+    (analysis/'object_evidence_review.md').write_text(summary,encoding='utf8')
+    print(summary)
+'''),
+])

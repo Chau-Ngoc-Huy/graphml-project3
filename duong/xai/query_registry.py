@@ -105,25 +105,43 @@ def freeze_registry(bundle_dirs: dict[str, Path], baseline_selected: Path, outpu
     return output
 
 
+def direct_eligibility_reason(row: dict) -> str:
+    """Explain why a reviewed row is excluded from the direct experiment."""
+    if row.get('review_status') != 'approved':
+        return 'awaits_human_approval'
+    if row.get('verified_group') != 'direct':
+        return 'not_direct'
+    if row.get('gt_relevance') != 'supported':
+        return 'gt_not_supported'
+    if not all(str(row.get(k, '')).strip() for k in
+               ('claim_subject', 'claim_predicate', 'claim_object', 'visual_reason', 'reviewer')):
+        return 'missing_claim_or_review_provenance'
+    if str(row['reviewer']).lower().startswith('gemini'):
+        return 'needs_human_reviewer_id'
+    return 'eligible'
+
+
 def validated_registry_rows(path: Path) -> list[dict]:
+    """Return approved direct queries with independently verified positive images.
+
+    Source direct/indirect labels and suggested hard negatives are retained as
+    provenance. Neither is an eligibility criterion for direct retrieval.
+    """
     with Path(path).open(newline='', encoding='utf-8') as f:
         rows = list(csv.DictReader(f))
+    keys = [(row['dataset'], row['query_id']) for row in rows]
+    if len(keys) != len(set(keys)):
+        raise ValueError('duplicate query IDs in reviewed registry')
+    selected = []
     for row in rows:
-        if row['review_status'] != 'approved' or row['verified_group'] not in ('direct', 'relational'):
-            raise ValueError(f"query {row['dataset']}/{row['query_id']} awaits human review")
-        if row['gt_relevance'] != 'supported' or row['negative_relevance'] != 'contradicted':
-            raise ValueError(f"query {row['dataset']}/{row['query_id']} lacks verified positive/negative")
-        if row['same_objects_different_relation'] != 'supported':
-            raise ValueError(f"query {row['dataset']}/{row['query_id']} lacks controlled hard negative")
-        if not all(row[k].strip() for k in ('claim_subject', 'claim_predicate', 'claim_object',
-                                           'visual_reason', 'reviewer')):
-            raise ValueError(f"query {row['dataset']}/{row['query_id']} lacks claim or review provenance")
+        reason = direct_eligibility_reason(row)
+        if reason == 'eligible':
+            selected.append(row)
     for dataset in {r['dataset'] for r in rows}:
-        subset = [r for r in rows if r['dataset'] == dataset]
-        for group in ('direct', 'relational'):
-            if sum(r['verified_group'] == group for r in subset) < 10:
-                raise ValueError(f'{dataset}: fewer than 10 verified {group} queries')
-    return rows
+        count = sum(r['dataset'] == dataset for r in selected)
+        if count < 10:
+            raise ValueError(f'{dataset}: {count} approved direct queries; need at least 10')
+    return selected
 
 
 def read_case_review_workbook(workbook: Path) -> list[dict[str, str]]:

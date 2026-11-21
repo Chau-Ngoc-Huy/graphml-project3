@@ -106,27 +106,24 @@ def create_review_workbook(cases: list[dict], steps: list[dict], output: Path,
     step_headers = ["dataset", "query_id", "target_image_id", "path_id", "step_index",
                     "edge_id", "source_node", "predicate_hint", "target_node", "edge_type",
                     "edge_provenance", "model_score_drop", "reviewer", "object_supported",
-                    "predicate_direction_valid", "new_information", "visual_evidence",
-                    "step_decision", "support_source", "evidence_reason", "whole_path_decision",
-                    "adjudicated_decision"]
+                    "visual_evidence", "step_decision", "support_source", "evidence_reason"]
     step_rows = [step_headers]
     for step in steps:
         step_rows.append([step.get(k, "") for k in ("dataset", "query_id", "target_image_id",
                          "path_id", "step_index", "edge_id", "source_node", "predicate_hint",
                          "target_node", "edge_type", "edge_provenance", "model_score_drop")]
-                         + ["", "", "", "", "", "", "", "", "", ""])
+                         + ["", "", "", "", "", ""])
     rubric = [
         ["Field", "Rule"],
         ["Purpose", "Judge visual and logical support independently of model fidelity and graph structure."],
+        ["Direct object mode", "For a contains edge, verify the object in the image and its relevance to the query. Predicate direction and full-caption relation are outside this mode."],
         ["GT/retrieved relevance", "supported = image satisfies the full query; contradicted = does not; uncertain = cannot tell."],
-        ["Hard negative", "Mark only after confirming the same objects and a different relation or role visually."],
+        ["GT ID mismatch", "A top-1 image with a different GT ID may still satisfy the query. Judge retrieved relevance separately from exact-ID rank."],
+        ["Hard negative", "Optional for direct retrieval; if reported, confirm the same objects and a different relation or role visually."],
         ["Predicate hint", "Display only. Current QA scorer does not consume predicate identity."],
         ["Object supported", "Check source and target objects independently in the image or independent annotation."],
-        ["Predicate direction valid", "Check original meaning and any inverse inference; graph connectivity alone is insufficient."],
-        ["New information", "The step must add evidence relevant to the query claim."],
-        ["Visual evidence", "Check the relation/action against the image; contains proves only assigned object presence."],
-        ["Whole path", "supported only if every necessary step is supported and none contradicted; missing evidence = uncertain."],
-        ["Independent review", "Make a copy for each of two reviewers; compare decisions, then adjudicate disagreements."],
+        ["Visual evidence", "Check the object in the image. A contains edge does not prove the caption's action or relation."],
+        ["Review provenance", "Record the reviewer and visual reason for each judgement. Agreement or adjudication is not required in this protocol."],
         ["Provenance", "Source URL and model labels are context, not independent ground truth."],
     ]
     ns = 'http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing'
@@ -153,8 +150,8 @@ def create_review_workbook(cases: list[dict], steps: list[dict], output: Path,
                image_rows=range(2, len(case_rows) + 1),
                dropdown_columns=(23, 24, 25, 26)),
         _sheet(step_rows, [12, 14, 20, 30, 12, 14, 30, 28, 30, 15, 28, 18, 18,
-                           20, 25, 20, 22, 20, 25, 55, 25, 25],
-               dropdown_columns=(14, 15, 16, 17, 18, 21, 22)),
+                           20, 22, 20, 25, 55],
+               dropdown_columns=(14, 15, 16)),
         _sheet(rubric, [27, 110]),
     ]
     content_types = ('<?xml version="1.0" encoding="UTF-8"?>'

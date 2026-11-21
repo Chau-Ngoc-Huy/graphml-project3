@@ -37,6 +37,24 @@ class FakeCase:
 
 
 class PathProtocolTests(unittest.TestCase):
+    def test_direct_object_path_uses_same_target_contains_control(self):
+        case = FakeCase()
+        case.path_candidates = (((5,), (0, 3)),)
+        case.all_path_count = 1
+        rows, paths = evaluate_case(case, 'person on horse', '1',
+                                    dataset='vg', model_seed=0, query_id='q0', group='direct',
+                                    budgets=(1,), random_repeats=5, random_seed=7,
+                                    explanation_mode='object')
+        selected = next(r for r in rows if r['intervention'] == 'object_path')
+        self.assertEqual(selected['status'], 'ok')
+        self.assertEqual(selected['n_removed_unique'], 1)
+        self.assertEqual(selected['n_removed_relation'], 0)
+        self.assertEqual(selected['n_eligible_explanation'], 3)
+        self.assertAlmostEqual(selected['sparsity'], 1 - 1 / 3)
+        self.assertEqual(selected['random_n'], 5)
+        self.assertEqual(selected['explanation_mode'], 'object')
+        self.assertEqual(paths[0]['selected_at_budgets'], [1])
+
     def test_deletes_whole_path_and_matches_random_signature(self):
         rows, paths = evaluate_case(FakeCase(), 'person on horse', '1',
                                     dataset='vg', model_seed=0, query_id='q1', group='direct',
