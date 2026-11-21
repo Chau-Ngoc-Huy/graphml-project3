@@ -285,38 +285,6 @@ for ax,title in zip(axes,['Matched final drop advantage','Sparsity / target cont
 axes[0].legend(fontsize=7); fig.tight_layout(); fig.savefig(analysis/'fidelity_sparsity_coverage.png',dpi=160)
 display(fig); plt.close(fig)
 '''),
-C('''report=f"""# Direct object XAI report — {RESULTS_DIR.name}
-
-Protocol: {json.loads((RESULTS_DIR/'protocol.json').read_text())['query_mode']}; fixed top-100 candidates, frozen QA checkpoints and alpha.
-The main explanation is a query-matched object-to-image contains edge. It does not establish the full caption relation. A top-1 image with a different GT ID is an exact-ID mismatch, not automatically a semantic retrieval error.
-
-## Exact-ID benchmark (not semantic relevance)
-
-```
-{exact_id_summary.to_string(index=False)}
-```
-
-The 10-case review deliberately samples GT-ID matches and mismatches; its semantic relevance rate cannot be extrapolated to the full query set.
-
-## Coverage and fidelity by dataset, screen and unique-edge budget
-
-```
-{coverage.to_string(index=False)}
-```
-
-Matched fidelity is conditional on independent contains edges of the same target image and unique-edge budget. The `matched_cases` column gives its denominator. `mean_sparsity` is conditional on an explanation existing; no-path cases remain in yield/coverage denominators. VG and PSG use different graph/model configurations, so their fuse-score magnitudes are not directly compared.
-
-## Query-cluster bootstrap 95% CI
-
-```
-{ci.to_string(index=False)}
-```
-
-Top-1 semantic relevance and object/visual validity remain pending independent review. See `semantic_case_review.csv` after the Case review sheet is completed. Structural validity confirms graph continuity only. `no_object_explanation` is a result, not an exclusion.
-"""
-(analysis/'report.md').write_text(report,encoding='utf8')
-print('Report:',analysis/'report.md')
-'''),
 M('''## 3 · Tối đa 10 case study và Excel chấm ảnh
 
 Chọn 5 GT-ID match/5 GT-ID mismatch theo seed 0, gồm cả case không có cạnh đối tượng giải thích. Nhúng GT và top-1 vào workbook khi tải được. Ở tab Case review, chấm riêng `retrieved_relevance` cho ảnh top-1 khác ID GT, ghi `visual_reason` và `reviewer`. Phần bằng chứng đối tượng có thể chấm trên một workbook; cạnh `contains` không tự xác minh hành động/vị trí của cả caption.
