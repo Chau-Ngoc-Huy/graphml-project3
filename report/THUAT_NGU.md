@@ -17,13 +17,15 @@ Mục đích: viết tiếng Việt tự nhiên, không dịch từng chữ từ
 |---|---|---|---|
 | CLIP đóng băng | frozen CLIP | CLIP **giữ nguyên trọng số** (không huấn luyện thêm) | lần đầu kèm *frozen* |
 | điểm cuối của ứng viên $i$ | final score of candidate $i$ | **điểm xếp hạng** của ảnh $i$ / "ảnh $i$ được xếp hạng theo điểm…" | |
+| trộn điểm | score fusion | **kết hợp điểm** (của CLIP với điểm của phương pháp) | |
+| tập ứng viên, top-$K$ ứng viên | candidate set, top-K | **100 ảnh ứng viên do CLIP chọn** (100 ảnh có cosine cao nhất) | |
+| hệ số trộn $\gamma$ | gate | **hệ số** $\gamma$ quyết định phần thông tin từ GNN được cộng thêm nhiều hay ít | |
 | ứng viên | candidate | **ảnh ứng viên** (lần đầu), sau đó "ứng viên" | top-$K$ ảnh CLIP chọn để xếp hạng lại |
 | toàn pool test | full test pool | **toàn bộ ảnh test** | lần đầu kèm *full pool* |
 | fold gallery, 3 fold | gallery fold | **gallery** thứ $s$; "3 lần lấy mẫu gallery" / "3 seed" | gallery = tập ảnh tìm kiếm 1 000 ảnh lấy ngẫu nhiên |
 | (gallery) | gallery | **tập ảnh tìm kiếm (gallery)** lần đầu, sau đó "gallery" | |
 | nền adapter, nền so sánh, trên nền adapter | adapter baseline | **mốc CLIP + adapter**, **mốc so sánh**, "khi đã có adapter" | |
 | lớp chiếu | projection layer | **phép chiếu (tuyến tính) học được (adapter)** | |
-| cổng $\gamma$ | gate | **hệ số trộn** $\gamma$ | |
 | cực đại mềm, max mềm | soft maximum (log-sum-exp) | mô tả việc nó làm: **dạng làm mượt của phép lấy giá trị lớn nhất (log-sum-exp)** — gần bằng giá trị lớn nhất nhưng các phần tử gần đó cũng góp một phần | kèm ví dụ nếu được |
 | lô | batch | **batch** | |
 | đầu chú ý, head chú ý, bộ trọng số chú ý | attention heads | giữ nguyên **attention heads** (vd "GAT 4 attention heads") | attention = GAT tự học láng giềng nào quan trọng hơn (giải thích ở mục II) |
