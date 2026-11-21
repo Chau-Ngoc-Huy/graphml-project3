@@ -7,7 +7,7 @@ Mục đích: viết tiếng Việt tự nhiên, không dịch từng chữ từ
 1. **Lần đầu xuất hiện**: viết tiếng Việt, kèm thuật ngữ tiếng Anh in nghiêng trong ngoặc và một câu giải thích ngắn.
    Ví dụ: *ảnh đúng là **mẫu dương** (\emph{positive sample}), các ảnh khác trong batch là **mẫu âm** (\emph{negative sample}), tức các ví dụ sai để mô hình đối chiếu.*
 2. **Các lần sau**: chỉ dùng tiếng Việt, không chú thích lại.
-3. Thuật ngữ chuyên ngành đã quen thì **giữ nguyên tiếng Anh** (batch, epoch, adapter, GNN, GAT, GCN, GraphSAGE, ablation, baseline, seed, gallery, MRR, Recall@k, InfoNCE, MLP); không dịch ra thứ tiếng Việt mà người đọc vẫn phải đoán ngược về tiếng Anh.
+3. Thuật ngữ chuyên ngành đã quen thì **giữ nguyên tiếng Anh** (batch, epoch, adapter, GNN, GAT, GCN, GraphSAGE, attention heads, ablation, baseline, seed, gallery, MRR, Recall@k, InfoNCE, MLP); không dịch ra thứ tiếng Việt mà người đọc vẫn phải đoán ngược về tiếng Anh.
 4. Thuật ngữ chưa có tiếng Việt quen (log-sum-exp, attention head, ...): **mô tả việc nó làm** bằng lời thường, thuật ngữ gốc để trong ngoặc — đừng tạo từ mới kiểu "max mềm", "head chú ý".
 5. Không viết chữ nào mà chính mình không giải thích được khi vấn đáp.
 
@@ -26,7 +26,7 @@ Mục đích: viết tiếng Việt tự nhiên, không dịch từng chữ từ
 | cổng $\gamma$ | gate | **hệ số trộn** $\gamma$ | |
 | cực đại mềm, max mềm | soft maximum (log-sum-exp) | mô tả việc nó làm: **dạng làm mượt của phép lấy giá trị lớn nhất (log-sum-exp)** — gần bằng giá trị lớn nhất nhưng các phần tử gần đó cũng góp một phần | kèm ví dụ nếu được |
 | lô | batch | **batch** | |
-| đầu chú ý, head chú ý | attention head | **bộ trọng số chú ý**: "GAT tính 4 bộ trọng số chú ý song song rồi lấy trung bình (4 attention heads)" | chú ý (attention) = mô hình tự học láng giềng nào quan trọng hơn |
+| đầu chú ý, head chú ý, bộ trọng số chú ý | attention heads | giữ nguyên **attention heads** (vd "GAT 4 attention heads") | attention = GAT tự học láng giềng nào quan trọng hơn (giải thích ở mục II) |
 | kiên nhẫn 4 | patience 4 | dừng sớm khi **4 epoch liên tiếp** không cải thiện | |
 | self-loop | self-loop | **cạnh tự nối (self-loop)** | |
 | ảnh dương | positive / relevant image | **ảnh liên quan** (bộ 24 truy vấn) | |
