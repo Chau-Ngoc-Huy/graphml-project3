@@ -8,7 +8,8 @@ Mục đích: viết tiếng Việt tự nhiên, không dịch từng chữ từ
    Ví dụ: *ảnh đúng là **mẫu dương** (\emph{positive sample}), các ảnh khác trong batch là **mẫu âm** (\emph{negative sample}), tức các ví dụ sai để mô hình đối chiếu.*
 2. **Các lần sau**: chỉ dùng tiếng Việt, không chú thích lại.
 3. Thuật ngữ chuyên ngành đã quen thì **giữ nguyên tiếng Anh** (batch, epoch, adapter, GNN, GAT, GCN, GraphSAGE, ablation, baseline, seed, gallery, MRR, Recall@k, InfoNCE, MLP); không dịch ra thứ tiếng Việt mà người đọc vẫn phải đoán ngược về tiếng Anh.
-4. Không viết chữ nào mà chính mình không giải thích được khi vấn đáp.
+4. Thuật ngữ chưa có tiếng Việt quen (log-sum-exp, attention head, ...): **mô tả việc nó làm** bằng lời thường, thuật ngữ gốc để trong ngoặc — đừng tạo từ mới kiểu "max mềm", "head chú ý".
+5. Không viết chữ nào mà chính mình không giải thích được khi vấn đáp.
 
 ## Bảng thay thế
 
@@ -23,9 +24,9 @@ Mục đích: viết tiếng Việt tự nhiên, không dịch từng chữ từ
 | nền adapter, nền so sánh, trên nền adapter | adapter baseline | **mốc CLIP + adapter**, **mốc so sánh**, "khi đã có adapter" | |
 | lớp chiếu | projection layer | **phép chiếu (tuyến tính) học được (adapter)** | |
 | cổng $\gamma$ | gate | **hệ số trộn** $\gamma$ | |
-| cực đại mềm | soft maximum | **max mềm (log-sum-exp)** | |
+| cực đại mềm, max mềm | soft maximum (log-sum-exp) | mô tả việc nó làm: **dạng làm mượt của phép lấy giá trị lớn nhất (log-sum-exp)** — gần bằng giá trị lớn nhất nhưng các phần tử gần đó cũng góp một phần | kèm ví dụ nếu được |
 | lô | batch | **batch** | |
-| đầu chú ý | attention head | **head chú ý (attention head)** | |
+| đầu chú ý, head chú ý | attention head | **bộ trọng số chú ý**: "GAT tính 4 bộ trọng số chú ý song song rồi lấy trung bình (4 attention heads)" | chú ý (attention) = mô hình tự học láng giềng nào quan trọng hơn |
 | kiên nhẫn 4 | patience 4 | dừng sớm khi **4 epoch liên tiếp** không cải thiện | |
 | self-loop | self-loop | **cạnh tự nối (self-loop)** | |
 | ảnh dương | positive / relevant image | **ảnh liên quan** (bộ 24 truy vấn) | |
