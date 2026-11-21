@@ -154,7 +154,12 @@ class HuyQACaseModel:
                               provenance={"contains": "VG/PSG objects", "sg_rel": "PSG train scene graph",
                                           "concept": "ConceptNet"}[kind],
                               metadata={"edge_type": kind,
-                                        "pair_relation_hint": self.graph.rel_name.get((src, dst), kind)}))
+                                        "pair_relation_hint": self.graph.rel_name.get((src, dst), kind),
+                                        "predicate_status": "display_only_not_model_input",
+                                        "message_direction": "source_to_target",
+                                        "source_split": (self.protocol.images[dst].get("split", "unknown")
+                                                         if kind == "contains" else
+                                                         "train" if kind == "sg_rel" else "external")}))
         graph = KnowledgeGraph.from_records(nodes.values(), edges)
         schema = GraphSchema(frozenset({"image", "label"}), {
             "contains": RelationRule.make({"label"}, {"image"}),
@@ -176,3 +181,83 @@ class HuyQACaseModel:
         if int(image_id) != self.top_id:
             raise ValueError("this case model explains its original top image")
         return tuple(str(e) for e in self.screened if str(e) in local_graph.edges)
+
+
+class HuyQAPathCaseModel(HuyQACaseModel):
+    """A target-specific path screen with an exact two-layer eligibility audit.
+
+    The screen uses graph topology and a fixed path limit only. It never uses
+    perturbation scores or test relevance. The original scorer still retains
+    every edge outside the intervention graph.
+    """
+
+    def __init__(self, *args, target_image_id=None, max_paths=200, **kwargs):
+        self.target_image_id = target_image_id
+        self.max_paths = int(max_paths)
+        if self.max_paths < 1:
+            raise ValueError("max_paths must be positive")
+        super().__init__(*args, **kwargs)
+
+    def _screen_edges(self, max_rel_edges):
+        base = self.score_removed()
+        self.predicted_top_id = int(self.ids[int(np.argsort(-base["final"], kind="stable")[0])])
+        self.top_id = int(self.target_image_id) if self.target_image_id is not None else self.predicted_top_id
+        if self.top_id not in set(map(int, self.ids)):
+            raise ValueError("target image must be in the fixed candidate pool")
+        target_row = self.row_of[self.top_id]
+        ei, et, n = self.ei.cpu().numpy(), self.et.cpu().numpy(), self.graph.n_img
+        contains = tuple(int(e) for e in np.flatnonzero((et == 0) & (ei[1] == target_row)))
+        image_labels = {int(ei[0, e]) for e in contains}
+        query_labels = {n + int(v) for v in self.cc[0].tolist() if v >= 0}
+        incoming, outgoing = {}, {}
+        for e in self.rel_global:
+            a, b = int(ei[0, e]), int(ei[1, e])
+            incoming.setdefault(b, []).append(int(e))
+            outgoing.setdefault(a, []).append(int(e))
+        # Each endpoint embedding H depends on incoming messages at most two hops away.
+        frontier, eligible_rel = query_labels | image_labels, set()
+        for _ in range(len(self.model.convs)):
+            frontier_next = set()
+            for node in frontier:
+                for e in incoming.get(node, ()):
+                    eligible_rel.add(e)
+                    frontier_next.add(int(ei[0, e]))
+            frontier = frontier_next
+        self.eligible_edge_ids = tuple(contains) + tuple(sorted(eligible_rel))
+        self.eligible_type_counts = {
+            kind: sum(int(et[e]) == code for e in self.eligible_edge_ids)
+            for kind, code in (("contains", 0), ("sg_rel", 1), ("concept", 2))
+        }
+        contains_by_label = {}
+        for e in contains:
+            contains_by_label.setdefault(int(ei[0, e]), []).append(e)
+        candidates = []
+        for q in sorted(query_labels):
+            for c in contains_by_label.get(q, ()):
+                candidates.append(((c,), (q, target_row)))
+            for e1 in outgoing.get(q, ()):
+                v = int(ei[1, e1])
+                if e1 not in eligible_rel or v == q:
+                    continue
+                for c in contains_by_label.get(v, ()):
+                    candidates.append(((e1, c), (q, v, target_row)))
+                for e2 in outgoing.get(v, ()):
+                    w = int(ei[1, e2])
+                    if e2 not in eligible_rel or w in (q, v):
+                        continue
+                    for c in contains_by_label.get(w, ()):
+                        candidates.append(((e1, e2, c), (q, v, w, target_row)))
+        # Score relational paths first. Contains-only paths are covered by their
+        # own control and must not consume the relational screen budget.
+        candidates = sorted(set(candidates), key=lambda p: (len(p[0]) == 1, len(p[0]), p[0]))
+        self.all_path_count = len(candidates)
+        self.all_relational_path_count = sum(len(edges) > 1 for edges, _ in candidates)
+        self.path_candidates = tuple(candidates[:self.max_paths])
+        screened = set(contains)
+        for edge_ids, _ in self.path_candidates:
+            screened.update(edge_ids)
+        self.screened_type_counts = {
+            kind: sum(int(et[e]) == code for e in screened)
+            for kind, code in (("contains", 0), ("sg_rel", 1), ("concept", 2))
+        }
+        return self.eligible_edge_ids, tuple(sorted(screened))
