@@ -6,8 +6,16 @@
 \usepackage{graphicx,booktabs,amsmath,url,multirow,tikz}
 \usetikzlibrary{arrows.meta,positioning,fit}
 \input{figs/tikzstyles.tex}
-\usepackage[hidelinks]{hyperref}
+\usepackage{hyperref}
+\definecolor{linkblue}{RGB}{0,51,153}
+\hypersetup{colorlinks=true,linkcolor=linkblue,citecolor=linkblue,urlcolor=linkblue}
 \DeclareUrlCommand\fp{\urlstyle{tt}}
+% Nhãn tiếng Việt cho hình, bảng, tóm tắt, từ khóa, tài liệu tham khảo (IEEEtran đặt sẵn bằng tiếng Anh)
+\renewcommand{\figurename}{Hình}
+\renewcommand{\tablename}{Bảng}
+\renewcommand{\abstractname}{Tóm tắt}
+\renewcommand{\IEEEkeywordsname}{Từ khóa}
+\renewcommand{\refname}{Tài liệu tham khảo}
 \begin{document}
 \raggedbottom
 
@@ -22,7 +30,7 @@ Mã nguồn: \url{https://github.com/Chau-Ngoc-Huy/graphml-project3}}}
 
 \begin{abstract}
 Truy vấn văn bản--hình ảnh bằng CLIP xếp hạng theo một vectơ toàn cục nên khó biểu diễn quan hệ giữa các đối tượng và không cho biết vì sao một ảnh được trả về. Nghiên cứu đánh giá vai trò của dữ liệu đồ thị trong bài toán text-to-image retrieval theo ba nhiệm vụ nối tiếp: (1) truy vấn bằng CLIP giữ nguyên trọng số (\emph{frozen}) làm baseline; (2) xếp hạng lại 100 ảnh ứng viên do CLIP chọn bằng đồ thị ảnh--nhãn--khái niệm (scene graph và ConceptNet) với GCN, GAT, GraphSAGE; (3) giải thích kết quả bằng quan hệ/đường đi gắn với điểm xếp hạng và kiểm chứng bằng can thiệp cạnh. Mọi mô hình dùng chung split theo ảnh, ảnh ứng viên, độ đo và quy trình ba seed; trọng số kết hợp $\alpha$ chọn trên validation.
-Trên Visual Genome$\cap$MS-COCO, CLIP thuần đạt MRR 60,40\% (toàn bộ ảnh test), CLIP có adapter $63{,}14\pm0{,}02\%$ và QA-Graph tốt nhất $64{,}89\pm0{,}15\%$, tăng 1,93 điểm so với adapter [CI95 1,49--2,32]; kết quả lặp lại trên PSG$\cap$MS-COCO ($62{,}67\to64{,}41$). Xáo cạnh làm MRR thấp hơn mốc CLIP + adapter ở cả hai bộ dữ liệu, cho thấy cải thiện đến từ nội dung cạnh chứ không chỉ từ tham số học thêm. Trên toàn bộ ảnh test (seed 0), mức tăng so với mốc CLIP + adapter tập trung ở truy vấn trực tiếp ($+7{,}3$ MRR) và rất nhỏ ở truy vấn gián tiếp ($+0{,}7$), nên chưa đủ bằng chứng rằng đồ thị giải quyết suy luận quan hệ. AdaMF-MAT được tái lập trên MKG-W/MKG-Y (sai khác dưới 1 điểm so với bài báo) và tích hợp vào truy vấn ảnh, nhưng không vượt baseline khớp tên đối tượng. Giải thích dựa trên can thiệp cạnh: trên 34 truy vấn trực tiếp đã duyệt, xóa cạnh giải thích làm điểm giảm nhiều hơn xóa cạnh đối chứng (lợi thế fidelity $0{,}35$--$0{,}65$ trên VG và $0{,}58$--$1{,}09$ trên PSG, sparsity $66{,}4$--$93{,}5\%$), song mức hỗ trợ thị giác của từng cạnh chưa được kiểm tra độc lập, và MMKG tiếng Việt chưa được xây dựng.
+Trên Visual Genome$\cap$MS-COCO, CLIP thuần đạt MRR 60,40\% (toàn bộ ảnh test), CLIP có adapter $63{,}14\pm0{,}02\%$ và QA-Graph tốt nhất $64{,}89\pm0{,}15\%$, tăng 1,93 điểm so với adapter [CI95 1,49--2,32]; kết quả lặp lại trên PSG$\cap$MS-COCO ($62{,}67\to64{,}41$). Xáo cạnh làm MRR thấp hơn mốc CLIP + adapter ở cả hai bộ dữ liệu, cho thấy cải thiện đến từ nội dung cạnh chứ không chỉ từ tham số học thêm. Tuy nhiên, lợi ích gần như hoàn toàn đến từ việc khớp khái niệm của câu với nhãn ảnh qua cạnh \texttt{contains}; thêm quan hệ scene graph hay ConceptNet chênh không quá 0,25 MRR. Trên VG, mức tăng tập trung ở truy vấn trực tiếp ($+7{,}3$ MRR, seed 0) và rất nhỏ ở truy vấn gián tiếp ($+0{,}7$); trên PSG nhóm gián tiếp có tăng ($+1{,}4$) nhưng chỉ cần cạnh \texttt{contains}, nên chưa có bằng chứng rằng đồ thị giải quyết suy luận quan hệ. AdaMF-MAT được tái lập trên MKG-W/MKG-Y (sai khác dưới 1 điểm so với bài báo) và tích hợp vào truy vấn ảnh, nhưng không vượt baseline khớp tên đối tượng. Giải thích dựa trên can thiệp cạnh: trên 34 truy vấn trực tiếp đã duyệt, xóa cạnh giải thích làm điểm giảm nhiều hơn xóa cạnh đối chứng (lợi thế fidelity $0{,}35$--$0{,}65$ trên VG và $0{,}58$--$1{,}09$ trên PSG, sparsity $66{,}4$--$93{,}5\%$), song mức hỗ trợ thị giác của từng cạnh chưa được kiểm tra độc lập, và MMKG tiếng Việt chưa được xây dựng.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -32,7 +40,7 @@ truy vấn đa phương thức, CLIP, mạng nơ-ron đồ thị, đồ thị tr
 \section{Giới thiệu}\label{sec:intro}
 Truy vấn văn bản--hình ảnh là bài toán nền tảng của tìm kiếm đa phương thức. CLIP~\cite{clip} và các biến thể mở như OpenCLIP~\cite{openclip} chuyển câu và ảnh thành vectơ đặc trưng trong cùng một không gian rồi xếp hạng theo độ tương đồng cosine; cách làm này hiệu quả, không cần fine-tune mô hình thị giác lớn và là baseline chuẩn. Tuy nhiên, độ tương đồng giữa hai vectơ toàn cục có hai hạn chế. Thứ nhất, vectơ ảnh gần với tập đối tượng có trong ảnh (\emph{bag of objects}): các nghiên cứu về tính hợp thành chỉ ra rằng mô hình thị giác--ngôn ngữ nhạy với sự có mặt của đối tượng hơn là với quan hệ giữa chúng~\cite{bagofwords,winoground}. Thứ hai, một điểm cosine không cho biết thành phần tri thức nào đã khiến ảnh được trả về, nên người dùng không kiểm chứng được kết quả.
 
-Cấu trúc đồ thị là cách tự nhiên để bổ sung quan hệ. Một ảnh chứa các đối tượng; các đối tượng liên hệ với nhau trong scene graph và với các khái niệm ngoài ảnh trong đồ thị tri thức. Với truy vấn \emph{a child playing football}, nếu ảnh chỉ nhận diện được \emph{ball} và \emph{field}, đường đi \emph{child--plays--football} trong đồ thị tri thức có thể nối truy vấn với đúng ảnh; đây là kiểu truy vấn gián tiếp mà so khớp vectơ thường bỏ sót. Mục tiêu của đồ án không phải xây một mô hình thị giác lớn từ đầu, mà là \emph{đo rõ} đồ thị đóng góp bao nhiêu, ở loại truy vấn nào, và có giải thích được đóng góp đó hay không.
+Cấu trúc đồ thị là cách tự nhiên để bổ sung quan hệ. Một ảnh chứa các đối tượng; các đối tượng liên hệ với nhau trong scene graph và với các khái niệm ngoài ảnh trong đồ thị tri thức. Với truy vấn \emph{a child playing football}, nếu ảnh chỉ nhận diện được \emph{ball} và \emph{field}, đường đi \emph{child--plays--football} trong đồ thị tri thức có thể nối truy vấn với đúng ảnh. Giả thuyết cần kiểm tra là những truy vấn gián tiếp như vậy, mà so khớp vectơ dễ bỏ sót, được hưởng lợi từ quan hệ trong đồ thị. Mục tiêu của đồ án không phải xây một mô hình thị giác lớn từ đầu, mà là \emph{đo rõ} đồ thị đóng góp bao nhiêu, ở loại truy vấn nào, và có giải thích được đóng góp đó hay không.
 
 Đồ án được tổ chức theo ba nhiệm vụ nối tiếp và bốn câu hỏi nghiên cứu:
 \begin{itemize}
@@ -41,18 +49,18 @@ Cấu trúc đồ thị là cách tự nhiên để bổ sung quan hệ. Một �
 \item \textbf{Nhiệm vụ 3 -- Giải thích (xAI).} \textbf{RQ4:} quan hệ/đường đi được trích làm giải thích có thật sự quyết định điểm xếp hạng, tức có trung thực hay không?
 \end{itemize}
 
-Nhóm xây dựng pipeline \emph{text$\rightarrow$image retrieval with graph reranking}: dùng CLIP giữ nguyên trọng số chuyển câu và ảnh thành vectơ đặc trưng, lấy 100 ảnh ứng viên có cosine cao nhất bằng FAISS, tính điểm đồ thị cho từng ứng viên bằng GNN (GCN, GAT, GraphSAGE~\cite{gcn,gat,sage}) trên đồ thị ảnh--nhãn--khái niệm gồm cạnh \texttt{contains}, quan hệ scene graph \texttt{sg\_rel} và quan hệ ConceptNet, rồi xếp hạng lại bằng $s=\alpha z(\cos)+(1-\alpha)z(g)$. Giải thích được trích từ chính các thành phần tạo nên $g$, không sinh sau khi đã có kết quả.
+Nhóm xây dựng pipeline \emph{text$\rightarrow$image retrieval with graph reranking}: dùng CLIP giữ nguyên trọng số chuyển câu và ảnh thành vectơ đặc trưng, lấy 100 ảnh ứng viên có cosine cao nhất bằng FAISS, tính điểm đồ thị cho từng ứng viên (mô hình QA-Graph) bằng GNN (GCN, GAT, GraphSAGE~\cite{gcn,gat,sage}) trên đồ thị ảnh--nhãn--khái niệm gồm cạnh \texttt{contains}, quan hệ scene graph \texttt{sg\_rel} và quan hệ ConceptNet, rồi xếp hạng lại bằng $s=\alpha z(\cos)+(1-\alpha)z(g)$. Giải thích được trích từ chính các thành phần tạo nên $g$, không sinh sau khi đã có kết quả.
 
 Các đóng góp chính:
 \begin{enumerate}
 \item Quy trình xếp hạng thống nhất trên Visual Genome và Panoptic Scene Graph: split theo ảnh, ứng viên, seed và độ đo dùng chung; đồ thị thống kê chỉ xây từ tập train; $\alpha$ chọn trên validation.
-\item So sánh CLIP, CLIP + adapter và GNN trên cùng ảnh ứng viên, trong đó mốc so sánh là CLIP + adapter không cạnh. Phát hiện ban đầu cho thấy phần lớn mức tăng của GAT nhận đặc trưng ảnh đến từ phép chiếu tuyến tính học được (adapter) chứ không từ đồ thị.
+\item So sánh CLIP, CLIP + adapter và GNN trên cùng ảnh ứng viên, trong đó mốc so sánh là CLIP + adapter không cạnh. Phát hiện ban đầu cho thấy phần lớn mức tăng của GAT nhận đặc trưng ảnh đến từ phép chiếu tuyến tính học được (adapter) chứ không từ đồ thị (\hyperref[sec:m-qa]{mục~\ref*{sec:m-qa}}).
 \item Phân tích loại bỏ (\emph{ablation}) giữ nguyên số cạnh, mật độ và tham số (xáo cạnh) để kiểm tra cạnh chứa thông tin hay chỉ tăng dung lượng mô hình.
 \item Tái lập AdaMF-MAT trên MKG-W/MKG-Y và đưa vào bài toán xếp hạng ảnh, so với baseline khớp tên đối tượng.
-\item Thiết kế quy trình giải thích gắn cơ chế xếp hạng (can thiệp cạnh; fidelity, validity, sparsity) cùng các kiểm tra cấu trúc ban đầu. Kết quả fidelity, validity và sparsity được báo cáo ở mục~\ref{sec:r-xai}; MMKG tiếng Việt chưa được xây dựng (mục~\ref{sec:data} và Phụ lục C).
+\item Thiết kế quy trình giải thích gắn cơ chế xếp hạng (can thiệp cạnh; fidelity, validity, sparsity) cùng các kiểm tra cấu trúc ban đầu. Kết quả fidelity, validity và sparsity được báo cáo ở \hyperref[sec:r-xai]{mục~\ref*{sec:r-xai}}; MMKG tiếng Việt chưa được xây dựng (\hyperref[sec:data]{mục~\ref*{sec:data}}).
 \end{enumerate}
 
-Kết quả chính là cấu trúc đồ thị cải thiện MRR một cách đo được (+1,4 đến +1,9 điểm so với adapter) nhưng lợi ích không đều: rõ ở truy vấn trực tiếp, chưa chứng minh được ở truy vấn gián tiếp. Phần còn lại của báo cáo: mục~\ref{sec:rel} điểm lại công trình liên quan; mục~\ref{sec:data} mô tả dữ liệu, quy trình đánh giá và độ đo; mục~\ref{sec:method} trình bày phương pháp (CLIP, QA-Graph, AdaMF-MAT và cách giải thích); mục~\ref{sec:setup} là thiết lập thực nghiệm; mục~\ref{sec:results} báo kết quả, kể cả đánh giá giải thích; mục~\ref{sec:cases} phân tích trường hợp; mục~\ref{sec:disc}--\ref{sec:concl} thảo luận, hạn chế và kết luận.
+Kết quả chính là đồ thị cải thiện MRR một cách đo được (+1,4 đến +1,9 điểm so với adapter), nhưng lợi ích gần như hoàn toàn đến từ việc khớp khái niệm của câu với nhãn của ảnh qua cạnh \texttt{contains}. Cạnh quan hệ scene graph và ConceptNet chưa thêm được gì đo được, nên giả thuyết về truy vấn gián tiếp ở trên chưa được xác nhận. Phần còn lại của báo cáo: \hyperref[sec:rel]{mục~\ref*{sec:rel}} điểm lại công trình liên quan; \hyperref[sec:data]{mục~\ref*{sec:data}} mô tả dữ liệu, quy trình đánh giá và độ đo; \hyperref[sec:method]{mục~\ref*{sec:method}} trình bày phương pháp (CLIP, QA-Graph, AdaMF-MAT và cách giải thích); \hyperref[sec:setup]{mục~\ref*{sec:setup}} là thiết lập thực nghiệm; \hyperref[sec:results]{mục~\ref*{sec:results}} báo kết quả, kể cả đánh giá giải thích; \hyperref[sec:cases]{mục~\ref*{sec:cases}} phân tích trường hợp; \hyperref[sec:disc]{mục~\ref*{sec:disc}}--\ref{sec:concl} thảo luận, hạn chế và kết luận.
 
 \section{Công trình liên quan}\label{sec:rel}
 \textbf{Mô hình thị giác--ngôn ngữ và xếp hạng lại.}
@@ -68,14 +76,14 @@ GCN~\cite{gcn} tổng hợp láng giềng với chuẩn hóa theo bậc, GAT~\ci
 MMKG~\cite{mmkg} và IKRL~\cite{ikrl} gắn ảnh vào thực thể của đồ thị tri thức. Các phương pháp hoàn thiện MMKG như MKGformer~\cite{mkgformer}, NativE~\cite{native} và AdaMF-MAT~\cite{adamf} kết hợp cấu trúc, ảnh và văn bản để dự đoán thực thể hoặc quan hệ còn thiếu; khảo sát~\cite{survey} tổng hợp hướng nghiên cứu này. Điểm chung là chúng giải bài toán \emph{hoàn thiện đồ thị}, không phải truy vấn ảnh theo câu. Nhóm chọn AdaMF-MAT vì có mã nguồn công khai và tái lập được, và dùng nó để chấm điểm mức đúng của bộ ba (ảnh, \texttt{contains}, khái niệm) (\emph{plausibility}): điểm càng cao, bộ ba càng được coi là đúng. Câu hỏi mở là liệu biểu diễn quan hệ như vậy có vượt baseline khớp tên đối tượng không dùng quan hệ hay không.
 
 \textbf{Giải thích mô hình đồ thị và đánh giá độ trung thực.}
-GNNExplainer~\cite{gnnexp} và PGExplainer~\cite{pgexplainer} tìm đồ thị con quan trọng cho dự đoán của GNN; các khảo sát~\cite{gnnxai,eraser} hệ thống hóa độ đo như fidelity và sparsity. Độ trung thực được định nghĩa là mức độ giải thích phản ánh quá trình suy luận thật của mô hình~\cite{faithfulness}; một cách phổ biến là bỏ phần được chọn rồi xem dự đoán thay đổi. Các phương pháp giải thích hậu nghiệm có thể cho đường đi hợp lý nhưng không ảnh hưởng tới dự đoán; vì vậy đồ án dùng giải thích \emph{gắn với cơ chế xếp hạng} và kiểm chứng bằng can thiệp cạnh so với cạnh ngẫu nhiên cùng số.
+GNNExplainer~\cite{gnnexp} và PGExplainer~\cite{pgexplainer} tìm đồ thị con quan trọng cho dự đoán của GNN; các khảo sát~\cite{gnnxai,eraser} hệ thống hóa độ đo như fidelity và sparsity. Độ trung thực được định nghĩa là mức độ giải thích phản ánh quá trình suy luận thật của mô hình~\cite{faithfulness}; một cách phổ biến là bỏ phần được chọn rồi xem dự đoán thay đổi. Các phương pháp giải thích hậu nghiệm có thể cho đường đi hợp lý nhưng không ảnh hưởng tới dự đoán; vì vậy đồ án dùng giải thích \emph{gắn với cơ chế xếp hạng} và kiểm chứng bằng can thiệp cạnh so với xóa cùng số cạnh đối chứng.
 
 \textbf{Định vị.}
-Đồ án nằm ở giao điểm của truy vấn thị giác--ngôn ngữ, học trên đồ thị và giải thích có kiểm chứng. Điểm khác biệt chính là các đối chứng dùng để tách đóng góp của cấu trúc khỏi tham số học thêm (đóng góp 2--4 ở mục~\ref{sec:intro}).
+Đồ án nằm ở giao điểm của truy vấn thị giác--ngôn ngữ, học trên đồ thị và giải thích có kiểm chứng. Điểm khác biệt chính là các đối chứng dùng để tách đóng góp của cấu trúc khỏi tham số học thêm (đóng góp 2--4 ở \hyperref[sec:intro]{mục~\ref*{sec:intro}}).
 
 \section{Dữ liệu và quy trình đánh giá}\label{sec:data}
 \subsection{Dữ liệu}
-Thống kê chính được tóm tắt trong Bảng~\ref{tab:data}. Mỗi truy vấn là một caption; ảnh đúng duy nhất là ảnh có caption đó.
+Thống kê chính được tóm tắt trong \hyperref[tab:data]{Bảng~\ref*{tab:data}}. Mỗi truy vấn là một caption; ảnh đúng duy nhất là ảnh có caption đó.
 
 \begin{table}[t]
 \caption{Dữ liệu và split dùng trong thí nghiệm chính}\label{tab:data}
@@ -114,32 +122,32 @@ ConceptNet~\cite{cn} & 16\,413 cạnh sau lọc & 674 khái niệm (3\,743 cạn
 \end{itemize}
 
 \subsection{Tiền xử lý và trích đặc trưng}
-Hình~\ref{fig:prep} tóm tắt bảy bước tiền xử lý, chạy một lần cho mỗi bộ dữ liệu trước mọi thí nghiệm; VG và PSG đi qua cùng các bước.
+\hyperref[fig:prep]{Hình~\ref*{fig:prep}} tóm tắt bảy bước tiền xử lý, chạy một lần cho mỗi bộ dữ liệu trước mọi thí nghiệm; VG và PSG đi qua cùng các bước.
 
 \textit{Ghép và chuẩn hóa (bước 1).} Mỗi ảnh có scene graph được ghép với năm caption MS-COCO qua \texttt{coco\_id}; tên đối tượng và vị từ quan hệ được chuẩn hóa. Khi một đối tượng thiếu khỏi danh sách nhưng quan hệ vẫn ghi tên của nó, đối tượng được khôi phục từ tên đó; nếu quan hệ chỉ còn ID, quan hệ được ghi nhận riêng và không gán nhãn suy đoán.
 
-\textit{Chia dữ liệu (bước 2).} Ảnh được chia theo các quy tắc ở mục~\ref{sec:split} (số ảnh mỗi tập ở Bảng~\ref{tab:data}); quá trình dừng nếu một ảnh thiếu caption hoặc scene graph.
+\textit{Chia dữ liệu (bước 2).} Ảnh được chia theo các quy tắc ở \hyperref[sec:split]{mục~\ref*{sec:split}} (số ảnh mỗi tập ở \hyperref[tab:data]{Bảng~\ref*{tab:data}}); quá trình dừng nếu một ảnh thiếu caption hoặc scene graph.
 
 \textit{Từ vựng và khái niệm (bước 3--4).} Từ vựng nhãn và khái niệm chỉ lập từ ảnh và caption train; mỗi caption sau đó được tách thành tập khái niệm theo từ vựng này (ví dụ \emph{woman}, \emph{frisbee}).
 
 \textit{Trích đặc trưng và ứng viên (bước 5--6).} CLIP ViT-B/32 (\texttt{laion2b\_s34b\_b79k}) giữ nguyên trọng số chuyển ảnh, caption và tên nhãn thành vectơ đặc trưng (\emph{embedding}) 512 chiều đã chuẩn hóa L2. Caption và ảnh val/test cũng được chuyển thành vectơ, nhưng CLIP không được huấn luyện thêm nên không có thông tin nào từ chúng đi vào trọng số. Ảnh được lập chỉ mục bằng FAISS \texttt{IndexFlatIP}; FAISS tìm sẵn 100 ảnh gần nhất cho mỗi caption val/test; đây là 100 ảnh ứng viên mà mọi phương pháp xếp hạng lại.
 
-\textit{Dựng đồ thị (bước 7).} Đồ thị nhãn-ảnh được dựng từ cạnh \texttt{contains}, quan hệ scene graph gộp từ ảnh train và cạnh ConceptNet (mục~\ref{sec:m-graph}). Ba đầu ra của tiền xử lý (ứng viên, cặp caption--ảnh đúng kèm khái niệm, và đồ thị) là đầu vào của huấn luyện ở Hình~\ref{fig:train}.
+\textit{Dựng đồ thị (bước 7).} Đồ thị nhãn-ảnh được dựng từ cạnh \texttt{contains}, quan hệ scene graph gộp từ ảnh train và cạnh ConceptNet (\hyperref[sec:m-graph]{mục~\ref*{sec:m-graph}}). Ba đầu ra của tiền xử lý (ứng viên, cặp caption--ảnh đúng kèm khái niệm, và đồ thị) là đầu vào của huấn luyện ở \hyperref[fig:train]{Hình~\ref*{fig:train}}.
 
 \begin{figure*}[t]
 \centering
 \input{figs/fig_prep.tex}
-\caption{Tiền xử lý dữ liệu, chạy một lần trước mọi thí nghiệm. Từ vựng (bước 3) và cạnh scene graph của đồ thị (bước 7) chỉ lấy từ dữ liệu train. CLIP và FAISS (bước 5--6) tìm sẵn 100 ảnh ứng viên cho mỗi caption val/test; đây là các ảnh được xếp hạng lại khi đánh giá. Ba đầu ra (khung xanh) là đầu vào của huấn luyện (Hình~\ref{fig:train}).}\label{fig:prep}
+\caption{Tiền xử lý dữ liệu, chạy một lần trước mọi thí nghiệm. Từ vựng (bước 3) và cạnh scene graph của đồ thị (bước 7) chỉ lấy từ dữ liệu train. CLIP và FAISS (bước 5--6) tìm sẵn 100 ảnh ứng viên cho mỗi caption val/test; đây là các ảnh được xếp hạng lại khi đánh giá. Ba đầu ra (khung xanh) là đầu vào của huấn luyện (\hyperref[fig:train]{Hình~\ref*{fig:train}}).}\label{fig:prep}
 \end{figure*}
 
 \subsection{Quy trình đánh giá}
-Mọi phương pháp xếp hạng lại cùng 100 ảnh ứng viên của mỗi truy vấn và kết hợp điểm với CLIP theo~(\ref{eq:fuse}) ở mục~\ref{sec:m-clip}.
+Mọi phương pháp xếp hạng lại cùng 100 ảnh ứng viên của mỗi truy vấn và kết hợp điểm với CLIP theo~(\ref{eq:fuse}) ở \hyperref[sec:m-clip]{mục~\ref*{sec:m-clip}}.
 
 Báo cáo có hai loại đánh giá: \emph{gallery 1K}: mỗi seed lấy ngẫu nhiên một tập ảnh tìm kiếm (\emph{gallery}) 1\,000 ảnh test, seed điều khiển cả cách lấy mẫu gallery lẫn khởi tạo mô hình, cho trung bình $\pm$ độ lệch chuẩn qua 3 seed; \emph{toàn bộ ảnh test} (\emph{full pool}) dùng mọi ảnh trong tập test, không lấy mẫu gallery. Hiệu MRR ghép cặp được kiểm định bằng bootstrap lấy lại mẫu theo truy vấn; vùng tin cậy báo cáo 95\%.
 
 Tệp chia cố định (seed 0, Karpathy) và mã tạo chia nằm trong kho mã (Phụ lục B).
 
-\subsection{Độ đo}
+\subsection{Độ đo}\label{sec:metrics}
 Với mỗi truy vấn, gọi $r_q$ là hạng của ảnh đúng. Với bộ 24 truy vấn có nhiều ảnh liên quan, hạng được tính theo ảnh liên quan đứng đầu. Với $N$ truy vấn:
 \begin{align}
 \mathrm{Recall@}k &= \tfrac{1}{N}\textstyle\sum_q \mathbf{1}[r_q\le k],\quad k\in\{1,5,10\},\\
@@ -155,16 +163,16 @@ MRR là độ đo chính vì nhạy với dịch chuyển hạng ở vùng đầ
 \begin{figure*}[t]
 \centering
 \resizebox{\textwidth}{!}{\input{figs/fig_overview.tex}}
-\caption{Tổng quan phương pháp, minh họa bằng một truy vấn thật của tập test PSG$\cap$COCO. \textcircled{\scriptsize 1} Câu truy vấn được tách thành khái niệm; \emph{frisbee} có trong nhãn của ảnh đúng, còn \emph{woman} và \emph{green field} thì không. \textcircled{\scriptsize 2} CLIP (giữ nguyên trọng số) chọn 100 ảnh ứng viên; ảnh đúng chỉ ở hạng 6. \textcircled{\scriptsize 3} QA-Graph so từng khái niệm với nhãn của ảnh trên đồ thị nhãn đã qua GNN: \emph{woman} khớp \emph{person} nhờ cạnh ConceptNet IsA, \emph{frisbee} trùng nhãn, \emph{green field} khớp yếu với \emph{grass}. \textcircled{\scriptsize 4} Điểm đồ thị kết hợp với cosine CLIP theo~(\ref{eq:fuse}) đưa ảnh đúng lên hạng 1; ảnh hạng 1 cũ (cánh đồng lúa, không có nhãn \emph{grass}) xuống hạng 4. \textcircled{\scriptsize 5} Các cạnh đã đóng góp vào điểm là phần giải thích, được kiểm chứng bằng cách xóa cạnh rồi chấm lại. Số liệu lấy từ mô hình QA-Graph + ConceptNet (GAT, seed 0); đồ thị chỉ dựng từ ảnh train, $\alpha$ chọn trên val.}\label{fig:pipe}
+\caption{Tổng quan phương pháp, minh họa bằng một truy vấn thật của tập test PSG$\cap$COCO. \textcircled{\scriptsize 1} Câu truy vấn được tách thành khái niệm; \emph{frisbee} có trong nhãn của ảnh đúng, còn \emph{woman} và \emph{green field} thì không. \textcircled{\scriptsize 2} CLIP (giữ nguyên trọng số) chọn 100 ảnh ứng viên; ảnh đúng chỉ ở hạng 6. \textcircled{\scriptsize 3} QA-Graph so từng khái niệm với nhãn của ảnh trên đồ thị nhãn đã qua GNN: \emph{woman} khớp \emph{person}, \emph{frisbee} trùng nhãn, \emph{green field} khớp yếu với \emph{grass}. \textcircled{\scriptsize 4} Điểm đồ thị kết hợp với cosine CLIP theo~(\ref{eq:fuse}) đưa ảnh đúng lên hạng 1; ảnh hạng 1 cũ (cánh đồng lúa, không có nhãn \emph{grass}) xuống hạng 4. \textcircled{\scriptsize 5} Giải thích là các cạnh mà khi xóa thì điểm ảnh đúng giảm: xóa \emph{frisbee}, \emph{person} hoặc \emph{grass} $\to$ ảnh đẩy ảnh đúng xuống hạng 9, 4 và 2. Cạnh IsA \emph{woman}--\emph{person} có trong đồ thị nhưng không phải nguyên nhân: xóa nó, điểm không đổi và ảnh đúng vẫn hạng 1; \emph{woman} và \emph{person} vốn đã gần nhau trong vectơ CLIP (\hyperref[sec:m-qa]{mục~\ref*{sec:m-qa}}). Số liệu lấy từ mô hình QA-Graph + ConceptNet (GAT, seed 0); đồ thị chỉ dựng từ ảnh train, $\alpha$ chọn trên val.}\label{fig:pipe}
 \end{figure*}
 
 \section{Phương pháp}\label{sec:method}
 \subsection{Tìm ảnh bằng CLIP rồi xếp hạng lại}\label{sec:m-clip}
-Hệ thống làm hai bước (Hình~\ref{fig:pipe}). \textbf{Bước 1: CLIP tìm ảnh.} CLIP ViT-B/32 (\texttt{laion2b\_s34b\_b79k}, OpenCLIP~\cite{openclip}, giữ nguyên trọng số) chuyển mỗi ảnh và mỗi caption thành một vectơ đặc trưng 512 chiều (đã chuẩn hóa L2); việc này làm một lần và các vectơ được lưu trong chỉ mục FAISS~\cite{faiss} (\texttt{IndexFlatIP}, tính cosine chính xác). Với mỗi câu truy vấn $q$, CLIP lấy ra $K{=}100$ ảnh giống câu truy vấn nhất, tức 100 ảnh có độ tương đồng cosine cao nhất giữa vectơ đặc trưng của ảnh và vectơ đặc trưng của câu truy vấn; gọi đó là các \emph{ảnh ứng viên}. \textbf{Bước 2: xếp hạng lại.} Mỗi phương pháp chỉ chấm lại điểm và sắp xếp lại đúng 100 ảnh này; nếu ảnh đúng không nằm trong 100 ảnh thì giữ nguyên hạng mà CLIP đã cho. Điểm dùng để sắp xếp ảnh ứng viên $i$ kết hợp điểm của CLIP với điểm của phương pháp:
+Hệ thống làm hai bước (\hyperref[fig:pipe]{Hình~\ref*{fig:pipe}}). \textbf{Bước 1: CLIP tìm ảnh.} CLIP ViT-B/32 (\texttt{laion2b\_s34b\_b79k}, OpenCLIP~\cite{openclip}, giữ nguyên trọng số) chuyển mỗi ảnh và mỗi caption thành một vectơ đặc trưng 512 chiều (đã chuẩn hóa L2); việc này làm một lần và các vectơ được lưu trong chỉ mục FAISS~\cite{faiss} (\texttt{IndexFlatIP}, tính cosine chính xác). Với mỗi câu truy vấn $q$, CLIP lấy ra $K{=}100$ ảnh giống câu truy vấn nhất, tức 100 ảnh có độ tương đồng cosine cao nhất giữa vectơ đặc trưng của ảnh và vectơ đặc trưng của câu truy vấn; gọi đó là các \emph{ảnh ứng viên}. \textbf{Bước 2: xếp hạng lại.} Mỗi phương pháp chỉ chấm lại điểm và sắp xếp lại đúng 100 ảnh này; nếu ảnh đúng không nằm trong 100 ảnh thì giữ nguyên hạng mà CLIP đã cho. Điểm dùng để sắp xếp ảnh ứng viên $i$ kết hợp điểm của CLIP với điểm của phương pháp:
 \begin{equation}\label{eq:fuse}
 s(q,i)=\alpha\,z\big(\cos(q,i)\big)+(1-\alpha)\,z\big(g(q,i)\big),
 \end{equation}
-trong đó $g(q,i)$ là điểm do phương pháp chấm (QA-Graph ở mục~\ref{sec:m-qa}, AdaMF-MAT ở mục~\ref{sec:m-adamf}, hoặc với baseline khớp tên là tỉ lệ khái niệm của câu truy vấn có trong danh sách đối tượng của ảnh), còn $z(\cdot)$ đưa hai loại điểm về cùng thang đo bằng chuẩn hóa z-score trên 100 ảnh ứng viên của cùng truy vấn (trừ trung bình, chia độ lệch chuẩn). Đề bài viết $\alpha\cos+(1-\alpha)g$; nhóm chuẩn hóa trước khi kết hợp vì cosine và $g$ có thang đo khác nhau. Trọng số $\alpha$ cho biết tin vào CLIP bao nhiêu phần; $\alpha$ được chọn trên val (thử các giá trị cách nhau $0{,}05$ từ 0 đến 1, lấy giá trị cho MRR cao nhất), \emph{không} chọn trên test.
+trong đó $g(q,i)$ là điểm do phương pháp chấm (QA-Graph ở \hyperref[sec:m-qa]{mục~\ref*{sec:m-qa}}, AdaMF-MAT ở \hyperref[sec:m-adamf]{mục~\ref*{sec:m-adamf}}, hoặc với baseline khớp tên là tỉ lệ khái niệm của câu truy vấn có trong danh sách đối tượng của ảnh), còn $z(\cdot)$ đưa hai loại điểm về cùng thang đo bằng chuẩn hóa z-score trên 100 ảnh ứng viên của cùng truy vấn (trừ trung bình, chia độ lệch chuẩn). Đề bài viết $\alpha\cos+(1-\alpha)g$; nhóm chuẩn hóa trước khi kết hợp vì cosine và $g$ có thang đo khác nhau. Trọng số $\alpha$ cho biết tin vào CLIP bao nhiêu phần; $\alpha$ được chọn trên val (thử các giá trị cách nhau $0{,}05$ từ 0 đến 1, lấy giá trị cho MRR cao nhất), \emph{không} chọn trên test.
 
 \subsection{Đồ thị nhãn-ảnh}\label{sec:m-graph}
 Đồ thị có hai loại đỉnh: \emph{ảnh} và \emph{nhãn}. Nhãn gồm nhãn đối tượng của ảnh (VG: 2\,000 nhãn phổ biến nhất trên ảnh train; PSG: 133 lớp panoptic) và, khi dùng ConceptNet, các khái niệm mở rộng (VG: 1\,000 khái niệm có nhiều cạnh nhất; PSG: 674 danh từ xuất hiện $\ge20$ lần trong caption train). Mỗi đỉnh nhãn mang vectơ đặc trưng do CLIP tạo từ cụm từ ``a photo of a \{nhãn\}'' (ví dụ ``a photo of a horse''). Có ba loại cạnh có hướng:
@@ -173,7 +181,7 @@ trong đó $g(q,i)$ là điểm do phương pháp chấm (QA-Graph ở mục~\re
 \item \texttt{sg\_rel} (nhãn $\leftrightarrow$ nhãn): cặp nhãn có quan hệ trong scene graph, gộp \emph{chỉ từ ảnh train}; tên cạnh là vị từ hay gặp nhất của cặp (dùng khi hiển thị giải thích). Với PSG mỗi cặp không hướng cho đúng một cạnh mỗi chiều; với VG giữ cách gộp có hướng của các lượt đã báo cáo.
 \item \texttt{concept} (nhãn $\leftrightarrow$ khái niệm): cạnh ConceptNet~\cite{cn} thuộc bảy quan hệ IsA, PartOf, UsedFor, AtLocation, CapableOf, HasA, Synonym, trọng số $\ge1$, hai đầu đều trong từ vựng. Đây là tri thức ngoài, không phụ thuộc cách chia.
 \end{itemize}
-Bảng~\ref{tab:graph} cho kích thước đồ thị. Các biến thể dùng cho ablation đổi \emph{chỉ} tập cạnh, giữ nguyên mô hình: \texttt{no\_edge} (bỏ mọi cạnh), \texttt{no\_rel} (chỉ \texttt{contains}), \texttt{no\_sg} (bỏ \texttt{sg\_rel}, giữ ConceptNet) và \texttt{shuffle} (hoán vị đầu nguồn của cạnh trong cùng loại, giữ nguyên bậc của mọi đỉnh).
+\hyperref[tab:graph]{Bảng~\ref*{tab:graph}} cho kích thước đồ thị. Các biến thể dùng cho ablation đổi \emph{chỉ} tập cạnh, giữ nguyên mô hình: \texttt{no\_edge} (bỏ mọi cạnh), \texttt{no\_rel} (chỉ \texttt{contains}), \texttt{no\_sg} (bỏ \texttt{sg\_rel}, giữ ConceptNet) và \texttt{shuffle} (hoán vị đầu nguồn của cạnh trong cùng loại, giữ nguyên bậc của mọi đỉnh).
 
 \begin{table}[t]
 \caption{Kích thước đồ thị (cạnh nhãn-nhãn đếm cả hai chiều).}\label{tab:graph}
@@ -190,13 +198,15 @@ PSG + ConceptNet & 18\,186 & 807 & 125\,247 & 6\,378 & 7\,486\\\bottomrule
 \end{table}
 
 \subsection{QA-Graph}\label{sec:m-qa}
-\textbf{Ý tưởng.} Hình~\ref{fig:pipe} đi qua một truy vấn thật của tập test PSG: câu ``a woman throwing a frisbee in a green field.'' và ảnh đúng có các nhãn \{person, frisbee, tree, sky, grass\}. QA-Graph chấm điểm một ảnh ứng viên theo bốn bước: (1) tách câu truy vấn thành các khái niệm \{woman, frisbee, green field\}; (2) với mỗi khái niệm, tìm nhãn của ảnh khớp với nó nhất: \emph{frisbee} có ngay trong ảnh; \emph{woman} không có trong ảnh nhưng khớp với nhãn \emph{person}; \emph{green field} cũng không có, chỉ khớp yếu với \emph{grass}; (3) lấy trung bình độ khớp của các khái niệm làm \emph{điểm đồ thị} của ảnh; (4) cộng điểm đồ thị với điểm adapter (độ giống giữa ảnh và câu truy vấn theo CLIP, sau một phép chiếu học được). Đồ thị được dùng ở bước (2): nhờ cạnh ConceptNet \emph{woman} --IsA$\to$ \emph{person} và các cạnh quan hệ scene graph, GNN đưa vectơ của các nhãn có liên hệ lại gần nhau, nên mô hình biết \emph{woman} gần \emph{person}. Ở ví dụ này, CLIP xếp ảnh đúng ở hạng 6; sau khi xếp hạng lại, ảnh đúng lên hạng 1, còn ảnh CLIP xếp hạng 1 (cánh đồng lúa, scene graph không có nhãn \emph{grass}) xuống hạng 4. Đường đi khái niệm $\to$ nhãn $\to$ ảnh dùng ở bước (2) cũng chính là giải thích cho kết quả (mục~\ref{sec:m-xai}).
+\textbf{Xuất phát từ một thử nghiệm thất bại.} Thiết kế đầu tiên gộp các nhãn của ảnh thành một vectơ (GAT chạy trên cả đỉnh ảnh) và tăng MRR toàn bộ ảnh test VG từ $60{,}40$ lên $63{,}19$ (seed 0). Tuy nhiên, bỏ toàn bộ cạnh cho $63{,}14$ và xáo cạnh cho $63{,}17$: phần tăng đến từ phép chiếu học được (\emph{adapter}), vì GAT với cạnh tự nối (\emph{self-loop}) trên ảnh chỉ tương đương một MLP. Thử nghiệm này dẫn tới hai quyết định của báo cáo: (i) mọi hiệu số lấy mốc là CLIP kèm adapter \emph{không có cạnh}, và (ii) QA-Graph so từng khái niệm của câu truy vấn với từng nhãn của ảnh, thay vì gộp nhãn thành một vectơ.
+
+\textbf{Ý tưởng.} \hyperref[fig:pipe]{Hình~\ref*{fig:pipe}} đi qua một truy vấn thật của tập test PSG: câu ``a woman throwing a frisbee in a green field.'' và ảnh đúng có các nhãn \{person, frisbee, tree, sky, grass\}. QA-Graph chấm điểm một ảnh ứng viên theo bốn bước: (1) tách câu truy vấn thành các khái niệm \{woman, frisbee, green field\}; (2) với mỗi khái niệm, tìm nhãn của ảnh khớp với nó nhất: \emph{frisbee} có ngay trong ảnh; \emph{woman} không có trong ảnh nhưng khớp với nhãn \emph{person}; \emph{green field} cũng không có, chỉ khớp yếu với \emph{grass}; (3) lấy trung bình độ khớp của các khái niệm làm \emph{điểm đồ thị} của ảnh; (4) cộng điểm đồ thị với điểm adapter (độ giống giữa ảnh và câu truy vấn theo CLIP, sau một phép chiếu học được). Đồ thị được dùng ở hai chỗ: cạnh \texttt{contains} cho biết ảnh có những nhãn nào, và GNN lan truyền vectơ nhãn qua cạnh \texttt{sg\_rel} và ConceptNet trước khi so khớp. Ở ví dụ này, \emph{woman} khớp \emph{person} không phải nhờ cạnh ConceptNet \emph{woman}--IsA$\to$\emph{person}: đo trên mô hình đã huấn luyện, xóa riêng cạnh này thì độ giống \emph{woman}--\emph{person} đổi từ $0{,}082$ thành $0{,}085$ và ảnh đúng vẫn hạng 1; còn khi tắt hẳn GNN ($\gamma=0$) thì độ giống là $0{,}315$. Nghĩa là \emph{woman} và \emph{person} vốn đã gần nhau trong vectơ CLIP, và GNN không kéo chúng lại gần hơn. Ở ví dụ này, CLIP xếp ảnh đúng ở hạng 6; sau khi xếp hạng lại, ảnh đúng lên hạng 1, còn ảnh CLIP xếp hạng 1 (cánh đồng lúa, scene graph không có nhãn \emph{grass}) xuống hạng 4. Các cạnh dùng ở bước (2) là nguồn của giải thích (\hyperref[sec:m-xai]{mục~\ref*{sec:m-xai}}); trong thực tế, \hyperref[sec:r-xai]{mục~\ref*{sec:r-xai}} cho thấy cạnh được chọn chủ yếu là cạnh \texttt{contains}.
 
 \textbf{Mô hình.} Bốn bước trên được viết thành công thức như sau. GNN 2 tầng (GCN~\cite{gcn}, GAT~\cite{gat} hoặc GraphSAGE~\cite{sage}) chạy \emph{chỉ} trên đồ thị nhãn (cạnh \texttt{sg\_rel}, \texttt{concept}), không chứa đỉnh ảnh. Với $X$ là vectơ đặc trưng của các nhãn, vectơ nhãn sau khi GNN lan truyền thông tin từ các nhãn láng giềng là
 \begin{equation}\label{eq:H}
 H=\mathrm{norm}\big(X+\gamma\,\mathrm{GNN}(X)\big),
 \end{equation}
-với $\gamma$ là hệ số học được (khởi tạo $0{,}1$) quyết định phần thông tin từ GNN được cộng thêm nhiều hay ít và $\mathrm{norm}$ là chuẩn hóa L2. Câu truy vấn $q$ có tập khái niệm $\mathcal C_q$ (bước 1, trích theo từ vựng nhãn); ảnh $i$ có tập nhãn $\mathcal L_i$ lấy từ cạnh \texttt{contains}. Độ khớp của khái niệm $c$ với ảnh $i$ (bước 2) xấp xỉ độ giống giữa $c$ và nhãn \emph{giống $c$ nhất} trong ảnh; ở ví dụ của Hình~\ref{fig:pipe}, với $c=$ woman thì đó là độ giống giữa woman và person. Nếu lấy thẳng giá trị lớn nhất, khi huấn luyện chỉ nhãn đó được cập nhật; vì vậy nhóm dùng dạng làm mượt của phép lấy giá trị lớn nhất (\emph{log-sum-exp}): kết quả gần bằng giá trị lớn nhất nhưng các nhãn gần giống cũng góp một phần nhỏ:
+với $\gamma$ là hệ số học được (khởi tạo $0{,}1$) quyết định phần thông tin từ GNN được cộng thêm nhiều hay ít và $\mathrm{norm}$ là chuẩn hóa L2. Câu truy vấn $q$ có tập khái niệm $\mathcal C_q$ (bước 1, trích theo từ vựng nhãn); ảnh $i$ có tập nhãn $\mathcal L_i$ lấy từ cạnh \texttt{contains}. Độ khớp của khái niệm $c$ với ảnh $i$ (bước 2) xấp xỉ độ giống giữa $c$ và nhãn \emph{giống $c$ nhất} trong ảnh; ở ví dụ của \hyperref[fig:pipe]{Hình~\ref*{fig:pipe}}, với $c=$ woman thì đó là độ giống giữa woman và person. Nếu lấy thẳng giá trị lớn nhất, khi huấn luyện chỉ nhãn đó được cập nhật; vì vậy nhóm dùng dạng làm mượt của phép lấy giá trị lớn nhất (\emph{log-sum-exp}): kết quả gần bằng giá trị lớn nhất nhưng các nhãn gần giống cũng góp một phần nhỏ:
 \begin{equation}\label{eq:match}
 m(c,i)=\tau\log\sum_{l\in\mathcal L_i}\exp\!\big(\cos(u_c,H_l)/\tau\big),
 \end{equation}
@@ -204,9 +214,9 @@ với $u_c=\mathrm{norm}(C\,H_c)$ là vectơ của khái niệm sau phép chiế
 \begin{equation}\label{eq:qa}
 g(q,i)=\cos(Pq,\,Sx_i)+w\cdot\frac{1}{|\mathcal C_q|}\sum_{c\in\mathcal C_q}m(c,i),
 \end{equation}
-trong đó $\cos(Pq,Sx_i)$ là adapter (hai phép chiếu $P,S$ khởi tạo đơn vị trên vectơ đặc trưng của câu truy vấn và của ảnh) và $w$ là trọng số học được (khởi tạo $1$). Khái niệm có mặt trong ảnh ($c\in\mathcal L_i$, như \emph{frisbee}) khớp mạnh nhất với chính nhãn đó (ở ví dụ của Hình~\ref{fig:pipe}, cosine với nhãn \emph{frisbee} là $0{,}19$, với mọi nhãn khác đều âm); khái niệm không có mặt (như \emph{woman}) lấy điểm từ nhãn của ảnh có $H_l$ gần $H_c$ sau lan truyền (\emph{woman}--\emph{person}: cosine $0{,}08$, các nhãn khác đều âm). Hình~\ref{fig:pipe} ghi giá trị $m$ sau~(\ref{eq:match}), lớn hơn cosine lớn nhất một chút ($0{,}09$ cho \emph{woman}). Giá trị tuyệt đối của $m$ nhỏ vì phép chiếu $C$ đã được học; điều quyết định là thứ tự điểm giữa các ảnh ứng viên. Khi bỏ hết cạnh \texttt{contains} thì $\mathcal L_i=\emptyset$, $m=0$ và $g$ trùng với mốc CLIP + adapter; mã có kiểm thử cho tính chất này.
+trong đó $\cos(Pq,Sx_i)$ là adapter (hai phép chiếu $P,S$ khởi tạo đơn vị trên vectơ đặc trưng của câu truy vấn và của ảnh) và $w$ là trọng số học được (khởi tạo $1$). Khái niệm có mặt trong ảnh ($c\in\mathcal L_i$, như \emph{frisbee}) khớp mạnh nhất với chính nhãn đó (ở ví dụ của \hyperref[fig:pipe]{Hình~\ref*{fig:pipe}}, cosine với nhãn \emph{frisbee} là $0{,}19$, với mọi nhãn khác đều âm); khái niệm không có mặt (như \emph{woman}) lấy điểm từ nhãn của ảnh có $H_l$ gần $H_c$ sau lan truyền (\emph{woman}--\emph{person}: cosine $0{,}08$, các nhãn khác đều âm). \hyperref[fig:pipe]{Hình~\ref*{fig:pipe}} ghi giá trị $m$ sau~(\ref{eq:match}), lớn hơn cosine lớn nhất một chút ($0{,}09$ cho \emph{woman}). Giá trị tuyệt đối của $m$ nhỏ vì phép chiếu $C$ đã được học; điều quyết định là thứ tự điểm giữa các ảnh ứng viên. Khi bỏ hết cạnh \texttt{contains} thì $\mathcal L_i=\emptyset$, $m=0$ và $g$ trùng với mốc CLIP + adapter; mã có kiểm thử cho tính chất này.
 
-\textbf{Huấn luyện} (Hình~\ref{fig:train})\textbf{.} Mỗi batch gồm $B$ caption train $q_1,\dots,q_B$ và ảnh đúng $i_1,\dots,i_B$ của chúng. Với mỗi caption, ảnh đúng của nó là \textbf{mẫu dương} (\emph{positive sample}), còn các ảnh khác trong cùng batch là \textbf{mẫu âm} (\emph{negative sample}), tức các ví dụ sai để mô hình đối chiếu; mọi caption của cùng một ảnh đều tính là dương. Gọi $g_{bj}=g(q_b,i_j)$ và $\mathcal P_b=\{j: i_j=i_b\}$ là vị trí các mẫu dương của caption $b$. Hàm mất mát InfoNCE hai chiều (từ câu truy vấn tìm ảnh và từ ảnh tìm câu truy vấn, $\tau_{\text{nce}}=0{,}05$) dạy mô hình cho mẫu dương điểm cao hơn mọi mẫu âm, lấy trung bình trên batch:
+\textbf{Huấn luyện} (\hyperref[fig:train]{Hình~\ref*{fig:train}})\textbf{.} Mỗi batch gồm $B$ caption train $q_1,\dots,q_B$ và ảnh đúng $i_1,\dots,i_B$ của chúng. Với mỗi caption, ảnh đúng của nó là \textbf{mẫu dương} (\emph{positive sample}), còn các ảnh khác trong cùng batch là \textbf{mẫu âm} (\emph{negative sample}), tức các ví dụ sai để mô hình đối chiếu; mọi caption của cùng một ảnh đều tính là dương. Gọi $g_{bj}=g(q_b,i_j)$ và $\mathcal P_b=\{j: i_j=i_b\}$ là vị trí các mẫu dương của caption $b$. Hàm mất mát InfoNCE hai chiều (từ câu truy vấn tìm ảnh và từ ảnh tìm câu truy vấn, $\tau_{\text{nce}}=0{,}05$) dạy mô hình cho mẫu dương điểm cao hơn mọi mẫu âm, lấy trung bình trên batch:
 \begin{equation}\label{eq:nce}
 \mathcal L=-\tfrac12\Big[\log\tfrac{\sum_{j\in\mathcal P_b}e^{g_{bj}/\tau_{\text{nce}}}}{\sum_{j}e^{g_{bj}/\tau_{\text{nce}}}}+\log\tfrac{\sum_{b'\in\mathcal P_j}e^{g_{b'j}/\tau_{\text{nce}}}}{\sum_{b'}e^{g_{b'j}/\tau_{\text{nce}}}}\Big].
 \end{equation}
@@ -217,8 +227,6 @@ GNN chạy trên toàn bộ đồ thị nhãn ở mỗi bước (807-3\,000 đ�
 \input{figs/fig_train.tex}
 \caption{Huấn luyện QA-Graph. Mỗi batch gồm 512 cặp (caption, ảnh đúng) của tập train; QA-Graph chấm điểm $g$ cho mọi cặp caption--ảnh trong batch. Hàm mất mát InfoNCE~(\ref{eq:nce}) kéo điểm của ảnh đúng lên và đẩy điểm các ảnh khác trong batch xuống (các cột ở khối \textcircled{\scriptsize 3} chỉ minh họa, không phải số đo). Sau mỗi epoch, MRR trên val quyết định dừng sớm; $\alpha$ cũng chọn trên val.}\label{fig:train}
 \end{figure*}
-
-\textbf{Vì sao không gộp các nhãn của ảnh thành một vectơ.} Lần thử đầu làm như vậy (GAT chạy trên cả đỉnh ảnh) và tăng MRR $+2{,}8$ so với CLIP, nhưng mức tăng không đổi khi bỏ toàn bộ cạnh hoặc xáo cạnh: phần tăng đến từ phép chiếu học được (\emph{adapter}), vì GAT với cạnh tự nối (\emph{self-loop}) trên ảnh chỉ tương đương một MLP. Từ đó, (i) mọi hiệu số trong báo cáo lấy mốc là CLIP kèm adapter \emph{không có cạnh}, và (ii) QA-Graph so từng khái niệm của câu truy vấn với từng nhãn của ảnh như trên, thay vì gộp nhãn thành một vectơ.
 
 \subsection{AdaMF-MAT cho truy vấn ảnh}\label{sec:m-adamf}
 AdaMF-MAT~\cite{adamf} (LREC-COLING 2024) giải bài toán hoàn thiện đồ thị tri thức đa phương thức: dự đoán thực thể còn thiếu của bộ ba $(h,r,?)$ khi mỗi thực thể có thêm ảnh và văn bản. Quan sát của tác giả là các phương thức đóng góp không đều cho từng thực thể, nên mô hình hợp nhất có trọng số thích nghi giữa cấu trúc, ảnh và văn bản, và huấn luyện với các bộ ba sai (mẫu âm) được sinh có chủ đích cho sát với bộ ba đúng (\emph{modality-adversarial training}) để không phương thức nào lấn át. Bộ ba sai tạo bằng cách thay một vế, ví dụ (ảnh 42, \texttt{contains}, horse) thành (ảnh 42, \texttt{contains}, pizza). Nhóm dùng nó để chấm điểm mức đúng của bộ ba (ảnh, \texttt{contains}, khái niệm).
@@ -234,10 +242,10 @@ với $\phi$ là hàm chấm điểm của AdaMF-MAT, rồi kết hợp với đ
 \subsection{Giải thích từ cơ chế chấm điểm}\label{sec:m-xai}
 Với một truy vấn và ảnh đứng đầu, nhóm ước lượng tác động của cạnh bằng cách xóa cạnh rồi tính lại điểm trên cùng 100 ảnh ứng viên. Cạnh có mức giảm điểm dương được chọn để giải thích; các đường đi chỉ được hiển thị khi các cạnh thực sự nối với nhau trong đồ thị. Điểm do QA-Graph chấm và điểm xếp hạng ở~(\ref{eq:fuse}) đều được tính lại sau can thiệp, gồm bước chuẩn hóa trên cùng 100 ảnh ứng viên. Phép thử đối chứng xóa cùng số cạnh để đánh giá liệu tập cạnh giải thích có tác động lớn hơn các cạnh khác hay không.
 
-Hai lượt đánh giá có phạm vi khác nhau. Lượt khảo sát dùng ngân sách một, ba và năm cạnh, so với 20 lượt xóa cạnh ngẫu nhiên khớp loại cạnh. Lượt truy vấn trực tiếp dùng ngân sách một, hai và ba cạnh đối tượng; đối chứng là các cạnh đối tượng khác trên cùng ảnh. Fidelity, sparsity và validity được định nghĩa ở~(\ref{eq:xai-drop})--(\ref{eq:xai-validity}), mục~\ref{sec:r-xai}.
+Hai lượt đánh giá có phạm vi khác nhau. Lượt khảo sát dùng ngân sách một, ba và năm cạnh, so với 20 lượt xóa cạnh ngẫu nhiên khớp loại cạnh. Lượt truy vấn trực tiếp dùng ngân sách một, hai và ba cạnh đối tượng; đối chứng là các cạnh đối tượng khác trên cùng ảnh. Fidelity, sparsity và validity được định nghĩa ở~(\ref{eq:xai-drop})--(\ref{eq:xai-validity}), \hyperref[sec:r-xai]{mục~\ref*{sec:r-xai}}.
 
 \section{Thiết lập thực nghiệm}\label{sec:setup}
-Bảng~\ref{tab:impl} tóm tắt thiết lập. Mọi thí nghiệm QA-Graph chạy 3 seed; seed $s$ điều khiển đồng thời gallery thứ $s$ của quy trình đánh giá, khởi tạo mô hình và thứ tự batch. Trên VG, mỗi cấu hình chạy cả ba seed trong một kernel Kaggle (GPU T4, 4-12 phút); trên PSG, các lượt chạy trên CPU (2 luồng, 4-16 phút mỗi seed). Dừng sớm thường dừng ở epoch 5-9. $\alpha$ chọn được nằm trong $[0{,}25;\,0{,}40]$ trên VG và $[0{,}15;\,0{,}30]$ trên PSG, tức điểm $g$ của~(\ref{eq:qa}) có trọng số lớn hơn cosine CLIP sau chuẩn hóa. Sau huấn luyện, hệ số $\gamma$ ở~(\ref{eq:H}) vẫn gần giá trị khởi tạo ($0{,}08$-$0{,}10$), $w\approx0{,}8$-$1{,}0$ và $\tau\approx0{,}05$-$0{,}07$: GNN chỉ hiệu chỉnh nhẹ vectơ nhãn, phần lớn điểm đồ thị đến từ phép khớp khái niệm-nhãn. Toàn bộ thí nghiệm chạy lại được bằng lệnh \texttt{make} (Phụ lục B); kết quả từng lượt, kể cả hạng của từng truy vấn, lưu trong \texttt{results/}.
+\hyperref[tab:impl]{Bảng~\ref*{tab:impl}} tóm tắt thiết lập. Mọi thí nghiệm QA-Graph chạy 3 seed; seed $s$ điều khiển đồng thời gallery thứ $s$ của quy trình đánh giá, khởi tạo mô hình và thứ tự batch. Trên VG, mỗi cấu hình chạy cả ba seed trong một kernel Kaggle (GPU T4, 4-12 phút); trên PSG, các lượt chạy trên CPU (2 luồng, 4-16 phút mỗi seed). Dừng sớm thường dừng ở epoch 5-9. $\alpha$ chọn được nằm trong $[0{,}25;\,0{,}40]$ trên VG và $[0{,}15;\,0{,}30]$ trên PSG, tức điểm $g$ của~(\ref{eq:qa}) có trọng số lớn hơn cosine CLIP sau chuẩn hóa. Toàn bộ thí nghiệm chạy lại được bằng lệnh \texttt{make} (Phụ lục B); kết quả từng lượt, kể cả hạng của từng truy vấn, lưu trong \texttt{results/}.
 
 \begin{table}[t]
 \caption{Thiết lập chính của từng thành phần.}\label{tab:impl}
@@ -264,11 +272,13 @@ Phần cứng & GPU T4 trên Kaggle (VG, AdaMF-MAT); CPU 2 luồng (PSG); GPU Co
 \end{table}
 
 \section{Kết quả}\label{sec:results}
+Các mục con đi theo bốn câu hỏi nghiên cứu: \hyperref[sec:r-main]{mục~\ref*{sec:r-main}} trả lời RQ1; \hyperref[sec:r-abl]{mục~\ref*{sec:r-abl}} và~\ref{sec:r-group} trả lời RQ2 (cấu trúc đồ thị và nhóm truy vấn); \hyperref[sec:r-repro]{mục~\ref*{sec:r-repro}} trả lời RQ3; \hyperref[sec:r-xai]{mục~\ref*{sec:r-xai}} trả lời RQ4.
+
 \subsection{So sánh tổng thể trên VG và PSG}\label{sec:r-main}
-Độ đo: Recall@1/5/10, MRR, nDCG@10. Bảng~\ref{tab:clip} cho kết quả text$\to$image; thiết lập chung ở Bảng~\ref{tab:impl}; image$\to$text (gallery 1K, test) đạt R@1 $74{,}10\pm0{,}96$ và MRR $81{,}82\pm0{,}84$.
+Độ đo: Recall@1/5/10, MRR, nDCG@10. \hyperref[tab:clip]{Bảng~\ref*{tab:clip}} cho kết quả của CLIP thuần ở cả hai chiều (text$\to$image và image$\to$text); thiết lập chung ở \hyperref[tab:impl]{Bảng~\ref*{tab:impl}}.
 
 \begin{table}[t]
-\caption{CLIP thuần, text$\to$image, VG$\cap$COCO (\%).}\label{tab:clip}
+\caption{CLIP thuần, VG$\cap$COCO (\%). Ba dòng đầu là text$\to$image; dòng cuối là image$\to$text.}\label{tab:clip}
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
 \begin{adjustbox}{max width=\columnwidth}
@@ -277,15 +287,16 @@ Phần cứng & GPU T4 trên Kaggle (VG, AdaMF-MAT); CPU 2 luồng (PSG); GPU Co
  & R@1 & R@5 & R@10 & MRR & nDCG\\\midrule
 Test, 1K, 3 seed & $57{,}36\!\pm\!0{,}95$ & $84{,}08$ & $91{,}76$ & $69{,}23\!\pm\!0{,}68$ & $74{,}32$\\
 Test, toàn bộ & $48{,}31$ & $75{,}35$ & $84{,}08$ & $60{,}40$ & $65{,}51$\\
-Val, 1K, 3 seed & $58{,}17\!\pm\!0{,}40$ & $84{,}74$ & $92{,}29$ & $69{,}92$ & $75{,}00$\\\bottomrule
+Val, 1K, 3 seed & $58{,}17\!\pm\!0{,}40$ & $84{,}74$ & $92{,}29$ & $69{,}92$ & $75{,}00$\\\midrule
+Test, 1K, 3 seed, i$\to$t & $74{,}10\!\pm\!0{,}96$ & $91{,}90$ & $96{,}53$ & $81{,}82\!\pm\!0{,}84$ & $85{,}24$\\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-Bảng~\ref{tab:main} và Hình~\ref{fig:main} tổng hợp 3 seed; $\Delta$MRR so với CLIP kèm adapter được tính ở seed~0 kèm CI95.
+\hyperref[tab:main]{Bảng~\ref*{tab:main}} và \hyperref[fig:main]{Hình~\ref*{fig:main}} tổng hợp 3 seed; $\Delta$MRR so với CLIP kèm adapter được tính ở seed~0 kèm CI95.
 
 \begin{table}[t]
-\caption{MRR (\%) trên toàn bộ ảnh test, VG$\cap$COCO, mean$\,\pm\,$std 3 seed. $\Delta$ so với CLIP + adapter là hiệu ghép cặp ở seed 0, nên không trùng hiệu hai giá trị trung bình.}\label{tab:main}
+\caption{MRR (\%) trên toàn bộ ảnh test, VG$\cap$COCO, mean$\,\pm\,$std 3 seed. $\Delta$ so với CLIP + adapter là hiệu ghép cặp ở seed 0, nên không trùng hiệu hai giá trị trung bình. Ở cấu hình chỉ có contains, GNN không có cạnh nhãn--nhãn nào để lan truyền.}\label{tab:main}
 \centering\small
 \begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lcc}
@@ -293,8 +304,8 @@ Bảng~\ref{tab:main} và Hình~\ref{fig:main} tổng hợp 3 seed; $\Delta$MRR 
 Cấu hình & MRR & $\Delta$ [CI95]\\\midrule
 CLIP & 60,40 & -\\
 CLIP + adapter (không cạnh) & $63{,}14\pm0{,}02$ & 0\\
-+ đồ thị contains & $64{,}65\pm0{,}23$ & $+1{,}50$ [1,09; 1,92]\\
-+ contains + sg\_rel & $64{,}76\pm0{,}12$ & $+1{,}76$ [1,38; 2,16]\\
++ chỉ contains (GAT) & $64{,}65\pm0{,}23$ & $+1{,}50$ [1,09; 1,92]\\
++ contains + sg\_rel (GAT) & $64{,}76\pm0{,}12$ & $+1{,}76$ [1,38; 2,16]\\
 + contains + ConceptNet (GAT) & $64{,}76\pm0{,}04$ & $+1{,}65$ [1,25; 2,05]\\
 + contains + ConceptNet (GCN) & $64{,}56\pm0{,}10$ & $+1{,}37$ [0,99; 1,75]\\
 + contains + ConceptNet (SAGE) & $\mathbf{64{,}89\pm0{,}15}$ & $+1{,}93$ [1,49; 2,32]\\
@@ -306,33 +317,82 @@ CLIP + adapter (không cạnh) & $63{,}14\pm0{,}02$ & 0\\
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figs/fig_main.pdf}
-\caption{MRR trên toàn bộ ảnh test của hai bộ dữ liệu. Thanh sai số là std 3 seed. Cột đồ thị là cấu hình có ConceptNet cao nhất của mỗi bộ; cột xáo cạnh là cùng cấu hình đó với cạnh bị xáo. Xáo cạnh tụt dưới mốc CLIP + adapter ở cả hai bộ.}\label{fig:main}
+\caption{MRR trên toàn bộ ảnh test của hai bộ dữ liệu. Thanh sai số là std 3 seed. Cột ``Đồ thị'' là cấu hình có ConceptNet cao nhất của mỗi bộ (VG: \texttt{contains} + ConceptNet, SAGE; PSG: \texttt{contains} + \texttt{sg\_rel} + ConceptNet, GAT); cột ``Xáo cạnh'' là cùng cấu hình đó với cạnh bị xáo; ``Adapter'' là CLIP + adapter (không cạnh). Xáo cạnh tụt dưới mốc CLIP + adapter ở cả hai bộ.}\label{fig:main}
 \end{figure}
 
-Đồ thị cải thiện $+1{,}4$ đến $+1{,}9$ MRR trên toàn bộ ảnh test so với adapter, CI95 không chứa 0 ở mọi biến thể (Bảng~\ref{tab:main}), và $+4{,}2$ đến $+4{,}5$ so với CLIP.
+Đồ thị cải thiện $+1{,}4$ đến $+1{,}9$ MRR trên toàn bộ ảnh test so với adapter, CI95 không chứa 0 ở mọi biến thể (\hyperref[tab:main]{Bảng~\ref*{tab:main}}), và $+4{,}2$ đến $+4{,}5$ so với CLIP.
 
 Trên PSG (8 cấu hình $\times$ 3 seed, GAT), kết luận lặp lại: CLIP $59{,}59$; CLIP + adapter (không cạnh) $62{,}67\pm0{,}03$; chỉ \texttt{contains} $64{,}35\pm0{,}08$; \texttt{contains} + \texttt{sg\_rel} $64{,}17\pm0{,}09$; \texttt{contains} + \texttt{sg\_rel} + ConceptNet $64{,}41\pm0{,}12$ ($+1{,}56$ [1,21; 1,89], cao nhất); xáo cạnh của cấu hình này $62{,}17\pm0{,}13$ ($-0{,}70$ [$-0{,}98$; $-0{,}42$]). Ở PSG, 88\% truy vấn test là gián tiếp nhưng \texttt{sg\_rel} và ConceptNet vẫn không thêm đáng kể so với chỉ \texttt{contains}.
 
-Bảng~\ref{tab:adapter} dùng adapter tuyến tính riêng cho AdaMF-MAT (mục~\ref{sec:m-adamf}), khác với mốc CLIP + adapter (không cạnh) của Bảng~\ref{tab:main}. Adapter tuyến tính đứng một mình đã $+2{,}01$ MRR trên toàn bộ ảnh test so với CLIP; AdaMF-MAT chỉ thêm $+0{,}59$ [0,31; 0,87] và chỉ ở nhóm direct ($71{,}47\to75{,}46$, Bảng~\ref{tab:l2}), còn nhóm indirect không cải thiện ($71{,}49\to71{,}21$). Khớp tên thêm $+1{,}05$ [0,80; 1,30] trên cùng adapter, lớn hơn mức của AdaMF-MAT.
+\subsection{Phân tích loại bỏ (ablation)}\label{sec:r-abl}
+Có bốn quan sát từ ablation. (1) Xáo cạnh làm điểm thấp hơn mốc CLIP + adapter ($-0{,}41$, có ý nghĩa): mô hình dùng nội dung của cạnh, nên lợi ích không do số tham số. (2) Chênh lệch giữa các GNN rất nhỏ: SAGE $\ge$ GAT $\ge$ GCN nhưng chỉ chênh khoảng $0{,}3$ MRR, cỡ 1-2 std. (3) Có hay không \texttt{sg\_rel}, có hay không ConceptNet chênh tối đa $0{,}25$ MRR, nằm trong nhiễu; phần lớn lợi ích đến từ cạnh \texttt{contains} (đồ thị hai phía, một bước). (4) Sau huấn luyện, hệ số $\gamma$ ở~(\ref{eq:H}) vẫn gần giá trị khởi tạo ($0{,}08$--$0{,}12$), $w\approx0{,}8$--$1{,}0$ và $\tau\approx0{,}05$--$0{,}07$. $\gamma$ nhỏ không có nghĩa GNN thay đổi ít: đầu ra GNN có độ lớn lớn, nên $\lVert\gamma\,\mathrm{GNN}(X)\rVert$ bằng 51--81\% $\lVert X\rVert$ và cosine trung bình giữa vectơ nhãn sau và trước GNN chỉ còn $0{,}59$--$0{,}64$ trên VG, $0{,}80$--$0{,}86$ trên PSG (bốn checkpoint GAT seed 0, có và không có ConceptNet). GNN như vậy thay đổi biểu diễn nhãn đáng kể, nhưng theo quan sát (3), đổi tập cạnh nhãn--nhãn hầu như không đổi MRR: phần thay đổi do cạnh quan hệ mang lại không chuyển thành lợi ích xếp hạng. Cấu hình chính của nhóm là \texttt{contains} + ConceptNet + SAGE, có MRR cao nhất trên VG.
+
+\subsection{Truy vấn trực tiếp và gián tiếp}\label{sec:r-group}
+CLIP có R@1 (test, 1K) $56{,}9$ ở nhóm direct (933 truy vấn), $57{,}5$ ở indirect (4\,054) và $51{,}4$ ở no\_concept (13). Như vậy, theo cách gán nhóm tự động này, CLIP không yếu hơn rõ rệt ở nhóm gián tiếp.
+
+\hyperref[fig:group]{Hình~\ref*{fig:group}} tách kết quả QA-Graph theo nhóm trên VG (toàn bộ ảnh test, seed 0). So với mốc CLIP + adapter (không cạnh), QA-Graph tăng $+7{,}30$ [6,37; 8,23] MRR ở nhóm direct và chỉ $+0{,}72$ [0,25; 1,18] ở nhóm indirect; xáo cạnh xóa gần hết mức tăng ở direct. So cùng GNN (GAT) với cấu hình chỉ có \texttt{contains}, cạnh quan hệ thêm $+0{,}30$ đến $+0{,}60$ ở nhóm indirect (CI không chứa 0) nhưng làm giảm $0{,}5$--$1{,}3$ ở nhóm direct (hai trong ba cấu hình có CI không chứa 0), nên tổng gần như không đổi ($+0{,}15$ đến $+0{,}26$, CI chạm 0). Trên PSG, nơi 88\% truy vấn test là gián tiếp, \hyperref[tab:psg-group]{Bảng~\ref*{tab:psg-group}} cho thấy QA-Graph tăng ở cả hai nhóm: $+2{,}80$ [1,82; 3,80] ở direct và $+1{,}42$ [1,05; 1,79] ở indirect. Cấu hình chỉ có \texttt{contains} đạt mức tăng tương đương ($+3{,}06$ và $+1{,}42$); hiệu ghép cặp giữa cấu hình đầy đủ và cấu hình chỉ có \texttt{contains} là $-0{,}00$ [$-0{,}29$; 0,29] ở indirect và $-0{,}26$ [$-1{,}10$; 0,52] ở direct. Xáo cạnh đưa nhóm indirect xuống dưới mốc ($-0{,}75$). Như vậy, phần tăng ở nhóm gián tiếp của PSG đến từ khớp với nhãn có sẵn trong ảnh, không từ cạnh quan hệ.
 
 \begin{table}[t]
-\caption{Adapter tuyến tính của mục~\ref{sec:m-adamf}, text$\to$image, test. MRR 1K là mean$\,\pm\,$std 3 seed (\%).}\label{tab:adapter}
-\centering\footnotesize
+\caption{QA-Graph theo nhóm truy vấn trên PSG$\cap$COCO, toàn bộ ảnh test, seed 0 (1\,199 truy vấn direct, 9\,645 indirect). MRR (\%) và $\Delta$ so với CLIP + adapter (không cạnh), CI95 bootstrap ghép cặp theo truy vấn.}\label{tab:psg-group}
+\centering\small
 \setlength{\tabcolsep}{3pt}
 \begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{lccc}
+\begin{tabular}{lcccc}
 \toprule
-Phương pháp & R@1 (1K) & MRR (1K) & MRR toàn bộ test\\\midrule
-CLIP & $57{,}36\pm0{,}95$ & $69{,}23\pm0{,}68$ & 60,40\\
-CLIP + AdaMF-MAT & $58{,}04\pm1{,}09$ & $69{,}77\pm0{,}74$ & 61,04\\
-CLIP + adapter tuyến tính & $59{,}52\pm0{,}74$ & $71{,}47\pm0{,}55$ & 62,41\\
-+ khớp tên & $60{,}98\pm0{,}83$ & $72{,}47\pm0{,}58$ & 63,46\\
-+ AdaMF-MAT & $60{,}29\pm0{,}82$ & $71{,}99\pm0{,}58$ & 63,00\\\bottomrule
+Cấu hình & direct & $\Delta$ [CI95] & indirect & $\Delta$ [CI95]\\\midrule
+CLIP + adapter (không cạnh) & $65{,}21$ & -- & $62{,}49$ & --\\
++ chỉ \texttt{contains} & $68{,}27$ & $+3{,}06$ [2,03; 4,07] & $63{,}92$ & $+1{,}42$ [1,04; 1,81]\\
++ \texttt{contains} + \texttt{sg\_rel} & $67{,}72$ & $+2{,}51$ [1,67; 3,33] & $63{,}97$ & $+1{,}48$ [1,16; 1,80]\\
++ \texttt{contains} + \texttt{sg\_rel} + CN & $68{,}01$ & $+2{,}80$ [1,82; 3,80] & $63{,}92$ & $+1{,}42$ [1,05; 1,79]\\
++ \ldots{} xáo cạnh & $64{,}95$ & $-0{,}27$ [$-1{,}05$; 0,52] & $61{,}74$ & $-0{,}75$ [$-1{,}07$; $-0{,}45$]\\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-Trên toàn bộ ảnh test, seed~0, cùng thứ tự 10\,696 truy vấn, Bảng~\ref{tab:paired} cho $\Delta=$ (phương pháp) $-$ AdaMF-MAT; cấu hình tốt nhất của cấp~1 hơn AdaMF-MAT $+4{,}05$ MRR [3,62; 4,48], cả direct ($+4{,}70$) lẫn indirect ($+3{,}89$) (Hình~\ref{fig:group}). Xáo cạnh vẫn hơn AdaMF-MAT $+1{,}71$, do phần adapter. Khi ghép thêm adapter tuyến tính, AdaMF-MAT lên $63{,}00$ MRR, vẫn dưới $65{,}09$ của cấp~1.
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figs/fig_group.pdf}
+\caption{MRR trên toàn bộ ảnh test của VG$\cap$COCO theo nhóm truy vấn (seed 0). ``Khớp tên'' và ``AdaMF-MAT'' là CLIP kèm điểm tương ứng, không có adapter; ``Adapter'' là CLIP + adapter (không cạnh); ``Đồ thị'' là \texttt{contains} + ConceptNet (SAGE). So với mốc CLIP + adapter (không cạnh), đồ thị thật tăng $+7{,}3$ [6,4; 8,2] ở nhóm direct và $+0{,}7$ [0,3; 1,2] ở nhóm indirect (CI95 ghép cặp); xáo cạnh xóa gần hết mức tăng ở direct ($64{,}0$ so với $63{,}8$) và làm nhóm indirect thấp hơn mốc ($62{,}5$ so với $63{,}1$).}\label{fig:group}
+\end{figure}
+
+Bộ 24 truy vấn quan hệ (Phụ lục A) có nhiều ảnh liên quan cho mỗi truy vấn và không phải caption COCO, nên được đánh giá theo quy trình riêng: gallery 1\,133 ảnh test, 1 seed, $\alpha$ chọn trên 51 truy vấn val. Trên bộ này, CLIP đạt MRR $63{,}0\%$, CLIP kèm AdaMF-MAT $67{,}7\%$, còn baseline chỉ đếm đối tượng đạt $88{,}1\%$. Lý do là ảnh liên quan và điểm đều dựa trên cùng danh sách đối tượng được chú thích, nên sự có mặt của đối tượng gần như giải được bài toán. Với 12 truy vấn mỗi nhóm, một truy vấn là 8\% R@1, nên các chênh lệch 1--2 truy vấn không có ý nghĩa thống kê.
+
+\subsection{AdaMF-MAT: tái lập và áp dụng cho truy vấn ảnh}\label{sec:r-repro}
+\textbf{Tái lập trên MKG-W và MKG-Y.} Dùng mã và cấu hình của tác giả (\hyperref[tab:impl]{Bảng~\ref*{tab:impl}}) trên 2 GPU T4. \hyperref[tab:repro]{Bảng~\ref*{tab:repro}} cho thấy mọi chênh lệch dưới 1 điểm so với bài báo; chỉ chạy 1 seed. Trên MKG-W, MRR khi dự đoán đuôi là $52{,}8\%$ nhưng khi dự đoán đầu chỉ $18{,}6\%$ (Hits@10: $67{,}7\%$ và $28{,}6\%$), trong khi MKG-Y gần đối xứng ($38{,}7\%$ và $39{,}5\%$). Thời gian huấn luyện đầy đủ là 3 giờ 32 phút (MKG-W, 12,7 s/epoch) và 2 giờ 14 phút (MKG-Y, 8,1 s/epoch).
+
+\begin{table}[t]
+\caption{Tái lập AdaMF-MAT (lọc, trung bình hai chiều), \%.}\label{tab:repro}
+\centering\small
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{llcccc}
+\toprule
+Tập & & MRR & H@1 & H@3 & H@10\\\midrule
+\multirow{2}{*}{MKG-W} & bài báo & 35,85 & 29,04 & 39,01 & 48,42\\
+ & của nhóm & 35,68 & 28,98 & 38,68 & 48,13\\\midrule
+\multirow{2}{*}{MKG-Y} & bài báo & 38,57 & 34,34 & 40,59 & 45,76\\
+ & của nhóm & 39,10 & 34,59 & 41,23 & 46,68\\\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+\textbf{Áp dụng cho truy vấn ảnh trên VG.} AdaMF-MAT cải thiện CLIP một chút: $+0{,}64$ MRR trên toàn bộ ảnh test, CI95 [0,33; 0,97] (\hyperref[tab:paired]{Bảng~\ref*{tab:paired}}). Trên gallery 1K, 3 seed (\hyperref[tab:l2]{Bảng~\ref*{tab:l2}}), phần cải thiện này chỉ nằm ở nhóm direct; ở nhóm indirect nó không hơn CLIP ($68{,}56$ so với $69{,}24$). Baseline khớp tên, không dùng quan hệ, bằng hoặc hơn AdaMF-MAT ở mọi chỉ số tổng ($+0{,}42$ MRR [0,16; 0,67] trên toàn bộ ảnh test, \hyperref[tab:paired]{Bảng~\ref*{tab:paired}}).
+
+\begin{table}[t]
+\caption{MRR (\%) theo nhóm truy vấn, VG$\cap$COCO, gallery 1K, mean$\,\pm\,$std 3 seed (933 truy vấn direct, 4\,054 indirect). Ba dòng adapter tuyến tính: cột nhóm là trung bình 3 seed.}\label{tab:l2}
+\centering\small
+\begin{adjustbox}{max width=\columnwidth}
+\begin{tabular}{lccc}
+\toprule
+Phương pháp & Tổng & direct & indirect\\\midrule
+CLIP & $69{,}23\pm0{,}68$ & $69{,}33\pm0{,}89$ & $69{,}24\pm0{,}65$\\
+CLIP + khớp tên (không quan hệ) & $70{,}21\pm0{,}84$ & $\mathbf{77{,}70\pm0{,}96}$ & $68{,}52\pm0{,}84$\\
+CLIP + AdaMF-MAT & $69{,}77\pm0{,}74$ & $75{,}17\pm1{,}03$ & $68{,}56\pm0{,}71$\\\midrule
+CLIP + adapter tuyến tính & $71{,}47\pm0{,}55$ & $71{,}47$ & $71{,}49$\\
++ khớp tên & $72{,}47\pm0{,}58$ & $76{,}41$ & $71{,}59$\\
++ AdaMF-MAT & $71{,}99\pm0{,}58$ & $75{,}46$ & $71{,}21$\\\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
 
 \begin{table}[t]
 \caption{Kiểm định ghép cặp so với AdaMF-MAT, toàn bộ ảnh test, seed 0, 10\,696 truy vấn. MRR (\%) và $\Delta$ [CI95 bootstrap] cho tổng.}\label{tab:paired}
@@ -354,58 +414,28 @@ QA-Graph xáo cạnh & 62,75 & $+1{,}71$ [1,30; 2,14]\\\bottomrule
 \end{adjustbox}
 \end{table}
 
-\subsection{Phân tích loại bỏ (ablation)}\label{sec:r-abl}
-Có ba quan sát từ ablation. (1) Xáo cạnh làm điểm thấp hơn mốc CLIP + adapter ($-0{,}41$, có ý nghĩa): mô hình dùng nội dung của cạnh, nên lợi ích không do số tham số. (2) Chênh lệch giữa các GNN rất nhỏ: SAGE $\ge$ GAT $\ge$ GCN nhưng chỉ chênh khoảng $0{,}3$ MRR, cỡ 1-2 std. (3) Có hay không \texttt{sg\_rel}, có hay không ConceptNet chênh tối đa $0{,}25$ MRR, nằm trong nhiễu; phần lớn lợi ích đến từ cạnh \texttt{contains} (đồ thị hai phía, một bước). Cấu hình chính của nhóm là \texttt{contains} + ConceptNet + SAGE, có MRR cao nhất trên VG.
-
-\subsection{Truy vấn trực tiếp và gián tiếp}\label{sec:r-group}
-CLIP có R@1 (test, 1K) $56{,}9$ ở nhóm direct (933 truy vấn), $57{,}5$ ở indirect (4\,054) và $51{,}4$ ở no\_concept (13). Như vậy, theo cách gán nhóm tự động này, CLIP không yếu hơn rõ rệt ở nhóm gián tiếp; mục~\ref{sec:disc} quay lại điểm này.
-
-Bảng~\ref{tab:l2} (gallery 1K, 3 seed) cho thấy AdaMF-MAT cải thiện CLIP một chút ($+0{,}64$ MRR trên toàn bộ ảnh test, CI95 [0,33; 0,97]) nhưng chỉ ở nhóm direct. Ở nhóm indirect nó không hơn CLIP ($68{,}56$ so với $69{,}24$). Một baseline không dùng quan hệ (đếm khái niệm của câu có trong danh sách đối tượng của ảnh) bằng hoặc hơn AdaMF-MAT ở mọi chỉ số tổng ($+0{,}42$ MRR [0,16; 0,67] trên toàn bộ ảnh test, Bảng~\ref{tab:paired}).
+\hyperref[tab:adapter]{Bảng~\ref*{tab:adapter}} thêm adapter tuyến tính riêng cho AdaMF-MAT (\hyperref[sec:m-adamf]{mục~\ref*{sec:m-adamf}}), khác với mốc CLIP + adapter (không cạnh) của QA-Graph. Adapter tuyến tính đứng một mình đã $+2{,}01$ MRR trên toàn bộ ảnh test so với CLIP; AdaMF-MAT chỉ thêm $+0{,}59$ [0,31; 0,87] và chỉ ở nhóm direct ($71{,}47\to75{,}46$, \hyperref[tab:l2]{Bảng~\ref*{tab:l2}}), còn nhóm indirect không cải thiện ($71{,}49\to71{,}21$). Khớp tên thêm $+1{,}05$ [0,80; 1,30] trên cùng adapter, lớn hơn mức của AdaMF-MAT.
 
 \begin{table}[t]
-\caption{MRR (\%) theo nhóm truy vấn, gallery 1K, 3 seed (933 truy vấn direct, 4\,054 indirect).}\label{tab:l2}
-\centering\small
+\caption{Adapter tuyến tính của \hyperref[sec:m-adamf]{mục~\ref*{sec:m-adamf}}, text$\to$image, test. MRR 1K là mean$\,\pm\,$std 3 seed (\%).}\label{tab:adapter}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
 \begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lccc}
 \toprule
-Phương pháp & Tổng & direct & indirect\\\midrule
-CLIP & $69{,}23\pm0{,}68$ & $69{,}33$ & $69{,}24$\\
-CLIP + khớp tên (không quan hệ) & $70{,}21\pm0{,}84$ & $\mathbf{77{,}70}$ & $68{,}52$\\
-CLIP + AdaMF-MAT & $69{,}77\pm0{,}74$ & $75{,}17$ & $68{,}56$\\\midrule
-CLIP + adapter tuyến tính & $71{,}47\pm0{,}55$ & $71{,}47$ & $71{,}49$\\
-+ khớp tên & $72{,}47\pm0{,}58$ & $76{,}41$ & $71{,}59$\\
-+ AdaMF-MAT & $71{,}99\pm0{,}58$ & $75{,}46$ & $71{,}21$\\\bottomrule
+Phương pháp & R@1 (1K) & MRR (1K) & MRR toàn bộ test\\\midrule
+CLIP & $57{,}36\pm0{,}95$ & $69{,}23\pm0{,}68$ & 60,40\\
+CLIP + AdaMF-MAT & $58{,}04\pm1{,}09$ & $69{,}77\pm0{,}74$ & 61,04\\
+CLIP + adapter tuyến tính & $59{,}52\pm0{,}74$ & $71{,}47\pm0{,}55$ & 62,41\\
++ khớp tên & $60{,}98\pm0{,}83$ & $72{,}47\pm0{,}58$ & 63,46\\
++ AdaMF-MAT & $60{,}29\pm0{,}82$ & $71{,}99\pm0{,}58$ & 63,00\\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figs/fig_group.pdf}
-\caption{MRR trên toàn bộ ảnh test theo nhóm truy vấn (seed 0). So với mốc CLIP + adapter (không cạnh), đồ thị thật tăng $+7{,}3$ ở nhóm direct và $+0{,}7$ ở nhóm indirect; xáo cạnh xóa gần hết mức tăng ở direct ($64{,}0$ so với $63{,}8$) và làm nhóm indirect thấp hơn mốc ($62{,}5$ so với $63{,}1$).}\label{fig:group}
-\end{figure}
+\textbf{So với QA-Graph.} Trên toàn bộ ảnh test, seed~0, cùng thứ tự 10\,696 truy vấn, \hyperref[tab:paired]{Bảng~\ref*{tab:paired}} cho $\Delta=$ (phương pháp) $-$ AdaMF-MAT. QA-Graph \texttt{contains} + ConceptNet (SAGE) hơn AdaMF-MAT $+4{,}05$ MRR [3,62; 4,48], cả ở direct ($+4{,}70$) lẫn indirect ($+3{,}89$) (\hyperref[fig:group]{Hình~\ref*{fig:group}}). Xáo cạnh vẫn hơn AdaMF-MAT $+1{,}71$, do phần adapter. Khi ghép thêm adapter tuyến tính, AdaMF-MAT lên $63{,}00$ MRR, vẫn dưới $65{,}09$ của QA-Graph.
 
-Trên thí nghiệm riêng này (gallery 1\,133 ảnh test, 1 seed, $\alpha$ chọn trên 51 truy vấn val), CLIP kèm AdaMF-MAT đạt MRR $0{,}677$ so với CLIP $0{,}630$, còn baseline chỉ đếm đối tượng đạt $0{,}881$. Lý do là ảnh liên quan và điểm đồ thị đều dựa trên cùng danh sách đối tượng được chú thích, nên sự có mặt của đối tượng gần như giải được bài toán. Với 12 truy vấn mỗi nhóm, một truy vấn là 8\% R@1, nên các chênh lệch 1-2 truy vấn không có ý nghĩa thống kê.
-
-\subsection{Tái lập AdaMF-MAT trên MKG-W và MKG-Y}\label{sec:r-repro}
-Dùng mã và cấu hình của tác giả (Bảng~\ref{tab:impl}) trên 2 GPU T4. Bảng~\ref{tab:repro} cho thấy mọi chênh lệch dưới 1 điểm so với bài báo; chỉ chạy 1 seed.
-
-\begin{table}[t]
-\caption{Tái lập AdaMF-MAT (lọc, trung bình hai chiều), \%.}\label{tab:repro}
-\centering\small
-\begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{llcccc}
-\toprule
-Tập & & MRR & H@1 & H@3 & H@10\\\midrule
-\multirow{2}{*}{MKG-W} & bài báo & 35,85 & 29,04 & 39,01 & 48,42\\
- & của nhóm & 35,68 & 28,98 & 38,68 & 48,13\\\midrule
-\multirow{2}{*}{MKG-Y} & bài báo & 38,57 & 34,34 & 40,59 & 45,76\\
- & của nhóm & 39,10 & 34,59 & 41,23 & 46,68\\\bottomrule
-\end{tabular}
-\end{adjustbox}
-\end{table}
-
-Trên MKG-W, MRR khi dự đoán đuôi là $0{,}528$ nhưng khi dự đoán đầu chỉ $0{,}186$ (Hits@10: $0{,}677$ và $0{,}286$), trong khi MKG-Y gần đối xứng ($0{,}387$ và $0{,}395$). Thời gian huấn luyện đầy đủ là 3 giờ 32 phút (MKG-W, 12,7 s/epoch) và 2 giờ 14 phút (MKG-Y, 8,1 s/epoch).
+\textbf{Trên PSG} (toàn bộ ảnh test, seed 0, 10\,933 truy vấn), kết quả lặp lại. CLIP kèm AdaMF-MAT đạt $60{,}30$ so với CLIP $59{,}59$ và khớp tên $60{,}52$. Khi cùng có adapter tuyến tính, AdaMF-MAT ($62{,}22$) và khớp tên ($62{,}27$) ngang nhau (chênh $+0{,}05$ [$-0{,}13$; $0{,}22$]), còn QA-Graph \texttt{contains} + \texttt{sg\_rel} + ConceptNet hơn AdaMF-MAT $+2{,}05$ [1,65; 2,45]. Xáo hoặc bỏ bộ ba quan hệ khái niệm làm MRR của AdaMF-MAT đổi không quá $0{,}04$: cũng như QA-Graph, AdaMF-MAT gần như không dùng tới quan hệ.
 
 \input{sections/06_xai}
 \input{sections/07_cases}
@@ -413,26 +443,8 @@ Trên MKG-W, MRR khi dự đoán đuôi là $0{,}528$ nhưng khi dự đoán đ�
 \input{sections/09_limitations}
 \input{sections/10_conclusion}
 
-\section{Phân công công việc}
-Khối lượng công việc của đồ án được phân chia giữa năm thành viên theo từng mảng kỹ thuật và thực nghiệm (Bảng~\ref{tab:team}).
-\begin{table}[H]
-\caption{Phân công công việc giữa các thành viên.}\label{tab:team}
-\centering\small
-\begin{adjustbox}{max width=\columnwidth}
-\begin{tabular}{lL{5.9cm}}
-\toprule
-Thành viên & Phần việc\\\midrule
-Yến & Chuẩn bị và xử lý dữ liệu, chuẩn hóa nhãn, tổng hợp báo cáo và xây dựng slide trình bày.\\
-Thắng & Trích xuất đặc trưng OpenCLIP, xây dựng chỉ mục FAISS, cài đặt các độ đo đánh giá, chạy baseline theo 3 seed, phát triển module đánh giá chung, tổng hợp trang kết quả và trích xuất các trường hợp thành công, thất bại của CLIP.\\
-Huy & Xây dựng đồ thị nhãn-ảnh, cài đặt các mô hình GNN và QA-Graph, thực hiện các thí nghiệm ablation, tích hợp ConceptNet và xử lý bộ dữ liệu PSG.\\
-Khánh & Tái lập AdaMF-MAT, tích hợp vào quy trình đánh giá chung, xây dựng bộ 24 truy vấn và so sánh hiệu năng giữa truy vấn trực tiếp và gián tiếp.\\
-Dương & Cài đặt cơ chế giải thích, đánh giá các chỉ số \emph{fidelity}, \emph{validity}, \emph{sparsity}, khảo sát dữ liệu cho MMKG tiếng Việt và phát triển bản demo.\\\bottomrule
-\end{tabular}
-\end{adjustbox}
-\end{table}
-
 \section{Khai báo}\label{sec:declare}
-\textbf{Mã nguồn và kết quả thực nghiệm.} Toàn bộ mã nguồn, cấu hình thí nghiệm và kịch bản chạy lại được lưu tại kho mã \url{https://github.com/Chau-Ngoc-Huy/graphml-project3}, với hướng dẫn chi tiết ở Phụ lục~B. Số liệu truy hồi nằm trên nhánh \texttt{final}; báo cáo, notebook và hiện vật của lượt đánh giá XAI được lưu trên nhánh \texttt{main}. Giao diện cho phép nhập câu truy vấn, xem các ảnh xếp hạng cao nhất cùng đường đi giải thích được triển khai tại MMXAI Lab (\texttt{apps/lab}), trong khi trang tổng hợp toàn bộ kết quả đặt tại Observatory (\texttt{apps/observatory}).
+\textbf{Mã nguồn và kết quả thực nghiệm.} Toàn bộ mã nguồn, cấu hình thí nghiệm và kịch bản chạy lại được lưu tại kho mã \url{https://github.com/Chau-Ngoc-Huy/graphml-project3}, với hướng dẫn chi tiết ở Phụ lục~B. Mọi số liệu, kể cả notebook và kết quả của hai lượt đánh giá XAI, nằm trên nhánh \texttt{final} (kết quả XAI ở \path{src/mmxai/xai/xai-experiment/runs/qa_vg_psg_xai/}, bản đối chiếu ở \path{results/xai/qa_vg_psg_xai/}). Giao diện cho phép nhập câu truy vấn, xem các ảnh xếp hạng cao nhất cùng đường đi giải thích được triển khai tại MMXAI Lab (\texttt{apps/lab}), trong khi trang tổng hợp toàn bộ kết quả đặt tại Observatory (\texttt{apps/observatory}).
 
 \textbf{Mã nguồn mở và thành phần kế thừa.} Hệ thống sử dụng OpenCLIP~\cite{openclip} (ViT-B/32, giữ nguyên trọng số), PyTorch, PyTorch Geometric, FAISS~\cite{faiss} và mã nguồn gốc của tác giả AdaMF-MAT~\cite{adamf}. Trong đó, phần tái lập trên MKG-W và MKG-Y dùng nguyên script của tác giả, còn các thành phần dựng MMKG từ dữ liệu của nhóm và tính điểm xếp hạng lại trong quy trình đánh giá chung do nhóm tự phát triển.
 
@@ -446,7 +458,7 @@ Tập 24 truy vấn đánh giá được sinh tự động từ tệp \texttt{sc
 \item \textbf{Nhóm truy vấn trực tiếp (12 câu):} tập ảnh liên quan gồm các ảnh có chứa đúng bộ ba \emph{chủ thể - vị từ - đối tượng} trong chú thích scene graph.
 \item \textbf{Nhóm truy vấn gián tiếp (12 câu):} chủ thể và đối tượng không có quan hệ trực tiếp trong chú thích, mà chỉ liên kết với nhau thông qua một thực thể trung gian (đường đi hai bước).
 \end{itemize}
-Các bước kiểm tra tự động xác nhận không có truy vấn trùng lặp, không trùng cặp \emph{chủ thể - đối tượng}, và tập ảnh liên quan của hai nhóm không giao nhau. Do ảnh liên quan chưa được rà soát thủ công (xem thêm Phụ lục~C), các kết quả trên tập truy vấn này cần được diễn giải thận trọng. Danh sách đầy đủ ở Bảng~\ref{tab:queries}.
+Các bước kiểm tra tự động xác nhận không có truy vấn trùng lặp, không trùng cặp \emph{chủ thể - đối tượng}, và tập ảnh liên quan của hai nhóm không giao nhau. Do ảnh liên quan chưa được rà soát thủ công (xem \hyperref[sec:limit]{mục~\ref*{sec:limit}}), các kết quả trên tập truy vấn này cần được diễn giải thận trọng. Danh sách đầy đủ ở \hyperref[tab:queries]{Bảng~\ref*{tab:queries}}.
 \begin{table}[H]
 \caption{Bộ 24 câu truy vấn đánh giá, 12 trực tiếp và 12 gián tiếp. Số trong ngoặc là số ảnh liên quan trong Visual Genome.}\label{tab:queries}
 \centering\footnotesize
@@ -484,35 +496,14 @@ Các bước chung được điều phối bằng \texttt{make} tại thư mục
 \item \texttt{make train DS=vg} (Kaggle T4$\times$2, khoảng 3 giờ, 12 cấu hình $\times$ 3 seed) và \texttt{make train DS=psg} (chạy cục bộ, khoảng 2 giờ, 8 cấu hình $\times$ 3 seed): kết quả lưu vào \texttt{runs/} và \texttt{results/}.
 \item \texttt{make adamf DS=..} (Kaggle T4$\times$2, khoảng 5 giờ): huấn luyện AdaMF-MAT cùng các thí nghiệm ablation xáo quan hệ và bỏ quan hệ, lưu kết quả vào \texttt{results/adamf\_<ds>/}.
 \item \texttt{make tables} (dưới 1 phút): tổng hợp các bảng kết quả chính và kiểm định ghép cặp trong \texttt{results/}.
-\item \texttt{make xai DS=..} chạy phép kiểm tra giải thích theo quy trình chung trên seed 0. Số liệu Bảng~\ref{tab:xai-direct} và Hình~\ref{fig:xai-baseline}--\ref{fig:xai-direct} được tạo bằng bộ notebook 01--06 của Dương trong \texttt{xai-experiment}, trên ba seed và bộ truy vấn đã duyệt. Bản mã, notebook có output lịch sử, checkpoint và toàn bộ artifacts của hai lượt chạy nằm trong \path{src/mmxai/xai/xai-experiment/}; các bảng và hình đối chiếu cũng được lưu tại \path{results/xai/qa_vg_psg_xai/}. Thứ tự chạy và tệp đối chiếu được ghi trong \path{docs/PIPELINE.md}.
+\item \texttt{make xai DS=..} chạy phép kiểm tra giải thích theo quy trình chung trên seed 0. Số liệu Bảng~\ref{tab:xai-direct} và Hình~\ref{fig:xai-baseline}--\ref{fig:xai-direct} được tạo bằng bộ notebook XAI 01--06 trong \texttt{xai-experiment}, trên ba seed và bộ truy vấn đã duyệt. Bản mã, notebook có output lịch sử, checkpoint và toàn bộ artifacts của hai lượt chạy nằm trong \path{src/mmxai/xai/xai-experiment/}; các bảng và hình đối chiếu cũng được lưu tại \path{results/xai/qa_vg_psg_xai/}. Thứ tự chạy và tệp đối chiếu được ghi trong \path{docs/PIPELINE.md}.
 \item \texttt{make ui} và \texttt{make web}: khởi chạy MMXAI Lab (\texttt{apps/lab}, cổng 8765) và Observatory (\texttt{apps/observatory}).
+\item \texttt{python report/measure\_isa.py} (CPU, khoảng một phút): số đo ở \hyperref[sec:m-qa]{mục~\ref*{sec:m-qa}} và \hyperref[sec:r-abl]{mục~\ref*{sec:r-abl}}, lưu ở \path{report/figs/isa_check.json}; CI theo nhóm do \texttt{make tables} ghi ở \path{results/*_groups.md}.
 \item \texttt{make report}: vẽ biểu đồ và biên dịch báo cáo bằng XeLaTeX ra tệp \texttt{build/report/report.pdf}.
 \end{enumerate}
 
-\textbf{Chạy gộp, kiểm thử nhanh và đường tắt.} Các bước chung cho từng bộ dữ liệu có thể chạy bằng \texttt{make all-vg} hoặc \texttt{make all-psg}; bộ notebook XAI được chạy riêng. Để kiểm tra nhanh luồng thực thi, có thể dùng \texttt{make data DS=vg SMOKE=1} (vài trăm ảnh, khoảng 5 phút) hoặc \texttt{make adamf DS=psg SMOKE=1} (2 epoch). Trường hợp không muốn chạy lại các bước 2-5, lệnh \texttt{make setup fetch-prebuilt} tải bundle dựng sẵn và 4 checkpoint seed 0 (riêng tư của nhóm), sau đó chạy tiếp các bước tổng hợp bảng, kiểm tra XAI chung và giao diện web bằng \texttt{make tables xai web}.
+\textbf{Chạy gộp, kiểm thử nhanh và đường tắt.} Các bước chung cho từng bộ dữ liệu có thể chạy bằng \texttt{make all-vg} hoặc \texttt{make all-psg}; bộ notebook XAI được chạy riêng. Để kiểm tra nhanh luồng thực thi, có thể dùng \texttt{make data DS=vg SMOKE=1} (vài trăm ảnh, khoảng 5 phút) hoặc \texttt{make adamf DS=psg SMOKE=1} (2 epoch). Trường hợp không muốn chạy lại các bước 2-5, lệnh \texttt{make setup fetch-prebuilt} tải bundle dựng sẵn và 4 checkpoint seed 0, sau đó chạy tiếp các bước tổng hợp bảng, kiểm tra XAI chung và giao diện web bằng \texttt{make tables xai web}. Bundle và checkpoint dựng sẵn được lưu ở chế độ riêng tư trên Kaggle, nên người ngoài nhóm cần chạy đủ các bước 2--5 để có dữ liệu và mô hình.
 
-\section*{Phụ lục C: Đối chiếu yêu cầu đề bài}
-Bảng~\ref{tab:req} đối chiếu mức độ hoàn thiện của hệ thống theo từng cấp yêu cầu của đề bài tại thời điểm viết báo cáo. Bảng ghi nhận cả những hạng mục đã hoàn tất lẫn những phần còn dang dở hoặc chưa có số liệu định lượng.
-
-\begin{table*}[t]
-\caption{Mức đáp ứng yêu cầu của đề bài (trạng thái tại thời điểm viết).}\label{tab:req}
-\centering\footnotesize
-\begin{tabular}{L{1.1cm}L{6.2cm}L{1.6cm}L{7.4cm}}
-\toprule
-Cấp & Yêu cầu & Trạng thái & Ghi chú\\\midrule
-1 & Baseline CLIP giữ nguyên trọng số; đồ thị từ dữ liệu có sẵn; $\ge1$ thuật toán GCN/GAT/SAGE; xếp hạng lại; cùng cách chia & Đạt & Đã cài đặt cả ba GNN (GCN, GAT, GraphSAGE) trên VG$\cap$COCO và PSG$\cap$COCO với 3 seed (mục~\ref{sec:r-main} đến~\ref{sec:r-abl}).\\
-1 & Ablation: bỏ cạnh hoặc thay bằng cạnh ngẫu nhiên & Đạt một phần & Đã chạy thí nghiệm bỏ cạnh và xáo cạnh; thí nghiệm thay bằng đồ thị ngẫu nhiên chưa được thực hiện.\\
-1 & Hiển thị quan hệ/đường đi khi xếp hạng; 5 thành công và 5 thất bại & Đạt một phần & Mục~\ref{sec:cases} trình bày 5 ảnh khớp và 5 ảnh khác ID ảnh chuẩn của QA-Graph, kèm cạnh giải thích. Các cạnh chủ yếu nối nhãn với ảnh; bằng chứng về đường đi quan hệ nhiều bước còn hạn chế.\\
-2 & Thực nghiệm trên $\ge2$ tập công khai; tái lập $\ge1$ phương pháp từ 2024; cùng pipeline và cách chia cấp 1 & Đạt & QA-Graph được đánh giá trên cả VG$\cap$COCO và PSG$\cap$COCO. AdaMF-MAT được tái lập trên MKG-W, MKG-Y (mục~\ref{sec:r-repro}) và chạy trên quy trình đánh giá chung của cả hai tập, kèm ablation xáo/bỏ quan hệ và kiểm định ghép cặp (\texttt{results/psg\_vs\_adamf.md}).\\
-2 & Bộ $\ge20$ truy vấn, tách trực tiếp/gián tiếp, mô tả cách xây dựng và kiểm tra & Đạt một phần & Bộ 24 truy vấn có mô tả cách xây dựng và đã qua kiểm tra tự động; ảnh liên quan chưa được rà soát bằng mắt và bộ truy vấn chưa được chạy trên quy trình đánh giá chung.\\
-3 & Fidelity, validity, sparsity định lượng trên $\ge10$ truy vấn & Đạt một phần & Mục~\ref{sec:r-xai} báo phép xóa cạnh trên 24 caption khảo sát và 34 truy vấn trực tiếp đã duyệt, ba seed. Validity cấu trúc đã đo; mức hỗ trợ thị giác của từng cạnh chưa được kiểm tra trên toàn mẫu.\\
-3 & MMKG tiếng Việt (50-150 thực thể, 300-1\,000 triple, 200-500 ảnh), data card & Chưa có & Kho mã chưa có MMKG tiếng Việt và data card tương ứng.\\
-4 & Mở rộng tự chọn (ví dụ giả thuyết graph-aware, video, khảo sát người dùng) & Chưa thực hiện & Nhóm chưa thực hiện hướng mở rộng nào của cấp 4; chiều image$\to$text của CLIP và phân tích theo nhóm truy vấn thuộc cột mở rộng của nhiệm vụ 1.\\
-Chung & $\ge3$ seed, mean $\pm$ std; chọn $\alpha$ trên val; không rò rỉ & Đạt & Các thí nghiệm chính đều chạy 3 seed; riêng AdaMF-MAT chỉ có 1 seed huấn luyện.\\
-Chung & Mã nguồn, tập chia dữ liệu và hướng dẫn chạy lại & Đạt & Toàn bộ quy trình chạy lại được bằng chuỗi lệnh \texttt{make} (Phụ lục~B); tập chia cố định theo seed 0 nằm trong bundle dữ liệu.\\
-Chung & Notebook hoặc giao diện nhỏ: nhập truy vấn, trả về top-$k$, hiển thị đường đi; video $\le5$ phút & Đạt một phần & MMXAI Lab (\texttt{apps/lab}) và Observatory (\texttt{apps/observatory}) đáp ứng phần giao diện; video dự phòng chưa được thực hiện.\\\bottomrule
-\end{tabular}
-\end{table*}
 
 \begin{thebibliography}{99}
 \bibitem{clip} A. Radford \emph{et al.}, ``Learning transferable visual models from natural language supervision,'' in \emph{Proc. Int. Conf. Mach. Learn. (ICML)}, 2021.

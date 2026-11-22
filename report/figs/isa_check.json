@@ -1,0 +1,83 @@
+{
+ "caption": "a woman throwing a frisbee in a green field.",
+ "cases": [
+  {
+   "case": "đầy đủ",
+   "cos_woman_person": 0.08243569731712341,
+   "m_woman_gold": 0.08528409153223038,
+   "rank_gold": 1
+  },
+  {
+   "case": "bỏ cạnh woman↔person (2 cạnh)",
+   "cos_woman_person": 0.08541802316904068,
+   "m_woman_gold": 0.08821671456098557,
+   "rank_gold": 1
+  },
+  {
+   "case": "tắt GNN (γ = 0)",
+   "cos_woman_person": 0.3149797022342682,
+   "m_woman_gold": 0.3270449936389923,
+   "rank_gold": 1
+  }
+ ],
+ "leave_one_edge_out": [
+  {
+   "edge": "frisbee -contains-> ảnh đúng",
+   "score_drop": 0.8177438613644545,
+   "rank_gold_after": 9
+  },
+  {
+   "edge": "grass -contains-> ảnh đúng",
+   "score_drop": 0.1267776029259955,
+   "rank_gold_after": 2
+  },
+  {
+   "edge": "person -contains-> ảnh đúng",
+   "score_drop": 0.40474862906427056,
+   "rank_gold_after": 4
+  },
+  {
+   "edge": "sky -contains-> ảnh đúng",
+   "score_drop": 0.0037996817840175723,
+   "rank_gold_after": 1
+  },
+  {
+   "edge": "tree -contains-> ảnh đúng",
+   "score_drop": 0.022594032509739126,
+   "rank_gold_after": 1
+  },
+  {
+   "edge": "woman <-IsA-> person",
+   "score_drop": -5.524219622632387e-05,
+   "rank_gold_after": 1
+  }
+ ],
+ "label_shift": {
+  "gamma": 0.11280887573957443,
+  "cos_H_normX_mean": 0.8033366799354553,
+  "cos_H_normX_min": 0.6953873634338379,
+  "ratio_gammaGNN_over_X_mean": 0.603343665599823
+ },
+ "label_shift_all": {
+  "psg_qa_seed0": {
+   "gamma": 0.12094316631555557,
+   "cos_H_normX_mean": 0.8618152737617493,
+   "ratio_gammaGNN_over_X_mean": 0.512594997882843
+  },
+  "psg_qa_cn_seed0": {
+   "gamma": 0.11280887573957443,
+   "cos_H_normX_mean": 0.8033366799354553,
+   "ratio_gammaGNN_over_X_mean": 0.603343665599823
+  },
+  "vg_qa_seed0": {
+   "gamma": 0.1048845499753952,
+   "cos_H_normX_mean": 0.6360059380531311,
+   "ratio_gammaGNN_over_X_mean": 0.7757929563522339
+  },
+  "vg_qa_cn_seed0": {
+   "gamma": 0.10428016632795334,
+   "cos_H_normX_mean": 0.5921208262443542,
+   "ratio_gammaGNN_over_X_mean": 0.8136290907859802
+  }
+ }
+}

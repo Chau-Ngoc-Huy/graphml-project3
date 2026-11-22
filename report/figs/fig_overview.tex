@@ -1,4 +1,4 @@
-% Hình 1: tổng quan pipeline đi qua một truy vấn thật của tập test PSG (số liệu: figs/example.json, sinh bằng make_example.py)
+% Hình tổng quan (fig:pipe): tổng quan pipeline đi qua một truy vấn thật của tập test PSG (số liệu: figs/example.json, sinh bằng make_example.py)
 \begin{tikzpicture}[>=Stealth, font=\Large, line cap=round,
   ptitle/.style={font=\Large\bfseries, anchor=north, align=center},
   panel/.style={draw=black!25, rounded corners=5pt, fill=black!2},
@@ -83,12 +83,13 @@
 % ---------------- 5. giải thích và đánh giá
 \node[draw=green!50!black, line width=1pt, fill=white, rounded corners=3pt, text width=4.45cm, align=left, inner sep=6pt]
   at (25.3,6.45) {\textbf{Giải thích ảnh \#1}\\[3pt]
-  woman $\xrightarrow{\text{IsA}}$ person\\ \quad$\xrightarrow{\text{contains}}$ ảnh\\[2pt]
-  frisbee $\xrightarrow{\text{contains}}$ ảnh};
+  frisbee $\xrightarrow{\text{contains}}$ ảnh\\[2pt]
+  person $\xrightarrow{\text{contains}}$ ảnh\\[2pt]
+  grass $\xrightarrow{\text{contains}}$ ảnh};
 \node[draw=black!40, fill=white, rounded corners=3pt, text width=4.45cm, align=left, inner sep=6pt]
   at (25.3,2.55) {\textbf{Đánh giá}\\[3pt]
   Recall@$k$, MRR\\[2pt]
-  fidelity: xóa cạnh giải thích rồi chấm lại; điểm phải giảm nhiều hơn khi xóa ngẫu nhiên};
+  fidelity: xóa cạnh giải thích rồi chấm lại; điểm phải giảm nhiều hơn khi xóa cạnh đối chứng};
 
 % ---------------- mũi tên giữa các khối
 \foreach \x in {4.8,8.8,18.4,22.4} \draw[flow] (\x+0.02,5.0) -- (\x+0.38,5.0);

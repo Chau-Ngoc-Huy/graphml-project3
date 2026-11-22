@@ -145,6 +145,8 @@ adamf:               ## bước 4: AdaMF-MAT + ablation trên Kaggle GPU → res
 tables:              ## bước 5: bảng chính thức + kiểm định ghép cặp → results/tables/, results/*_paired, psg_vs_adamf
 	$(PY) tools/vg_table.py
 	$(PY) tools/psg_table.py
+	test ! -f data/psg_bundle/mmxai_eval.py || $(PY) tools/groups_vs_adapter.py --ds psg
+	test ! -f data/vg_bundle/mmxai_eval.py || $(PY) tools/groups_vs_adapter.py --ds vg
 	test ! -f results/adamf_psg/results_PSG_full.json || $(PY) tools/psg_vs_adamf.py --adamf results/adamf_psg
 	test ! -f data/vg_bundle/data/images.jsonl || $(PY) tools/paired_vs_qagraph.py --bundle data/vg_bundle
 
