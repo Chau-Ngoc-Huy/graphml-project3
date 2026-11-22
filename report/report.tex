@@ -7,6 +7,7 @@
 \usetikzlibrary{arrows.meta,positioning,fit}
 \input{figs/tikzstyles.tex}
 \usepackage[hidelinks]{hyperref}
+\DeclareUrlCommand\fp{\urlstyle{tt}}
 \begin{document}
 \raggedbottom
 
@@ -79,6 +80,7 @@ Thống kê chính được tóm tắt trong Bảng~\ref{tab:data}. Mỗi truy v
 \begin{table}[t]
 \caption{Dữ liệu và split dùng trong thí nghiệm chính.}\label{tab:data}
 \centering\small
+\begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lcc}
 \hline
  & VG$\cap$COCO & PSG$\cap$COCO \\
@@ -91,6 +93,7 @@ Nhãn đối tượng & 2\,000 phổ biến nhất ở train & 133 \\
 Khái niệm ConceptNet~\cite{cn} & 16\,413 cạnh sau lọc & 674 khái niệm (3\,743 cạnh) \\
 \hline
 \end{tabular}
+\end{adjustbox}
 \end{table}
 
 \textit{Visual Genome$\cap$MS-COCO.} Tập dùng 51\,208 ảnh VG có \texttt{coco\_id}; 19\,264 ảnh thuộc split chính được ghép với caption MS-COCO theo split Karpathy. Split chính có 15\,000 ảnh train, 2\,126 ảnh validation và 2\,138 ảnh test, tổng 96\,381 caption.
@@ -120,6 +123,12 @@ Mã tiền xử lý \fp{yen/prepare_visual_genome.py} nhận \texttt{scene\_grap
 Mặc định, mã dùng split COCO-ID cố định \fp{thang/kaggle_results/split/split.json}: train 15\,000, val 2\,126 và test 2\,138 ảnh. Các ID này được ánh xạ sang VG-ID qua \texttt{image\_data.json}; mã kiểm tra split không giao nhau và dừng nếu thiếu ảnh, caption hoặc scene graph bắt buộc. Thay thế, \texttt{--random-split --seed 0 --ratios 0.8 0.1 0.1} tạo split xác định từ danh sách COCO-ID đã sắp xếp rồi xáo trộn; các VG-ID cùng COCO-ID luôn thuộc một tập. Kết quả và seed được lưu trong \texttt{splits.json} để các lần chạy dùng chung, không chia lại theo caption hay theo mô hình.
 
 Mã \fp{yen/extract_visual_genome_features.py} dùng OpenCLIP đóng băng (mặc định ViT-B/32, \texttt{laion2b\_s34b\_b79k}) để mã hóa ảnh, caption và tên nhãn. Kết quả float32 đã chuẩn hóa L2 được lưu trong \fp{features/image_emb.npy}, \texttt{caption\_emb.npy}, \texttt{label\_emb.npy}, kèm các tệp ID, \texttt{labels.json} và \texttt{clip\_model.json}. Từ vựng dùng để tạo embedding nhãn chỉ lấy từ object của ảnh train; caption và ảnh val/test được mã hóa bằng encoder đóng băng, không dùng để cập nhật trọng số.
+
+\begin{figure*}[t]
+\centering
+\input{figs/fig_prep.tex}
+\caption{Tiền xử lý dữ liệu, chạy một lần trước mọi thí nghiệm. Từ vựng (bước 3) và cạnh scene graph của đồ thị (bước 7) chỉ lấy từ dữ liệu train. CLIP và FAISS (bước 5--6) tìm sẵn 100 ảnh ứng viên cho mỗi caption val/test; đây là các ảnh được xếp hạng lại khi đánh giá. Ba đầu ra (khung xanh) là đầu vào của huấn luyện (Hình~\ref{fig:train}).}\label{fig:prep}
+\end{figure*}
 
 \subsection{Giao thức}
 Hình~\ref{fig:pipe} tóm tắt pipeline theo hợp đồng dữ liệu chung trong kho mã: \texttt{captions.json} và \texttt{splits.json} xác định truy vấn/split; \texttt{objects.json}, \texttt{relationships.json} và \texttt{conceptnet.tsv} xây đồ thị; embedding ảnh, caption và nhãn được đọc từ ba bundle float32 đã chuẩn hóa L2.
@@ -153,6 +162,12 @@ Với ảnh $i$, gọi $E_i$ là tập cạnh giải thích tạo đóng góp v�
 \item \textbf{Validity} là tỉ lệ cạnh trong $E_i$ tồn tại trong đồ thị và đúng lược đồ về loại đỉnh và loại quan hệ.
 \end{itemize}
 Các độ đo này cần được tính trên tối thiểu 10 truy vấn thực với mô hình QA-Graph đã huấn luyện. Thí nghiệm tổng hợp chỉ kiểm tra đường chạy và không được dùng làm bằng chứng thực nghiệm.
+
+\begin{figure*}[t]
+\centering
+\resizebox{\textwidth}{!}{\input{figs/fig_overview.tex}}
+\caption{Tổng quan phương pháp, minh họa bằng một truy vấn thật của tập test PSG$\cap$COCO. \textcircled{\scriptsize 1} Câu truy vấn được tách thành khái niệm; \emph{frisbee} có trong nhãn của ảnh đúng, còn \emph{woman} và \emph{green field} thì không. \textcircled{\scriptsize 2} CLIP (giữ nguyên trọng số) chọn 100 ảnh ứng viên; ảnh đúng chỉ ở hạng 6. \textcircled{\scriptsize 3} QA-Graph so từng khái niệm với nhãn của ảnh trên đồ thị nhãn đã qua GNN: \emph{woman} khớp \emph{person} nhờ cạnh ConceptNet IsA, \emph{frisbee} trùng nhãn, \emph{green field} khớp yếu với \emph{grass}. \textcircled{\scriptsize 4} Điểm đồ thị kết hợp với cosine CLIP theo~(\ref{eq:fuse}) đưa ảnh đúng lên hạng 1; ảnh hạng 1 cũ (cánh đồng lúa, không có nhãn \emph{grass}) xuống hạng 4. \textcircled{\scriptsize 5} Các cạnh đã đóng góp vào điểm là phần giải thích, được kiểm chứng bằng cách xóa cạnh rồi chấm lại. Số liệu lấy từ mô hình QA-Graph + ConceptNet (GAT, seed 0); đồ thị chỉ dựng từ ảnh train, $\alpha$ chọn trên val.}\label{fig:pipe}
+\end{figure*}
 
 \section{Phương pháp}\label{sec:method}
 \subsection{Tìm ảnh bằng CLIP rồi xếp hạng lại}\label{sec:m-clip}
