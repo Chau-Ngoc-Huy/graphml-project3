@@ -7,7 +7,6 @@
 \usetikzlibrary{arrows.meta,positioning,fit}
 \input{figs/tikzstyles.tex}
 \usepackage[hidelinks]{hyperref}
-\newcommand{\todo}[1]{\textbf{[CẦN BỔ SUNG: #1]}}
 \begin{document}
 \raggedbottom
 
@@ -21,7 +20,7 @@ Mã nguồn: \url{https://github.com/Chau-Ngoc-Huy/graphml-project3}}}
 \maketitle
 
 \begin{abstract}
-Báo cáo đánh giá việc dữ liệu đồ thị (scene graph, ConceptNet) có cải thiện truy vấn văn bản-hình ảnh so với CLIP dùng nguyên trọng số (không huấn luyện thêm) hay không. Trên Visual Genome$\cap$MS-COCO và PSG$\cap$MS-COCO, mọi phương pháp dùng chung cách chia dữ liệu, cùng 100 ảnh ứng viên do CLIP chọn và 3 seed. Xếp hạng lại bằng mạng nơ-ron đồ thị trên đồ thị nhãn-ảnh tăng hạng nghịch đảo trung bình (MRR) toàn tập test thêm 1,4-1,9 điểm so với nền CLIP có adapter (khoảng tin cậy 95\% không chứa 0), và xáo trộn cạnh làm điểm thấp hơn cả nền này. Phần tăng tập trung ở truy vấn trực tiếp; truy vấn gián tiếp tăng không đáng kể. AdaMF-MAT (2024) tái lập khớp bài báo trong phạm vi $\pm1$ điểm trên MKG-W và MKG-Y, nhưng khi dùng để xếp hạng lại ảnh thì không vượt baseline chỉ khớp tên đối tượng. Phần giải thích định lượng và đồ thị tri thức đa phương thức tiếng Việt chưa có kết quả tại thời điểm viết.
+Báo cáo đánh giá việc dữ liệu đồ thị (scene graph, ConceptNet) có cải thiện truy vấn văn bản-hình ảnh so với CLIP dùng nguyên trọng số (không huấn luyện thêm) hay không. Trên Visual Genome$\cap$MS-COCO và PSG$\cap$MS-COCO, các phương pháp dùng chung cách chia dữ liệu và cùng 100 ảnh ứng viên do CLIP chọn; QA-Graph được đánh giá theo 3 seed, còn AdaMF-MAT huấn luyện với một seed. Xếp hạng lại bằng mạng nơ-ron đồ thị trên đồ thị nhãn-ảnh tăng hạng nghịch đảo trung bình (MRR) toàn tập test thêm 1,4-1,9 điểm so với nền CLIP có adapter (khoảng tin cậy 95\% không chứa 0), và xáo trộn cạnh làm điểm thấp hơn cả nền này. Phần tăng tập trung ở truy vấn trực tiếp; truy vấn gián tiếp tăng không đáng kể. AdaMF-MAT (2024) tái lập khớp bài báo trong phạm vi $\pm1$ điểm trên MKG-W và MKG-Y, nhưng khi dùng để xếp hạng lại ảnh thì không vượt baseline chỉ khớp tên đối tượng. Trên mẫu XAI đã duyệt, xóa cạnh giải thích làm điểm ảnh đứng đầu giảm mạnh hơn xóa cạnh đối chứng; kết quả chủ yếu phản ánh cạnh đối tượng. MMKG tiếng Việt chưa được thực nghiệm.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -31,7 +30,7 @@ multimodal retrieval, CLIP, graph neural network, multimodal knowledge graph, ex
 \section{Giới thiệu}\label{sec:intro}
 CLIP~\cite{clip} biểu diễn câu và ảnh trong cùng một không gian vectơ và xếp hạng ảnh theo độ tương đồng cosine. Cách làm này nhanh nhưng chỉ dựa trên độ giống nhau của biểu diễn: nó không dùng quan hệ có cấu trúc giữa đối tượng và khái niệm, và không cho biết vì sao một ảnh được trả về. Với truy vấn ``a child playing football'', nếu ảnh chỉ nhận ra được \emph{ball} và \emph{field}, một đường đi trong đồ thị tri thức có thể nối truy vấn với đúng ảnh.
 
-Mục tiêu của báo cáo là đo vai trò của đồ thị, không phải huấn luyện một mô hình thị giác lớn. Đồ án gồm ba nhiệm vụ: (1) truy vấn bằng CLIP giữ nguyên trọng số và pipeline đánh giá chuẩn; (2) xếp hạng lại bằng điểm đồ thị ở hai cấp, gồm mạng nơ-ron đồ thị (GNN) trên đồ thị dựng từ dữ liệu và phương pháp hoàn thiện đồ thị tri thức đa phương thức (MMKG) AdaMF-MAT; (3) giải thích kết quả và xây một MMKG tiếng Việt nhỏ. Báo cáo đóng góp một quy trình đánh giá chống rò rỉ dùng chung cho mọi mô hình (mục~\ref{sec:data}); bằng chứng ablation rằng lợi ích của đồ thị đến từ nội dung cạnh chứ không từ số tham số, lặp lại trên bộ dữ liệu thứ hai (mục~\ref{sec:r-main} đến~\ref{sec:r-abl}); việc tái lập AdaMF-MAT và so sánh với GNN, tách truy vấn trực tiếp và gián tiếp (mục~\ref{sec:r-group} đến~\ref{sec:r-repro}); và phân tích vì sao đồ thị chưa giúp nhóm gián tiếp (mục~\ref{sec:disc}).
+Mục tiêu của báo cáo là đo vai trò của đồ thị, không phải huấn luyện một mô hình thị giác lớn. Đồ án gồm ba nhiệm vụ: (1) truy vấn bằng CLIP giữ nguyên trọng số và pipeline đánh giá chuẩn; (2) xếp hạng lại bằng điểm đồ thị ở hai cấp, gồm mạng nơ-ron đồ thị (GNN) trên đồ thị dựng từ dữ liệu và phương pháp hoàn thiện đồ thị tri thức đa phương thức (MMKG) AdaMF-MAT; (3) giải thích kết quả và khảo sát khả năng xây dựng một MMKG tiếng Việt nhỏ. Báo cáo đóng góp một quy trình đánh giá chống rò rỉ dùng chung cho mọi mô hình (mục~\ref{sec:data}); bằng chứng ablation rằng lợi ích của đồ thị đến từ nội dung cạnh chứ không từ số tham số, lặp lại trên bộ dữ liệu thứ hai (mục~\ref{sec:r-main} đến~\ref{sec:r-abl}); việc tái lập AdaMF-MAT và so sánh với GNN, tách truy vấn trực tiếp và gián tiếp (mục~\ref{sec:r-group} đến~\ref{sec:r-repro}); đánh giá định lượng lời giải thích bằng can thiệp cạnh (mục~\ref{sec:r-xai}); và phân tích giới hạn của truy vấn gián tiếp (mục~\ref{sec:disc}).
 
 \section{Công trình liên quan}\label{sec:rel}
 \textbf{Truy vấn ảnh bằng ngôn ngữ.} CLIP~\cite{clip} học chung không gian ảnh-câu bằng học tương phản (\emph{contrastive learning}) trên lượng lớn cặp ảnh-văn bản, và OpenCLIP~\cite{openclip} cung cấp bản huấn luyện lại trên dữ liệu mở. CLIP được giữ nguyên trọng số (\emph{frozen}, không huấn luyện thêm) trong toàn bộ báo cáo; mọi cải thiện đến từ phần xếp hạng lại.
@@ -145,9 +144,9 @@ với $\phi$ là hàm chấm điểm của AdaMF-MAT, rồi kết hợp với đ
 \textbf{Adapter cho AdaMF-MAT.} Để so sánh công bằng hơn với QA-Graph (vốn có adapter), nhóm thêm một adapter hai phép tuyến tính $512\times512$ khởi tạo bằng đơn vị cho caption và ảnh, huấn luyện bằng InfoNCE ($\tau=0{,}05$, AdamW, lr $10^{-3}$) trên dữ liệu train, chọn epoch theo MRR val. Adapter này là phần mở rộng của nhóm, không thuộc AdaMF-MAT, huấn luyện riêng (không chung với điểm AdaMF-MAT), 1 seed và chưa tinh chỉnh siêu tham số.
 
 \subsection{Giải thích từ cơ chế chấm điểm}\label{sec:m-xai}
-Giải thích phải đến từ chính cơ chế xếp hạng, nên chúng tôi đo đóng góp của từng cạnh bằng cách \emph{xóa cạnh rồi chạy lại mô hình}. Với cặp (truy vấn $q$, ảnh $i$), tập cạnh cục bộ $E_{\text{loc}}$ gồm các cạnh \texttt{contains} của ảnh $i$ và các cạnh nhãn-nhãn đi thẳng vào nhãn của ảnh hoặc vào khái niệm của câu truy vấn, tức bước cuối của mọi đường đi khái niệm $\to$ nhãn $\to$ ảnh trong~(\ref{eq:match}). Đóng góp của cạnh $e$ là độ giảm điểm xếp hạng $\Delta_e=s(q,i;G)-s(q,i;G\setminus\{e\})$, trong đó $s$ được tính lại đầy đủ: $H$ ở~(\ref{eq:H}) chạy lại trên đồ thị đã xóa cạnh, tập nhãn $\mathcal L_i$ lấy lại từ cạnh \texttt{contains} còn lại, rồi kết hợp với điểm CLIP theo~(\ref{eq:fuse}) trên cùng 100 ảnh ứng viên. Giải thích là $k$ cạnh có $\Delta_e$ dương lớn nhất ($k\in\{1,3,5\}$), cùng các đường đi chúng tạo thành tới ảnh $i$.
+Với một truy vấn và ảnh đứng đầu, nhóm ước lượng tác động của cạnh bằng cách xóa cạnh rồi tính lại điểm trên cùng 100 ảnh ứng viên. Cạnh có mức giảm điểm dương được chọn để giải thích; các đường đi chỉ được hiển thị khi các cạnh thực sự nối với nhau trong đồ thị. Điểm đồ thị và điểm kết hợp đều được tính lại sau can thiệp. Phép thử đối chứng xóa cùng số cạnh để đánh giá liệu tập cạnh giải thích có tác động lớn hơn các cạnh khác hay không.
 
-Ba độ đo: \emph{fidelity} là độ giảm điểm và độ tụt hạng của ảnh $i$ khi xóa đồng thời $k$ cạnh giải thích, so với trung bình 30 lần xóa ngẫu nhiên $k$ cạnh trong $E_{\text{loc}}$; \emph{sparsity} là $1-k/|E_{\text{loc}}|$; \emph{validity} là tỉ lệ cạnh giải thích tồn tại trong đồ thị và đúng lược đồ (nhãn$\to$ảnh cho \texttt{contains}, nhãn$\to$nhãn cho \texttt{sg\_rel}/\texttt{concept}), kèm tỉ lệ cạnh có nguồn chứng thực (cạnh scene graph là chú thích, cạnh ConceptNet là tri thức ngoài). Mã nằm ở \texttt{src/mmxai/xai} (\texttt{explain}, \texttt{perturbation}, \texttt{evaluate\_xai}); \texttt{src/mmxai/xai\_bridge.py} nối khung này với mô hình đã huấn luyện, và điểm tính qua cầu nối trùng điểm của quy trình đánh giá (sai khác $\le2\cdot10^{-7}$).
+Hai lượt đánh giá có phạm vi khác nhau. Lượt khảo sát dùng ngân sách một, ba và năm cạnh, so với 20 lượt xóa cạnh ngẫu nhiên khớp loại cạnh. Lượt truy vấn trực tiếp dùng ngân sách một, hai và ba cạnh đối tượng; đối chứng là các cạnh đối tượng khác trên cùng ảnh. Fidelity đo chênh lệch mức giảm điểm giữa cạnh giải thích và đối chứng. Sparsity đo tỷ lệ cạnh không cần đưa vào giải thích trong tập cạnh đủ điều kiện. Validity cấu trúc kiểm tra cạnh và đường đi hợp lệ trong đồ thị, còn mức hỗ trợ từ ảnh được xem xét riêng. Các định nghĩa và mẫu số cụ thể được báo cùng kết quả ở mục~\ref{sec:r-xai}.
 
 \section{Thiết lập thực nghiệm}\label{sec:setup}
 Bảng~\ref{tab:impl} tóm tắt thiết lập. Mọi thí nghiệm QA-Graph chạy 3 seed; seed $s$ điều khiển đồng thời gallery thứ $s$ của quy trình đánh giá, khởi tạo mô hình và thứ tự batch. Trên VG, mỗi cấu hình chạy cả ba seed trong một kernel Kaggle (GPU T4, 4-12 phút); trên PSG, các lượt chạy trên CPU (2 luồng, 4-16 phút mỗi seed). Dừng sớm thường dừng ở epoch 5-9. $\alpha$ chọn được nằm trong $[0{,}25;\,0{,}40]$ trên VG và $[0{,}15;\,0{,}30]$ trên PSG, tức điểm $g$ của~(\ref{eq:qa}) có trọng số lớn hơn cosine CLIP sau chuẩn hóa. Sau huấn luyện, hệ số $\gamma$ ở~(\ref{eq:H}) vẫn gần giá trị khởi tạo ($0{,}08$-$0{,}10$), $w\approx0{,}8$-$1{,}0$ và $\tau\approx0{,}05$-$0{,}07$: GNN chỉ hiệu chỉnh nhẹ vectơ nhãn, phần lớn điểm đồ thị đến từ phép khớp khái niệm-nhãn. Toàn bộ thí nghiệm chạy lại được bằng lệnh \texttt{make} (Phụ lục B); kết quả từng lượt, kể cả hạng của từng truy vấn, lưu trong \texttt{results/}.
@@ -170,8 +169,8 @@ $\alpha$ & lưới bước 0,05 trên $[0,1]$, chọn trên val\\
 Seed & 0, 1, 2 (gallery + khởi tạo + thứ tự batch)\\
 AdaMF-MAT (tái lập) & chiều 200, batch 1024, 128 mẫu âm, lr $2\!\times\!10^{-5}$, 1000 epoch, lề 12 (MKG-W) / 4 (MKG-Y), seed 42\\
 AdaMF-MAT (truy vấn ảnh) & chiều 200, lr $10^{-4}$, lề 12; VG: 104 epoch (85,8 s/epoch); PSG: 300 epoch (28 s/epoch); 1 seed\\
-Giải thích & $k\in\{1,3,5\}$ cạnh; 30 lần xóa ngẫu nhiên làm mốc fidelity\\
-Phần cứng & GPU T4 trên Kaggle (VG, AdaMF-MAT); CPU 2 luồng (PSG, giải thích)\\\bottomrule
+Giải thích & Khảo sát: 1, 3, 5 cạnh, 20 đối chứng; truy vấn trực tiếp: 1, 2, 3 cạnh, đối chứng cùng ảnh\\
+Phần cứng & GPU T4 trên Kaggle (VG, AdaMF-MAT); CPU 2 luồng (PSG); GPU Colab (đánh giá XAI)\\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
@@ -317,51 +316,11 @@ Tập & & MRR & H@1 & H@3 & H@10\\\midrule
 
 Trên MKG-W, MRR khi dự đoán đuôi là $0{,}528$ nhưng khi dự đoán đầu chỉ $0{,}186$ (Hits@10: $0{,}677$ và $0{,}286$), trong khi MKG-Y gần đối xứng ($0{,}387$ và $0{,}395$). Thời gian huấn luyện đầy đủ là 3 giờ 32 phút (MKG-W, 12,7 s/epoch) và 2 giờ 14 phút (MKG-Y, 8,1 s/epoch).
 
-\subsection{Đánh giá giải thích (fidelity, sparsity, validity)}\label{sec:r-xai}
-\todo{Dương chạy fidelity/validity/sparsity trên $\ge10$ truy vấn với mô hình QA-Graph của Huy, điền bảng số và 5 ví dụ trực quan. Hiện trong kho chỉ có mã và notebook demo, thư mục \texttt{experiments} còn trống, nên chưa có số nào để báo cáo.} Trên dữ liệu giả, xóa cạnh giải thích làm điểm giảm $0{,}10$-$0{,}13$, trong khi xóa ngẫu nhiên cùng số cạnh chỉ giảm khoảng $10^{-4}$; đây chỉ là kiểm tra đường chạy, không phải kết quả báo cáo.
-
-\section{Phân tích trường hợp: 5 thành công, 5 thất bại}\label{sec:cases}
-Thắng xuất 5 truy vấn thành công và 5 truy vấn thất bại của CLIP (toàn bộ ảnh test; Bảng~\ref{tab:sf}). Cả 5 truy vấn thành công có ảnh đúng ở hạng 1 (năm caption ứng với ba ảnh, vì ba caption cùng trỏ về một ảnh ``Pub''), ví dụ ``A sign with the word `Pub' hangs above several liquor bottles'' và ``Two bowls of creamy soup and broccoli on a wood table'': caption nêu nhiều đối tượng riêng biệt, cụ thể, có chữ hoặc cảnh đặc trưng. Năm truy vấn thất bại có ảnh đúng ở hạng $1\,291$-$1\,784$ trên 2\,138 ảnh, thuộc ba kiểu:
-\begin{itemize}
-\item \emph{Caption không có nội dung thị giác}: ``There is no image here to provide a caption for'' và ``I am unable to see the image above'' (nhóm no\_concept): không phương pháp nào, kể cả đồ thị, cứu được vì không có khái niệm để nối.
-\item \emph{Caption mơ hồ}: ``A photo of an outside with various things in the scene'' chỉ cho khái niệm ``outside'' không phân biệt ảnh nào.
-\item \emph{Chú thích thưa}: ``a blue sign in front of leafy green trees'': danh sách đối tượng của ảnh đúng (hat, man, bench, tie, shirt, house) không chứa \emph{sign} hay \emph{tree}, nên khớp nhãn cũng không giúp.
-\end{itemize}
-Ở kiểu thứ hai và thứ ba, đồ thị chỉ giúp khi khái niệm của câu nối được với nhãn của ảnh, đây là giới hạn của thiết kế dựa trên nhãn. \todo{Phân tích 5 thành công/5 thất bại \emph{của mô hình đồ thị} (so với CLIP, kèm cạnh/đường đi giải thích) cần Dương/Huy xuất từ mô hình QA-Graph; hiện chưa có.}
-
-\begin{table*}[t]
-\caption{Truy vấn thành công (TC) và thất bại (TB) của CLIP (toàn bộ 2\,138 ảnh test). Hạng là hạng của ảnh đúng.}\label{tab:sf}
-\centering\footnotesize
-\begin{tabular}{llcL{7.2cm}L{4.2cm}}
-\toprule
- & Nhóm & Hạng & Caption & Đối tượng chú thích của ảnh đúng (rút gọn)\\\midrule
-TC & indirect & 1 & Two cats on a desk and one wears pink feathers across the back. & paper, cat, bell, desk, boa, wall\\
-TC & indirect & 1 & Two bowls of creamy soup and broccoli on a wood table. & spoon, table, bowl, napkin, broccoli, soup\\
-TC & indirect & 1 & A sign with the word ``Pub'' hangs above several liquor bottles. & ice cube, bottle, letter, shelf, blender, sign\\
-TC & indirect & 1 & a home bar with different drink ingredients under a large decorative sign saying ``PUB''. & (cùng ảnh với dòng trên)\\
-TC & indirect & 1 & A sign with the word pub sits on a wall and underneath it on a table is a blender and three bottles\ldots & (cùng ảnh với dòng trên)\\\midrule
-TB & no\_concept & 1\,784 & There is no image here to provide a caption for. & stone, wall, train car, mountain, locomotive\\
-TB & indirect & 1\,694 & A photo of an outside with various things in the scene. & wing, engine, sky, plane, nose, tail\\
-TB & indirect & 1\,361 & a blue sign in front of leafy green trees & hat, man, bench, tie, shirt, house\\
-TB & indirect & 1\,319 & A full view of an outdoor space with many things to see. & foot, wire, dirt, elephant, fence, sky\\
-TB & no\_concept & 1\,291 & I am unable to see the image above. & dot, table, glasses, keyboard, mug, cup\\\bottomrule
-\end{tabular}
-\end{table*}
-
-\section{Thảo luận}\label{sec:disc}
-\textbf{Vì sao đồ thị chưa giúp nhóm gián tiếp.} Phần tăng của QA-Graph nằm ở direct ($+6{,}4$ đến $+7{,}4$ MRR theo gallery) còn indirect chỉ $+0{,}3$ đến $+0{,}7$ (khoảng 1 std). Có ba cách giải thích, chưa được kiểm chứng riêng: (a) định nghĩa ``indirect'' của quy trình đánh giá đo thiếu chú thích và từ đồng nghĩa nhiều hơn là suy luận quan hệ thật; (b) \texttt{sg\_rel} gộp từ đồng xuất hiện trên train rất dày (khoảng 50 láng giềng mỗi nhãn) nên làm các nhãn khó phân biệt với nhau, và khi chỉ giữ cạnh thưa (xuất hiện $\ge5$ lần) kết quả không khá hơn; (c) vectơ đặc trưng của CLIP vốn đã thể hiện tốt tập đối tượng có trong ảnh (\emph{bag of objects}). ConceptNet là thứ duy nhất nhích nhóm indirect ($+0{,}5$ đến $+0{,}8$ ở seed~0) nhưng chênh vẫn trong nhiễu. Vì vậy chưa thể khẳng định đồ thị giúp truy vấn gián tiếp.
-
-\textbf{Bài học phương pháp.} Ở cả hai cấp, mốc so sánh quyết định kết luận: so với CLIP thô, hầu hết mô hình có học đều tốt hơn, nhưng phần lớn mức tăng đến từ phép chiếu học được (adapter). Một baseline không dùng quan hệ (khớp tên đối tượng) là phép thử rẻ: nếu phương pháp dùng quan hệ không vượt nó thì chưa có bằng chứng quan hệ đóng góp. Ablation xáo cạnh thuyết phục hơn ablation bỏ cạnh vì giữ nguyên số tham số và mật độ đồ thị.
-
-\textbf{Các yếu tố ảnh hưởng đến tính hợp lệ.} (i) Nhóm direct/indirect được gán tự động dựa trên chính danh sách nhãn mà đồ thị dùng, nên có nguy cơ vòng lặp: khái niệm có mặt trong nhãn thì được xếp ``direct'' và đồ thị dễ khớp. (ii) Chú thích scene graph thưa, nên nhãn thiếu có thể bị tính là lỗi của mô hình. (iii) Caption COCO chỉ có một ảnh đúng, trong khi nhiều ảnh khác cũng mô tả đúng; các độ đo thứ hạng vì thế bị đánh giá thấp một cách hệ thống và giống nhau cho mọi phương pháp. (iv) Ba seed của quy trình đánh giá chủ yếu là ba lần lấy mẫu gallery, và vì CLIP giữ nguyên trọng số nên độ lệch chuẩn rất nhỏ (ví dụ $\pm0{,}02$ cho adapter), nên không phản ánh đầy đủ bất định của việc huấn luyện.
-
-\section{Hạn chế và hướng phát triển}\label{sec:limit}
-\textbf{Hạn chế.} (1) AdaMF-MAT chỉ huấn luyện 1 seed (3 seed của quy trình đánh giá là 3 lần lấy mẫu gallery); chất lượng suy luận quan hệ trên đồ thị COCO yếu (MRR $0{,}072$, Hits@1 $\approx0$ khi kiểm tra các quan hệ khái niệm giữ lại) vì chỉ 104 epoch so với 1000 epoch khi tái lập; chưa chứng minh đây là nguyên nhân. (2) Bộ 24 truy vấn chưa được kiểm tra bằng mắt và chưa đánh giá theo quy trình đánh giá chung. (3) Giải thích định lượng và MMKG tiếng Việt chưa có số liệu (mục~\ref{sec:r-xai}). (4) Cấp~2 trên pipeline chung mới có một tập (VG$\cap$COCO).
-
-\textbf{Hướng phát triển.} (1) Thí nghiệm ẩn đối tượng (để baseline chỉ dựa vào sự có mặt của đối tượng thất bại và chỉ quan hệ mới suy ra được) đã chuẩn bị nhưng chưa chạy. (2) Chưa chạy đồ thị ngẫu nhiên thay thế, chưa vẽ độ nhạy theo $\alpha$ và chưa dùng Wikidata hay NativE. (3) MMKG tiếng Việt: \todo{Dương: mô tả nguồn ảnh/văn bản có giấy phép, 50-150 thực thể, 300-1\,000 triple, 200-500 ảnh, cách liên kết ảnh-thực thể, data card, kết quả chạy phương pháp tốt nhất của cấp 1/2 và phân tích khả năng chuyển giao. Chưa có trong kho tại thời điểm viết.}
-
-\section{Kết luận}\label{sec:concl}
-Đồ thị cải thiện truy vấn ảnh một cách đo được và được ablation xác nhận: $+1{,}4$ đến $+1{,}9$ MRR so với mốc CLIP + adapter trên hai bộ dữ liệu, và xáo cạnh làm điểm thấp hơn nền. Lợi ích tập trung ở truy vấn trực tiếp. AdaMF-MAT tái lập đúng bài báo nhưng không vượt baseline khớp tên khi dùng cho truy vấn ảnh. Các bước tiếp theo là kiểm tra truy vấn gián tiếp bằng cách ẩn đối tượng, thêm tri thức từ Wikidata và hoàn thành giải thích định lượng.
+\input{sections/06_xai}
+\input{sections/07_cases}
+\input{sections/08_discussion}
+\input{sections/09_limitations}
+\input{sections/10_conclusion}
 
 \section{Phân công công việc}
 Khối lượng công việc của đồ án được phân chia giữa năm thành viên theo từng mảng kỹ thuật và thực nghiệm (Bảng~\ref{tab:team}).
@@ -376,13 +335,13 @@ Yến & Chuẩn bị và xử lý dữ liệu, chuẩn hóa nhãn, tổng hợp 
 Thắng & Trích xuất đặc trưng OpenCLIP, xây dựng chỉ mục FAISS, cài đặt các độ đo đánh giá, chạy baseline theo 3 seed, phát triển module đánh giá chung, tổng hợp trang kết quả và trích xuất các trường hợp thành công, thất bại của CLIP.\\
 Huy & Xây dựng đồ thị nhãn-ảnh, cài đặt các mô hình GNN và QA-Graph, thực hiện các thí nghiệm ablation, tích hợp ConceptNet và xử lý bộ dữ liệu PSG.\\
 Khánh & Tái lập AdaMF-MAT, tích hợp vào quy trình đánh giá chung, xây dựng bộ 24 truy vấn và so sánh hiệu năng giữa truy vấn trực tiếp và gián tiếp.\\
-Dương & Cài đặt cơ chế giải thích, đánh giá các chỉ số \emph{fidelity}, \emph{validity}, \emph{sparsity}, xây dựng MMKG tiếng Việt và phát triển bản demo.\\\bottomrule
+Dương & Cài đặt cơ chế giải thích, đánh giá các chỉ số \emph{fidelity}, \emph{validity}, \emph{sparsity}, khảo sát dữ liệu cho MMKG tiếng Việt và phát triển bản demo.\\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
 \section{Khai báo}\label{sec:declare}
-\textbf{Mã nguồn và kết quả thực nghiệm.} Toàn bộ mã nguồn, cấu hình thí nghiệm và kịch bản chạy lại được lưu tại kho mã \url{https://github.com/Chau-Ngoc-Huy/graphml-project3} (nhánh \texttt{final}), với hướng dẫn chi tiết ở Phụ lục~B. Mọi số liệu trong báo cáo được trích từ các tệp kết quả trong thư mục \texttt{results/}, còn cấu hình và kernel Kaggle của từng lượt chạy được ghi lại trong \texttt{results/JOURNAL.md}. Giao diện cho phép nhập câu truy vấn, xem các ảnh xếp hạng cao nhất cùng đường đi giải thích được triển khai tại MMXAI Lab (\texttt{apps/lab}), trong khi trang tổng hợp toàn bộ kết quả đặt tại Observatory (\texttt{apps/observatory}).
+\textbf{Mã nguồn và kết quả thực nghiệm.} Toàn bộ mã nguồn, cấu hình thí nghiệm và kịch bản chạy lại được lưu tại kho mã \url{https://github.com/Chau-Ngoc-Huy/graphml-project3}, với hướng dẫn chi tiết ở Phụ lục~B. Số liệu truy hồi nằm trên nhánh \texttt{final}; báo cáo, notebook và hiện vật của lượt đánh giá XAI được lưu trên nhánh \texttt{main}. Giao diện cho phép nhập câu truy vấn, xem các ảnh xếp hạng cao nhất cùng đường đi giải thích được triển khai tại MMXAI Lab (\texttt{apps/lab}), trong khi trang tổng hợp toàn bộ kết quả đặt tại Observatory (\texttt{apps/observatory}).
 
 \textbf{Mã nguồn mở và thành phần kế thừa.} Hệ thống sử dụng OpenCLIP~\cite{openclip} (ViT-B/32, giữ nguyên trọng số), PyTorch, PyTorch Geometric, FAISS~\cite{faiss} và mã nguồn gốc của tác giả AdaMF-MAT~\cite{adamf}. Trong đó, phần tái lập trên MKG-W và MKG-Y dùng nguyên script của tác giả, còn các thành phần dựng MMKG từ dữ liệu của nhóm và tính điểm xếp hạng lại trong quy trình đánh giá chung do nhóm tự phát triển.
 
@@ -434,7 +393,7 @@ Toàn bộ quy trình được điều phối bằng \texttt{make} tại thư m�
 \item \texttt{make train DS=vg} (Kaggle T4$\times$2, khoảng 3 giờ, 12 cấu hình $\times$ 3 seed) và \texttt{make train DS=psg} (chạy cục bộ, khoảng 2 giờ, 8 cấu hình $\times$ 3 seed): kết quả lưu vào \texttt{runs/} và \texttt{results/}.
 \item \texttt{make adamf DS=..} (Kaggle T4$\times$2, khoảng 5 giờ): huấn luyện AdaMF-MAT cùng các thí nghiệm ablation xáo trộn và loại bỏ quan hệ, lưu kết quả vào \texttt{results/adamf\_<ds>/}.
 \item \texttt{make tables} (dưới 1 phút): tổng hợp các bảng kết quả chính và kiểm định ghép cặp trong \texttt{results/}.
-\item \texttt{make xai DS=..} (chạy cục bộ, khoảng 1-2 phút mỗi truy vấn): đánh giá \emph{fidelity}, \emph{sparsity} và \emph{validity} trên mô hình ở seed 0.
+\item \texttt{make xai DS=..} chạy phép kiểm tra giải thích theo quy trình chung; các bảng XAI trong báo cáo dùng lượt đánh giá trên ba seed và bộ truy vấn đã duyệt, với notebook phân tích và kết quả lưu cùng dự án.
 \item \texttt{make ui} và \texttt{make web}: khởi chạy MMXAI Lab (\texttt{apps/lab}, cổng 8765) và Observatory (\texttt{apps/observatory}).
 \item \texttt{make report}: vẽ biểu đồ và biên dịch báo cáo bằng XeLaTeX ra tệp \texttt{build/report/report.pdf}.
 \end{enumerate}
@@ -452,10 +411,10 @@ Bảng~\ref{tab:req} đối chiếu mức độ hoàn thiện của hệ thống
 Cấp & Yêu cầu & Trạng thái & Ghi chú\\\midrule
 1 & Baseline CLIP giữ nguyên trọng số; đồ thị từ dữ liệu có sẵn; $\ge1$ thuật toán GCN/GAT/SAGE; xếp hạng lại; cùng cách chia & Đạt & Đã cài đặt cả ba GNN (GCN, GAT, GraphSAGE) trên VG$\cap$COCO và PSG$\cap$COCO với 3 seed (mục~\ref{sec:r-main} đến~\ref{sec:r-abl}).\\
 1 & Ablation: bỏ cạnh hoặc thay bằng cạnh ngẫu nhiên & Đạt một phần & Đã chạy thí nghiệm bỏ cạnh và xáo cạnh; thí nghiệm thay bằng đồ thị ngẫu nhiên chưa được thực hiện.\\
-1 & Hiển thị quan hệ/đường đi khi xếp hạng; 5 thành công và 5 thất bại & Chưa đủ & Đã phân tích 5 trường hợp thành công và 5 thất bại của CLIP (mục~\ref{sec:cases}); MMXAI Lab hiển thị đường đi của QA-Graph cho từng ảnh, nhưng bảng 5+5 của mô hình đồ thị chưa được tổng hợp.\\
+1 & Hiển thị quan hệ/đường đi khi xếp hạng; 5 thành công và 5 thất bại & Đạt một phần & Mục~\ref{sec:cases} trình bày 5 ảnh khớp và 5 ảnh khác ID ảnh chuẩn của QA-Graph, kèm cạnh giải thích. Các cạnh chủ yếu nối nhãn với ảnh; bằng chứng về đường đi quan hệ nhiều bước còn hạn chế.\\
 2 & Thực nghiệm trên $\ge2$ tập công khai; tái lập $\ge1$ phương pháp từ 2024; cùng pipeline và cách chia cấp 1 & Đạt & QA-Graph được đánh giá trên cả VG$\cap$COCO và PSG$\cap$COCO. AdaMF-MAT được tái lập trên MKG-W, MKG-Y (mục~\ref{sec:r-repro}) và chạy trên quy trình đánh giá chung của cả hai tập, kèm ablation xáo/bỏ quan hệ và kiểm định ghép cặp (\texttt{results/psg\_vs\_adamf.md}).\\
 2 & Bộ $\ge20$ truy vấn, tách trực tiếp/gián tiếp, mô tả cách xây dựng và kiểm tra & Đạt một phần & Bộ 24 truy vấn có mô tả cách xây dựng và đã qua kiểm tra tự động; ảnh liên quan chưa được rà soát bằng mắt và bộ truy vấn chưa được chạy trên quy trình đánh giá chung.\\
-3 & Fidelity, validity, sparsity định lượng trên $\ge10$ truy vấn & Chưa có số & Mã đánh giá đã có (\texttt{src/mmxai/xai}, lệnh \texttt{make xai}) nhưng chưa có kết quả trên mô hình thật.\\
+3 & Fidelity, validity, sparsity định lượng trên $\ge10$ truy vấn & Đạt một phần & Mục~\ref{sec:r-xai} báo phép xóa cạnh trên 24 caption khảo sát và 34 truy vấn trực tiếp đã duyệt, ba seed. Validity cấu trúc đã đo; mức hỗ trợ thị giác của từng cạnh chưa được kiểm tra trên toàn mẫu.\\
 3 & MMKG tiếng Việt (50-150 thực thể, 300-1\,000 triple, 200-500 ảnh), data card & Chưa có & Kho mã chưa có MMKG tiếng Việt và data card tương ứng.\\
 4 & Mở rộng tự chọn (ví dụ giả thuyết graph-aware, video, khảo sát người dùng) & Chưa thực hiện & Nhóm chưa thực hiện hướng mở rộng nào của cấp 4; chiều image$\to$text của CLIP và phân tích theo nhóm truy vấn thuộc cột mở rộng của nhiệm vụ 1.\\
 Chung & $\ge3$ seed, mean $\pm$ std; chọn $\alpha$ trên val; không rò rỉ & Đạt & Các thí nghiệm chính đều chạy 3 seed; riêng AdaMF-MAT chỉ có 1 seed huấn luyện.\\
