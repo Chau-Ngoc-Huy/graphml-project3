@@ -10,7 +10,7 @@ CLIP đóng băng, adapter, khớp tên và **AdaMF-MAT** (LREC-COLING 2024) tr�
 ```bash
 make setup                       # .venv + torch CPU + gói mmxai
 make help                        # mọi lệnh
-make fetch-prebuilt              # đường tắt: bundle VG/PSG + 4 checkpoint dựng sẵn (Kaggle, riêng tư)
+make fetch-prebuilt              # đường tắt cho thành viên nhóm (Kaggle CLI, dataset riêng tư); người ngoài nhóm: xem mục Dữ liệu
 make tables && make xai DS=psg   # bảng kết quả + giải thích trên mô hình thật
 make ui                          # MMXAI Lab — http://127.0.0.1:8765
 make web                         # MMXAI Observatory (trang trình bày kết quả)
@@ -18,6 +18,25 @@ make web                         # MMXAI Observatory (trang trình bày kết qu
 
 Tái lập từ đầu (dữ liệu thô → bundle → huấn luyện 3 seed → AdaMF-MAT → bảng → giải thích; bước GPU chạy trên Kaggle qua
 kaggle CLI): `make all-psg`, `make all-vg` — chi tiết từng bước, thời gian, đầu vào/ra: **`docs/PIPELINE.md`**.
+
+## Dữ liệu
+
+Bundle là dữ liệu đã tiền xử lý, đủ để huấn luyện, đánh giá và chạy giao diện mà không cần dựng lại: tập chia cố định
+(`split/split.json`, seed 0), ảnh kèm đối tượng và quan hệ scene graph (`data/images.jsonl`), caption kèm khái niệm và nhóm
+direct/indirect (`data/captions.jsonl`), đặc trưng CLIP, 100 ảnh ứng viên mỗi truy vấn (`candidates/`), vectơ nhãn và cạnh
+ConceptNet (`graph_extra*/`), mã đánh giá chung (`mmxai_eval.py`). Tải về rồi giải nén đúng thư mục ở cột cuối.
+
+| Dữ liệu | Link | Đặt vào |
+|---|---|---|
+| Bundle VG ∩ COCO | https://www.kaggle.com/datasets/ff8c01430ea44c27aa26b38c2481952172b7fc45f06d985e6333562a1542160e | `data/vg_bundle/` |
+| Bundle PSG ∩ COCO | https://kaggle.com/datasets/fad5fd07c637ab23d1777e4724d1f37bc452ee813f639d5541fa60f725a0da8e | `data/psg_bundle/` |
+| Dữ liệu thô: caption MS-COCO theo cách chia Karpathy (`dataset_coco.json`), siêu dữ liệu ảnh VG có `coco_id` (`image_data.json`) | https://drive.google.com/file/d/1kurWIVhvokkGMILC--zMZRcIquAnqVn3/view?usp=sharing | `data/raw/` |
+
+Chỉ cần dữ liệu thô khi dựng lại bundle từ đầu; `make fetch` cũng tải được từ nguồn gốc. Các nguồn còn lại của bước dựng
+lại: scene graph Visual Genome (dataset Kaggle `yenphamnhu/visual-genome`, đọc trong notebook `notebooks/kaggle/vg_data/`),
+PSG (Hugging Face `HarborYuan/OpenPSG` và `maelic/PSG-coco-format`), ConceptNet (Hugging Face `peandrew/conceptnet_en_simple`).
+Mã tạo tập chia: `notebooks/kaggle/vg_data/vg_data_clip_baseline.ipynb` (VG) và `tools/psg_to_bundle.py` (PSG).
+Checkpoint, notebook và kết quả của phần đánh giá XAI nằm sẵn trong `src/mmxai/xai/xai-experiment/` (xem `docs/PIPELINE.md`).
 
 ## Cấu trúc
 
@@ -35,7 +54,7 @@ kaggle CLI): `make all-psg`, `make all-vg` — chi tiết từng bước, thời
 | `apps/lab/` | MMXAI Lab (FastAPI): thử từng biến thể, so sánh A/B, xem đồ thị + đường đi giải thích |
 | `apps/observatory/` | MMXAI Observatory (React): pipeline, playground, so sánh mô hình, kết quả |
 | `results/` | Kết quả đã chạy (JSON từng lượt, hạng từng truy vấn, bảng) + `JOURNAL.md` (nhật ký thí nghiệm) |
-| `queries/`, `docs/`, `report/`, `slides/` | Bộ truy vấn đánh giá, tài liệu, báo cáo IEEE, slide |
+| `queries/`, `docs/`, `report/`, `slides/` | Bộ 24 truy vấn đánh giá (`queries/eval_queries.json`), tài liệu, báo cáo (`report/report.pdf`), slide |
 
 `data/`, `runs/`, `models/` không commit (tải bằng `make fetch` / `make fetch-prebuilt` hoặc sinh lại bằng pipeline).
 
