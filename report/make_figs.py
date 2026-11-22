@@ -17,7 +17,7 @@ C={"clip":"#9aa0a6","ad":"#5b8def","g":"#1a8f5b","sh":"#d9534f"}
 # Fig1: MRR toàn pool, VG và PSG
 fig,ax=plt.subplots(1,2,figsize=(7,2.5),sharey=False)
 vg=[("CLIP",60.40,0,"clip"),("+Adapter",63.14,0.02,"ad"),("+Đồ thị\n(contains+CN)\nSAGE",64.89,0.15,"g"),("+Đồ thị\nxáo cạnh",62.67,0.06,"sh")]
-ps=[("CLIP",59.59,0,"clip"),("+Adapter",62.67,0.03,"ad"),("+Đồ thị\n(sg_rel)",64.17,0.09,"g"),("+Đồ thị\nxáo cạnh",62.17,0.13,"sh")]
+ps=[("CLIP",59.59,0,"clip"),("+Adapter",62.67,0.03,"ad"),("+Đồ thị\n(contains+sg_rel+CN)\nGAT",64.41,0.12,"g"),("+Đồ thị\nxáo cạnh",62.17,0.13,"sh")]
 for a,d,t,lo in ((ax[0],vg,"VG∩COCO (test, 2138 ảnh)",58),(ax[1],ps,"PSG∩COCO (test, 2186 ảnh)",58)):
     for i,(n,v,s,c) in enumerate(d):
         a.bar(i,v,yerr=s or None,color=C[c],width=.65,capsize=2)
@@ -26,7 +26,7 @@ for a,d,t,lo in ((ax[0],vg,"VG∩COCO (test, 2138 ảnh)",58),(ax[1],ps,"PSG∩C
 ax[0].set_ylabel("MRR (%)")
 plt.tight_layout();plt.savefig(O+"fig_main.pdf");plt.close()
 # Fig2: direct vs indirect, toàn pool seed 0 (vs_qagraph_paired.md)
-rows=[("CLIP",60.79,60.36,"clip"),("+Khớp tên\n(không quan hệ)",68.29,59.97,"clip"),("+AdaMF-MAT",66.39,59.89,"clip"),("+Adapter\n(bỏ cạnh)",63.80,63.06,"ad"),("+Đồ thị\nxáo cạnh",64.03,62.50,"sh"),("+Đồ thị\nSAGE",71.10,63.78,"g")]
+rows=[("CLIP",60.79,60.36,"clip"),("+Khớp tên\n(không quan hệ)",68.29,59.97,"clip"),("+AdaMF-MAT",66.39,59.89,"clip"),("+Adapter\n(không cạnh)",63.80,63.06,"ad"),("+Đồ thị\nxáo cạnh",64.03,62.50,"sh"),("+Đồ thị\nSAGE",71.10,63.78,"g")]
 fig,a=plt.subplots(figsize=(7,2.6));w=.38
 for i,(n,d,ind,c) in enumerate(rows):
     a.bar(i-w/2,d,w,color=C[c]);a.bar(i+w/2,ind,w,color=C[c],alpha=.45,hatch="//",edgecolor="white")
