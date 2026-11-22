@@ -1,0 +1,37 @@
+% Kiểu dùng chung cho các hình vẽ bằng TikZ (Hình tiền xử lý, huấn luyện, chạy thực tế)
+\usetikzlibrary{calc}
+\definecolor{cInk}{HTML}{1D2433}
+\definecolor{cGray}{HTML}{4B5263}
+\definecolor{cLine}{HTML}{9AA1AC}
+\definecolor{cBand}{HTML}{F5F6F8}
+\definecolor{cFrozen}{HTML}{DFE2E7}
+\definecolor{cOrange}{HTML}{C2611A}
+\definecolor{cOrangeF}{HTML}{FCEFE2}
+\definecolor{cConceptF}{HTML}{FBE3CC}
+\definecolor{cBlue}{HTML}{2563A8}
+\definecolor{cLabelF}{HTML}{DBE7F6}
+\definecolor{cGreen}{HTML}{2F7D3B}
+\definecolor{cTrain}{HTML}{2563A8}
+\definecolor{cVal}{HTML}{B7791F}
+\definecolor{cTest}{HTML}{B83232}
+\tikzset{
+  mm/.style={font=\footnotesize, >={Stealth[length=4.2pt,width=3.6pt]}, line cap=round, line join=round},
+  box/.style={draw=cLine, fill=white, rounded corners=2pt, align=center, inner sep=2.5pt},
+  pstep/.style={box, draw=cInk, line width=0.5pt},
+  learn/.style={box, draw=cOrange, line width=0.9pt},
+  outb/.style={box, draw=cBlue, line width=0.9pt},
+  frozen/.style={box, draw=none, fill=cFrozen},
+  band/.style={fill=cBand, draw=black!12, rounded corners=4pt},
+  flow/.style={->, draw=cGray, line width=0.8pt},
+  concept/.style={rounded corners=5pt, fill=cConceptF, draw=cOrange, line width=0.5pt, inner sep=1.6pt, font=\scriptsize, minimum height=3.6mm},
+  lbl/.style={rounded corners=5pt, fill=cLabelF, draw=cBlue, line width=0.5pt, inner sep=1.6pt, font=\scriptsize, minimum height=3.6mm},
+  thumb/.style={inner sep=0pt},
+  gold/.style={inner sep=0.5pt, draw=cGreen, line width=1.2pt},
+  note/.style={font=\scriptsize, text=cGray, align=center},
+  lock/.pic={\fill[cGray] (-0.075,-0.06) rectangle (0.075,0.05);
+             \draw[cGray, line width=0.6pt] (-0.045,0.05) -- (-0.045,0.085) arc[start angle=180, end angle=0, radius=0.045] -- (0.045,0.05);},
+}
+% tiêu đề khối: số trong vòng tròn + tên
+\newcommand{\figstep}[4]{%
+  \node[circle, fill=cInk, text=white, inner sep=0pt, minimum size=3.3mm, font=\scriptsize\bfseries] (#3) at (#1,#2) {#3};
+  \node[anchor=west, font=\footnotesize\bfseries, inner sep=1.5pt] at (#3.east) {#4};}

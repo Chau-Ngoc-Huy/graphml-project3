@@ -5,6 +5,7 @@
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage{graphicx,booktabs,amsmath,url,multirow,tikz}
 \usetikzlibrary{arrows.meta,positioning,fit}
+\input{figs/tikzstyles.tex}
 \usepackage[hidelinks]{hyperref}
 \newcommand{\todo}[1]{\textbf{[CẦN BỔ SUNG: #1]}}
 \begin{document}
@@ -50,7 +51,13 @@ Tệp chia cố định (seed 0, Karpathy) và mã tạo chia nằm trong kho m�
 
 \textbf{Bộ 24 truy vấn trực tiếp/gián tiếp.} Từ \texttt{scene\_graphs.json} (108\,077 ảnh), nhóm sinh 24 truy vấn dạng ``chủ thể - vị từ - đối tượng'' (ví dụ ``hand feeding giraffe''): 12 trực tiếp, 12 gián tiếp. Chỉ dùng vị từ hành động; mỗi vị từ tối đa 3 truy vấn; hai thực thể đều xuất hiện $\ge200$ ảnh; loại các đối tượng mơ hồ. \emph{Trực tiếp}: ảnh liên quan (\emph{relevant}) là ảnh có bộ ba $s\!-\!p\!-\!o$ được chú thích (5-60 ảnh). \emph{Gián tiếp}: $s$ và $o$ nối với nhau chỉ qua một đối tượng thứ ba $x$ ($s\!\to\!x\!\to\!o$) và không có quan hệ $s$-$o$ nào trong chú thích. Các kiểm tra tự động đều đạt: không trùng truy vấn, không trùng cặp $(s,o)$, hai tập ảnh liên quan không giao nhau. Danh sách đầy đủ ở Phụ lục A. Hạn chế: chưa có ai xem ảnh, nên ảnh gián tiếp chỉ là ứng viên (đường đi hai bước không chứng minh ảnh thể hiện $s\,p\,o$); chú thích VG thưa nên có ảnh trực tiếp bị thiếu. Bộ này chỉ dùng để đánh giá, và các ảnh liên quan bị loại khỏi huấn luyện.
 
-\textbf{Chống rò rỉ.} Từ vựng đối tượng, cạnh đồng xuất hiện và nhóm truy vấn chỉ tính từ ảnh train; ảnh val/test chỉ \emph{nhận} thông tin từ đồ thị (không đẩy thông tin ngược vào đồ thị); caption val/test không tạo thống kê nào; bộ 24 truy vấn của cấp~2 chỉ dùng để đánh giá.
+\textbf{Chống rò rỉ.} Từ vựng đối tượng, cạnh đồng xuất hiện và nhóm truy vấn chỉ tính từ ảnh train; ảnh val/test chỉ \emph{nhận} thông tin từ đồ thị (không đẩy thông tin ngược vào đồ thị); caption val/test không tạo thống kê nào; bộ 24 truy vấn của cấp~2 chỉ dùng để đánh giá. Hình~\ref{fig:prep} tóm tắt các bước tiền xử lý và tập dữ liệu mỗi bước được dùng.
+
+\begin{figure*}[t]
+\centering
+\input{figs/fig_prep.tex}
+\caption{Tiền xử lý dữ liệu, chạy một lần trước mọi thí nghiệm. Từ vựng (bước 3) và cạnh scene graph của đồ thị (bước 7) chỉ lấy từ dữ liệu train. CLIP và FAISS (bước 5--6) tìm sẵn 100 ảnh ứng viên cho mỗi caption val/test; đây là các ảnh được xếp hạng lại khi đánh giá. Ba đầu ra (khung xanh) là đầu vào của huấn luyện (Hình~\ref{fig:train}).}\label{fig:prep}
+\end{figure*}
 
 \subsection{Độ đo}
 Với mỗi truy vấn có đúng một ảnh đúng (ảnh có caption đó), gọi $r$ là hạng của ảnh. Recall@$k=\mathbf{1}[r\le k]$ lấy trung bình trên truy vấn; hạng nghịch đảo trung bình $\mathrm{MRR}=\overline{1/r}$; $\mathrm{nDCG@}10=\overline{\mathbf{1}[r\le10]/\log_2(r+1)}$. Với bộ 24 truy vấn có nhiều ảnh liên quan, hạng được tính theo ảnh liên quan đứng đầu. Khoảng tin cậy 95\% (CI95) ở các bảng ghép cặp được tính bằng bootstrap lấy lại mẫu theo truy vấn, trên cùng thứ tự truy vấn của hai mô hình. Số liệu báo cáo ở hai dạng: (a) tập ảnh tìm kiếm (\emph{gallery}) 1\,000 ảnh lấy ngẫu nhiên theo 3 seed (trung bình $\pm$ độ lệch chuẩn, kiểu COCO 1K); (b) toàn bộ ảnh test (\emph{full pool}; không phụ thuộc seed) kèm kiểm định bootstrap ghép cặp theo truy vấn cho hiệu MRR giữa hai mô hình. Với mô hình học, seed điều khiển cả việc lấy mẫu gallery và khởi tạo.
@@ -59,8 +66,8 @@ Với mỗi truy vấn có đúng một ảnh đúng (ảnh có caption đó), g
 
 \begin{figure*}[t]
 \centering
-\resizebox{\textwidth}{!}{\input{figs/fig_overview.tex}}
-\caption{Tổng quan phương pháp, minh họa bằng một truy vấn thật của tập test PSG$\cap$COCO. \textcircled{\scriptsize 1} Câu truy vấn được tách thành khái niệm; \emph{frisbee} có trong nhãn của ảnh đúng, còn \emph{woman} và \emph{green field} thì không. \textcircled{\scriptsize 2} CLIP (giữ nguyên trọng số) chọn 100 ảnh ứng viên; ảnh đúng chỉ ở hạng 6. \textcircled{\scriptsize 3} QA-Graph so từng khái niệm với nhãn của ảnh trên đồ thị nhãn đã qua GNN: \emph{woman} khớp \emph{person} nhờ cạnh ConceptNet IsA, \emph{frisbee} trùng nhãn, \emph{green field} khớp yếu với \emph{grass}. \textcircled{\scriptsize 4} Điểm đồ thị kết hợp với cosine CLIP theo~(\ref{eq:fuse}) đưa ảnh đúng lên hạng 1; ảnh hạng 1 cũ (cánh đồng lúa, không có nhãn \emph{grass}) xuống hạng 4. \textcircled{\scriptsize 5} Các cạnh đã đóng góp vào điểm là phần giải thích, được kiểm chứng bằng cách xóa cạnh rồi chấm lại. Số liệu lấy từ mô hình QA-Graph + ConceptNet (GAT, seed 0); đồ thị chỉ dựng từ ảnh train, $\alpha$ chọn trên val.}\label{fig:pipe}
+\input{figs/fig_infer.tex}
+\caption{Chạy thực tế với một truy vấn thật của tập test PSG$\cap$COCO. \textcircled{\scriptsize 2} CLIP (giữ nguyên trọng số) chọn 100 ảnh ứng viên, ảnh đúng ở hạng 6; song song, câu truy vấn được tách thành các khái niệm. \textcircled{\scriptsize 3} QA-Graph khớp từng khái niệm với nhãn của từng ảnh ứng viên: \emph{woman} khớp \emph{person} nhờ cạnh ConceptNet IsA, \emph{frisbee} trùng nhãn, \emph{green field} khớp yếu với \emph{grass}; điểm kết hợp theo~(\ref{eq:fuse}). \textcircled{\scriptsize 4} Ảnh đúng lên hạng 1; ảnh hạng 1 cũ (cánh đồng lúa, không có nhãn \emph{grass}) xuống hạng 4. \textcircled{\scriptsize 5} Các cạnh đóng góp vào điểm là phần giải thích (mục~\ref{sec:m-xai}). Số liệu từ mô hình QA-Graph + ConceptNet (GAT, seed 0).}\label{fig:pipe}
 \end{figure*}
 
 \section{Phương pháp}\label{sec:method}
@@ -109,13 +116,19 @@ với $u_c=\mathrm{norm}(C\,H_c)$ là vectơ của khái niệm sau phép chiế
 \begin{equation}\label{eq:qa}
 g(q,i)=\cos(Pq,\,Sx_i)+w\cdot\frac{1}{|\mathcal C_q|}\sum_{c\in\mathcal C_q}m(c,i),
 \end{equation}
-trong đó $\cos(Pq,Sx_i)$ là adapter (hai phép chiếu $P,S$ khởi tạo đơn vị trên vectơ đặc trưng của câu truy vấn và của ảnh) và $w$ là trọng số học được (khởi tạo $1$). Khái niệm có mặt trong ảnh ($c\in\mathcal L_i$, như \emph{frisbee}) khớp mạnh nhất với chính nhãn đó (ở Hình~\ref{fig:pipe}, cosine với nhãn \emph{frisbee} là $0{,}19$, với mọi nhãn khác đều âm); khái niệm không có mặt (như \emph{woman}) lấy điểm từ nhãn của ảnh có $H_l$ gần $H_c$ sau lan truyền (\emph{woman}--\emph{person}: $0{,}08$, các nhãn khác đều âm). Giá trị tuyệt đối của $m$ nhỏ vì phép chiếu $C$ đã được học; điều quyết định là thứ tự điểm giữa các ảnh ứng viên. Khi bỏ hết cạnh \texttt{contains} thì $\mathcal L_i=\emptyset$, $m=0$ và $g$ trùng với mốc CLIP + adapter; mã có kiểm thử cho tính chất này.
+trong đó $\cos(Pq,Sx_i)$ là adapter (hai phép chiếu $P,S$ khởi tạo đơn vị trên vectơ đặc trưng của câu truy vấn và của ảnh) và $w$ là trọng số học được (khởi tạo $1$). Khái niệm có mặt trong ảnh ($c\in\mathcal L_i$, như \emph{frisbee}) khớp mạnh nhất với chính nhãn đó (ở ví dụ của Hình~\ref{fig:pipe}, cosine với nhãn \emph{frisbee} là $0{,}19$, với mọi nhãn khác đều âm); khái niệm không có mặt (như \emph{woman}) lấy điểm từ nhãn của ảnh có $H_l$ gần $H_c$ sau lan truyền (\emph{woman}--\emph{person}: $0{,}08$, các nhãn khác đều âm). Giá trị tuyệt đối của $m$ nhỏ vì phép chiếu $C$ đã được học; điều quyết định là thứ tự điểm giữa các ảnh ứng viên. Khi bỏ hết cạnh \texttt{contains} thì $\mathcal L_i=\emptyset$, $m=0$ và $g$ trùng với mốc CLIP + adapter; mã có kiểm thử cho tính chất này.
 
-\textbf{Huấn luyện.} Mỗi batch gồm $B$ caption train $q_1,\dots,q_B$ và ảnh đúng $i_1,\dots,i_B$ của chúng. Với mỗi caption, ảnh đúng của nó là \textbf{mẫu dương} (\emph{positive sample}), còn các ảnh khác trong cùng batch là \textbf{mẫu âm} (\emph{negative sample}), tức các ví dụ sai để mô hình đối chiếu; mọi caption của cùng một ảnh đều tính là dương. Gọi $g_{bj}=g(q_b,i_j)$ và $\mathcal P_b=\{j: i_j=i_b\}$ là vị trí các mẫu dương của caption $b$. Hàm mất mát InfoNCE hai chiều (từ câu truy vấn tìm ảnh và từ ảnh tìm câu truy vấn, $\tau_{\text{nce}}=0{,}05$) dạy mô hình cho mẫu dương điểm cao hơn mọi mẫu âm, lấy trung bình trên batch:
+\textbf{Huấn luyện} (Hình~\ref{fig:train})\textbf{.} Mỗi batch gồm $B$ caption train $q_1,\dots,q_B$ và ảnh đúng $i_1,\dots,i_B$ của chúng. Với mỗi caption, ảnh đúng của nó là \textbf{mẫu dương} (\emph{positive sample}), còn các ảnh khác trong cùng batch là \textbf{mẫu âm} (\emph{negative sample}), tức các ví dụ sai để mô hình đối chiếu; mọi caption của cùng một ảnh đều tính là dương. Gọi $g_{bj}=g(q_b,i_j)$ và $\mathcal P_b=\{j: i_j=i_b\}$ là vị trí các mẫu dương của caption $b$. Hàm mất mát InfoNCE hai chiều (từ câu truy vấn tìm ảnh và từ ảnh tìm câu truy vấn, $\tau_{\text{nce}}=0{,}05$) dạy mô hình cho mẫu dương điểm cao hơn mọi mẫu âm, lấy trung bình trên batch:
 \begin{equation}\label{eq:nce}
 \mathcal L=-\tfrac12\Big[\log\tfrac{\sum_{j\in\mathcal P_b}e^{g_{bj}/\tau_{\text{nce}}}}{\sum_{j}e^{g_{bj}/\tau_{\text{nce}}}}+\log\tfrac{\sum_{b'\in\mathcal P_j}e^{g_{b'j}/\tau_{\text{nce}}}}{\sum_{b'}e^{g_{b'j}/\tau_{\text{nce}}}}\Big].
 \end{equation}
 GNN chạy trên toàn bộ đồ thị nhãn ở mỗi bước (2\,000-3\,000 đỉnh nên không cần lấy mẫu đồ thị con). Sau mỗi epoch, mô hình được đánh giá bằng MRR xếp hạng lại trên ứng viên val; dừng sớm khi MRR val không tăng 4 epoch và giữ trọng số tốt nhất. $\alpha$ của~(\ref{eq:fuse}) được chọn sau huấn luyện, cũng trên val.
+
+\begin{figure*}[t]
+\centering
+\input{figs/fig_train.tex}
+\caption{Huấn luyện QA-Graph. Mỗi batch gồm 512 cặp (caption, ảnh đúng) của tập train; QA-Graph chấm điểm $g$ cho mọi cặp caption--ảnh trong batch. Hàm mất mát InfoNCE~(\ref{eq:nce}) kéo điểm của ảnh đúng lên và đẩy điểm các ảnh khác trong batch xuống (các cột ở khối \textcircled{\scriptsize 3} chỉ minh họa, không phải số đo). Sau mỗi epoch, MRR trên val quyết định dừng sớm; $\alpha$ cũng chọn trên val.}\label{fig:train}
+\end{figure*}
 
 \textbf{Vì sao không gộp các nhãn của ảnh thành một vectơ.} Lần thử đầu làm như vậy (GAT chạy trên cả đỉnh ảnh) và tăng MRR $+2{,}8$ so với CLIP, nhưng mức tăng không đổi khi bỏ toàn bộ cạnh hoặc xáo cạnh: phần tăng đến từ phép chiếu học được (\emph{adapter}), vì GAT với cạnh tự nối (\emph{self-loop}) trên ảnh chỉ tương đương một MLP. Từ đó, (i) mọi hiệu số trong báo cáo lấy mốc là CLIP kèm adapter \emph{không có cạnh}, và (ii) QA-Graph so từng khái niệm của câu truy vấn với từng nhãn của ảnh như trên, thay vì gộp nhãn thành một vectơ.
 

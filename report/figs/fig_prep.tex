@@ -1,0 +1,47 @@
+% Hình: tiền xử lý dữ liệu (chạy một lần). Vẽ đúng khổ \textwidth (18 cm), không co giãn.
+\begin{tikzpicture}[mm]
+\fill[band] (0,0) rectangle (2.5,5.15);
+\fill[band] (2.7,0) rectangle (13.9,5.15);
+\fill[band, fill=cLabelF!45] (14.1,0) rectangle (18,5.15);
+\node[anchor=west, font=\footnotesize\bfseries] at (0.05,5.45) {Dữ liệu gốc};
+\node[anchor=west, font=\footnotesize\bfseries] at (2.75,5.45) {Tiền xử lý (chạy một lần)};
+\node[anchor=west, font=\footnotesize\bfseries] at (14.15,5.45) {Đầu ra cho huấn luyện};
+
+% dữ liệu gốc
+\node[box, text width=2.05cm, minimum height=1.25cm] (d1) at (1.25,3.0)
+  {\includegraphics[width=0.95cm,height=0.6cm]{figs/ex_gold.jpg}\\[1pt]\textbf{VG / PSG}: ảnh + scene graph};
+\node[box, text width=2.05cm, minimum height=0.9cm] (d2) at (1.25,1.75) {\textbf{MS-COCO}\\5 caption / ảnh};
+\node[box, draw=cGreen, line width=0.7pt, text width=2.05cm, minimum height=0.75cm] (d3) at (1.25,0.55) {\textbf{ConceptNet}\\tri thức ngoài};
+
+% các bước
+\node[pstep, text width=1.9cm, minimum height=2.1cm] (s1) at (3.9,2.4)
+  {\textbf{1. Ghép}\\ảnh với caption theo \texttt{coco\_id}\\[2pt]chuẩn hóa tên đối tượng, quan hệ};
+\node[pstep, text width=2.15cm, minimum height=1.2cm] (s2) at (6.3,2.4)
+  {\textbf{2. Chia cố định}\\[2pt]\textcolor{cTrain}{\rule{1.24cm}{5pt}}\textcolor{cVal}{\rule{0.08cm}{5pt}}\textcolor{cTest}{\rule{0.18cm}{5pt}}\\[1pt]
+   \textcolor{cTrain}{train} · \textcolor{cVal}{val} · \textcolor{cTest}{test}};
+\node[pstep, text width=2.15cm, minimum height=1.0cm] (s3) at (8.8,2.4) {\textbf{3. Lập từ vựng}\\nhãn + khái niệm\\\textcolor{cTrain}{chỉ từ dữ liệu train}};
+\node[pstep, text width=2.15cm, minimum height=1.0cm] (s4) at (11.4,2.4) {\textbf{4. Trích khái niệm}\\từ mỗi caption\\{\scriptsize\color{cGray}woman, frisbee, \dots}};
+\node[frozen, text width=2.15cm, minimum height=0.9cm] (s5) at (6.3,4.3) {\textbf{5. CLIP}\\vectơ đặc trưng của ảnh, caption, nhãn};
+\pic at ($(s5.north west)+(0.2,-0.2)$) {lock};
+\node[pstep, text width=2.15cm, minimum height=0.9cm] (s6) at (8.8,4.3) {\textbf{6. FAISS}\\100 ảnh gần nhất cho mỗi caption};
+\node[pstep, text width=2.15cm, minimum height=0.8cm] (s7) at (8.8,0.55) {\textbf{7. Dựng đồ thị}\\contains · scene graph · ConceptNet};
+
+% đầu ra
+\node[outb, text width=3.5cm, minimum height=0.9cm] (o1) at (16.05,4.3) {\textbf{100 ảnh ứng viên} / caption val, test\\{\scriptsize\color{cGray}ảnh được xếp hạng lại khi đánh giá}};
+\node[outb, text width=3.5cm, minimum height=0.9cm] (o2) at (16.05,2.4) {\textbf{caption + khái niệm}\\{\scriptsize\color{cGray}cặp (caption, ảnh đúng) để huấn luyện}};
+\node[outb, text width=3.5cm, minimum height=0.8cm] (o3) at (16.05,0.55) {\textbf{đồ thị nhãn-ảnh}\\{\scriptsize\color{cGray}đầu vào của GNN trong QA-Graph}};
+
+% mũi tên
+\draw[flow] (d1.east) -- (d1.east -| s1.west);
+\draw[flow] (d2.east) -- (d2.east -| s1.west);
+\draw[flow] (s1) -- (s2);
+\draw[flow] (s2) -- (s3);
+\draw[flow] (s3) -- (s4);
+\draw[flow] (s4) -- (o2);
+\draw[flow] (s2) -- (s5);
+\draw[flow] (s5) -- (s6);
+\draw[flow] (s6) -- (o1);
+\draw[flow] (s3) -- (s7);
+\draw[flow, draw=cGreen] (d3) -- node[above, font=\scriptsize, text=cGreen] {cạnh tri thức ngoài} (s7);
+\draw[flow] (s7) -- (o3);
+\end{tikzpicture}

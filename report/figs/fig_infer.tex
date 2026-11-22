@@ -1,0 +1,79 @@
+% Hình: chạy thực tế với một truy vấn thật của tập test PSG (số liệu: figs/example.json). Vẽ đúng khổ \textwidth (18 cm).
+\begin{tikzpicture}[mm]
+\figstep{0.15}{5.0}{1}{Câu truy vấn}
+\figstep{2.85}{5.0}{2}{Lấy ứng viên và khái niệm}
+\figstep{8.65}{5.0}{3}{Xếp hạng lại}
+\figstep{12.65}{5.0}{4}{Kết quả}
+\figstep{15.05}{5.0}{5}{Giải thích}
+
+% 1. câu truy vấn
+\node[box, draw=cInk, line width=0.5pt, text width=1.7cm, minimum height=4.4cm, font=\footnotesize\itshape] (q) at (1.05,2.5)
+  {``a woman throwing a frisbee in a green field.''};
+
+% 2a. CLIP -> 100 ảnh ứng viên
+\fill[cFrozen] (2.8,3.3) -- (4.0,3.45) -- (4.0,4.15) -- (2.8,4.3) -- cycle;
+\pic at (3.0,3.8) {lock};
+\node[font=\footnotesize\bfseries] at (3.55,3.8) {CLIP};
+\node[box, minimum width=3.6cm, minimum height=1.75cm] (cand) at (6.45,3.8) {};
+\node[font=\scriptsize\bfseries] at (6.45,4.47) {100 ảnh ứng viên};
+\node[thumb] at (5.15,3.78) {\includegraphics[width=0.95cm,height=0.62cm]{figs/ex_clip1.jpg}};
+\node[thumb] at (6.2,3.78)  {\includegraphics[width=0.95cm,height=0.62cm]{figs/ex_clip2.jpg}};
+\node at (6.9,3.78) {$\cdots$};
+\node[gold] at (7.65,3.78)  {\includegraphics[width=0.9cm,height=0.58cm]{figs/ex_gold.jpg}};
+\foreach \x/\t in {5.15/\#1, 6.2/\#2, 7.65/\textbf{\#6}} \node[font=\scriptsize] at (\x,3.17) {\t};
+\draw[flow] (2.1,3.8) -- (2.8,3.8);
+\draw[flow] (4.0,3.8) -- (cand.west);
+
+% 2b. trích khái niệm
+\node[box, text width=1.1cm, minimum height=0.9cm] (ex) at (3.4,1.2) {trích khái niệm};
+\node[box, minimum width=3.6cm, minimum height=1.1cm] (cc) at (6.45,1.2) {};
+\node[concept] at (5.2,1.38) {woman};
+\node[concept] at (6.27,1.38) {frisbee};
+\node[concept] at (7.5,1.38) {green field};
+\node[note] at (6.45,0.88) {theo từ vựng nhãn + khái niệm};
+\draw[flow] (2.1,1.2) -- (ex);
+\draw[flow] (ex) -- (cc);
+
+% 3. QA-Graph
+\node[fill=cOrangeF, draw=cOrange, line width=0.9pt, rounded corners=3pt, minimum width=3.6cm, minimum height=4.4cm] (qa) at (10.4,2.5) {};
+\node[font=\footnotesize\bfseries, text=cOrange] at (10.4,4.42) {QA-Graph};
+\node[note] at (10.4,4.08) {khớp khái niệm với nhãn của ảnh};
+\node[concept, minimum width=1.2cm] (k1) at (9.35,3.45) {woman};
+\node[concept, minimum width=1.2cm] (k2) at (9.35,2.75) {frisbee};
+\node[concept, minimum width=1.2cm] (k3) at (9.35,2.05) {green field};
+\node[lbl, minimum width=1.05cm] (l1) at (11.5,3.45) {person};
+\node[lbl, minimum width=1.05cm] (l2) at (11.5,2.75) {frisbee};
+\node[lbl, minimum width=1.05cm] (l3) at (11.5,2.05) {grass};
+\draw[cGreen, line width=1.2pt] (k1) -- node[above, font=\tiny, text=cGreen, inner sep=1pt] {IsA} (l1);
+\draw[cBlue, line width=1.2pt] (k2) -- node[above, font=\tiny, text=cBlue, inner sep=1pt] {trùng} (l2);
+\draw[cGreen, line width=0.8pt, densely dashed] (k3) -- node[above, font=\tiny, text=cGreen, inner sep=1pt] {yếu} (l3);
+\node[font=\scriptsize] at (10.4,1.3) {$g=$ adapter $+\,w\cdot$ trung bình $m$};
+\node[font=\scriptsize] at (10.4,0.9) {$s=\alpha\,z(\cos)+(1-\alpha)\,z(g)$};
+\node[note] at (10.4,0.52) {$\alpha=0{,}3$ (chọn trên val)};
+\draw[flow] (cand.east) -- (cand.east -| qa.west);
+\draw[flow] (cc.east) -- (cc.east -| qa.west);
+
+% 4. kết quả
+\node[box, minimum width=2.0cm, minimum height=4.4cm] (res) at (13.6,2.5) {};
+\node[gold] at (13.6,4.1) {\includegraphics[width=1.25cm,height=0.78cm]{figs/ex_gold.jpg}};
+\node[font=\scriptsize] at (13.6,3.48) {\textbf{\#1} \textcolor{cGreen}{(từ \#6)}};
+\node[thumb] at (13.6,2.82) {\includegraphics[width=1.3cm,height=0.8cm]{figs/ex_clip2.jpg}};
+\node[font=\scriptsize] at (13.6,2.22) {\#2};
+\node[font=\scriptsize] at (13.6,1.95) {$\vdots$};
+\node[thumb] at (13.6,1.27) {\includegraphics[width=1.3cm,height=0.8cm]{figs/ex_clip1.jpg}};
+\node[font=\scriptsize] at (13.6,0.62) {\#4 \textcolor{cTest}{(từ \#1)}};
+\draw[flow] (qa.east) -- (res.west);
+
+% 5. giải thích
+\node[box, draw=cGreen, line width=0.9pt, minimum width=2.9cm, minimum height=4.4cm] (xp) at (16.55,2.5) {};
+\draw[flow] (res.east) -- (xp.west);
+\node[font=\scriptsize\bfseries] at (16.55,4.4) {Vì sao ảnh \#1?};
+\node[concept] (p1) at (16.55,3.9) {woman};
+\node[lbl] (p2) at (16.55,3.12) {person};
+\node[font=\scriptsize] (p3) at (16.55,2.34) {ảnh \#1};
+\draw[->, cGreen, line width=0.8pt] (p1) -- node[right, font=\tiny, text=cGreen] {IsA} (p2);
+\draw[->, cGray, line width=0.6pt] (p2) -- node[right, font=\tiny, text=cGray] {contains} (p3);
+\node[concept] (p4) at (15.55,1.7) {frisbee};
+\draw[->, cGray, line width=0.6pt] (p4) -- node[above, font=\tiny, text=cGray] {contains} (16.85,1.7) node[right, font=\scriptsize, inner sep=1pt] {ảnh \#1};
+\node[note, text width=2.6cm] at (16.55,0.78) {kiểm chứng: xóa các cạnh này rồi chấm lại, điểm phải giảm};
+\end{tikzpicture}
