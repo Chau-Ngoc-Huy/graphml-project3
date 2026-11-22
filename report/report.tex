@@ -1,6 +1,7 @@
 \documentclass[conference]{IEEEtran}
-\usepackage{fontspec}
-\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{\setmainfont{TeX Gyre Termes}}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{newtxtext,newtxmath}
 \usepackage{adjustbox,array,xurl,float,listings}
 \lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,breakatwhitespace=false,columns=fullflexible,keepspaces=true,frame=none,aboveskip=4pt,belowskip=4pt}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
@@ -20,38 +21,99 @@
 \maketitle
 
 \begin{abstract}
-Nghiên cứu đánh giá vai trò của scene graph và tri thức ngữ nghĩa trong truy vấn văn bản--hình ảnh. Hệ thống kết hợp CLIP đóng băng, đồ thị ảnh--nhãn--khái niệm và GNN để xếp hạng lại tập ứng viên; toàn bộ mô hình dùng chung split theo ảnh, top-100 ứng viên và giao thức đánh giá ba seed. Trên Visual Genome$\cap$MS-COCO, CLIP thuần đạt MRR $60{,}40\%$ toàn pool test; nền CLIP có adapter đạt $63{,}14\pm0{,}02\%$; QA-Graph tốt nhất đạt $64{,}89\pm0{,}15\%$, tăng $1{,}93$ điểm phần trăm so với adapter [CI95 $1{,}49$--$2{,}32$]. Kết quả lặp lại trên PSG$\cap$MS-COCO: CLIP $59{,}59\%$, adapter $62{,}67\pm0{,}03\%$ và QA-Graph $64{,}17$--$64{,}41\%$. Xáo trộn cạnh làm MRR giảm dưới nền adapter ở cả hai bộ dữ liệu, chứng tỏ cấu trúc cạnh mang thông tin chứ không chỉ đến từ tham số học thêm. Lợi ích tập trung ở truy vấn trực tiếp; trên truy vấn gián tiếp, cải thiện của đồ thị và tri thức ngữ nghĩa còn nhỏ. AdaMF-MAT được tái lập trên PSG nhưng mức cải thiện $+0{,}71$ điểm so với CLIP chủ yếu tương đương baseline khớp tên. Phân tích giải thích hiện tập trung ở can thiệp cạnh đối tượng; MMKG tiếng Việt và đánh giá end-to-end qua phát hiện đối tượng vẫn là hướng chưa hoàn thiện.
+Truy vấn văn bản--hình ảnh bằng CLIP xếp hạng theo một vectơ toàn cục nên khó biểu diễn quan hệ giữa các đối tượng và không cho biết vì sao một ảnh được trả về. Nghiên cứu đánh giá vai trò của dữ liệu đồ thị trong bài toán text-to-image retrieval theo ba nhiệm vụ nối tiếp: (1) truy vấn bằng CLIP đóng băng làm baseline; (2) xếp hạng lại top-100 ứng viên bằng đồ thị ảnh--nhãn--khái niệm (scene graph và ConceptNet) với GCN, GAT, GraphSAGE; (3) giải thích kết quả bằng quan hệ/đường đi gắn với điểm xếp hạng và kiểm chứng bằng can thiệp cạnh. Mọi mô hình dùng chung split theo ảnh, tập ứng viên, độ đo và giao thức ba seed; trọng số kết hợp $\alpha$ chọn trên validation.
+Trên Visual Genome$\cap$MS-COCO, CLIP thuần đạt MRR 60,40\% (toàn pool test), CLIP có adapter $63{,}14\pm0{,}02\%$ và QA-Graph tốt nhất $64{,}89\pm0{,}15\%$, tăng 1,93 điểm so với adapter [CI95 1,49--2,32]; kết quả lặp lại trên PSG$\cap$MS-COCO ($62{,}67\to64{,}17$). Xáo trộn cạnh làm MRR thấp hơn nền adapter ở cả hai bộ dữ liệu, cho thấy cải thiện đến từ nội dung cạnh chứ không chỉ từ tham số học thêm. Trên gallery 1K, mức tăng tập trung ở truy vấn trực tiếp ($+6{,}81$ MRR) và rất nhỏ ở truy vấn gián tiếp ($+0{,}64$), nên chưa đủ bằng chứng rằng đồ thị giải quyết suy luận quan hệ. AdaMF-MAT được tái lập trên MKG-W/MKG-Y (sai khác dưới 1 điểm so với bài báo) và tích hợp vào truy vấn ảnh, nhưng không vượt baseline khớp tên đối tượng. Giải thích hiện dựa trên can thiệp cạnh; fidelity, validity, sparsity định lượng và MMKG tiếng Việt chưa hoàn thiện.
 \end{abstract}
 
 \begin{IEEEkeywords}
-truy vấn đa phương thức, CLIP, mạng nơ-ron đồ thị, đồ thị tri thức đa phương thức, khả năng giải thích
+truy vấn đa phương thức, CLIP, mạng nơ-ron đồ thị, đồ thị tri thức đa phương thức, khả năng giải thích, scene graph
 \end{IEEEkeywords}
 
 \section{Giới thiệu}\label{sec:intro}
-Truy vấn văn bản--hình ảnh có hai vấn đề song hành: tìm kiếm ảnh phù hợp và giải thích vì sao ảnh được trả về. CLIP~\cite{clip} học biểu diễn chung cho ảnh và văn bản, sau đó xếp hạng theo độ tương đồng cosine. Cách tiếp cận này hiệu quả và không cần fine-tune mô hình thị giác lớn, nhưng một vector toàn cục khó biểu diễn rõ quan hệ giữa các đối tượng trong câu và trong ảnh. Ví dụ, hai ảnh chứa \emph{child} và \emph{football} có thể khác nhau về quan hệ \emph{plays}; truy vấn vì vậy cần cả tương quan ngữ nghĩa và cấu trúc đồ thị.
+Truy vấn văn bản--hình ảnh là bài toán nền tảng của tìm kiếm đa phương thức. CLIP~\cite{clip} và các biến thể mở như OpenCLIP~\cite{openclip} mã hóa câu và ảnh vào cùng một không gian vectơ rồi xếp hạng theo độ tương đồng cosine; cách làm này hiệu quả, không cần fine-tune mô hình thị giác lớn và là baseline chuẩn. Tuy nhiên, độ tương đồng giữa hai vectơ toàn cục có hai hạn chế. Thứ nhất, vectơ ảnh gần với một ``túi đối tượng'': các nghiên cứu về tính hợp thành chỉ ra rằng mô hình thị giác--ngôn ngữ nhạy với sự có mặt của đối tượng hơn là với quan hệ giữa chúng~\cite{bagofwords,winoground}. Thứ hai, một điểm cosine không cho biết thành phần tri thức nào đã khiến ảnh được trả về, nên người dùng không kiểm chứng được kết quả.
 
-Đồ án xây dựng pipeline \emph{text$\rightarrow$image retrieval with graph reranking}: mã hóa câu và ảnh bằng CLIP đóng băng, giới hạn ứng viên top-100 bằng FAISS, sau đó kết hợp điểm cosine với điểm đồ thị. Hệ thống đồ thị gồm đỉnh ảnh, nhãn scene graph và khái niệm, với cạnh \texttt{contains}, quan hệ \texttt{sg\_rel} và quan hệ ConceptNet. GCN, GAT và GraphSAGE~\cite{gcn,gat,sage} được dùng để lan truyền thông tin trên đồ thị nhãn--khái niệm; tham số phần xếp hạng được huấn luyện bằng InfoNCE và siêu tham số trọng số $\alpha$ được chọn trên tập validation.
+Cấu trúc đồ thị là cách tự nhiên để bổ sung quan hệ. Một ảnh chứa các đối tượng; các đối tượng liên hệ với nhau trong scene graph và với các khái niệm ngoài ảnh trong đồ thị tri thức. Với truy vấn \emph{a child playing football}, nếu ảnh chỉ nhận diện được \emph{ball} và \emph{field}, đường đi \emph{child--plays--football} trong đồ thị tri thức có thể nối truy vấn với đúng ảnh; đây là kiểu truy vấn gián tiếp mà so khớp vectơ thường bỏ sót. Mục tiêu của đồ án không phải xây một mô hình thị giác lớn từ đầu, mà là \emph{đo rõ} đồ thị đóng góp bao nhiêu, ở loại truy vấn nào, và có giải thích được đóng góp đó hay không.
 
-Đóng góp của nghiên cứu là (i) xây dựng giao thức xếp hạng thống nhất trên VG và PSG, kiểm soát split theo ảnh và rò rỉ dữ liệu; (ii) so sánh CLIP, adapter và GNN trên cùng ứng viên, seed và độ đo; (iii) dùng ablation giữ nguyên mật độ/tham số để kiểm tra cạnh chứa thông tin hay chỉ làm tăng dung lượng mô hình; (iv) tái lập AdaMF-MAT~\cite{adamf} cho bài toán xếp hạng ảnh; và (v) đánh giá ban đầu tính trung thực của giải thích bằng can thiệp cạnh đối tượng. Kết quả cho thấy cấu trúc đồ thị mang cải thiện đo được nhưng lợi ích không đều trên mọi loại truy vấn.
+Đồ án được tổ chức theo ba nhiệm vụ nối tiếp và bốn câu hỏi nghiên cứu:
+\begin{itemize}
+\item \textbf{Nhiệm vụ 1 -- Truy vấn.} \textbf{RQ1:} CLIP đóng băng đạt kết quả nào trên pipeline đánh giá chuẩn, và CLIP+Graph có tốt hơn CLIP thuần trên cùng split và cùng ứng viên không?
+\item \textbf{Nhiệm vụ 2 -- Vai trò của đồ thị.} \textbf{RQ2:} mức cải thiện đến từ cấu trúc quan hệ hay chỉ từ tham số học thêm, và khác nhau thế nào giữa truy vấn trực tiếp và gián tiếp? \textbf{RQ3:} AdaMF-MAT~\cite{adamf} có vượt baseline đơn giản không dùng quan hệ khi áp dụng vào truy vấn ảnh không?
+\item \textbf{Nhiệm vụ 3 -- Giải thích (xAI).} \textbf{RQ4:} quan hệ/đường đi được trích làm giải thích có thật sự quyết định điểm xếp hạng, tức có trung thực hay không?
+\end{itemize}
+
+Nhóm xây dựng pipeline \emph{text$\rightarrow$image retrieval with graph reranking}: mã hóa câu và ảnh bằng CLIP đóng băng, lấy top-100 ứng viên bằng FAISS, tính điểm đồ thị cho từng ứng viên bằng GNN (GCN, GAT, GraphSAGE~\cite{gcn,gat,sage}) trên đồ thị ảnh--nhãn--khái niệm gồm cạnh \texttt{contains}, quan hệ scene graph \texttt{sg\_rel} và quan hệ ConceptNet, rồi xếp hạng lại bằng $s=\alpha z(\cos)+(1-\alpha)z(g)$. Giải thích được trích từ chính các thành phần tạo nên $g$, không sinh sau khi đã có kết quả.
+
+Các đóng góp chính:
+\begin{enumerate}
+\item Giao thức xếp hạng thống nhất trên Visual Genome và Panoptic Scene Graph: split theo ảnh, ứng viên, seed và độ đo dùng chung; đồ thị thống kê chỉ xây từ tập train; $\alpha$ chọn trên validation.
+\item So sánh CLIP, CLIP+adapter và GNN trên cùng ứng viên, trong đó nền so sánh là adapter không cạnh. Phát hiện ban đầu cho thấy phần lớn mức tăng của GAT nhận đặc trưng ảnh đến từ lớp chiếu chứ không từ đồ thị.
+\item Ablation giữ nguyên số cạnh, mật độ và tham số (xáo cạnh) để kiểm tra cạnh chứa thông tin hay chỉ tăng dung lượng mô hình.
+\item Tái lập AdaMF-MAT trên MKG-W/MKG-Y và đưa vào bài toán xếp hạng ảnh, so với baseline khớp tên đối tượng.
+\item Thiết kế giao thức giải thích gắn cơ chế xếp hạng (can thiệp cạnh; fidelity, validity, sparsity) cùng các kiểm tra cấu trúc ban đầu. Số liệu định lượng đầy đủ và MMKG tiếng Việt chưa hoàn thành và được nêu rõ trong mục thảo luận.
+\end{enumerate}
+
+Kết quả chính là cấu trúc đồ thị cải thiện MRR một cách đo được (+1,4 đến +1,9 điểm so với adapter) nhưng lợi ích không đều: rõ ở truy vấn trực tiếp, chưa chứng minh được ở truy vấn gián tiếp. Phần còn lại của báo cáo: mục II điểm lại công trình liên quan; mục III mô tả dữ liệu, giao thức và độ đo; mục IV--V trình bày baseline CLIP và xếp hạng lại bằng GNN; mục VI là AdaMF-MAT; mục VII--VIII là giải thích và phân tích thành công/thất bại; mục IX--X thảo luận, hạn chế và kết luận.
 
 \section{Công trình liên quan}\label{sec:rel}
-\textbf{Mô hình ngữ nghĩa--thị giác.} CLIP~\cite{clip} học biểu diễn ảnh--văn bản bằng mục tiêu đối sánh tương phản. OpenCLIP~\cite{openclip} cung cấp biến thể huấn luyện trên dữ liệu mở và cho phép dùng encoder ViT-B/32 đã đóng băng làm baseline tái lập. Trong báo cáo, mô hình nền không được fine-tune trực tiếp; baseline adapter và GNN được huấn luyện để xếp hạng lại.
+\textbf{Mô hình thị giác--ngôn ngữ và xếp hạng lại.}
+CLIP~\cite{clip} học biểu diễn chung bằng mục tiêu tương phản trên cặp ảnh--văn bản; OpenCLIP~\cite{openclip} cung cấp các checkpoint huấn luyện trên dữ liệu mở. Nhiều nghiên cứu cho thấy các mô hình này hoạt động gần như bag-of-words khi câu hỏi phụ thuộc vào thứ tự hoặc quan hệ~\cite{bagofwords,winoground}. Mô hình truy vấn hai giai đoạn, lấy ứng viên bằng vectơ rồi xếp hạng lại, là cách tự nhiên để thêm tín hiệu khác mà không huấn luyện lại bộ mã hóa; đồ án theo hướng này với top-100 ứng viên từ FAISS~\cite{faiss}.
 
-\textbf{Truy vấn bằng scene graph.} Johnson và cộng sự~\cite{sgret} biểu diễn ảnh bằng các bộ ba chủ thể--vị từ--đối tượng và truy vấn theo cấu trúc quan hệ. Scene Graph of Panoptic Segmentation (PSG)~\cite{psg} mở rộng phân vùng theo thực thể trong scene graph. Nghiên cứu này không truy vấn scene graph nguyên trạng; scene graph cung cấp cạnh \texttt{contains} và \texttt{sg\_rel} để GNN lan truyền tín hiệu cho bộ reranker.
+\textbf{Scene graph cho truy vấn ảnh.}
+Johnson và cộng sự~\cite{sgret} biểu diễn ảnh bằng bộ ba chủ thể--vị từ--đối tượng và truy vấn theo cấu trúc này; các scene graph từ mô tả văn bản cũng được sử dụng để cải thiện truy vấn~\cite{semanticsg}. Visual Genome~\cite{vg} và Panoptic Scene Graph~\cite{psg} cung cấp scene graph chú thích cho ảnh. Một nhánh khác dùng suy luận đồ thị ngay trong mô hình khớp ảnh--câu, như Visual Semantic Reasoning~\cite{vsrn} và SGRAF~\cite{sgraf}. Khác với các hướng trên, đồ án \emph{không truy vấn scene graph trực tiếp}: scene graph chỉ cung cấp cạnh \texttt{contains} và \texttt{sg\_rel} để GNN lan truyền tín hiệu cho bộ xếp hạng lại, còn ứng viên vẫn do CLIP đóng băng chọn.
 
-\textbf{Mạng nơ-ron đồ thị.} GCN~\cite{gcn} tổng hợp láng giềng theo chuẩn hóa bậc, GAT~\cite{gat} học trọng số chú ý cho từng cạnh và GraphSAGE~\cite{sage} gộp biểu diễn láng giềng bằng phép tổng hợp. Ba kiến trúc được đánh giá trên cùng đồ thị, số lớp, kích thước ẩn và giao thức huấn luyện để tách hiệu ứng kiến trúc khỏi hiệu ứng dữ liệu.
+\textbf{Mạng nơ-ron đồ thị.}
+GCN~\cite{gcn} tổng hợp láng giềng với chuẩn hóa theo bậc, GAT~\cite{gat} học trọng số chú ý theo cạnh và GraphSAGE~\cite{sage} gộp biểu diễn láng giềng theo kiểu quy nạp. Chúng tôi đánh giá cả ba trên cùng đồ thị, số tầng, kích thước ẩn và giao thức huấn luyện để tách hiệu ứng kiến trúc khỏi hiệu ứng dữ liệu.
 
-\textbf{Hoàn thiện đồ thị tri thức đa phương thức.} MKGformer~\cite{mkgformer}, NativE~\cite{native} và AdaMF-MAT~\cite{adamf} kết hợp cấu trúc đồ thị, ảnh và văn bản để hoàn thiện thực thể hoặc quan hệ. AdaMF-MAT được khảo sát trực tiếp vì có mã nguồn công khai và cho phép tái lập trên MMKG riêng. Kết quả PSG cho thấy biểu diễn hoàn thiện quan hệ cần được so sánh với baseline khớp tên đối tượng: nếu baseline bằng hoặc hơn AdaMF-MAT thì chưa có bằng chứng quan hệ cải thiện truy hồi.
+\textbf{Đồ thị tri thức đa phương thức.}
+MMKG~\cite{mmkg} và IKRL~\cite{ikrl} gắn ảnh vào thực thể của đồ thị tri thức. Các phương pháp hoàn thiện MMKG như MKGformer~\cite{mkgformer}, NativE~\cite{native} và AdaMF-MAT~\cite{adamf} kết hợp cấu trúc, ảnh và văn bản để dự đoán thực thể hoặc quan hệ còn thiếu. Điểm chung là chúng giải bài toán \emph{hoàn thiện đồ thị}, không phải truy vấn ảnh theo câu. Chúng tôi chọn AdaMF-MAT vì có mã nguồn công khai và tái lập được, và dùng nó như bộ chấm điểm độ hợp lý của bộ ba (ảnh, \texttt{contains}, khái niệm). Câu hỏi mở là liệu biểu diễn quan hệ như vậy có vượt baseline khớp tên đối tượng không dùng quan hệ hay không.
 
-\textbf{Giải thích truy hồi.} GNNExplainer~\cite{gnnexp} tìm đồ thị con hoặc đặc trưng quan trọng cho dự đoán của GNN. Trong reranking, giải thích cần gắn trực tiếp với thay đổi điểm xếp hạng. Vì vậy đồ án dùng can thiệp cạnh: so sánh điểm ảnh trước và sau khi xóa cạnh giải thích với cạnh đối chứng hoặc cạnh ngẫu nhiên, đồng thời đo độ thưa và độ bao phủ của giải thích.
+\textbf{Giải thích mô hình đồ thị và đánh giá độ trung thực.}
+GNNExplainer~\cite{gnnexp} và PGExplainer~\cite{pgexplainer} tìm đồ thị con quan trọng cho dự đoán của GNN; các khảo sát~\cite{gnnxai,eraser} hệ thống hóa độ đo như fidelity và sparsity. Độ trung thực được định nghĩa là mức độ giải thích phản ánh quá trình suy luận thật của mô hình~\cite{faithfulness}; một cách phổ biến là bỏ phần được chọn rồi xem dự đoán thay đổi. Các phương pháp giải thích hậu nghiệm có thể cho đường đi hợp lý nhưng không ảnh hưởng tới dự đoán; vì vậy đồ án dùng giải thích \emph{gắn với cơ chế xếp hạng} và kiểm chứng bằng can thiệp cạnh so với cạnh ngẫu nhiên cùng số.
+
+\textbf{Định vị.}
+Đồ án nằm ở giao điểm của truy vấn thị giác--ngôn ngữ, học trên đồ thị và giải thích có kiểm chứng. Điểm khác biệt là (i) nền so sánh có adapter không cạnh và ablation xáo cạnh để tách đóng góp của cấu trúc; (ii) báo cáo tách riêng truy vấn trực tiếp/gián tiếp; (iii) so sánh AdaMF-MAT với baseline không dùng quan hệ trên cùng pipeline.
 
 \section{Dữ liệu và giao thức đánh giá}\label{sec:data}
 \subsection{Dữ liệu}
-\textbf{Visual Genome $\cap$ MS-COCO.} Tập dùng 51\,208 ảnh VG~\cite{vg} có \texttt{coco\_id}; mỗi ảnh được ghép với caption MS-COCO~\cite{coco} theo split Karpathy. Split chính có 15\,000 ảnh train, 2\,126 ảnh validation và 2\,138 ảnh test, với tổng 96\,381 caption. Mỗi truy vấn là một caption; ảnh đúng duy nhất của truy vấn là ảnh tương ứng trong bundle.
+Thống kê chính được tóm tắt trong Bảng~\ref{tab:data}. Mỗi truy vấn là một caption; ảnh đúng duy nhất là ảnh có caption đó.
 
-\textbf{Panoptic Scene Graph $\cap$ MS-COCO.} Bộ dữ liệu thứ hai~\cite{psg} gồm 18\,186 ảnh sau khi bỏ ảnh trùng train/val; split seed 0 có 15\,000 ảnh train, 1\,000 ảnh validation và 2\,186 ảnh test, tổng 90\,974 caption. Đồ thị PSG chứa 133 nhãn ảnh; bundle bổ sung 674 khái niệm ConceptNet~\cite{cn} xuất hiện trong caption train ít nhất 20 lần. Nhật ký thí nghiệm ghi 3\,743 cạnh ConceptNet; MMKG AdaMF-MAT sử dụng 133 nhãn và 9\,186 ảnh.
+\begin{table}[t]
+\caption{Dữ liệu và split dùng trong thí nghiệm chính.}\label{tab:data}
+\centering\small
+\begin{tabular}{lcc}
+\hline
+ & VG$\cap$COCO & PSG$\cap$COCO \\
+\hline
+Ảnh train / val / test & 15\,000 / 2\,126 / 2\,138 & 15\,000 / 1\,000 / 2\,186 \\
+Tổng caption & 96\,381 & 90\,974 \\
+Nguồn scene graph & Visual Genome~\cite{vg} & PSG~\cite{psg} \\
+Split & Karpathy~\cite{coco}, theo COCO-ID & seed 0 \\
+Nhãn đối tượng & 2\,000 phổ biến nhất ở train & 133 \\
+Khái niệm ConceptNet~\cite{cn} & 16\,413 cạnh sau lọc & 674 khái niệm (3\,743 cạnh) \\
+\hline
+\end{tabular}
+\end{table}
 
-\textbf{Giao thức dữ liệu chung.} Tập train dùng huấn luyện tham số và tổng hợp scene graph/đồng xuất hiện; validation dùng chọn siêu tham số, early stopping và $\alpha$; test chỉ dùng đánh giá cuối. Split được tạo theo COCO-ID trước khi ánh xạ sang VG-ID để cùng ảnh không rơi vào nhiều tập. Các embedding và ID ứng viên không được tạo lại khác nhau giữa các mô hình trong cùng thí nghiệm.
+\textit{Visual Genome$\cap$MS-COCO.} Tập dùng 51\,208 ảnh VG có \texttt{coco\_id}; 19\,264 ảnh thuộc split chính được ghép với caption MS-COCO theo split Karpathy. Split chính có 15\,000 ảnh train, 2\,126 ảnh validation và 2\,138 ảnh test, tổng 96\,381 caption.
+
+\textit{Panoptic Scene Graph$\cap$MS-COCO.} Bộ dữ liệu thứ hai gồm 18\,186 ảnh sau khi loại ảnh trùng train/val. Split seed 0 có 15\,000 ảnh train, 1\,000 ảnh validation và 2\,186 ảnh test, tổng 90\,974 caption. Đồ thị có 133 nhãn ảnh; bundle bổ sung 674 khái niệm xuất hiện trong caption train ít nhất 20 lần.
+
+\textit{MKG-W và MKG-Y.} Hai bộ dữ liệu được dùng để tái lập AdaMF-MAT; chúng không thuộc giao thức truy vấn ảnh chính.
+
+\textit{Dữ liệu tự xây.} Nhóm chưa xây MMKG tiếng Việt được kiểm chứng nguồn, giấy phép và liên kết ảnh--thực thể, nên các kết luận chỉ áp dụng cho các tập dữ liệu trên.
+
+\subsection{Đồ thị và đặc trưng}
+Đặc trưng ảnh, caption và tên nhãn được trích một lần bằng OpenCLIP ViT-B/32 (\texttt{laion2b\_s34b\_b79k}) đóng băng, chuẩn hóa L2 và lưu lại. Lập chỉ mục ứng viên bằng FAISS \texttt{IndexFlatIP}. Đồ thị có đỉnh ảnh, nhãn đối tượng và khái niệm. Cạnh gồm \texttt{contains} (nhãn--ảnh, từ scene graph), \texttt{sg\_rel} (nhãn--nhãn, gộp từ ảnh train) và quan hệ ConceptNet như IsA, PartOf, UsedFor, AtLocation, CapableOf, HasA và Synonym.
+
+\subsection{Chia dữ liệu và chống rò rỉ}
+\begin{itemize}
+\item Split được tạo theo COCO-ID trước khi ánh xạ sang VG-ID, nên caption của cùng một ảnh không rơi vào nhiều tập; mã kiểm tra tập giao nhau bằng rỗng.
+\item Từ vựng nhãn, cạnh \texttt{sg\_rel} và thống kê đồng xuất hiện chỉ tổng hợp từ ảnh train.
+\item Validation dùng chọn siêu tham số, early stopping và $\alpha$ với lưới bước $0{,}05$; test chỉ dùng đánh giá cuối.
+\item Bộ truy vấn quan hệ chỉ dùng để đánh giá; ảnh dương bị loại khỏi huấn luyện.
+\item Mọi mô hình dùng chung tệp split, embedding và ID ứng viên.
+\item Danh sách đối tượng của ảnh val/test vẫn được dùng làm cạnh \texttt{contains} tại suy luận, nên kết quả giả định scene graph có sẵn. Nếu triển khai chỉ có ảnh thô, kết quả này cần được đánh giá lại sau bộ phát hiện đối tượng.
+\end{itemize}
 
 \subsection{Tiền xử lý và trích đặc trưng VG}
 Mã tiền xử lý \fp{yen/prepare_visual_genome.py} nhận \texttt{scene\_graphs.json}, \texttt{image\_data.json} và \texttt{dataset\_coco.json} (Karpathy). Mã ghép ảnh VG với caption bằng \texttt{coco\_id}, xuất scene graph con vào \fp{vg/objects.json} và \fp{vg/relationships.json}, cùng \texttt{captions.json} và \texttt{splits.json} theo hợp đồng dữ liệu chung. Khi object thiếu khỏi danh sách nhưng quan hệ còn chứa tên endpoint, object được khôi phục từ tên đó; nếu chỉ còn ID thì quan hệ được ghi vào \texttt{preprocess\_report.json} và không tự gán nhãn suy đoán.
@@ -70,12 +132,28 @@ Báo cáo có hai loại đánh giá: \emph{gallery 1K} tạo 3 seed với seed 
 Tệp chia cố định (seed 0, Karpathy) và mã tạo chia nằm trong kho mã (Phụ lục B).
 
 \subsection{Độ đo}
-Với mỗi truy vấn có đúng một ảnh đúng (ảnh có caption đó), gọi $r$ là hạng của ảnh. Recall@$k=\mathbf{1}[r\le k]$ lấy trung bình trên truy vấn; hạng nghịch đảo trung bình $\mathrm{MRR}=\overline{1/r}$; $\mathrm{nDCG@}10=\overline{\mathbf{1}[r\le10]/\log_2(r+1)}$. Với bộ 24 truy vấn có nhiều ảnh dương, hạng được tính theo ảnh dương đứng đầu. Khoảng tin cậy 95\% (CI95) ở các bảng ghép cặp được tính bằng bootstrap lấy lại mẫu theo truy vấn, trên cùng thứ tự truy vấn của hai mô hình.
+Với mỗi truy vấn, gọi $r_q$ là hạng của ảnh đúng. Với bộ 24 truy vấn có nhiều ảnh dương, hạng được tính theo ảnh dương đứng đầu. Với $N$ truy vấn:
+\begin{align}
+\mathrm{Recall@}k &= \tfrac{1}{N}\textstyle\sum_q \mathbf{1}[r_q\le k],\quad k\in\{1,5,10\},\\
+\mathrm{MRR} &= \tfrac{1}{N}\textstyle\sum_q \tfrac{1}{r_q},\\
+\mathrm{nDCG@10} &= \tfrac{1}{N}\textstyle\sum_q \tfrac{\mathbf{1}[r_q\le10]}{\log_2(r_q+1)}.
+\end{align}
+MRR là độ đo chính vì nhạy với dịch chuyển hạng ở vùng đầu danh sách. Khoảng tin cậy 95\% (CI95) ở các bảng ghép cặp được tính bằng bootstrap lấy lại mẫu theo truy vấn, trên cùng thứ tự truy vấn của hai mô hình.
 
 \textbf{Chống rò rỉ.} Split được tạo theo COCO-ID trước khi ánh xạ sang VG-ID, do đó các caption của cùng ảnh và các VG-ID trùng nguồn không thể rơi vào nhiều tập. Từ vựng nhãn dùng cho embedding lấy từ train; cạnh quan hệ scene graph và thống kê đồng xuất hiện chỉ tổng hợp từ ảnh train. Caption train là dữ liệu huấn luyện; val chỉ dùng chọn siêu tham số, early stopping và $\alpha$; test chỉ dùng báo cáo cuối. Đặc trưng CLIP có thể tính cho mọi split vì encoder đóng băng và không được fine-tune trên val/test. Trong cấu hình này, danh sách object của từng ảnh val/test vẫn được dùng làm đầu vào \texttt{contains} cho ảnh ứng viên; vì vậy kết quả giả định scene graph có sẵn tại suy luận. Nếu triển khai chỉ có ảnh thô, cần thay nhãn VG này bằng dự đoán của bộ phát hiện đối tượng và không được xem kết quả hiện tại là đánh giá end-to-end. Bộ 24 truy vấn quan hệ chỉ dùng để đánh giá.
 
-\textbf{Nhóm truy vấn.} Giao thức tự gán: \emph{direct} nếu mọi khái niệm trong caption có mặt trong danh sách đối tượng của ảnh đúng, \emph{indirect} nếu có ít nhất một khái niệm không có mặt (cần suy ra qua từ đồng nghĩa hoặc quan hệ), còn lại là \emph{no\_concept}.
+\textbf{Nhóm truy vấn.} Giao thức tự gán: \emph{direct} nếu mọi khái niệm trong caption có mặt trong danh sách đối tượng của ảnh đúng, \emph{indirect} nếu có ít nhất một khái niệm vắng mặt, còn lại là \emph{no\_concept}. Vì định nghĩa dựa trên chính danh sách nhãn mà đồ thị dùng, nó có nguy cơ vòng lặp và không đồng nghĩa với ``cần suy luận quan hệ''.
 
+\textbf{Bộ truy vấn quan hệ tự xây.} Nhóm sinh 24 truy vấn dạng chủ thể--vị từ--đối tượng từ scene graph: 12 trực tiếp và 12 gián tiếp. Trực tiếp là truy vấn có ảnh dương mang bộ ba $s-p-o$ được chú thích. Gián tiếp là truy vấn mà $s$ và $o$ nối nhau qua đối tượng thứ ba $x$ ($s\to x\to o$), không có quan hệ $s$--$o$ trong chú thích. Quy tắc lọc gồm chỉ vị từ hành động, mỗi vị từ tối đa 3 truy vấn, hai thực thể xuất hiện ít nhất 200 ảnh và loại đối tượng mơ hồ. Bộ truy vấn ở Phụ lục A chưa được kiểm tra bằng mắt, nên ảnh gián tiếp chỉ là ứng viên.
+
+\subsection{Độ đo giải thích}
+Với ảnh $i$, gọi $E_i$ là tập cạnh giải thích tạo đóng góp vào điểm đồ thị $g(i)$ và $\mathcal E_i$ là tập cạnh cục bộ của đồ thị con liên quan đến truy vấn và ảnh:
+\begin{itemize}
+\item \textbf{Fidelity} $=\Delta_{\mathrm{expl}}-\Delta_{\mathrm{rand}}$, trong đó $\Delta_{\mathrm{expl}}$ là độ giảm điểm hoặc dịch chuyển hạng khi xóa/làm nhiễu $E_i$, còn $\Delta_{\mathrm{rand}}$ là giá trị trung bình khi xóa ngẫu nhiên cùng số cạnh.
+\item \textbf{Sparsity} $=1-|E_i|/|\mathcal E_i|$; giải thích ngắn gọn hơn cho sparsity cao hơn.
+\item \textbf{Validity} là tỉ lệ cạnh trong $E_i$ tồn tại trong đồ thị và đúng lược đồ về loại đỉnh và loại quan hệ.
+\end{itemize}
+Các độ đo này cần được tính trên tối thiểu 10 truy vấn thực với mô hình QA-Graph đã huấn luyện. Thí nghiệm tổng hợp chỉ kiểm tra đường chạy và không được dùng làm bằng chứng thực nghiệm.
 
 
 \subsection{Chi tiết cài đặt}
@@ -411,5 +489,16 @@ python yen/extract_visual_genome_features.py --data yen/data/visual_genome_mmxai
 \bibitem{psg} J. Yang \emph{et al.}, ``Panoptic scene graph generation,'' in \emph{Proc. Eur. Conf. Comput. Vis. (ECCV)}, 2022.
 \bibitem{cn} R. Speer, J. Chin, and C. Havasi, ``ConceptNet 5.5: An open multilingual graph of general knowledge,'' in \emph{Proc. AAAI Conf. Artif. Intell.}, 2017.
 \bibitem{faiss} J. Johnson, M. Douze, and H. J\'{e}gou, ``Billion-scale similarity search with GPUs,'' \emph{IEEE Trans. Big Data}, vol. 7, no. 3, pp. 535--547, 2021.
+\bibitem{bagofwords} M. Yuksekgonul \emph{et al.}, ``When and why vision-language models behave like bags-of-words, and what to do about it?,'' in \emph{Proc. ICLR}, 2023.
+\bibitem{winoground} T. Thrush \emph{et al.}, ``Winoground: Probing vision and language models for visio-linguistic compositionality,'' in \emph{Proc. IEEE/CVF CVPR}, 2022.
+\bibitem{semanticsg} S. Schuster \emph{et al.}, ``Generating semantically precise scene graphs from textual descriptions for improved image retrieval,'' in \emph{Proc. Workshop on Vision and Language}, 2015.
+\bibitem{vsrn} K. Li \emph{et al.}, ``Visual semantic reasoning for image-text matching,'' in \emph{Proc. IEEE/CVF ICCV}, 2019.
+\bibitem{sgraf} H. Diao \emph{et al.}, ``Similarity reasoning and filtration for image-text matching,'' in \emph{Proc. AAAI}, 2021.
+\bibitem{gnnxai} H. Yuan \emph{et al.}, ``Explainability in graph neural networks: A taxonomic survey,'' \emph{IEEE Trans. Pattern Anal. Mach. Intell.}, 2023.
+\bibitem{pgexplainer} D. Luo \emph{et al.}, ``Parameterized explainer for graph neural network,'' in \emph{Adv. Neural Inf. Process. Syst. (NeurIPS)}, 2020.
+\bibitem{faithfulness} A. Jacovi and Y. Goldberg, ``Towards faithfully interpretable NLP systems: How should we define and evaluate faithfulness?,'' in \emph{Proc. ACL}, 2020.
+\bibitem{eraser} J. DeYoung \emph{et al.}, ``ERASER: A benchmark to evaluate rationalized NLP models,'' in \emph{Proc. ACL}, 2020.
+\bibitem{mmkg} Y. Liu \emph{et al.}, ``MMKG: Multi-modal knowledge graphs,'' in \emph{Proc. ESWC}, 2019.
+\bibitem{ikrl} R. Xie \emph{et al.}, ``Image-embodied knowledge representation learning,'' in \emph{Proc. IJCAI}, 2017.
 \end{thebibliography}
 \end{document}
