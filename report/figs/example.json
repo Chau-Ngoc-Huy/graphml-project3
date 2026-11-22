@@ -1,0 +1,158 @@
+{
+ "caption": "a woman throwing a frisbee in a green field.",
+ "group": "indirect",
+ "concepts": [
+  "woman",
+  "frisbee",
+  "green field"
+ ],
+ "gold_psg_id": 2405468,
+ "gold_labels": [
+  "person",
+  "frisbee",
+  "tree",
+  "sky",
+  "grass"
+ ],
+ "gold_relations": [
+  [
+   "frisbee",
+   "flying over",
+   "grass"
+  ],
+  [
+   "person",
+   "in front of",
+   "tree"
+  ],
+  [
+   "person",
+   "on",
+   "grass"
+  ],
+  [
+   "person",
+   "standing on",
+   "grass"
+  ],
+  [
+   "person",
+   "throwing",
+   "frisbee"
+  ],
+  [
+   "sky",
+   "over",
+   "grass"
+  ]
+ ],
+ "rank_clip": 6,
+ "rank_qa": 1,
+ "alpha": 0.3,
+ "detail": [
+  {
+   "concept": "woman",
+   "in_image": false,
+   "best_label": "person",
+   "cos_best": 0.08243569731712341,
+   "m": 0.08528409153223038,
+   "cos_all": {
+    "person": 0.08243569731712341,
+    "frisbee": -0.23713582754135132,
+    "tree": -0.4160812497138977,
+    "sky": -0.4268542528152466,
+    "grass": -0.45694711804389954
+   },
+   "path": [
+    [
+     "woman",
+     "IsA",
+     "person"
+    ]
+   ]
+  },
+  {
+   "concept": "frisbee",
+   "in_image": true,
+   "best_label": "frisbee",
+   "cos_best": 0.19227370619773865,
+   "m": 0.19237524271011353,
+   "cos_all": {
+    "frisbee": 0.19227370619773865,
+    "person": -0.4613514542579651,
+    "tree": -0.5251445174217224,
+    "grass": -0.5380994081497192,
+    "sky": -0.5740357041358948
+   },
+   "path": []
+  },
+  {
+   "concept": "green field",
+   "in_image": false,
+   "best_label": "grass",
+   "cos_best": -0.039818890392780304,
+   "m": -0.004700503312051296,
+   "cos_all": {
+    "grass": -0.039818890392780304,
+    "tree": -0.15526315569877625,
+    "frisbee": -0.21155022084712982,
+    "person": -0.2999950051307678,
+    "sky": -0.30946746468544006
+   },
+   "path": [
+    [
+     "green field",
+     "AtLocation⁻¹",
+     "cow"
+    ],
+    [
+     "cow",
+     "AtLocation",
+     "grass"
+    ]
+   ]
+  }
+ ],
+ "graph_score": 0.0909862769767642,
+ "clip_top": [
+  {
+   "rank": 1,
+   "psg_id": 2374126,
+   "labels": [
+    "person",
+    "frisbee",
+    "sky",
+    "mountain"
+   ],
+   "is_gold": false,
+   "rank_after": 4
+  },
+  {
+   "rank": 2,
+   "psg_id": 2413475,
+   "labels": [
+    "person",
+    "frisbee",
+    "tree",
+    "grass"
+   ],
+   "is_gold": false,
+   "rank_after": 2
+  },
+  {
+   "rank": 3,
+   "psg_id": 2385307,
+   "labels": [
+    "person",
+    "kite",
+    "backpack",
+    "tree",
+    "sky",
+    "grass",
+    "building"
+   ],
+   "is_gold": false,
+   "rank_after": 10
+  }
+ ]
+}

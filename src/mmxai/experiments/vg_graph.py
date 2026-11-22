@@ -43,8 +43,14 @@ def load_eval_module(bundle: Path | None = None):
         return mod
     copy = Path(bundle) / "mmxai_eval.py" if bundle is not None else None
     if copy is not None and copy.exists():
-        def code(t):  # bỏ docstring đầu file
-            return t.split('"""', 2)[2] if t.lstrip().startswith('"""') else t
+        def code(t):  # so mã thật: cây cú pháp, bỏ docstring và comment
+            import ast
+            tree = ast.parse(t)
+            for n in ast.walk(tree):
+                if isinstance(n, (ast.Module, ast.FunctionDef, ast.ClassDef, ast.AsyncFunctionDef)) and n.body \
+                        and isinstance(n.body[0], ast.Expr) and isinstance(getattr(n.body[0], "value", None), ast.Constant):
+                    n.body = n.body[1:]
+            return ast.dump(tree)
         if code(copy.read_text(encoding="utf-8")) != code(Path(mod.__file__).read_text(encoding="utf-8")):
             print(f"[mmxai] CẢNH BÁO: {copy} khác src/mmxai_eval.py — đang dùng bản trong repo", flush=True)
     return mod

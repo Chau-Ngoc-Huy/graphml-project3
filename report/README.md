@@ -10,3 +10,4 @@ make report        # từ gốc repo: vẽ hình (make_figs.py → figs/*.pdf) +
   `results/tables/*.md` và `results/adamf/vs_qagraph_paired.md` (đổi kết quả thì sửa số trong script). `IEEEtran.cls` đi kèm, không cần cài.
 - File trung gian (`.aux`, `.log`) nằm trong `build/report/`, không commit. Quy định nộp: 1 file PDF, ≤ 25 trang.
 - Overleaf: tải lên `report.tex`, `IEEEtran.cls`, `figs/`; chọn trình biên dịch XeLaTeX.
+- Hình 1 (`figs/fig_overview.tex`) minh họa bằng một truy vấn thật của tập test PSG; số liệu và ảnh sinh bằng `../.venv/bin/python make_example.py` (cần `data/psg_bundle`, `data/psg_raw`, `models/psg_qa_cn_seed0`) → `figs/example.json`, `figs/ex_*.jpg`.

@@ -1,0 +1,95 @@
+% Hình 1: tổng quan pipeline đi qua một truy vấn thật của tập test PSG (số liệu: figs/example.json, sinh bằng make_example.py)
+\begin{tikzpicture}[>=Stealth, font=\Large, line cap=round,
+  ptitle/.style={font=\Large\bfseries, anchor=north, align=center},
+  panel/.style={draw=black!25, rounded corners=5pt, fill=black!2},
+  cdir/.style={draw=blue!60!black, fill=blue!12, rounded corners=7pt, inner sep=5pt},
+  cind/.style={draw=orange!80!black, fill=orange!18, rounded corners=7pt, inner sep=5pt},
+  lab/.style={draw=black!45, fill=white, rounded corners=3pt, inner sep=4pt, minimum width=1.75cm},
+  img/.style={inner sep=1pt, draw=black!40, line width=0.7pt},
+  gold/.style={inner sep=1.5pt, draw=green!50!black, line width=2.2pt},
+  badge/.style={fill=black!80, text=white, font=\large\bfseries, rounded corners=2pt, inner sep=2pt},
+  gbadge/.style={fill=green!50!black, text=white, font=\large\bfseries, rounded corners=2pt, inner sep=2pt},
+  cn/.style={->, line width=1.8pt, green!50!black},
+  cnweak/.style={->, line width=1.3pt, densely dashed, green!50!black},
+  same/.style={->, line width=1.8pt, blue!60!black},
+  cont/.style={->, line width=0.9pt, black!30},
+  sg/.style={->, line width=1.5pt, violet},
+  flow/.style={->, line width=2.2pt, black!60},
+  note/.style={font=\large, align=center, text=black!75}]
+
+% ---------------- khung
+\fill[panel] (0,0) rectangle (4.8,10);
+\fill[panel] (5.2,0) rectangle (8.8,10);
+\fill[panel] (9.2,0) rectangle (18.4,10);
+\fill[panel] (18.8,0) rectangle (22.4,10);
+\fill[panel] (22.8,0) rectangle (27.8,10);
+\node[ptitle, text width=4.6cm] at (2.4,9.85) {\textcircled{\large 1}~Câu truy vấn\\$\to$ khái niệm};
+\node[ptitle, text width=3.4cm] at (7.0,9.85) {\textcircled{\large 2}~CLIP chọn\\100 ảnh ứng viên};
+\node[ptitle, text width=9cm] at (13.8,9.85) {\textcircled{\large 3}~QA-Graph: khớp khái niệm\\với nhãn của ảnh qua đồ thị};
+\node[ptitle, text width=3.4cm] at (20.6,9.85) {\textcircled{\large 4}~Xếp hạng\\lại};
+\node[ptitle, text width=4.8cm] at (25.3,9.85) {\textcircled{\large 5}~Giải thích\\và đánh giá};
+
+% ---------------- 1. câu truy vấn -> khái niệm
+\node[draw=black!50, fill=white, rounded corners=3pt, text width=4.1cm, align=center, inner sep=6pt, font=\Large\itshape]
+  (q) at (2.4,7.0) {``a woman throwing a frisbee in a green field.''};
+\node[cind] (cw) at (2.4,4.75) {woman};
+\node[cdir] (cf) at (2.4,3.85) {frisbee};
+\node[cind] (cg) at (2.4,2.95) {green field};
+\draw[->, line width=1.2pt, black!55] (q.south) -- (cw.north);
+\node[note, align=left, text width=4.4cm] at (2.4,1.05) {%
+  \textcolor{blue!60!black}{\rule{9pt}{9pt}} có trong nhãn ảnh\\
+  \textcolor{orange!80!black}{\rule{9pt}{9pt}} không có, cần đồ thị};
+
+% ---------------- 2. CLIP top-100
+\node[img, label={[badge, anchor=north west]north west:\#1}] (c1) at (7.0,7.15) {\includegraphics[height=1.6cm]{figs/ex_clip1.jpg}};
+\node[img, label={[badge, anchor=north west]north west:\#2}] (c2) at (7.0,5.2) {\includegraphics[height=1.6cm]{figs/ex_clip2.jpg}};
+\node at (7.0,3.9) {\LARGE $\vdots$};
+\node[gold, label={[gbadge, anchor=north west]north west:\#6}] (c6) at (7.0,2.5) {\includegraphics[height=1.6cm]{figs/ex_gold.jpg}};
+\node[note] at (7.0,0.75) {ảnh đúng: hạng 6};
+
+% ---------------- 3. QA-Graph
+\node[note] at (10.35,8.25) {khái niệm};
+\node[note] at (14.2,8.25) {nhãn ảnh};
+\node[cind] (gw) at (10.35,7.1) {woman};
+\node[cdir] (gf) at (10.35,5.3) {frisbee};
+\node[cind] (gg) at (10.35,3.5) {green field};
+\node[lab] (lp) at (14.2,7.1) {person};
+\node[lab] (lf) at (14.2,5.3) {frisbee};
+\node[lab] (lg) at (14.2,3.5) {grass};
+\node[lab, text=black!50] (lt) at (14.2,2.55) {tree};
+\node[lab, text=black!50] (ls) at (14.2,1.7) {sky};
+\node[gold] (gi) at (16.9,5.3) {\includegraphics[height=1.75cm]{figs/ex_gold.jpg}};
+\node[note] at (16.9,3.95) {ảnh đúng $i$};
+\foreach \n in {lp,lf,lg,lt,ls} \draw[cont] (\n.east) -- (gi.west);
+\draw[cn] (gw) -- node[above]{IsA} node[below, font=\large\bfseries, text=black]{$m{=}0{,}09$} (lp);
+\draw[same] (gf) -- node[above]{trùng} node[below, font=\large\bfseries, text=black]{$m{=}0{,}19$} (lf);
+\draw[cnweak] (gg) -- node[above]{2 bước} node[below, font=\large\bfseries, text=black]{$m{=}{-}0{,}01$} (lg);
+\draw[sg] (lp.south west) to[out=200, in=160, looseness=1.3] node[pos=0.5, left, font=\large\itshape]{throwing} (lf.north west);
+\node[note, align=left, text width=8.9cm] at (13.8,0.55) {%
+  \textcolor{green!45!black}{\rule[3pt]{16pt}{2pt}} ConceptNet\quad
+  \textcolor{violet}{\rule[3pt]{16pt}{2pt}} scene graph (từ ảnh train)\quad
+  \textcolor{black!35}{\rule[3pt]{16pt}{1.2pt}} contains\\
+  điểm đồ thị $=$ trung bình $m(c,i)=0{,}09$};
+
+% ---------------- 4. xếp hạng lại
+\node[gold, label={[gbadge, anchor=north west]north west:\#1}] (n1) at (20.6,7.15) {\includegraphics[height=1.6cm]{figs/ex_gold.jpg}};
+\node[img, label={[badge, anchor=north west]north west:\#2}] (n2) at (20.6,5.2) {\includegraphics[height=1.6cm]{figs/ex_clip2.jpg}};
+\node at (20.6,3.9) {\LARGE $\vdots$};
+\node[img, label={[badge, anchor=north west]north west:\#4}] (n4) at (20.6,2.5) {\includegraphics[height=1.6cm]{figs/ex_clip1.jpg}};
+\node[note] at (20.6,0.75) {$\alpha=0{,}3$ (chọn trên val)};
+\node[font=\large\bfseries, text=green!40!black] at (21.3,8.25) {6$\to$1};
+\node[font=\large\bfseries, text=red!60!black] at (21.3,3.6) {1$\to$4};
+
+% ---------------- 5. giải thích và đánh giá
+\node[draw=green!50!black, line width=1pt, fill=white, rounded corners=3pt, text width=4.45cm, align=left, inner sep=6pt]
+  at (25.3,6.45) {\textbf{Giải thích ảnh \#1}\\[3pt]
+  woman $\xrightarrow{\text{IsA}}$ person\\ \quad$\xrightarrow{\text{contains}}$ ảnh\\[2pt]
+  frisbee $\xrightarrow{\text{contains}}$ ảnh};
+\node[draw=black!40, fill=white, rounded corners=3pt, text width=4.45cm, align=left, inner sep=6pt]
+  at (25.3,2.55) {\textbf{Đánh giá}\\[3pt]
+  Recall@$k$, MRR\\[2pt]
+  fidelity: xóa cạnh giải thích rồi chấm lại; điểm phải giảm nhiều hơn khi xóa ngẫu nhiên};
+
+% ---------------- mũi tên giữa các khối
+\foreach \x in {4.8,8.8,18.4,22.4} \draw[flow] (\x+0.02,5.0) -- (\x+0.38,5.0);
+\end{tikzpicture}

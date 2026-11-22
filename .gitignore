@@ -65,3 +65,6 @@ external/
 results/raw/
 work_vg_data/
 *.index
+
+# ảnh minh họa của báo cáo (nhỏ, cần để build report)
+!report/figs/*.jpg
