@@ -65,7 +65,7 @@ Johnson và cộng sự~\cite{sgret} biểu diễn ảnh bằng bộ ba chủ th
 GCN~\cite{gcn} tổng hợp láng giềng với chuẩn hóa theo bậc, GAT~\cite{gat} học trọng số chú ý theo cạnh và GraphSAGE~\cite{sage} gộp biểu diễn láng giềng theo kiểu quy nạp. Chúng tôi đánh giá cả ba trên cùng đồ thị, số tầng, kích thước ẩn và giao thức huấn luyện để tách hiệu ứng kiến trúc khỏi hiệu ứng dữ liệu.
 
 \textbf{Đồ thị tri thức đa phương thức.}
-MMKG~\cite{mmkg} và IKRL~\cite{ikrl} gắn ảnh vào thực thể của đồ thị tri thức. Các phương pháp hoàn thiện MMKG như MKGformer~\cite{mkgformer}, NativE~\cite{native} và AdaMF-MAT~\cite{adamf} kết hợp cấu trúc, ảnh và văn bản để dự đoán thực thể hoặc quan hệ còn thiếu. Điểm chung là chúng giải bài toán \emph{hoàn thiện đồ thị}, không phải truy vấn ảnh theo câu. Chúng tôi chọn AdaMF-MAT vì có mã nguồn công khai và tái lập được, và dùng nó như bộ chấm điểm độ hợp lý của bộ ba (ảnh, \texttt{contains}, khái niệm). Câu hỏi mở là liệu biểu diễn quan hệ như vậy có vượt baseline khớp tên đối tượng không dùng quan hệ hay không.
+MMKG~\cite{mmkg} và IKRL~\cite{ikrl} gắn ảnh vào thực thể của đồ thị tri thức. Các phương pháp hoàn thiện MMKG như MKGformer~\cite{mkgformer}, NativE~\cite{native} và AdaMF-MAT~\cite{adamf} kết hợp cấu trúc, ảnh và văn bản để dự đoán thực thể hoặc quan hệ còn thiếu; khảo sát~\cite{survey} tổng hợp hướng nghiên cứu này. Điểm chung là chúng giải bài toán \emph{hoàn thiện đồ thị}, không phải truy vấn ảnh theo câu. Chúng tôi chọn AdaMF-MAT vì có mã nguồn công khai và tái lập được, và dùng nó như bộ chấm điểm độ hợp lý của bộ ba (ảnh, \texttt{contains}, khái niệm). Câu hỏi mở là liệu biểu diễn quan hệ như vậy có vượt baseline khớp tên đối tượng không dùng quan hệ hay không.
 
 \textbf{Giải thích mô hình đồ thị và đánh giá độ trung thực.}
 GNNExplainer~\cite{gnnexp} và PGExplainer~\cite{pgexplainer} tìm đồ thị con quan trọng cho dự đoán của GNN; các khảo sát~\cite{gnnxai,eraser} hệ thống hóa độ đo như fidelity và sparsity. Độ trung thực được định nghĩa là mức độ giải thích phản ánh quá trình suy luận thật của mô hình~\cite{faithfulness}; một cách phổ biến là bỏ phần được chọn rồi xem dự đoán thay đổi. Các phương pháp giải thích hậu nghiệm có thể cho đường đi hợp lý nhưng không ảnh hưởng tới dự đoán; vì vậy đồ án dùng giải thích \emph{gắn với cơ chế xếp hạng} và kiểm chứng bằng can thiệp cạnh so với cạnh ngẫu nhiên cùng số.
@@ -87,14 +87,14 @@ Thống kê chính được tóm tắt trong Bảng~\ref{tab:data}. Mỗi truy v
 train / val / test & 15\,000 / 2\,126 / 2\,138 & 15\,000 / 1\,000 / 2\,186 \\
 Tổng caption & 96\,381 & 90\,974 \\
 scene graph & Visual Genome~\cite{vg} & PSG~\cite{psg} \\
-Split & Karpathy~\cite{coco} & seed 0 \\
+Split & Karpathy & seed 0 \\
 Nhãn đối tượng & 2\,000 phổ biến nhất ở train & 133 \\
 ConceptNet~\cite{cn} & 16\,413 cạnh sau lọc & 674 khái niệm (3\,743 cạnh) \\
 \hline
 \end{tabular}
 \end{table}
 
-\textit{Visual Genome$\cap$MS-COCO.} Tập dùng 51\,208 ảnh VG có \texttt{coco\_id}; 19\,264 ảnh thuộc split chính được ghép với caption MS-COCO theo split Karpathy. Split chính có 15\,000 ảnh train, 2\,126 ảnh validation và 2\,138 ảnh test, tổng 96\,381 caption.
+\textit{Visual Genome$\cap$MS-COCO.} Tập dùng 51\,208 ảnh VG có \texttt{coco\_id}; 19\,264 ảnh thuộc split chính được ghép với caption MS-COCO~\cite{coco} theo split Karpathy~\cite{karpathy}. Split chính có 15\,000 ảnh train, 2\,126 ảnh validation và 2\,138 ảnh test, tổng 96\,381 caption.
 
 \textit{Panoptic Scene Graph$\cap$MS-COCO.} Bộ dữ liệu thứ hai gồm 18\,186 ảnh sau khi loại ảnh trùng train/val. Split seed 0 có 15\,000 ảnh train, 1\,000 ảnh validation và 2\,186 ảnh test, tổng 90\,974 caption. Đồ thị có 133 nhãn ảnh; bundle bổ sung 674 khái niệm xuất hiện trong caption train ít nhất 20 lần.
 
