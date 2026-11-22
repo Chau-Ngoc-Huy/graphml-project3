@@ -78,22 +78,20 @@ GNNExplainer~\cite{gnnexp} và PGExplainer~\cite{pgexplainer} tìm đồ thị c
 Thống kê chính được tóm tắt trong Bảng~\ref{tab:data}. Mỗi truy vấn là một caption; ảnh đúng duy nhất là ảnh có caption đó.
 
 \begin{table}[t]
-\caption{Dữ liệu và split dùng trong thí nghiệm chính.}\label{tab:data}
+\caption{Dữ liệu và split dùng trong thí nghiệm chính}\label{tab:data}
 \centering\small
-\begin{adjustbox}{max width=\columnwidth}
 \begin{tabular}{lcc}
 \hline
  & VG$\cap$COCO & PSG$\cap$COCO \\
 \hline
-Ảnh train / val / test & 15\,000 / 2\,126 / 2\,138 & 15\,000 / 1\,000 / 2\,186 \\
+train / val / test & 15\,000 / 2\,126 / 2\,138 & 15\,000 / 1\,000 / 2\,186 \\
 Tổng caption & 96\,381 & 90\,974 \\
-Nguồn scene graph & Visual Genome~\cite{vg} & PSG~\cite{psg} \\
-Split & Karpathy~\cite{coco}, theo COCO-ID & seed 0 \\
+scene graph & Visual Genome~\cite{vg} & PSG~\cite{psg} \\
+Split & Karpathy~\cite{coco} & seed 0 \\
 Nhãn đối tượng & 2\,000 phổ biến nhất ở train & 133 \\
-Khái niệm ConceptNet~\cite{cn} & 16\,413 cạnh sau lọc & 674 khái niệm (3\,743 cạnh) \\
+ConceptNet~\cite{cn} & 16\,413 cạnh sau lọc & 674 khái niệm (3\,743 cạnh) \\
 \hline
 \end{tabular}
-\end{adjustbox}
 \end{table}
 
 \textit{Visual Genome$\cap$MS-COCO.} Tập dùng 51\,208 ảnh VG có \texttt{coco\_id}; 19\,264 ảnh thuộc split chính được ghép với caption MS-COCO theo split Karpathy. Split chính có 15\,000 ảnh train, 2\,126 ảnh validation và 2\,138 ảnh test, tổng 96\,381 caption.
