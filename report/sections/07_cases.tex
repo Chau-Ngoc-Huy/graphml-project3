@@ -22,22 +22,17 @@ PSG & Không & 20 & There are many people on this field flying kites & kite, per
 \end{adjustbox}
 \end{table*}
 
-Hình~\ref{fig:xai-case-graph} minh họa một giải thích cụ thể ở hàng đầu của Bảng~\ref{tab:xai-cases}. Ba cạnh được chọn đều nối nhãn đối tượng với ảnh; hình không biểu diễn quan hệ giữa các đối tượng.
-\begin{figure}[t]
+Hình~\ref{fig:xai-cases-match} và Hình~\ref{fig:xai-cases-mismatch} minh họa cả mười trường hợp trong Bảng~\ref{tab:xai-cases}. Nhóm khớp ID có một ảnh cho mỗi truy vấn; nhóm khác ID đặt ảnh đứng đầu cạnh ảnh chuẩn để có thể đối chiếu trực quan. Các nhãn trong hình là những cạnh \texttt{contains} nối nhãn với ảnh đứng đầu, không biểu diễn quan hệ giữa các đối tượng.
+\begin{figure*}[t]
 \centering
-\begin{tikzpicture}[>=Stealth, font=\footnotesize,
-  labelnode/.style={draw, rounded corners=2pt, minimum width=1.65cm, minimum height=0.48cm},
-  imagenode/.style={draw, rounded corners=2pt, minimum width=2.2cm, minimum height=0.75cm}]
-\node[labelnode] (u) at (0,1.0) {umbrella};
-\node[labelnode] (r) at (0,0) {rain};
-\node[labelnode] (p) at (0,-1.0) {people};
-\node[imagenode] (i) at (3,0) {ảnh đứng đầu};
-\draw[->] (u.east) -- (i.north west);
-\draw[->] (r.east) -- (i.west);
-\draw[->] (p.east) -- (i.south west);
-\end{tikzpicture}
-\caption{Ba cạnh \texttt{contains} được chọn cho truy vấn về người cầm ô trong mưa. Đây là các cạnh có tác động lên điểm xếp hạng của ảnh, chưa phải bằng chứng rằng mô hình nhận biết quan hệ ``cầm''.}\label{fig:xai-case-graph}
-\end{figure}
+\includegraphics[width=\textwidth]{figs/xai_cases_match.png}
+\caption{Năm trường hợp ảnh đứng đầu khớp ID ảnh chuẩn, gồm ba truy vấn VG$\cap$COCO và hai truy vấn PSG$\cap$COCO, seed 0. Dòng nhãn dưới mỗi ảnh liệt kê các cạnh \texttt{contains} được chọn để giải thích ảnh đứng đầu.}\label{fig:xai-cases-match}
+\end{figure*}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/xai_cases_mismatch.png}
+\caption{Năm trường hợp ảnh đứng đầu khác ID ảnh chuẩn, gồm hai truy vấn VG$\cap$COCO và ba truy vấn PSG$\cap$COCO, seed 0. Hạng của ảnh chuẩn được ghi cạnh ảnh; dòng nhãn dưới mỗi cặp ảnh giải thích ảnh đứng đầu. Khác ID không tự chứng minh ảnh đứng đầu sai về ngữ nghĩa.}\label{fig:xai-cases-mismatch}
+\end{figure*}
 
 Ở năm trường hợp khớp ID, các nhãn được chọn bao phủ những đối tượng hoặc bối cảnh nổi bật của truy vấn: \emph{umbrella}, \emph{rain}, \emph{people} cho cảnh mưa; \emph{clock}, \emph{building}, \emph{window} cho tòa nhà; và \emph{car}, \emph{snow}, \emph{meter} cho cảnh xe trong tuyết. Hai truy vấn PSG cũng có các nhãn tương ứng là \emph{horse}, \emph{car}, \emph{road} và \emph{suitcase}, \emph{person}, \emph{pavement}. Xóa ba cạnh đã chọn ở trường hợp ô che mưa làm ảnh chuẩn từ hạng 1 xuống hạng 8; ở trường hợp người mang vali, ảnh chuẩn từ hạng 1 xuống hạng 4. Tác động lên thứ hạng cho thấy vai trò của nhãn đối tượng, còn thuộc tính đen trắng, vị trí ``giữa các xe'' và hành động ``mang vali'' chưa được các cạnh này kiểm chứng.
 
