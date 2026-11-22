@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from xai_experiment.query_registry import validated_registry_rows
+from xai.query_registry import validated_registry_rows
 
 
 class DirectRegistryTests(unittest.TestCase):

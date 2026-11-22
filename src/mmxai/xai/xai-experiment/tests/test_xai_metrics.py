@@ -1,8 +1,8 @@
 import unittest
 
-from xai_experiment.evaluate_xai import XAIEvaluator
-from xai_experiment.explain import EdgeContributionExplainer
-from xai_experiment.perturbation import random_edge_sets
+from xai.evaluate_xai import XAIEvaluator
+from xai.explain import EdgeContributionExplainer
+from xai.perturbation import random_edge_sets
 from _fixtures import tiny_graph, tiny_schema, tiny_scorer
 
 
@@ -42,3 +42,4 @@ class MetricTests(unittest.TestCase):
         self.assertTrue(all(sorted(strata[e] for e in row) == ["concept", "contains"] for row in sets))
         self.assertEqual(sets, random_edge_sets(tuple(strata), 2, 20, 7,
                                                 matched_to=("a", "c"), strata_by_id=strata))
+

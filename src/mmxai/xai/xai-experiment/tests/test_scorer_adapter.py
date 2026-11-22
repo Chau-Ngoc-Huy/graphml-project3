@@ -1,6 +1,6 @@
 import unittest
 
-from xai_experiment.scorer_adapter import CallableScorerAdapter, ScoreComponents
+from xai.scorer_adapter import CallableScorerAdapter, ScoreComponents
 from _fixtures import tiny_graph, tiny_scorer
 
 
@@ -35,3 +35,4 @@ class ScorerTests(unittest.TestCase):
         adapter.score("horse", ["1"], graph)
         adapter.score("horse", ["1"], graph.without_edges(["e3"]))
         self.assertEqual(seen_edge_counts, [4, 3])
+

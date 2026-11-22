@@ -5,9 +5,9 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from xai_experiment.query_registry import read_case_review_workbook
-from xai_experiment.review_workbook import create_review_workbook
-from xai_experiment.vlm_review import export_draft, load_queue, matching_record
+from xai.query_registry import read_case_review_workbook
+from xai.review_workbook import create_review_workbook
+from xai.vlm_review import export_draft, load_queue, matching_record
 
 
 class VlmReviewTests(unittest.TestCase):

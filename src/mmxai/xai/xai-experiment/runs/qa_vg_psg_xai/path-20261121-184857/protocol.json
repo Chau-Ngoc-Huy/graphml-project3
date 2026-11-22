@@ -1,0 +1,60 @@
+{
+  "query_mode": "verified_direct",
+  "explanation_mode": "object",
+  "manifest": "/content/drive/MyDrive/graphml-project3/duong/runs/qa_vg_psg_xai/dual-20261121-125423_manifest.json",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "path_screen_limits": [
+    40
+  ],
+  "edge_budgets": [
+    1,
+    2,
+    3
+  ],
+  "random_repeats": 20,
+  "random_seed": 20261121,
+  "selected_query_ids": {
+    "vg": [
+      14532,
+      40964,
+      31376,
+      32966,
+      42330,
+      11521,
+      95939,
+      63790,
+      56712,
+      78241,
+      57906,
+      32824,
+      1460,
+      62117,
+      90464,
+      79514,
+      94865,
+      15696
+    ],
+    "psg": [
+      15395,
+      10124,
+      10815,
+      57006,
+      33094,
+      36629,
+      80223,
+      21441,
+      65474,
+      29403,
+      31591,
+      6229,
+      57631,
+      9097,
+      52991,
+      11727
+    ]
+  }
+}

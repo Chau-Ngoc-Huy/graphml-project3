@@ -1,6 +1,6 @@
 import unittest
 
-from xai_experiment.graph import Edge, KnowledgeGraph, Node
+from xai.graph import Edge, KnowledgeGraph, Node
 
 
 class GraphTests(unittest.TestCase):
@@ -20,3 +20,4 @@ class GraphTests(unittest.TestCase):
             KnowledgeGraph.from_records([Node("x", "concept"), Node("x", "concept")], [])
         with self.assertRaisesRegex(ValueError, "dangling"):
             KnowledgeGraph.from_records([Node("x", "concept")], [Edge("e", "x", "missing", "r")])
+

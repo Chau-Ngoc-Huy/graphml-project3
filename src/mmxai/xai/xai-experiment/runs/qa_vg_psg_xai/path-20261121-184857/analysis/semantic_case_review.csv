@@ -1,0 +1,11 @@
+dataset,query_id,exact_id_outcome,retrieved_relevance,visual_reason,reviewer,relevance_source
+psg,9097,match,supported,,human,case_review_workbook
+psg,10124,match,supported,,human,case_review_workbook
+vg,14532,match,supported,,human,case_review_workbook
+vg,15696,match,supported,,human,case_review_workbook
+psg,10815,match,supported,,human,case_review_workbook
+psg,6229,mismatch,supported,User visually confirmed retrieved image supports the full query in the case workbook.,human,user_visual_confirmation
+psg,11727,mismatch,supported,User visually confirmed retrieved image supports the full query in the case workbook.,human,user_visual_confirmation
+vg,1460,mismatch,supported,User visually confirmed retrieved image supports the full query in the case workbook.,human,user_visual_confirmation
+vg,11521,mismatch,supported,User visually confirmed retrieved image supports the full query in the case workbook.,human,user_visual_confirmation
+psg,31591,mismatch,supported,User visually confirmed retrieved image supports the full query in the case workbook.,human,user_visual_confirmation

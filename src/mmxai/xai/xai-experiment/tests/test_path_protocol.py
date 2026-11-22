@@ -1,8 +1,8 @@
 import unittest
 
-from xai_experiment.graph import Edge, KnowledgeGraph, Node
-from xai_experiment.path_protocol import evaluate_case
-from xai_experiment.scorer_adapter import CallableScorerAdapter, ScoreComponents
+from xai.graph import Edge, KnowledgeGraph, Node
+from xai.path_protocol import evaluate_case
+from xai.scorer_adapter import CallableScorerAdapter, ScoreComponents
 
 
 class FakeCase:

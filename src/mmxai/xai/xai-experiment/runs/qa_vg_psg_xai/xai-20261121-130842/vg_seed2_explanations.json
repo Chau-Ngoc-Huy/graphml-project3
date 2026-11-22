@@ -1,0 +1,7070 @@
+[
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 6120,
+    "requested_k": 1,
+    "explanation": {
+      "query": "several people hold umbrellas in a rain storm",
+      "image_id": "2847",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3183686137199402,
+        "graph_score": 0.2581888735294342,
+        "final_score": 2.645020982101248
+      },
+      "edge_ids": [
+        "49131"
+      ],
+      "local_edge_ids": [
+        "49117",
+        "49118",
+        "49119",
+        "49120",
+        "49121",
+        "49122",
+        "49123",
+        "49124",
+        "49125",
+        "49126",
+        "49127",
+        "49128",
+        "49129",
+        "49130",
+        "49131",
+        "49132",
+        "49133",
+        "49134",
+        "49135",
+        "49136",
+        "49137",
+        "49138",
+        "49139",
+        "362881",
+        "362882",
+        "367661",
+        "367662",
+        "341965",
+        "341966",
+        "358085",
+        "358086",
+        "360209",
+        "360210",
+        "367680",
+        "358022",
+        "350169",
+        "360212",
+        "360220",
+        "360222",
+        "351617",
+        "358212",
+        "357848",
+        "357849",
+        "357850",
+        "358034",
+        "343267",
+        "357974",
+        "358098",
+        "358104",
+        "363839",
+        "351631",
+        "351627",
+        "357587",
+        "357593",
+        "358064",
+        "358066",
+        "358160",
+        "347181",
+        "358096",
+        "348929",
+        "358058",
+        "358080",
+        "358016"
+      ],
+      "contributions": [
+        {
+          "edge_id": "49131",
+          "graph_contribution": 0.11077247560024261,
+          "final_contribution": 0.3864711574757007,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.1474163979291916,
+            "final_score": 2.2585498246255473
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "49131"
+          ],
+          "node_ids": [
+            "label:2775",
+            "image:2847"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "49131",
+          "source": "label:2775",
+          "target": "image:2847",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 6120,
+    "requested_k": 3,
+    "explanation": {
+      "query": "several people hold umbrellas in a rain storm",
+      "image_id": "2847",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3183686137199402,
+        "graph_score": 0.2581888735294342,
+        "final_score": 2.645020982101248
+      },
+      "edge_ids": [
+        "49131",
+        "49123",
+        "49118"
+      ],
+      "local_edge_ids": [
+        "49117",
+        "49118",
+        "49119",
+        "49120",
+        "49121",
+        "49122",
+        "49123",
+        "49124",
+        "49125",
+        "49126",
+        "49127",
+        "49128",
+        "49129",
+        "49130",
+        "49131",
+        "49132",
+        "49133",
+        "49134",
+        "49135",
+        "49136",
+        "49137",
+        "49138",
+        "49139",
+        "362881",
+        "362882",
+        "367661",
+        "367662",
+        "341965",
+        "341966",
+        "358085",
+        "358086",
+        "360209",
+        "360210",
+        "367680",
+        "358022",
+        "350169",
+        "360212",
+        "360220",
+        "360222",
+        "351617",
+        "358212",
+        "357848",
+        "357849",
+        "357850",
+        "358034",
+        "343267",
+        "357974",
+        "358098",
+        "358104",
+        "363839",
+        "351631",
+        "351627",
+        "357587",
+        "357593",
+        "358064",
+        "358066",
+        "358160",
+        "347181",
+        "358096",
+        "348929",
+        "358058",
+        "358080",
+        "358016"
+      ],
+      "contributions": [
+        {
+          "edge_id": "49131",
+          "graph_contribution": 0.11077247560024261,
+          "final_contribution": 0.3864711574757007,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.1474163979291916,
+            "final_score": 2.2585498246255473
+          }
+        },
+        {
+          "edge_id": "49123",
+          "graph_contribution": 0.0404602587223053,
+          "final_contribution": 0.1393041677850384,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2177286148071289,
+            "final_score": 2.5057168143162096
+          }
+        },
+        {
+          "edge_id": "49118",
+          "graph_contribution": 0.015522763133049011,
+          "final_contribution": 0.053179389390721976,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2426661103963852,
+            "final_score": 2.591841592710526
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "49118"
+          ],
+          "node_ids": [
+            "label:1843",
+            "image:2847"
+          ]
+        },
+        {
+          "edge_ids": [
+            "49123"
+          ],
+          "node_ids": [
+            "label:2035",
+            "image:2847"
+          ]
+        },
+        {
+          "edge_ids": [
+            "49131"
+          ],
+          "node_ids": [
+            "label:2775",
+            "image:2847"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "49131",
+          "source": "label:2775",
+          "target": "image:2847",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "49123",
+          "source": "label:2035",
+          "target": "image:2847",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "49118",
+          "source": "label:1843",
+          "target": "image:2847",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 6120,
+    "requested_k": 5,
+    "explanation": {
+      "query": "several people hold umbrellas in a rain storm",
+      "image_id": "2847",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3183686137199402,
+        "graph_score": 0.2581888735294342,
+        "final_score": 2.645020982101248
+      },
+      "edge_ids": [
+        "49131",
+        "49123",
+        "49118",
+        "49125",
+        "367662"
+      ],
+      "local_edge_ids": [
+        "49117",
+        "49118",
+        "49119",
+        "49120",
+        "49121",
+        "49122",
+        "49123",
+        "49124",
+        "49125",
+        "49126",
+        "49127",
+        "49128",
+        "49129",
+        "49130",
+        "49131",
+        "49132",
+        "49133",
+        "49134",
+        "49135",
+        "49136",
+        "49137",
+        "49138",
+        "49139",
+        "362881",
+        "362882",
+        "367661",
+        "367662",
+        "341965",
+        "341966",
+        "358085",
+        "358086",
+        "360209",
+        "360210",
+        "367680",
+        "358022",
+        "350169",
+        "360212",
+        "360220",
+        "360222",
+        "351617",
+        "358212",
+        "357848",
+        "357849",
+        "357850",
+        "358034",
+        "343267",
+        "357974",
+        "358098",
+        "358104",
+        "363839",
+        "351631",
+        "351627",
+        "357587",
+        "357593",
+        "358064",
+        "358066",
+        "358160",
+        "347181",
+        "358096",
+        "348929",
+        "358058",
+        "358080",
+        "358016"
+      ],
+      "contributions": [
+        {
+          "edge_id": "49131",
+          "graph_contribution": 0.11077247560024261,
+          "final_contribution": 0.3864711574757007,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.1474163979291916,
+            "final_score": 2.2585498246255473
+          }
+        },
+        {
+          "edge_id": "49123",
+          "graph_contribution": 0.0404602587223053,
+          "final_contribution": 0.1393041677850384,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2177286148071289,
+            "final_score": 2.5057168143162096
+          }
+        },
+        {
+          "edge_id": "49118",
+          "graph_contribution": 0.015522763133049011,
+          "final_contribution": 0.053179389390721976,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2426661103963852,
+            "final_score": 2.591841592710526
+          }
+        },
+        {
+          "edge_id": "49125",
+          "graph_contribution": 0.01345720887184143,
+          "final_contribution": 0.046083683162489564,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.24473166465759277,
+            "final_score": 2.5989372989387585
+          }
+        },
+        {
+          "edge_id": "367662",
+          "graph_contribution": -0.002711057662963867,
+          "final_contribution": 0.011229348526530014,
+          "baseline": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.2581888735294342,
+            "final_score": 2.645020982101248
+          },
+          "perturbed": {
+            "clip_score": 0.3183686137199402,
+            "graph_score": 0.26089993119239807,
+            "final_score": 2.633791633574718
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "49118"
+          ],
+          "node_ids": [
+            "label:1843",
+            "image:2847"
+          ]
+        },
+        {
+          "edge_ids": [
+            "49123"
+          ],
+          "node_ids": [
+            "label:2035",
+            "image:2847"
+          ]
+        },
+        {
+          "edge_ids": [
+            "49125"
+          ],
+          "node_ids": [
+            "label:1850",
+            "image:2847"
+          ]
+        },
+        {
+          "edge_ids": [
+            "367662",
+            "49131"
+          ],
+          "node_ids": [
+            "label:449",
+            "label:2775",
+            "image:2847"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "49131",
+          "source": "label:2775",
+          "target": "image:2847",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "49123",
+          "source": "label:2035",
+          "target": "image:2847",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "49118",
+          "source": "label:1843",
+          "target": "image:2847",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "49125",
+          "source": "label:1850",
+          "target": "image:2847",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "367662",
+          "source": "label:449",
+          "target": "label:2775",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "AtLocation⁻¹"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 60916,
+    "requested_k": 1,
+    "explanation": {
+      "query": "A black and white photo of a building with a clock on it.",
+      "image_id": "12175",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.33169353008270264,
+        "graph_score": 0.19855670630931854,
+        "final_score": 3.367604262724087
+      },
+      "edge_ids": [
+        "211722"
+      ],
+      "local_edge_ids": [
+        "211713",
+        "211714",
+        "211715",
+        "211716",
+        "211717",
+        "211718",
+        "211719",
+        "211720",
+        "211721",
+        "211722",
+        "368819",
+        "368820",
+        "368865",
+        "368866",
+        "368885",
+        "353121",
+        "343407",
+        "368856",
+        "351335",
+        "343376",
+        "356531",
+        "336945",
+        "336947",
+        "343411",
+        "343372",
+        "368830",
+        "351381",
+        "366944",
+        "341022",
+        "337183",
+        "345561",
+        "342575",
+        "368249",
+        "363305",
+        "353749",
+        "341026",
+        "357411",
+        "357415",
+        "343380",
+        "346067",
+        "341024",
+        "344253",
+        "343161",
+        "361749",
+        "345969",
+        "363313",
+        "350279",
+        "350285",
+        "361017",
+        "351315"
+      ],
+      "contributions": [
+        {
+          "edge_id": "211722",
+          "graph_contribution": 0.16852514445781708,
+          "final_contribution": 0.8098101539156399,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.030031561851501465,
+            "final_score": 2.557794108808447
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "211722"
+          ],
+          "node_ids": [
+            "label:565",
+            "image:12175"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "211722",
+          "source": "label:565",
+          "target": "image:12175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 60916,
+    "requested_k": 3,
+    "explanation": {
+      "query": "A black and white photo of a building with a clock on it.",
+      "image_id": "12175",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.33169353008270264,
+        "graph_score": 0.19855670630931854,
+        "final_score": 3.367604262724087
+      },
+      "edge_ids": [
+        "211722",
+        "211717",
+        "211719"
+      ],
+      "local_edge_ids": [
+        "211713",
+        "211714",
+        "211715",
+        "211716",
+        "211717",
+        "211718",
+        "211719",
+        "211720",
+        "211721",
+        "211722",
+        "368819",
+        "368820",
+        "368865",
+        "368866",
+        "368885",
+        "353121",
+        "343407",
+        "368856",
+        "351335",
+        "343376",
+        "356531",
+        "336945",
+        "336947",
+        "343411",
+        "343372",
+        "368830",
+        "351381",
+        "366944",
+        "341022",
+        "337183",
+        "345561",
+        "342575",
+        "368249",
+        "363305",
+        "353749",
+        "341026",
+        "357411",
+        "357415",
+        "343380",
+        "346067",
+        "341024",
+        "344253",
+        "343161",
+        "361749",
+        "345969",
+        "363313",
+        "350279",
+        "350285",
+        "361017",
+        "351315"
+      ],
+      "contributions": [
+        {
+          "edge_id": "211722",
+          "graph_contribution": 0.16852514445781708,
+          "final_contribution": 0.8098101539156399,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.030031561851501465,
+            "final_score": 2.557794108808447
+          }
+        },
+        {
+          "edge_id": "211717",
+          "graph_contribution": 0.06479841470718384,
+          "final_contribution": 0.30212616853867313,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.1337582916021347,
+            "final_score": 3.065478094185414
+          }
+        },
+        {
+          "edge_id": "211719",
+          "graph_contribution": 0.0024690479040145874,
+          "final_contribution": 0.011279671951637482,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19608765840530396,
+            "final_score": 3.3563245907724495
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "211717"
+          ],
+          "node_ids": [
+            "label:389",
+            "image:12175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "211719"
+          ],
+          "node_ids": [
+            "label:2926",
+            "image:12175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "211722"
+          ],
+          "node_ids": [
+            "label:565",
+            "image:12175"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "211722",
+          "source": "label:565",
+          "target": "image:12175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "211717",
+          "source": "label:389",
+          "target": "image:12175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "211719",
+          "source": "label:2926",
+          "target": "image:12175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 60916,
+    "requested_k": 5,
+    "explanation": {
+      "query": "A black and white photo of a building with a clock on it.",
+      "image_id": "12175",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.33169353008270264,
+        "graph_score": 0.19855670630931854,
+        "final_score": 3.367604262724087
+      },
+      "edge_ids": [
+        "211722",
+        "211717",
+        "211719",
+        "211720",
+        "336947"
+      ],
+      "local_edge_ids": [
+        "211713",
+        "211714",
+        "211715",
+        "211716",
+        "211717",
+        "211718",
+        "211719",
+        "211720",
+        "211721",
+        "211722",
+        "368819",
+        "368820",
+        "368865",
+        "368866",
+        "368885",
+        "353121",
+        "343407",
+        "368856",
+        "351335",
+        "343376",
+        "356531",
+        "336945",
+        "336947",
+        "343411",
+        "343372",
+        "368830",
+        "351381",
+        "366944",
+        "341022",
+        "337183",
+        "345561",
+        "342575",
+        "368249",
+        "363305",
+        "353749",
+        "341026",
+        "357411",
+        "357415",
+        "343380",
+        "346067",
+        "341024",
+        "344253",
+        "343161",
+        "361749",
+        "345969",
+        "363313",
+        "350279",
+        "350285",
+        "361017",
+        "351315"
+      ],
+      "contributions": [
+        {
+          "edge_id": "211722",
+          "graph_contribution": 0.16852514445781708,
+          "final_contribution": 0.8098101539156399,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.030031561851501465,
+            "final_score": 2.557794108808447
+          }
+        },
+        {
+          "edge_id": "211717",
+          "graph_contribution": 0.06479841470718384,
+          "final_contribution": 0.30212616853867313,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.1337582916021347,
+            "final_score": 3.065478094185414
+          }
+        },
+        {
+          "edge_id": "211719",
+          "graph_contribution": 0.0024690479040145874,
+          "final_contribution": 0.011279671951637482,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19608765840530396,
+            "final_score": 3.3563245907724495
+          }
+        },
+        {
+          "edge_id": "211720",
+          "graph_contribution": 0.0008715838193893433,
+          "final_contribution": 0.003979723359933018,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.1976851224899292,
+            "final_score": 3.363624539364154
+          }
+        },
+        {
+          "edge_id": "336947",
+          "graph_contribution": -0.0013788193464279175,
+          "final_contribution": 0.003227886040459982,
+          "baseline": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19855670630931854,
+            "final_score": 3.367604262724087
+          },
+          "perturbed": {
+            "clip_score": 0.33169353008270264,
+            "graph_score": 0.19993552565574646,
+            "final_score": 3.364376376683627
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "211717"
+          ],
+          "node_ids": [
+            "label:389",
+            "image:12175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "211719"
+          ],
+          "node_ids": [
+            "label:2926",
+            "image:12175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "211720"
+          ],
+          "node_ids": [
+            "label:2700",
+            "image:12175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "336947",
+            "211722"
+          ],
+          "node_ids": [
+            "label:36",
+            "label:565",
+            "image:12175"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "211722",
+          "source": "label:565",
+          "target": "image:12175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "211717",
+          "source": "label:389",
+          "target": "image:12175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "211719",
+          "source": "label:2926",
+          "target": "image:12175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "211720",
+          "source": "label:2700",
+          "target": "image:12175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "336947",
+          "source": "label:36",
+          "target": "label:565",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "UsedFor"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 71077,
+    "requested_k": 1,
+    "explanation": {
+      "query": "Two remotes on a mattress with an adjustable sleep number one in the middle",
+      "image_id": "14206",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.4062608480453491,
+        "graph_score": 0.35024696588516235,
+        "final_score": 5.182373458559523
+      },
+      "edge_ids": [
+        "247480"
+      ],
+      "local_edge_ids": [
+        "247472",
+        "247473",
+        "247474",
+        "247475",
+        "247476",
+        "247477",
+        "247478",
+        "247479",
+        "247480",
+        "247481",
+        "247482",
+        "360451",
+        "360452",
+        "360459",
+        "360460",
+        "338939",
+        "338940",
+        "354911",
+        "354912",
+        "354923",
+        "354924",
+        "338981",
+        "343995",
+        "343996",
+        "346505",
+        "360456",
+        "350695",
+        "337755",
+        "358541",
+        "358567",
+        "341302",
+        "345231",
+        "344563",
+        "344557",
+        "360450",
+        "354918",
+        "342065",
+        "354920",
+        "344002",
+        "360454",
+        "361247",
+        "338976",
+        "338944",
+        "354916",
+        "363759",
+        "362317",
+        "342117",
+        "342105",
+        "360458",
+        "341316",
+        "344000"
+      ],
+      "contributions": [
+        {
+          "edge_id": "247480",
+          "graph_contribution": 0.1610730141401291,
+          "final_contribution": 0.5536125020165699,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.18917395174503326,
+            "final_score": 4.628760956542953
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "247480"
+          ],
+          "node_ids": [
+            "label:1551",
+            "image:14206"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "247480",
+          "source": "label:1551",
+          "target": "image:14206",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 71077,
+    "requested_k": 3,
+    "explanation": {
+      "query": "Two remotes on a mattress with an adjustable sleep number one in the middle",
+      "image_id": "14206",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.4062608480453491,
+        "graph_score": 0.35024696588516235,
+        "final_score": 5.182373458559523
+      },
+      "edge_ids": [
+        "247480",
+        "247472",
+        "247479"
+      ],
+      "local_edge_ids": [
+        "247472",
+        "247473",
+        "247474",
+        "247475",
+        "247476",
+        "247477",
+        "247478",
+        "247479",
+        "247480",
+        "247481",
+        "247482",
+        "360451",
+        "360452",
+        "360459",
+        "360460",
+        "338939",
+        "338940",
+        "354911",
+        "354912",
+        "354923",
+        "354924",
+        "338981",
+        "343995",
+        "343996",
+        "346505",
+        "360456",
+        "350695",
+        "337755",
+        "358541",
+        "358567",
+        "341302",
+        "345231",
+        "344563",
+        "344557",
+        "360450",
+        "354918",
+        "342065",
+        "354920",
+        "344002",
+        "360454",
+        "361247",
+        "338976",
+        "338944",
+        "354916",
+        "363759",
+        "362317",
+        "342117",
+        "342105",
+        "360458",
+        "341316",
+        "344000"
+      ],
+      "contributions": [
+        {
+          "edge_id": "247480",
+          "graph_contribution": 0.1610730141401291,
+          "final_contribution": 0.5536125020165699,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.18917395174503326,
+            "final_score": 4.628760956542953
+          }
+        },
+        {
+          "edge_id": "247472",
+          "graph_contribution": 0.05830150842666626,
+          "final_contribution": 0.1919025155840508,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.2919454574584961,
+            "final_score": 4.990470942975472
+          }
+        },
+        {
+          "edge_id": "247479",
+          "graph_contribution": 0.007823735475540161,
+          "final_contribution": 0.025194901613758702,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.3424232304096222,
+            "final_score": 5.157178556945764
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "247472"
+          ],
+          "node_ids": [
+            "label:2086",
+            "image:14206"
+          ]
+        },
+        {
+          "edge_ids": [
+            "247479"
+          ],
+          "node_ids": [
+            "label:2087",
+            "image:14206"
+          ]
+        },
+        {
+          "edge_ids": [
+            "247480"
+          ],
+          "node_ids": [
+            "label:1551",
+            "image:14206"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "247480",
+          "source": "label:1551",
+          "target": "image:14206",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "247472",
+          "source": "label:2086",
+          "target": "image:14206",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "247479",
+          "source": "label:2087",
+          "target": "image:14206",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 71077,
+    "requested_k": 5,
+    "explanation": {
+      "query": "Two remotes on a mattress with an adjustable sleep number one in the middle",
+      "image_id": "14206",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.4062608480453491,
+        "graph_score": 0.35024696588516235,
+        "final_score": 5.182373458559523
+      },
+      "edge_ids": [
+        "247480",
+        "247472",
+        "247479",
+        "354916",
+        "354920"
+      ],
+      "local_edge_ids": [
+        "247472",
+        "247473",
+        "247474",
+        "247475",
+        "247476",
+        "247477",
+        "247478",
+        "247479",
+        "247480",
+        "247481",
+        "247482",
+        "360451",
+        "360452",
+        "360459",
+        "360460",
+        "338939",
+        "338940",
+        "354911",
+        "354912",
+        "354923",
+        "354924",
+        "338981",
+        "343995",
+        "343996",
+        "346505",
+        "360456",
+        "350695",
+        "337755",
+        "358541",
+        "358567",
+        "341302",
+        "345231",
+        "344563",
+        "344557",
+        "360450",
+        "354918",
+        "342065",
+        "354920",
+        "344002",
+        "360454",
+        "361247",
+        "338976",
+        "338944",
+        "354916",
+        "363759",
+        "362317",
+        "342117",
+        "342105",
+        "360458",
+        "341316",
+        "344000"
+      ],
+      "contributions": [
+        {
+          "edge_id": "247480",
+          "graph_contribution": 0.1610730141401291,
+          "final_contribution": 0.5536125020165699,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.18917395174503326,
+            "final_score": 4.628760956542953
+          }
+        },
+        {
+          "edge_id": "247472",
+          "graph_contribution": 0.05830150842666626,
+          "final_contribution": 0.1919025155840508,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.2919454574584961,
+            "final_score": 4.990470942975472
+          }
+        },
+        {
+          "edge_id": "247479",
+          "graph_contribution": 0.007823735475540161,
+          "final_contribution": 0.025194901613758702,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.3424232304096222,
+            "final_score": 5.157178556945764
+          }
+        },
+        {
+          "edge_id": "354916",
+          "graph_contribution": 0.0037654638290405273,
+          "final_contribution": 0.00948891684506492,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.3464815020561218,
+            "final_score": 5.172884541714458
+          }
+        },
+        {
+          "edge_id": "354920",
+          "graph_contribution": 0.00243300199508667,
+          "final_contribution": 0.007091194139087875,
+          "baseline": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.35024696588516235,
+            "final_score": 5.182373458559523
+          },
+          "perturbed": {
+            "clip_score": 0.4062608480453491,
+            "graph_score": 0.3478139638900757,
+            "final_score": 5.175282264420435
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "247472"
+          ],
+          "node_ids": [
+            "label:2086",
+            "image:14206"
+          ]
+        },
+        {
+          "edge_ids": [
+            "247479"
+          ],
+          "node_ids": [
+            "label:2087",
+            "image:14206"
+          ]
+        },
+        {
+          "edge_ids": [
+            "354916",
+            "247480"
+          ],
+          "node_ids": [
+            "label:985",
+            "label:1551",
+            "image:14206"
+          ]
+        },
+        {
+          "edge_ids": [
+            "354920",
+            "247480"
+          ],
+          "node_ids": [
+            "label:1755",
+            "label:1551",
+            "image:14206"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "247480",
+          "source": "label:1551",
+          "target": "image:14206",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "247472",
+          "source": "label:2086",
+          "target": "image:14206",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "247479",
+          "source": "label:2087",
+          "target": "image:14206",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "354916",
+          "source": "label:985",
+          "target": "label:1551",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "IsA⁻¹"
+          }
+        },
+        {
+          "id": "354920",
+          "source": "label:1755",
+          "target": "label:1551",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "IsA⁻¹"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 14843,
+    "requested_k": 1,
+    "explanation": {
+      "query": "The picture of three buses on a lot.",
+      "image_id": "13382",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31981056928634644,
+        "graph_score": 0.22189383208751678,
+        "final_score": 2.368805295677346
+      },
+      "edge_ids": [
+        "233033"
+      ],
+      "local_edge_ids": [
+        "233033",
+        "233034",
+        "233035",
+        "233036",
+        "233037",
+        "233038",
+        "341178",
+        "341160",
+        "341102",
+        "346099",
+        "341192",
+        "336771",
+        "361019",
+        "341190",
+        "336737",
+        "343665",
+        "341172",
+        "341098",
+        "341180",
+        "341182",
+        "341184",
+        "364557",
+        "341176",
+        "351481",
+        "341186",
+        "341188",
+        "341166",
+        "341174",
+        "368867",
+        "342167",
+        "348107",
+        "347635",
+        "341096",
+        "341162",
+        "343245",
+        "343889",
+        "366832",
+        "341194",
+        "349063",
+        "341196",
+        "341090",
+        "341100",
+        "350702",
+        "345971",
+        "341168",
+        "366820"
+      ],
+      "contributions": [
+        {
+          "edge_id": "233033",
+          "graph_contribution": 0.5016863495111465,
+          "final_contribution": 1.5336688071390912,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": -0.27979251742362976,
+            "final_score": 0.8351364885382552
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "233033"
+          ],
+          "node_ids": [
+            "label:403",
+            "image:13382"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "233033",
+          "source": "label:403",
+          "target": "image:13382",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 14843,
+    "requested_k": 3,
+    "explanation": {
+      "query": "The picture of three buses on a lot.",
+      "image_id": "13382",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31981056928634644,
+        "graph_score": 0.22189383208751678,
+        "final_score": 2.368805295677346
+      },
+      "edge_ids": [
+        "233033",
+        "341182",
+        "341172"
+      ],
+      "local_edge_ids": [
+        "233033",
+        "233034",
+        "233035",
+        "233036",
+        "233037",
+        "233038",
+        "341178",
+        "341160",
+        "341102",
+        "346099",
+        "341192",
+        "336771",
+        "361019",
+        "341190",
+        "336737",
+        "343665",
+        "341172",
+        "341098",
+        "341180",
+        "341182",
+        "341184",
+        "364557",
+        "341176",
+        "351481",
+        "341186",
+        "341188",
+        "341166",
+        "341174",
+        "368867",
+        "342167",
+        "348107",
+        "347635",
+        "341096",
+        "341162",
+        "343245",
+        "343889",
+        "366832",
+        "341194",
+        "349063",
+        "341196",
+        "341090",
+        "341100",
+        "350702",
+        "345971",
+        "341168",
+        "366820"
+      ],
+      "contributions": [
+        {
+          "edge_id": "233033",
+          "graph_contribution": 0.5016863495111465,
+          "final_contribution": 1.5336688071390912,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": -0.27979251742362976,
+            "final_score": 0.8351364885382552
+          }
+        },
+        {
+          "edge_id": "341182",
+          "graph_contribution": -0.0027144253253936768,
+          "final_contribution": 0.004067873101562647,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22460825741291046,
+            "final_score": 2.3647374225757836
+          }
+        },
+        {
+          "edge_id": "341172",
+          "graph_contribution": -0.002231508493423462,
+          "final_contribution": 0.0032991596625819852,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22412534058094025,
+            "final_score": 2.3655061360147642
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "341172",
+            "233033"
+          ],
+          "node_ids": [
+            "label:2123",
+            "label:403",
+            "image:13382"
+          ]
+        },
+        {
+          "edge_ids": [
+            "341182",
+            "233033"
+          ],
+          "node_ids": [
+            "label:449",
+            "label:403",
+            "image:13382"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "233033",
+          "source": "label:403",
+          "target": "image:13382",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "341182",
+          "source": "label:449",
+          "target": "label:403",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "IsA⁻¹"
+          }
+        },
+        {
+          "id": "341172",
+          "source": "label:2123",
+          "target": "label:403",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "AtLocation⁻¹"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 14843,
+    "requested_k": 5,
+    "explanation": {
+      "query": "The picture of three buses on a lot.",
+      "image_id": "13382",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31981056928634644,
+        "graph_score": 0.22189383208751678,
+        "final_score": 2.368805295677346
+      },
+      "edge_ids": [
+        "233033",
+        "341182",
+        "341172",
+        "341184",
+        "341186"
+      ],
+      "local_edge_ids": [
+        "233033",
+        "233034",
+        "233035",
+        "233036",
+        "233037",
+        "233038",
+        "341178",
+        "341160",
+        "341102",
+        "346099",
+        "341192",
+        "336771",
+        "361019",
+        "341190",
+        "336737",
+        "343665",
+        "341172",
+        "341098",
+        "341180",
+        "341182",
+        "341184",
+        "364557",
+        "341176",
+        "351481",
+        "341186",
+        "341188",
+        "341166",
+        "341174",
+        "368867",
+        "342167",
+        "348107",
+        "347635",
+        "341096",
+        "341162",
+        "343245",
+        "343889",
+        "366832",
+        "341194",
+        "349063",
+        "341196",
+        "341090",
+        "341100",
+        "350702",
+        "345971",
+        "341168",
+        "366820"
+      ],
+      "contributions": [
+        {
+          "edge_id": "233033",
+          "graph_contribution": 0.5016863495111465,
+          "final_contribution": 1.5336688071390912,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": -0.27979251742362976,
+            "final_score": 0.8351364885382552
+          }
+        },
+        {
+          "edge_id": "341182",
+          "graph_contribution": -0.0027144253253936768,
+          "final_contribution": 0.004067873101562647,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22460825741291046,
+            "final_score": 2.3647374225757836
+          }
+        },
+        {
+          "edge_id": "341172",
+          "graph_contribution": -0.002231508493423462,
+          "final_contribution": 0.0032991596625819852,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22412534058094025,
+            "final_score": 2.3655061360147642
+          }
+        },
+        {
+          "edge_id": "341184",
+          "graph_contribution": -0.0020583420991897583,
+          "final_contribution": 0.0028978124751790624,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22395217418670654,
+            "final_score": 2.365907483202167
+          }
+        },
+        {
+          "edge_id": "341186",
+          "graph_contribution": -0.001956656575202942,
+          "final_contribution": 0.002696645890881477,
+          "baseline": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22189383208751678,
+            "final_score": 2.368805295677346
+          },
+          "perturbed": {
+            "clip_score": 0.31981056928634644,
+            "graph_score": 0.22385048866271973,
+            "final_score": 2.3661086497864647
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "341172",
+            "233033"
+          ],
+          "node_ids": [
+            "label:2123",
+            "label:403",
+            "image:13382"
+          ]
+        },
+        {
+          "edge_ids": [
+            "341182",
+            "233033"
+          ],
+          "node_ids": [
+            "label:449",
+            "label:403",
+            "image:13382"
+          ]
+        },
+        {
+          "edge_ids": [
+            "341184",
+            "233033"
+          ],
+          "node_ids": [
+            "label:1615",
+            "label:403",
+            "image:13382"
+          ]
+        },
+        {
+          "edge_ids": [
+            "341186",
+            "233033"
+          ],
+          "node_ids": [
+            "label:2877",
+            "label:403",
+            "image:13382"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "233033",
+          "source": "label:403",
+          "target": "image:13382",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "341182",
+          "source": "label:449",
+          "target": "label:403",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "IsA⁻¹"
+          }
+        },
+        {
+          "id": "341172",
+          "source": "label:2123",
+          "target": "label:403",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "AtLocation⁻¹"
+          }
+        },
+        {
+          "id": "341184",
+          "source": "label:1615",
+          "target": "label:403",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "IsA⁻¹"
+          }
+        },
+        {
+          "id": "341186",
+          "source": "label:2877",
+          "target": "label:403",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "IsA⁻¹"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 78769,
+    "requested_k": 1,
+    "explanation": {
+      "query": "A train is traveling down the train tracks alone",
+      "image_id": "19175",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.27969005703926086,
+        "graph_score": 0.10146323591470718,
+        "final_score": 1.7326701306450465
+      },
+      "edge_ids": [
+        "334988"
+      ],
+      "local_edge_ids": [
+        "334976",
+        "334977",
+        "334978",
+        "334979",
+        "334980",
+        "334981",
+        "334982",
+        "334983",
+        "334984",
+        "334985",
+        "334986",
+        "334987",
+        "334988",
+        "367145",
+        "367146",
+        "360185",
+        "367042",
+        "357581",
+        "360153",
+        "360151",
+        "360189",
+        "367142",
+        "367168",
+        "367026",
+        "367022",
+        "367068",
+        "367117",
+        "367123",
+        "367040",
+        "357645",
+        "367038",
+        "367062",
+        "367024",
+        "368900",
+        "336881",
+        "336597",
+        "358843",
+        "367064",
+        "361331",
+        "350920",
+        "336861",
+        "351593",
+        "349912",
+        "367136",
+        "336905",
+        "342053",
+        "346873",
+        "367132",
+        "366293",
+        "341951",
+        "366936",
+        "367020",
+        "350914"
+      ],
+      "contributions": [
+        {
+          "edge_id": "334988",
+          "graph_contribution": 0.1680690497159958,
+          "final_contribution": 0.5777953605825901,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": -0.0666058138012886,
+            "final_score": 1.1548747700624564
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "334988"
+          ],
+          "node_ids": [
+            "label:2717",
+            "image:19175"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "334988",
+          "source": "label:2717",
+          "target": "image:19175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 78769,
+    "requested_k": 3,
+    "explanation": {
+      "query": "A train is traveling down the train tracks alone",
+      "image_id": "19175",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.27969005703926086,
+        "graph_score": 0.10146323591470718,
+        "final_score": 1.7326701306450465
+      },
+      "edge_ids": [
+        "334988",
+        "334978",
+        "334980"
+      ],
+      "local_edge_ids": [
+        "334976",
+        "334977",
+        "334978",
+        "334979",
+        "334980",
+        "334981",
+        "334982",
+        "334983",
+        "334984",
+        "334985",
+        "334986",
+        "334987",
+        "334988",
+        "367145",
+        "367146",
+        "360185",
+        "367042",
+        "357581",
+        "360153",
+        "360151",
+        "360189",
+        "367142",
+        "367168",
+        "367026",
+        "367022",
+        "367068",
+        "367117",
+        "367123",
+        "367040",
+        "357645",
+        "367038",
+        "367062",
+        "367024",
+        "368900",
+        "336881",
+        "336597",
+        "358843",
+        "367064",
+        "361331",
+        "350920",
+        "336861",
+        "351593",
+        "349912",
+        "367136",
+        "336905",
+        "342053",
+        "346873",
+        "367132",
+        "366293",
+        "341951",
+        "366936",
+        "367020",
+        "350914"
+      ],
+      "contributions": [
+        {
+          "edge_id": "334988",
+          "graph_contribution": 0.1680690497159958,
+          "final_contribution": 0.5777953605825901,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": -0.0666058138012886,
+            "final_score": 1.1548747700624564
+          }
+        },
+        {
+          "edge_id": "334978",
+          "graph_contribution": 0.0037095248699188232,
+          "final_contribution": 0.012581429839017666,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.09775371104478836,
+            "final_score": 1.7200887008060288
+          }
+        },
+        {
+          "edge_id": "334980",
+          "graph_contribution": 0.0013268813490867615,
+          "final_contribution": 0.004499280711872,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10013635456562042,
+            "final_score": 1.7281708499331745
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "334978"
+          ],
+          "node_ids": [
+            "label:2718",
+            "image:19175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "334980"
+          ],
+          "node_ids": [
+            "label:2706",
+            "image:19175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "334988"
+          ],
+          "node_ids": [
+            "label:2717",
+            "image:19175"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "334988",
+          "source": "label:2717",
+          "target": "image:19175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "334978",
+          "source": "label:2718",
+          "target": "image:19175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "334980",
+          "source": "label:2706",
+          "target": "image:19175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 78769,
+    "requested_k": 5,
+    "explanation": {
+      "query": "A train is traveling down the train tracks alone",
+      "image_id": "19175",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.27969005703926086,
+        "graph_score": 0.10146323591470718,
+        "final_score": 1.7326701306450465
+      },
+      "edge_ids": [
+        "334988",
+        "334978",
+        "334980",
+        "334979",
+        "341951"
+      ],
+      "local_edge_ids": [
+        "334976",
+        "334977",
+        "334978",
+        "334979",
+        "334980",
+        "334981",
+        "334982",
+        "334983",
+        "334984",
+        "334985",
+        "334986",
+        "334987",
+        "334988",
+        "367145",
+        "367146",
+        "360185",
+        "367042",
+        "357581",
+        "360153",
+        "360151",
+        "360189",
+        "367142",
+        "367168",
+        "367026",
+        "367022",
+        "367068",
+        "367117",
+        "367123",
+        "367040",
+        "357645",
+        "367038",
+        "367062",
+        "367024",
+        "368900",
+        "336881",
+        "336597",
+        "358843",
+        "367064",
+        "361331",
+        "350920",
+        "336861",
+        "351593",
+        "349912",
+        "367136",
+        "336905",
+        "342053",
+        "346873",
+        "367132",
+        "366293",
+        "341951",
+        "366936",
+        "367020",
+        "350914"
+      ],
+      "contributions": [
+        {
+          "edge_id": "334988",
+          "graph_contribution": 0.1680690497159958,
+          "final_contribution": 0.5777953605825901,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": -0.0666058138012886,
+            "final_score": 1.1548747700624564
+          }
+        },
+        {
+          "edge_id": "334978",
+          "graph_contribution": 0.0037095248699188232,
+          "final_contribution": 0.012581429839017666,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.09775371104478836,
+            "final_score": 1.7200887008060288
+          }
+        },
+        {
+          "edge_id": "334980",
+          "graph_contribution": 0.0013268813490867615,
+          "final_contribution": 0.004499280711872,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10013635456562042,
+            "final_score": 1.7281708499331745
+          }
+        },
+        {
+          "edge_id": "334979",
+          "graph_contribution": 0.0007898062467575073,
+          "final_contribution": 0.0026779802275405107,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10067342966794968,
+            "final_score": 1.729992150417506
+          }
+        },
+        {
+          "edge_id": "341951",
+          "graph_contribution": -0.006855137646198273,
+          "final_contribution": 0.0019388978924173017,
+          "baseline": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10146323591470718,
+            "final_score": 1.7326701306450465
+          },
+          "perturbed": {
+            "clip_score": 0.27969005703926086,
+            "graph_score": 0.10831837356090546,
+            "final_score": 1.7307312327526292
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "334978"
+          ],
+          "node_ids": [
+            "label:2718",
+            "image:19175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "334979"
+          ],
+          "node_ids": [
+            "label:2323",
+            "image:19175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "334980"
+          ],
+          "node_ids": [
+            "label:2706",
+            "image:19175"
+          ]
+        },
+        {
+          "edge_ids": [
+            "341951",
+            "334988"
+          ],
+          "node_ids": [
+            "label:449",
+            "label:2717",
+            "image:19175"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "334988",
+          "source": "label:2717",
+          "target": "image:19175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "334978",
+          "source": "label:2718",
+          "target": "image:19175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "334980",
+          "source": "label:2706",
+          "target": "image:19175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "334979",
+          "source": "label:2323",
+          "target": "image:19175",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "341951",
+          "source": "label:449",
+          "target": "label:2717",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "PartOf"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 85390,
+    "requested_k": 1,
+    "explanation": {
+      "query": "Two zebras and another animal grazing in the grass.",
+      "image_id": "18104",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.344551682472229,
+        "graph_score": 0.1746060997247696,
+        "final_score": 2.5512305373179784
+      },
+      "edge_ids": [
+        "315951"
+      ],
+      "local_edge_ids": [
+        "315950",
+        "315951",
+        "315952",
+        "315953",
+        "315954",
+        "315955",
+        "315956",
+        "315957",
+        "315958",
+        "315959",
+        "315960",
+        "369389",
+        "369390",
+        "349857",
+        "349858",
+        "349871",
+        "349872",
+        "337109",
+        "353220",
+        "349860",
+        "353169",
+        "369398",
+        "349854",
+        "345407",
+        "349459",
+        "349437",
+        "369394",
+        "355473",
+        "355475",
+        "369388",
+        "350631",
+        "349965",
+        "365724",
+        "349884",
+        "368663",
+        "369386",
+        "367348",
+        "337066",
+        "349880",
+        "353217",
+        "353218",
+        "346531",
+        "346532",
+        "350031",
+        "350032",
+        "350927",
+        "350928",
+        "353238",
+        "367366",
+        "336731",
+        "358925"
+      ],
+      "contributions": [
+        {
+          "edge_id": "315951",
+          "graph_contribution": 0.13335760310292244,
+          "final_contribution": 0.518294525401203,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.04124849662184715,
+            "final_score": 2.0329360119167754
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "315951"
+          ],
+          "node_ids": [
+            "label:2996",
+            "image:18104"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "315951",
+          "source": "label:2996",
+          "target": "image:18104",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 85390,
+    "requested_k": 3,
+    "explanation": {
+      "query": "Two zebras and another animal grazing in the grass.",
+      "image_id": "18104",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.344551682472229,
+        "graph_score": 0.1746060997247696,
+        "final_score": 2.5512305373179784
+      },
+      "edge_ids": [
+        "315951",
+        "315960",
+        "315957"
+      ],
+      "local_edge_ids": [
+        "315950",
+        "315951",
+        "315952",
+        "315953",
+        "315954",
+        "315955",
+        "315956",
+        "315957",
+        "315958",
+        "315959",
+        "315960",
+        "369389",
+        "369390",
+        "349857",
+        "349858",
+        "349871",
+        "349872",
+        "337109",
+        "353220",
+        "349860",
+        "353169",
+        "369398",
+        "349854",
+        "345407",
+        "349459",
+        "349437",
+        "369394",
+        "355473",
+        "355475",
+        "369388",
+        "350631",
+        "349965",
+        "365724",
+        "349884",
+        "368663",
+        "369386",
+        "367348",
+        "337066",
+        "349880",
+        "353217",
+        "353218",
+        "346531",
+        "346532",
+        "350031",
+        "350032",
+        "350927",
+        "350928",
+        "353238",
+        "367366",
+        "336731",
+        "358925"
+      ],
+      "contributions": [
+        {
+          "edge_id": "315951",
+          "graph_contribution": 0.13335760310292244,
+          "final_contribution": 0.518294525401203,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.04124849662184715,
+            "final_score": 2.0329360119167754
+          }
+        },
+        {
+          "edge_id": "315960",
+          "graph_contribution": 0.03261083364486694,
+          "final_contribution": 0.12410063856874576,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.14199526607990265,
+            "final_score": 2.4271298987492327
+          }
+        },
+        {
+          "edge_id": "315957",
+          "graph_contribution": 0.025231271982192993,
+          "final_contribution": 0.09585845891086997,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1493748277425766,
+            "final_score": 2.4553720784071085
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "315951"
+          ],
+          "node_ids": [
+            "label:2996",
+            "image:18104"
+          ]
+        },
+        {
+          "edge_ids": [
+            "315957"
+          ],
+          "node_ids": [
+            "label:1121",
+            "image:18104"
+          ]
+        },
+        {
+          "edge_ids": [
+            "315960"
+          ],
+          "node_ids": [
+            "label:54",
+            "image:18104"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "315951",
+          "source": "label:2996",
+          "target": "image:18104",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "315960",
+          "source": "label:54",
+          "target": "image:18104",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "315957",
+          "source": "label:1121",
+          "target": "image:18104",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 85390,
+    "requested_k": 5,
+    "explanation": {
+      "query": "Two zebras and another animal grazing in the grass.",
+      "image_id": "18104",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.344551682472229,
+        "graph_score": 0.1746060997247696,
+        "final_score": 2.5512305373179784
+      },
+      "edge_ids": [
+        "315951",
+        "315960",
+        "315957",
+        "369388",
+        "315952"
+      ],
+      "local_edge_ids": [
+        "315950",
+        "315951",
+        "315952",
+        "315953",
+        "315954",
+        "315955",
+        "315956",
+        "315957",
+        "315958",
+        "315959",
+        "315960",
+        "369389",
+        "369390",
+        "349857",
+        "349858",
+        "349871",
+        "349872",
+        "337109",
+        "353220",
+        "349860",
+        "353169",
+        "369398",
+        "349854",
+        "345407",
+        "349459",
+        "349437",
+        "369394",
+        "355473",
+        "355475",
+        "369388",
+        "350631",
+        "349965",
+        "365724",
+        "349884",
+        "368663",
+        "369386",
+        "367348",
+        "337066",
+        "349880",
+        "353217",
+        "353218",
+        "346531",
+        "346532",
+        "350031",
+        "350032",
+        "350927",
+        "350928",
+        "353238",
+        "367366",
+        "336731",
+        "358925"
+      ],
+      "contributions": [
+        {
+          "edge_id": "315951",
+          "graph_contribution": 0.13335760310292244,
+          "final_contribution": 0.518294525401203,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.04124849662184715,
+            "final_score": 2.0329360119167754
+          }
+        },
+        {
+          "edge_id": "315960",
+          "graph_contribution": 0.03261083364486694,
+          "final_contribution": 0.12410063856874576,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.14199526607990265,
+            "final_score": 2.4271298987492327
+          }
+        },
+        {
+          "edge_id": "315957",
+          "graph_contribution": 0.025231271982192993,
+          "final_contribution": 0.09585845891086997,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1493748277425766,
+            "final_score": 2.4553720784071085
+          }
+        },
+        {
+          "edge_id": "369388",
+          "graph_contribution": -0.0031960606575012207,
+          "final_contribution": 0.003770888985223042,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1778021603822708,
+            "final_score": 2.5474596483327554
+          }
+        },
+        {
+          "edge_id": "315952",
+          "graph_contribution": 0.0005560219287872314,
+          "final_contribution": 0.0021006356455703923,
+          "baseline": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.1746060997247696,
+            "final_score": 2.5512305373179784
+          },
+          "perturbed": {
+            "clip_score": 0.344551682472229,
+            "graph_score": 0.17405007779598236,
+            "final_score": 2.549129901672408
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "315952"
+          ],
+          "node_ids": [
+            "label:1406",
+            "image:18104"
+          ]
+        },
+        {
+          "edge_ids": [
+            "315957"
+          ],
+          "node_ids": [
+            "label:1121",
+            "image:18104"
+          ]
+        },
+        {
+          "edge_ids": [
+            "315960"
+          ],
+          "node_ids": [
+            "label:54",
+            "image:18104"
+          ]
+        },
+        {
+          "edge_ids": [
+            "369388",
+            "315951"
+          ],
+          "node_ids": [
+            "label:1682",
+            "label:2996",
+            "image:18104"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "315951",
+          "source": "label:2996",
+          "target": "image:18104",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "315960",
+          "source": "label:54",
+          "target": "image:18104",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "315957",
+          "source": "label:1121",
+          "target": "image:18104",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "369388",
+          "source": "label:1682",
+          "target": "label:2996",
+          "relation": "concept",
+          "weight": 1.0,
+          "provenance": "ConceptNet",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "concept",
+            "pair_relation_hint": "HasA⁻¹"
+          }
+        },
+        {
+          "id": "315952",
+          "source": "label:1406",
+          "target": "image:18104",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 51590,
+    "requested_k": 1,
+    "explanation": {
+      "query": "A one way sign mounted to the side of a pole.",
+      "image_id": "11845",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31137675046920776,
+        "graph_score": 0.1687011569738388,
+        "final_score": 2.4495247275364678
+      },
+      "edge_ids": [
+        "206040"
+      ],
+      "local_edge_ids": [
+        "206025",
+        "206026",
+        "206027",
+        "206028",
+        "206029",
+        "206030",
+        "206031",
+        "206032",
+        "206033",
+        "206034",
+        "206035",
+        "206036",
+        "206037",
+        "206038",
+        "206039",
+        "206040",
+        "206041",
+        "365025",
+        "365026",
+        "362938",
+        "362959",
+        "365024",
+        "368548",
+        "357643",
+        "357649",
+        "368530",
+        "368546",
+        "368542",
+        "362942",
+        "362940",
+        "353051",
+        "360817",
+        "368550",
+        "354807",
+        "354711",
+        "359549",
+        "339815",
+        "339847",
+        "357535",
+        "357541",
+        "368534",
+        "337677",
+        "353712",
+        "368558",
+        "362926",
+        "368560",
+        "364865",
+        "362928",
+        "368528",
+        "368544",
+        "367753",
+        "359274",
+        "359217",
+        "354681",
+        "357521",
+        "354199",
+        "362916"
+      ],
+      "contributions": [
+        {
+          "edge_id": "206040",
+          "graph_contribution": 0.052493616938591,
+          "final_contribution": 0.20500215596264537,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1162075400352478,
+            "final_score": 2.2445225715738224
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "206040"
+          ],
+          "node_ids": [
+            "label:2862",
+            "image:11845"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "206040",
+          "source": "label:2862",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 51590,
+    "requested_k": 3,
+    "explanation": {
+      "query": "A one way sign mounted to the side of a pole.",
+      "image_id": "11845",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31137675046920776,
+        "graph_score": 0.1687011569738388,
+        "final_score": 2.4495247275364678
+      },
+      "edge_ids": [
+        "206040",
+        "206038",
+        "206026"
+      ],
+      "local_edge_ids": [
+        "206025",
+        "206026",
+        "206027",
+        "206028",
+        "206029",
+        "206030",
+        "206031",
+        "206032",
+        "206033",
+        "206034",
+        "206035",
+        "206036",
+        "206037",
+        "206038",
+        "206039",
+        "206040",
+        "206041",
+        "365025",
+        "365026",
+        "362938",
+        "362959",
+        "365024",
+        "368548",
+        "357643",
+        "357649",
+        "368530",
+        "368546",
+        "368542",
+        "362942",
+        "362940",
+        "353051",
+        "360817",
+        "368550",
+        "354807",
+        "354711",
+        "359549",
+        "339815",
+        "339847",
+        "357535",
+        "357541",
+        "368534",
+        "337677",
+        "353712",
+        "368558",
+        "362926",
+        "368560",
+        "364865",
+        "362928",
+        "368528",
+        "368544",
+        "367753",
+        "359274",
+        "359217",
+        "354681",
+        "357521",
+        "354199",
+        "362916"
+      ],
+      "contributions": [
+        {
+          "edge_id": "206040",
+          "graph_contribution": 0.052493616938591,
+          "final_contribution": 0.20500215596264537,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1162075400352478,
+            "final_score": 2.2445225715738224
+          }
+        },
+        {
+          "edge_id": "206038",
+          "graph_contribution": 0.04068785905838013,
+          "final_contribution": 0.15850610601231363,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.12801329791545868,
+            "final_score": 2.291018621524154
+          }
+        },
+        {
+          "edge_id": "206026",
+          "graph_contribution": 0.020450562238693237,
+          "final_contribution": 0.07932482659225704,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.14825059473514557,
+            "final_score": 2.3701999009442107
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "206026"
+          ],
+          "node_ids": [
+            "label:1449",
+            "image:11845"
+          ]
+        },
+        {
+          "edge_ids": [
+            "206038"
+          ],
+          "node_ids": [
+            "label:2276",
+            "image:11845"
+          ]
+        },
+        {
+          "edge_ids": [
+            "206040"
+          ],
+          "node_ids": [
+            "label:2862",
+            "image:11845"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "206040",
+          "source": "label:2862",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "206038",
+          "source": "label:2276",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "206026",
+          "source": "label:1449",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 51590,
+    "requested_k": 5,
+    "explanation": {
+      "query": "A one way sign mounted to the side of a pole.",
+      "image_id": "11845",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31137675046920776,
+        "graph_score": 0.1687011569738388,
+        "final_score": 2.4495247275364678
+      },
+      "edge_ids": [
+        "206040",
+        "206038",
+        "206026",
+        "206030",
+        "206025"
+      ],
+      "local_edge_ids": [
+        "206025",
+        "206026",
+        "206027",
+        "206028",
+        "206029",
+        "206030",
+        "206031",
+        "206032",
+        "206033",
+        "206034",
+        "206035",
+        "206036",
+        "206037",
+        "206038",
+        "206039",
+        "206040",
+        "206041",
+        "365025",
+        "365026",
+        "362938",
+        "362959",
+        "365024",
+        "368548",
+        "357643",
+        "357649",
+        "368530",
+        "368546",
+        "368542",
+        "362942",
+        "362940",
+        "353051",
+        "360817",
+        "368550",
+        "354807",
+        "354711",
+        "359549",
+        "339815",
+        "339847",
+        "357535",
+        "357541",
+        "368534",
+        "337677",
+        "353712",
+        "368558",
+        "362926",
+        "368560",
+        "364865",
+        "362928",
+        "368528",
+        "368544",
+        "367753",
+        "359274",
+        "359217",
+        "354681",
+        "357521",
+        "354199",
+        "362916"
+      ],
+      "contributions": [
+        {
+          "edge_id": "206040",
+          "graph_contribution": 0.052493616938591,
+          "final_contribution": 0.20500215596264537,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1162075400352478,
+            "final_score": 2.2445225715738224
+          }
+        },
+        {
+          "edge_id": "206038",
+          "graph_contribution": 0.04068785905838013,
+          "final_contribution": 0.15850610601231363,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.12801329791545868,
+            "final_score": 2.291018621524154
+          }
+        },
+        {
+          "edge_id": "206026",
+          "graph_contribution": 0.020450562238693237,
+          "final_contribution": 0.07932482659225704,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.14825059473514557,
+            "final_score": 2.3701999009442107
+          }
+        },
+        {
+          "edge_id": "206030",
+          "graph_contribution": 0.0060329437255859375,
+          "final_contribution": 0.023327104580324054,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.16266821324825287,
+            "final_score": 2.4261976229561437
+          }
+        },
+        {
+          "edge_id": "206025",
+          "graph_contribution": 0.004162117838859558,
+          "final_contribution": 0.01608668297365634,
+          "baseline": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.1687011569738388,
+            "final_score": 2.4495247275364678
+          },
+          "perturbed": {
+            "clip_score": 0.31137675046920776,
+            "graph_score": 0.16453903913497925,
+            "final_score": 2.4334380445628114
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "206025"
+          ],
+          "node_ids": [
+            "label:83",
+            "image:11845"
+          ]
+        },
+        {
+          "edge_ids": [
+            "206026"
+          ],
+          "node_ids": [
+            "label:1449",
+            "image:11845"
+          ]
+        },
+        {
+          "edge_ids": [
+            "206030"
+          ],
+          "node_ids": [
+            "label:2495",
+            "image:11845"
+          ]
+        },
+        {
+          "edge_ids": [
+            "206038"
+          ],
+          "node_ids": [
+            "label:2276",
+            "image:11845"
+          ]
+        },
+        {
+          "edge_ids": [
+            "206040"
+          ],
+          "node_ids": [
+            "label:2862",
+            "image:11845"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "206040",
+          "source": "label:2862",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "206038",
+          "source": "label:2276",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "206026",
+          "source": "label:1449",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "206030",
+          "source": "label:2495",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "206025",
+          "source": "label:83",
+          "target": "image:11845",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 68975,
+    "requested_k": 1,
+    "explanation": {
+      "query": "Car buried in snow next to what might be a gas pump.",
+      "image_id": "13786",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.32712918519973755,
+        "graph_score": 0.14774692058563232,
+        "final_score": 3.7049404155304027
+      },
+      "edge_ids": [
+        "240120"
+      ],
+      "local_edge_ids": [
+        "240095",
+        "240096",
+        "240097",
+        "240098",
+        "240099",
+        "240100",
+        "240101",
+        "240102",
+        "240103",
+        "240104",
+        "240105",
+        "240106",
+        "240107",
+        "240108",
+        "240109",
+        "240110",
+        "240111",
+        "240112",
+        "240113",
+        "240114",
+        "240115",
+        "240116",
+        "240117",
+        "240118",
+        "240119",
+        "240120",
+        "240121",
+        "341937",
+        "341938",
+        "354345",
+        "354346",
+        "345973",
+        "345974",
+        "359887",
+        "359888",
+        "363565",
+        "363566",
+        "368869",
+        "368870",
+        "341930",
+        "367879",
+        "341946",
+        "367873",
+        "341902",
+        "341910",
+        "341914",
+        "359894",
+        "341932",
+        "341890",
+        "337667",
+        "341956",
+        "337661",
+        "341892",
+        "346359",
+        "346373",
+        "341940",
+        "354320",
+        "341971",
+        "341898",
+        "359890",
+        "341888",
+        "341936",
+        "341896",
+        "363607",
+        "337649",
+        "341954",
+        "351675"
+      ],
+      "contributions": [
+        {
+          "edge_id": "240120",
+          "graph_contribution": 0.07688889652490616,
+          "final_contribution": 0.31670075917307194,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.07085802406072617,
+            "final_score": 3.3882396563573307
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "240120"
+          ],
+          "node_ids": [
+            "label:449",
+            "image:13786"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "240120",
+          "source": "label:449",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 68975,
+    "requested_k": 3,
+    "explanation": {
+      "query": "Car buried in snow next to what might be a gas pump.",
+      "image_id": "13786",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.32712918519973755,
+        "graph_score": 0.14774692058563232,
+        "final_score": 3.7049404155304027
+      },
+      "edge_ids": [
+        "240120",
+        "240108",
+        "240101"
+      ],
+      "local_edge_ids": [
+        "240095",
+        "240096",
+        "240097",
+        "240098",
+        "240099",
+        "240100",
+        "240101",
+        "240102",
+        "240103",
+        "240104",
+        "240105",
+        "240106",
+        "240107",
+        "240108",
+        "240109",
+        "240110",
+        "240111",
+        "240112",
+        "240113",
+        "240114",
+        "240115",
+        "240116",
+        "240117",
+        "240118",
+        "240119",
+        "240120",
+        "240121",
+        "341937",
+        "341938",
+        "354345",
+        "354346",
+        "345973",
+        "345974",
+        "359887",
+        "359888",
+        "363565",
+        "363566",
+        "368869",
+        "368870",
+        "341930",
+        "367879",
+        "341946",
+        "367873",
+        "341902",
+        "341910",
+        "341914",
+        "359894",
+        "341932",
+        "341890",
+        "337667",
+        "341956",
+        "337661",
+        "341892",
+        "346359",
+        "346373",
+        "341940",
+        "354320",
+        "341971",
+        "341898",
+        "359890",
+        "341888",
+        "341936",
+        "341896",
+        "363607",
+        "337649",
+        "341954",
+        "351675"
+      ],
+      "contributions": [
+        {
+          "edge_id": "240120",
+          "graph_contribution": 0.07688889652490616,
+          "final_contribution": 0.31670075917307194,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.07085802406072617,
+            "final_score": 3.3882396563573307
+          }
+        },
+        {
+          "edge_id": "240108",
+          "graph_contribution": 0.04757910966873169,
+          "final_contribution": 0.19415191592080472,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.10016781091690063,
+            "final_score": 3.510788499609598
+          }
+        },
+        {
+          "edge_id": "240101",
+          "graph_contribution": 0.008159130811691284,
+          "final_contribution": 0.03286460268036606,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.13958778977394104,
+            "final_score": 3.6720758128500366
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "240101"
+          ],
+          "node_ids": [
+            "label:1575",
+            "image:13786"
+          ]
+        },
+        {
+          "edge_ids": [
+            "240108"
+          ],
+          "node_ids": [
+            "label:2353",
+            "image:13786"
+          ]
+        },
+        {
+          "edge_ids": [
+            "240120"
+          ],
+          "node_ids": [
+            "label:449",
+            "image:13786"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "240120",
+          "source": "label:449",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "240108",
+          "source": "label:2353",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "240101",
+          "source": "label:1575",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 68975,
+    "requested_k": 5,
+    "explanation": {
+      "query": "Car buried in snow next to what might be a gas pump.",
+      "image_id": "13786",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.32712918519973755,
+        "graph_score": 0.14774692058563232,
+        "final_score": 3.7049404155304027
+      },
+      "edge_ids": [
+        "240120",
+        "240108",
+        "240101",
+        "240112",
+        "240095"
+      ],
+      "local_edge_ids": [
+        "240095",
+        "240096",
+        "240097",
+        "240098",
+        "240099",
+        "240100",
+        "240101",
+        "240102",
+        "240103",
+        "240104",
+        "240105",
+        "240106",
+        "240107",
+        "240108",
+        "240109",
+        "240110",
+        "240111",
+        "240112",
+        "240113",
+        "240114",
+        "240115",
+        "240116",
+        "240117",
+        "240118",
+        "240119",
+        "240120",
+        "240121",
+        "341937",
+        "341938",
+        "354345",
+        "354346",
+        "345973",
+        "345974",
+        "359887",
+        "359888",
+        "363565",
+        "363566",
+        "368869",
+        "368870",
+        "341930",
+        "367879",
+        "341946",
+        "367873",
+        "341902",
+        "341910",
+        "341914",
+        "359894",
+        "341932",
+        "341890",
+        "337667",
+        "341956",
+        "337661",
+        "341892",
+        "346359",
+        "346373",
+        "341940",
+        "354320",
+        "341971",
+        "341898",
+        "359890",
+        "341888",
+        "341936",
+        "341896",
+        "363607",
+        "337649",
+        "341954",
+        "351675"
+      ],
+      "contributions": [
+        {
+          "edge_id": "240120",
+          "graph_contribution": 0.07688889652490616,
+          "final_contribution": 0.31670075917307194,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.07085802406072617,
+            "final_score": 3.3882396563573307
+          }
+        },
+        {
+          "edge_id": "240108",
+          "graph_contribution": 0.04757910966873169,
+          "final_contribution": 0.19415191592080472,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.10016781091690063,
+            "final_score": 3.510788499609598
+          }
+        },
+        {
+          "edge_id": "240101",
+          "graph_contribution": 0.008159130811691284,
+          "final_contribution": 0.03286460268036606,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.13958778977394104,
+            "final_score": 3.6720758128500366
+          }
+        },
+        {
+          "edge_id": "240112",
+          "graph_contribution": 0.008130908012390137,
+          "final_contribution": 0.032750374817844374,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.1396160125732422,
+            "final_score": 3.6721900407125583
+          }
+        },
+        {
+          "edge_id": "240095",
+          "graph_contribution": 0.004210636019706726,
+          "final_contribution": 0.016937867831053666,
+          "baseline": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.14774692058563232,
+            "final_score": 3.7049404155304027
+          },
+          "perturbed": {
+            "clip_score": 0.32712918519973755,
+            "graph_score": 0.1435362845659256,
+            "final_score": 3.688002547699349
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "240095"
+          ],
+          "node_ids": [
+            "label:964",
+            "image:13786"
+          ]
+        },
+        {
+          "edge_ids": [
+            "240101"
+          ],
+          "node_ids": [
+            "label:1575",
+            "image:13786"
+          ]
+        },
+        {
+          "edge_ids": [
+            "240108"
+          ],
+          "node_ids": [
+            "label:2353",
+            "image:13786"
+          ]
+        },
+        {
+          "edge_ids": [
+            "240112"
+          ],
+          "node_ids": [
+            "label:1280",
+            "image:13786"
+          ]
+        },
+        {
+          "edge_ids": [
+            "240120"
+          ],
+          "node_ids": [
+            "label:449",
+            "image:13786"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "240120",
+          "source": "label:449",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "240108",
+          "source": "label:2353",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "240101",
+          "source": "label:1575",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "240112",
+          "source": "label:1280",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "240095",
+          "source": "label:964",
+          "target": "image:13786",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 93829,
+    "requested_k": 1,
+    "explanation": {
+      "query": "A couple of women standing next to a pair of skis.",
+      "image_id": "18754",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3272794187068939,
+        "graph_score": 0.17857672274112701,
+        "final_score": 3.038341938422305
+      },
+      "edge_ids": [
+        "327513"
+      ],
+      "local_edge_ids": [
+        "327508",
+        "327509",
+        "327510",
+        "327511",
+        "327512",
+        "327513",
+        "327514",
+        "327515",
+        "327516",
+        "327517",
+        "327518",
+        "327519",
+        "327520",
+        "327521",
+        "327522",
+        "327523",
+        "327524",
+        "327525",
+        "327526",
+        "327527",
+        "327528",
+        "327529",
+        "369060",
+        "352867",
+        "369066",
+        "349567",
+        "363121",
+        "352032",
+        "347134",
+        "369064",
+        "356581",
+        "347345",
+        "369058",
+        "363117",
+        "367360",
+        "347124",
+        "359276",
+        "350240",
+        "369056",
+        "347132",
+        "347162",
+        "363252",
+        "348547",
+        "347166",
+        "362857",
+        "347297",
+        "347164",
+        "357987",
+        "356792",
+        "363565",
+        "363566",
+        "350031",
+        "350032",
+        "362157",
+        "362158",
+        "356794",
+        "350044",
+        "364396",
+        "352036",
+        "352154",
+        "362510",
+        "347142"
+      ],
+      "contributions": [
+        {
+          "edge_id": "327513",
+          "graph_contribution": 0.09433942288160324,
+          "final_contribution": 0.3921366312133392,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.08423729985952377,
+            "final_score": 2.646205307208966
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "327513"
+          ],
+          "node_ids": [
+            "label:2943",
+            "image:18754"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "327513",
+          "source": "label:2943",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 93829,
+    "requested_k": 3,
+    "explanation": {
+      "query": "A couple of women standing next to a pair of skis.",
+      "image_id": "18754",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3272794187068939,
+        "graph_score": 0.17857672274112701,
+        "final_score": 3.038341938422305
+      },
+      "edge_ids": [
+        "327513",
+        "327519",
+        "327511"
+      ],
+      "local_edge_ids": [
+        "327508",
+        "327509",
+        "327510",
+        "327511",
+        "327512",
+        "327513",
+        "327514",
+        "327515",
+        "327516",
+        "327517",
+        "327518",
+        "327519",
+        "327520",
+        "327521",
+        "327522",
+        "327523",
+        "327524",
+        "327525",
+        "327526",
+        "327527",
+        "327528",
+        "327529",
+        "369060",
+        "352867",
+        "369066",
+        "349567",
+        "363121",
+        "352032",
+        "347134",
+        "369064",
+        "356581",
+        "347345",
+        "369058",
+        "363117",
+        "367360",
+        "347124",
+        "359276",
+        "350240",
+        "369056",
+        "347132",
+        "347162",
+        "363252",
+        "348547",
+        "347166",
+        "362857",
+        "347297",
+        "347164",
+        "357987",
+        "356792",
+        "363565",
+        "363566",
+        "350031",
+        "350032",
+        "362157",
+        "362158",
+        "356794",
+        "350044",
+        "364396",
+        "352036",
+        "352154",
+        "362510",
+        "347142"
+      ],
+      "contributions": [
+        {
+          "edge_id": "327513",
+          "graph_contribution": 0.09433942288160324,
+          "final_contribution": 0.3921366312133392,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.08423729985952377,
+            "final_score": 2.646205307208966
+          }
+        },
+        {
+          "edge_id": "327519",
+          "graph_contribution": 0.04111082851886749,
+          "final_contribution": 0.16841372712616476,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.13746589422225952,
+            "final_score": 2.8699282112961404
+          }
+        },
+        {
+          "edge_id": "327511",
+          "graph_contribution": 0.008400589227676392,
+          "final_contribution": 0.034091225648877455,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17017613351345062,
+            "final_score": 3.0042507127734277
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "327511"
+          ],
+          "node_ids": [
+            "label:1779",
+            "image:18754"
+          ]
+        },
+        {
+          "edge_ids": [
+            "327513"
+          ],
+          "node_ids": [
+            "label:2943",
+            "image:18754"
+          ]
+        },
+        {
+          "edge_ids": [
+            "327519"
+          ],
+          "node_ids": [
+            "label:2307",
+            "image:18754"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "327513",
+          "source": "label:2943",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "327519",
+          "source": "label:2307",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "327511",
+          "source": "label:1779",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 93829,
+    "requested_k": 5,
+    "explanation": {
+      "query": "A couple of women standing next to a pair of skis.",
+      "image_id": "18754",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3272794187068939,
+        "graph_score": 0.17857672274112701,
+        "final_score": 3.038341938422305
+      },
+      "edge_ids": [
+        "327513",
+        "327519",
+        "327511",
+        "327520",
+        "327527"
+      ],
+      "local_edge_ids": [
+        "327508",
+        "327509",
+        "327510",
+        "327511",
+        "327512",
+        "327513",
+        "327514",
+        "327515",
+        "327516",
+        "327517",
+        "327518",
+        "327519",
+        "327520",
+        "327521",
+        "327522",
+        "327523",
+        "327524",
+        "327525",
+        "327526",
+        "327527",
+        "327528",
+        "327529",
+        "369060",
+        "352867",
+        "369066",
+        "349567",
+        "363121",
+        "352032",
+        "347134",
+        "369064",
+        "356581",
+        "347345",
+        "369058",
+        "363117",
+        "367360",
+        "347124",
+        "359276",
+        "350240",
+        "369056",
+        "347132",
+        "347162",
+        "363252",
+        "348547",
+        "347166",
+        "362857",
+        "347297",
+        "347164",
+        "357987",
+        "356792",
+        "363565",
+        "363566",
+        "350031",
+        "350032",
+        "362157",
+        "362158",
+        "356794",
+        "350044",
+        "364396",
+        "352036",
+        "352154",
+        "362510",
+        "347142"
+      ],
+      "contributions": [
+        {
+          "edge_id": "327513",
+          "graph_contribution": 0.09433942288160324,
+          "final_contribution": 0.3921366312133392,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.08423729985952377,
+            "final_score": 2.646205307208966
+          }
+        },
+        {
+          "edge_id": "327519",
+          "graph_contribution": 0.04111082851886749,
+          "final_contribution": 0.16841372712616476,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.13746589422225952,
+            "final_score": 2.8699282112961404
+          }
+        },
+        {
+          "edge_id": "327511",
+          "graph_contribution": 0.008400589227676392,
+          "final_contribution": 0.034091225648877455,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17017613351345062,
+            "final_score": 3.0042507127734277
+          }
+        },
+        {
+          "edge_id": "327520",
+          "graph_contribution": 0.003728240728378296,
+          "final_contribution": 0.01510918759586044,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17484848201274872,
+            "final_score": 3.0232327508264447
+          }
+        },
+        {
+          "edge_id": "327527",
+          "graph_contribution": 0.003568708896636963,
+          "final_contribution": 0.01446212164441052,
+          "baseline": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17857672274112701,
+            "final_score": 3.038341938422305
+          },
+          "perturbed": {
+            "clip_score": 0.3272794187068939,
+            "graph_score": 0.17500801384449005,
+            "final_score": 3.0238798167778946
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "327511"
+          ],
+          "node_ids": [
+            "label:1779",
+            "image:18754"
+          ]
+        },
+        {
+          "edge_ids": [
+            "327513"
+          ],
+          "node_ids": [
+            "label:2943",
+            "image:18754"
+          ]
+        },
+        {
+          "edge_ids": [
+            "327519"
+          ],
+          "node_ids": [
+            "label:2307",
+            "image:18754"
+          ]
+        },
+        {
+          "edge_ids": [
+            "327520"
+          ],
+          "node_ids": [
+            "label:2353",
+            "image:18754"
+          ]
+        },
+        {
+          "edge_ids": [
+            "327527"
+          ],
+          "node_ids": [
+            "label:2318",
+            "image:18754"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "327513",
+          "source": "label:2943",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "327519",
+          "source": "label:2307",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "327511",
+          "source": "label:1779",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "327520",
+          "source": "label:2353",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "327527",
+          "source": "label:2318",
+          "target": "image:18754",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 14193,
+    "requested_k": 1,
+    "explanation": {
+      "query": "A man riding skis across a snow covered slope.",
+      "image_id": "3993",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3221176564693451,
+        "graph_score": 0.13917607069015503,
+        "final_score": 1.6933849093771118
+      },
+      "edge_ids": [
+        "69072"
+      ],
+      "local_edge_ids": [
+        "69063",
+        "69064",
+        "69065",
+        "69066",
+        "69067",
+        "69068",
+        "69069",
+        "69070",
+        "69071",
+        "69072",
+        "69073",
+        "69074",
+        "69075",
+        "69076",
+        "69077",
+        "69078",
+        "69079",
+        "69080",
+        "69081",
+        "354537",
+        "354538",
+        "354545",
+        "354546",
+        "354536",
+        "358189",
+        "358190",
+        "358203",
+        "358204",
+        "347133",
+        "347134",
+        "363129",
+        "350161",
+        "354542",
+        "353301",
+        "360681",
+        "354477",
+        "350937",
+        "353295",
+        "369061",
+        "355579",
+        "337561",
+        "360675",
+        "363607",
+        "363839",
+        "358184",
+        "359087",
+        "336693",
+        "369163",
+        "353474",
+        "351617",
+        "358212",
+        "350378",
+        "365125",
+        "354534",
+        "354544",
+        "340497",
+        "365199",
+        "350680",
+        "354530"
+      ],
+      "contributions": [
+        {
+          "edge_id": "69072",
+          "graph_contribution": 0.025746725499629974,
+          "final_contribution": 0.07771897927750215,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.11342934519052505,
+            "final_score": 1.6156659300996097
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "69072"
+          ],
+          "node_ids": [
+            "label:2307",
+            "image:3993"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "69072",
+          "source": "label:2307",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 14193,
+    "requested_k": 3,
+    "explanation": {
+      "query": "A man riding skis across a snow covered slope.",
+      "image_id": "3993",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3221176564693451,
+        "graph_score": 0.13917607069015503,
+        "final_score": 1.6933849093771118
+      },
+      "edge_ids": [
+        "69072",
+        "69073",
+        "69077"
+      ],
+      "local_edge_ids": [
+        "69063",
+        "69064",
+        "69065",
+        "69066",
+        "69067",
+        "69068",
+        "69069",
+        "69070",
+        "69071",
+        "69072",
+        "69073",
+        "69074",
+        "69075",
+        "69076",
+        "69077",
+        "69078",
+        "69079",
+        "69080",
+        "69081",
+        "354537",
+        "354538",
+        "354545",
+        "354546",
+        "354536",
+        "358189",
+        "358190",
+        "358203",
+        "358204",
+        "347133",
+        "347134",
+        "363129",
+        "350161",
+        "354542",
+        "353301",
+        "360681",
+        "354477",
+        "350937",
+        "353295",
+        "369061",
+        "355579",
+        "337561",
+        "360675",
+        "363607",
+        "363839",
+        "358184",
+        "359087",
+        "336693",
+        "369163",
+        "353474",
+        "351617",
+        "358212",
+        "350378",
+        "365125",
+        "354534",
+        "354544",
+        "340497",
+        "365199",
+        "350680",
+        "354530"
+      ],
+      "contributions": [
+        {
+          "edge_id": "69072",
+          "graph_contribution": 0.025746725499629974,
+          "final_contribution": 0.07771897927750215,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.11342934519052505,
+            "final_score": 1.6156659300996097
+          }
+        },
+        {
+          "edge_id": "69073",
+          "graph_contribution": 0.024790003895759583,
+          "final_contribution": 0.07482337239491388,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.11438606679439545,
+            "final_score": 1.618561536982198
+          }
+        },
+        {
+          "edge_id": "69077",
+          "graph_contribution": 0.011866912245750427,
+          "final_contribution": 0.035768329867582604,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.1273091584444046,
+            "final_score": 1.6576165795095292
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "69072"
+          ],
+          "node_ids": [
+            "label:2307",
+            "image:3993"
+          ]
+        },
+        {
+          "edge_ids": [
+            "69073"
+          ],
+          "node_ids": [
+            "label:2353",
+            "image:3993"
+          ]
+        },
+        {
+          "edge_ids": [
+            "69077"
+          ],
+          "node_ids": [
+            "label:2312",
+            "image:3993"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "69072",
+          "source": "label:2307",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "69073",
+          "source": "label:2353",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "69077",
+          "source": "label:2312",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 14193,
+    "requested_k": 5,
+    "explanation": {
+      "query": "A man riding skis across a snow covered slope.",
+      "image_id": "3993",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.3221176564693451,
+        "graph_score": 0.13917607069015503,
+        "final_score": 1.6933849093771118
+      },
+      "edge_ids": [
+        "69072",
+        "69073",
+        "69077",
+        "69075",
+        "69078"
+      ],
+      "local_edge_ids": [
+        "69063",
+        "69064",
+        "69065",
+        "69066",
+        "69067",
+        "69068",
+        "69069",
+        "69070",
+        "69071",
+        "69072",
+        "69073",
+        "69074",
+        "69075",
+        "69076",
+        "69077",
+        "69078",
+        "69079",
+        "69080",
+        "69081",
+        "354537",
+        "354538",
+        "354545",
+        "354546",
+        "354536",
+        "358189",
+        "358190",
+        "358203",
+        "358204",
+        "347133",
+        "347134",
+        "363129",
+        "350161",
+        "354542",
+        "353301",
+        "360681",
+        "354477",
+        "350937",
+        "353295",
+        "369061",
+        "355579",
+        "337561",
+        "360675",
+        "363607",
+        "363839",
+        "358184",
+        "359087",
+        "336693",
+        "369163",
+        "353474",
+        "351617",
+        "358212",
+        "350378",
+        "365125",
+        "354534",
+        "354544",
+        "340497",
+        "365199",
+        "350680",
+        "354530"
+      ],
+      "contributions": [
+        {
+          "edge_id": "69072",
+          "graph_contribution": 0.025746725499629974,
+          "final_contribution": 0.07771897927750215,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.11342934519052505,
+            "final_score": 1.6156659300996097
+          }
+        },
+        {
+          "edge_id": "69073",
+          "graph_contribution": 0.024790003895759583,
+          "final_contribution": 0.07482337239491388,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.11438606679439545,
+            "final_score": 1.618561536982198
+          }
+        },
+        {
+          "edge_id": "69077",
+          "graph_contribution": 0.011866912245750427,
+          "final_contribution": 0.035768329867582604,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.1273091584444046,
+            "final_score": 1.6576165795095292
+          }
+        },
+        {
+          "edge_id": "69075",
+          "graph_contribution": 0.011032164096832275,
+          "final_contribution": 0.03324933926427276,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.12814390659332275,
+            "final_score": 1.660135570112839
+          }
+        },
+        {
+          "edge_id": "69078",
+          "graph_contribution": 0.005681276321411133,
+          "final_contribution": 0.017112731757968458,
+          "baseline": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.13917607069015503,
+            "final_score": 1.6933849093771118
+          },
+          "perturbed": {
+            "clip_score": 0.3221176564693451,
+            "graph_score": 0.1334947943687439,
+            "final_score": 1.6762721776191434
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "69072"
+          ],
+          "node_ids": [
+            "label:2307",
+            "image:3993"
+          ]
+        },
+        {
+          "edge_ids": [
+            "69073"
+          ],
+          "node_ids": [
+            "label:2353",
+            "image:3993"
+          ]
+        },
+        {
+          "edge_ids": [
+            "69075"
+          ],
+          "node_ids": [
+            "label:2336",
+            "image:3993"
+          ]
+        },
+        {
+          "edge_ids": [
+            "69077"
+          ],
+          "node_ids": [
+            "label:2312",
+            "image:3993"
+          ]
+        },
+        {
+          "edge_ids": [
+            "69078"
+          ],
+          "node_ids": [
+            "label:1200",
+            "image:3993"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "69072",
+          "source": "label:2307",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "69073",
+          "source": "label:2353",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "69077",
+          "source": "label:2312",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "69075",
+          "source": "label:2336",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "69078",
+          "source": "label:1200",
+          "target": "image:3993",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 47795,
+    "requested_k": 1,
+    "explanation": {
+      "query": "a giraffe in an enclosure at an animal park.",
+      "image_id": "5872",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.34336912631988525,
+        "graph_score": 0.14977212250232697,
+        "final_score": 1.8811960024047272
+      },
+      "edge_ids": [
+        "101677"
+      ],
+      "local_edge_ids": [
+        "101663",
+        "101664",
+        "101665",
+        "101666",
+        "101667",
+        "101668",
+        "101669",
+        "101670",
+        "101671",
+        "101672",
+        "101673",
+        "101674",
+        "101675",
+        "101676",
+        "101677",
+        "101678",
+        "101679",
+        "101680",
+        "101681",
+        "101682",
+        "101683",
+        "101684",
+        "101685",
+        "101686",
+        "101687",
+        "101688",
+        "101689",
+        "101690",
+        "350631",
+        "350632",
+        "349861",
+        "349862",
+        "349951",
+        "349952",
+        "349957",
+        "353265",
+        "367281",
+        "347139",
+        "346824",
+        "347034",
+        "349556",
+        "356016",
+        "337245",
+        "345678",
+        "349329",
+        "349333",
+        "349856",
+        "349426",
+        "357372",
+        "349554",
+        "349552",
+        "360159",
+        "349868",
+        "367336",
+        "349550",
+        "369325",
+        "353220",
+        "349860",
+        "353169",
+        "350624",
+        "361241",
+        "337775",
+        "367330",
+        "349422",
+        "367859",
+        "337759",
+        "367328",
+        "345670"
+      ],
+      "contributions": [
+        {
+          "edge_id": "101677",
+          "graph_contribution": 0.11007674410939217,
+          "final_contribution": 0.34835664292607094,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.0396953783929348,
+            "final_score": 1.5328393594786562
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "101677"
+          ],
+          "node_ids": [
+            "label:1097",
+            "image:5872"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "101677",
+          "source": "label:1097",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 47795,
+    "requested_k": 3,
+    "explanation": {
+      "query": "a giraffe in an enclosure at an animal park.",
+      "image_id": "5872",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.34336912631988525,
+        "graph_score": 0.14977212250232697,
+        "final_score": 1.8811960024047272
+      },
+      "edge_ids": [
+        "101677",
+        "101684",
+        "101687"
+      ],
+      "local_edge_ids": [
+        "101663",
+        "101664",
+        "101665",
+        "101666",
+        "101667",
+        "101668",
+        "101669",
+        "101670",
+        "101671",
+        "101672",
+        "101673",
+        "101674",
+        "101675",
+        "101676",
+        "101677",
+        "101678",
+        "101679",
+        "101680",
+        "101681",
+        "101682",
+        "101683",
+        "101684",
+        "101685",
+        "101686",
+        "101687",
+        "101688",
+        "101689",
+        "101690",
+        "350631",
+        "350632",
+        "349861",
+        "349862",
+        "349951",
+        "349952",
+        "349957",
+        "353265",
+        "367281",
+        "347139",
+        "346824",
+        "347034",
+        "349556",
+        "356016",
+        "337245",
+        "345678",
+        "349329",
+        "349333",
+        "349856",
+        "349426",
+        "357372",
+        "349554",
+        "349552",
+        "360159",
+        "349868",
+        "367336",
+        "349550",
+        "369325",
+        "353220",
+        "349860",
+        "353169",
+        "350624",
+        "361241",
+        "337775",
+        "367330",
+        "349422",
+        "367859",
+        "337759",
+        "367328",
+        "345670"
+      ],
+      "contributions": [
+        {
+          "edge_id": "101677",
+          "graph_contribution": 0.11007674410939217,
+          "final_contribution": 0.34835664292607094,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.0396953783929348,
+            "final_score": 1.5328393594786562
+          }
+        },
+        {
+          "edge_id": "101684",
+          "graph_contribution": 0.016448229551315308,
+          "final_contribution": 0.05142451529165326,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.13332389295101166,
+            "final_score": 1.829771487113074
+          }
+        },
+        {
+          "edge_id": "101687",
+          "graph_contribution": 0.008830428123474121,
+          "final_contribution": 0.027578535949065675,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14094169437885284,
+            "final_score": 1.8536174664556615
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "101677"
+          ],
+          "node_ids": [
+            "label:1097",
+            "image:5872"
+          ]
+        },
+        {
+          "edge_ids": [
+            "101684"
+          ],
+          "node_ids": [
+            "label:874",
+            "image:5872"
+          ]
+        },
+        {
+          "edge_ids": [
+            "101687"
+          ],
+          "node_ids": [
+            "label:1121",
+            "image:5872"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "101677",
+          "source": "label:1097",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "101684",
+          "source": "label:874",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "101687",
+          "source": "label:1121",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 47795,
+    "requested_k": 5,
+    "explanation": {
+      "query": "a giraffe in an enclosure at an animal park.",
+      "image_id": "5872",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.34336912631988525,
+        "graph_score": 0.14977212250232697,
+        "final_score": 1.8811960024047272
+      },
+      "edge_ids": [
+        "101677",
+        "101684",
+        "101687",
+        "101671",
+        "101678"
+      ],
+      "local_edge_ids": [
+        "101663",
+        "101664",
+        "101665",
+        "101666",
+        "101667",
+        "101668",
+        "101669",
+        "101670",
+        "101671",
+        "101672",
+        "101673",
+        "101674",
+        "101675",
+        "101676",
+        "101677",
+        "101678",
+        "101679",
+        "101680",
+        "101681",
+        "101682",
+        "101683",
+        "101684",
+        "101685",
+        "101686",
+        "101687",
+        "101688",
+        "101689",
+        "101690",
+        "350631",
+        "350632",
+        "349861",
+        "349862",
+        "349951",
+        "349952",
+        "349957",
+        "353265",
+        "367281",
+        "347139",
+        "346824",
+        "347034",
+        "349556",
+        "356016",
+        "337245",
+        "345678",
+        "349329",
+        "349333",
+        "349856",
+        "349426",
+        "357372",
+        "349554",
+        "349552",
+        "360159",
+        "349868",
+        "367336",
+        "349550",
+        "369325",
+        "353220",
+        "349860",
+        "353169",
+        "350624",
+        "361241",
+        "337775",
+        "367330",
+        "349422",
+        "367859",
+        "337759",
+        "367328",
+        "345670"
+      ],
+      "contributions": [
+        {
+          "edge_id": "101677",
+          "graph_contribution": 0.11007674410939217,
+          "final_contribution": 0.34835664292607094,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.0396953783929348,
+            "final_score": 1.5328393594786562
+          }
+        },
+        {
+          "edge_id": "101684",
+          "graph_contribution": 0.016448229551315308,
+          "final_contribution": 0.05142451529165326,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.13332389295101166,
+            "final_score": 1.829771487113074
+          }
+        },
+        {
+          "edge_id": "101687",
+          "graph_contribution": 0.008830428123474121,
+          "final_contribution": 0.027578535949065675,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14094169437885284,
+            "final_score": 1.8536174664556615
+          }
+        },
+        {
+          "edge_id": "101671",
+          "graph_contribution": 0.004266679286956787,
+          "final_contribution": 0.013316675084717566,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14550544321537018,
+            "final_score": 1.8678793273200096
+          }
+        },
+        {
+          "edge_id": "101678",
+          "graph_contribution": 0.002494022250175476,
+          "final_contribution": 0.007782133638367217,
+          "baseline": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.14977212250232697,
+            "final_score": 1.8811960024047272
+          },
+          "perturbed": {
+            "clip_score": 0.34336912631988525,
+            "graph_score": 0.1472781002521515,
+            "final_score": 1.87341386876636
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "101671"
+          ],
+          "node_ids": [
+            "label:2741",
+            "image:5872"
+          ]
+        },
+        {
+          "edge_ids": [
+            "101677"
+          ],
+          "node_ids": [
+            "label:1097",
+            "image:5872"
+          ]
+        },
+        {
+          "edge_ids": [
+            "101678"
+          ],
+          "node_ids": [
+            "label:1085",
+            "image:5872"
+          ]
+        },
+        {
+          "edge_ids": [
+            "101684"
+          ],
+          "node_ids": [
+            "label:874",
+            "image:5872"
+          ]
+        },
+        {
+          "edge_ids": [
+            "101687"
+          ],
+          "node_ids": [
+            "label:1121",
+            "image:5872"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "101677",
+          "source": "label:1097",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "101684",
+          "source": "label:874",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "101687",
+          "source": "label:1121",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "101671",
+          "source": "label:2741",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "101678",
+          "source": "label:1085",
+          "target": "image:5872",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 75397,
+    "requested_k": 1,
+    "explanation": {
+      "query": "A train or subway sitting on the tracks",
+      "image_id": "8223",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31842532753944397,
+        "graph_score": 0.0976550281047821,
+        "final_score": 1.782453741501346
+      },
+      "edge_ids": [
+        "142673"
+      ],
+      "local_edge_ids": [
+        "142653",
+        "142654",
+        "142655",
+        "142656",
+        "142657",
+        "142658",
+        "142659",
+        "142660",
+        "142661",
+        "142662",
+        "142663",
+        "142664",
+        "142665",
+        "142666",
+        "142667",
+        "142668",
+        "142669",
+        "142670",
+        "142671",
+        "142672",
+        "142673",
+        "142674",
+        "367023",
+        "367024",
+        "367063",
+        "367064",
+        "357581",
+        "365226",
+        "367145",
+        "351581",
+        "351593",
+        "367044",
+        "365532",
+        "360185",
+        "367042",
+        "367022",
+        "360139",
+        "360151",
+        "360153",
+        "367068",
+        "367117",
+        "367123",
+        "367142",
+        "367026",
+        "357645",
+        "367038",
+        "367062",
+        "367048",
+        "345689",
+        "367040",
+        "336597",
+        "367011",
+        "367066",
+        "362174",
+        "367056",
+        "362158",
+        "367050",
+        "345993",
+        "368868",
+        "362024",
+        "340436",
+        "368842"
+      ],
+      "contributions": [
+        {
+          "edge_id": "142673",
+          "graph_contribution": 0.1212102398276329,
+          "final_contribution": 0.44191735347443184,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": -0.0235552117228508,
+            "final_score": 1.340536388026914
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "142673"
+          ],
+          "node_ids": [
+            "label:2717",
+            "image:8223"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "142673",
+          "source": "label:2717",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 75397,
+    "requested_k": 3,
+    "explanation": {
+      "query": "A train or subway sitting on the tracks",
+      "image_id": "8223",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31842532753944397,
+        "graph_score": 0.0976550281047821,
+        "final_score": 1.782453741501346
+      },
+      "edge_ids": [
+        "142673",
+        "142666",
+        "142658"
+      ],
+      "local_edge_ids": [
+        "142653",
+        "142654",
+        "142655",
+        "142656",
+        "142657",
+        "142658",
+        "142659",
+        "142660",
+        "142661",
+        "142662",
+        "142663",
+        "142664",
+        "142665",
+        "142666",
+        "142667",
+        "142668",
+        "142669",
+        "142670",
+        "142671",
+        "142672",
+        "142673",
+        "142674",
+        "367023",
+        "367024",
+        "367063",
+        "367064",
+        "357581",
+        "365226",
+        "367145",
+        "351581",
+        "351593",
+        "367044",
+        "365532",
+        "360185",
+        "367042",
+        "367022",
+        "360139",
+        "360151",
+        "360153",
+        "367068",
+        "367117",
+        "367123",
+        "367142",
+        "367026",
+        "357645",
+        "367038",
+        "367062",
+        "367048",
+        "345689",
+        "367040",
+        "336597",
+        "367011",
+        "367066",
+        "362174",
+        "367056",
+        "362158",
+        "367050",
+        "345993",
+        "368868",
+        "362024",
+        "340436",
+        "368842"
+      ],
+      "contributions": [
+        {
+          "edge_id": "142673",
+          "graph_contribution": 0.1212102398276329,
+          "final_contribution": 0.44191735347443184,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": -0.0235552117228508,
+            "final_score": 1.340536388026914
+          }
+        },
+        {
+          "edge_id": "142666",
+          "graph_contribution": 0.008847825229167938,
+          "final_contribution": 0.03194164123493559,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.08880720287561417,
+            "final_score": 1.7505121002664104
+          }
+        },
+        {
+          "edge_id": "142658",
+          "graph_contribution": 0.006293661892414093,
+          "final_contribution": 0.022714899506700803,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.09136136621236801,
+            "final_score": 1.7597388419946451
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "142658"
+          ],
+          "node_ids": [
+            "label:1919",
+            "image:8223"
+          ]
+        },
+        {
+          "edge_ids": [
+            "142666"
+          ],
+          "node_ids": [
+            "label:2706",
+            "image:8223"
+          ]
+        },
+        {
+          "edge_ids": [
+            "142673"
+          ],
+          "node_ids": [
+            "label:2717",
+            "image:8223"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "142673",
+          "source": "label:2717",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "142666",
+          "source": "label:2706",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "142658",
+          "source": "label:1919",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "dataset": "vg",
+    "seed": 2,
+    "caption_id": 75397,
+    "requested_k": 5,
+    "explanation": {
+      "query": "A train or subway sitting on the tracks",
+      "image_id": "8223",
+      "method": "leave_one_edge_out",
+      "baseline": {
+        "clip_score": 0.31842532753944397,
+        "graph_score": 0.0976550281047821,
+        "final_score": 1.782453741501346
+      },
+      "edge_ids": [
+        "142673",
+        "142666",
+        "142658",
+        "142671",
+        "142672"
+      ],
+      "local_edge_ids": [
+        "142653",
+        "142654",
+        "142655",
+        "142656",
+        "142657",
+        "142658",
+        "142659",
+        "142660",
+        "142661",
+        "142662",
+        "142663",
+        "142664",
+        "142665",
+        "142666",
+        "142667",
+        "142668",
+        "142669",
+        "142670",
+        "142671",
+        "142672",
+        "142673",
+        "142674",
+        "367023",
+        "367024",
+        "367063",
+        "367064",
+        "357581",
+        "365226",
+        "367145",
+        "351581",
+        "351593",
+        "367044",
+        "365532",
+        "360185",
+        "367042",
+        "367022",
+        "360139",
+        "360151",
+        "360153",
+        "367068",
+        "367117",
+        "367123",
+        "367142",
+        "367026",
+        "357645",
+        "367038",
+        "367062",
+        "367048",
+        "345689",
+        "367040",
+        "336597",
+        "367011",
+        "367066",
+        "362174",
+        "367056",
+        "362158",
+        "367050",
+        "345993",
+        "368868",
+        "362024",
+        "340436",
+        "368842"
+      ],
+      "contributions": [
+        {
+          "edge_id": "142673",
+          "graph_contribution": 0.1212102398276329,
+          "final_contribution": 0.44191735347443184,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": -0.0235552117228508,
+            "final_score": 1.340536388026914
+          }
+        },
+        {
+          "edge_id": "142666",
+          "graph_contribution": 0.008847825229167938,
+          "final_contribution": 0.03194164123493559,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.08880720287561417,
+            "final_score": 1.7505121002664104
+          }
+        },
+        {
+          "edge_id": "142658",
+          "graph_contribution": 0.006293661892414093,
+          "final_contribution": 0.022714899506700803,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.09136136621236801,
+            "final_score": 1.7597388419946451
+          }
+        },
+        {
+          "edge_id": "142671",
+          "graph_contribution": 0.0014240741729736328,
+          "final_contribution": 0.005137049043976383,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.09623095393180847,
+            "final_score": 1.7773166924573696
+          }
+        },
+        {
+          "edge_id": "142672",
+          "graph_contribution": 0.0012352094054222107,
+          "final_contribution": 0.0044557073807949266,
+          "baseline": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0976550281047821,
+            "final_score": 1.782453741501346
+          },
+          "perturbed": {
+            "clip_score": 0.31842532753944397,
+            "graph_score": 0.0964198186993599,
+            "final_score": 1.777998034120551
+          }
+        }
+      ],
+      "paths": [
+        {
+          "edge_ids": [
+            "142658"
+          ],
+          "node_ids": [
+            "label:1919",
+            "image:8223"
+          ]
+        },
+        {
+          "edge_ids": [
+            "142666"
+          ],
+          "node_ids": [
+            "label:2706",
+            "image:8223"
+          ]
+        },
+        {
+          "edge_ids": [
+            "142671"
+          ],
+          "node_ids": [
+            "label:2323",
+            "image:8223"
+          ]
+        },
+        {
+          "edge_ids": [
+            "142672"
+          ],
+          "node_ids": [
+            "label:2926",
+            "image:8223"
+          ]
+        },
+        {
+          "edge_ids": [
+            "142673"
+          ],
+          "node_ids": [
+            "label:2717",
+            "image:8223"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "id": "142673",
+          "source": "label:2717",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "142666",
+          "source": "label:2706",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "142658",
+          "source": "label:1919",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "142671",
+          "source": "label:2323",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        },
+        {
+          "id": "142672",
+          "source": "label:2926",
+          "target": "image:8223",
+          "relation": "contains",
+          "weight": 1.0,
+          "provenance": "VG/PSG objects",
+          "support_status": "uncertain",
+          "metadata": {
+            "edge_type": "contains",
+            "pair_relation_hint": "contains"
+          }
+        }
+      ]
+    }
+  }
+]

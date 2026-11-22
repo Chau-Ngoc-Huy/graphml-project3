@@ -3,7 +3,7 @@ import unittest
 from tempfile import TemporaryDirectory
 from pathlib import Path
 
-from xai_experiment.io import load_graph
+from xai.io import load_graph
 from _fixtures import tiny_graph
 
 
@@ -22,3 +22,4 @@ class IOTests(unittest.TestCase):
             }))
             loaded = load_graph(path)
             self.assertEqual(loaded, graph)
+

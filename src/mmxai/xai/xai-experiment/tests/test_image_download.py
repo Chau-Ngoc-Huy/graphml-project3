@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from xai_experiment.image_download import _candidates, _is_jpeg, fetch_review_image
+from xai.image_download import _candidates, _is_jpeg, fetch_review_image
 
 
 class ImageDownloadTests(unittest.TestCase):

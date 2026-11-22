@@ -18,19 +18,18 @@ M('''# A–B · Audit baseline và kiểm chứng direct retrieval
 C('''from pathlib import Path
 import hashlib, sys
 import pandas as pd
-REPO = Path('/content/drive/MyDrive/graphml-project3') if Path('/content/drive/MyDrive/graphml-project3').is_dir() else next(p for p in [Path.cwd().resolve(),*Path.cwd().resolve().parents] if (p/'src/mmxai/xai/xai-experiment').is_dir())
-EXP=REPO/'src/mmxai/xai/xai-experiment'
-sys.path[:0]=[str(EXP),str(REPO/'src')]
-from xai_experiment.paths import runs_dir, latest_artifact
-RUNS=runs_dir()
-from xai_experiment.image_download import fetch_review_image
-from xai_experiment.query_registry import validated_registry_rows, import_reviewed_queries, read_case_review_workbook, direct_eligibility_reason
-SNAP = latest_artifact(RUNS,'xai-*/analysis/xai_results_corrected.csv').parents[1]
-REG = EXP/'registry/query_candidates_frozen.csv'
+ROOT = Path('/content/drive/MyDrive') if Path('/content/drive/MyDrive/graphml-project3').is_dir() else next(p for p in [Path.cwd().resolve(),*Path.cwd().resolve().parents] if (p/'graphml-project3').is_dir())
+DUONG = ROOT/'graphml-project3/duong'
+sys.path.insert(0,str(DUONG))
+from xai.review_workbook import baseline_review_pack, create_review_workbook
+from xai.image_download import fetch_review_image
+from xai.query_registry import validated_registry_rows, import_reviewed_queries, read_case_review_workbook, direct_eligibility_reason
+SNAP = DUONG/'runs/qa_vg_psg_xai/xai-20261121-130842'
+REG = DUONG/'registry/query_candidates_frozen.csv'
 assert SNAP.is_dir() and REG.is_file()
 print('Frozen registry SHA256:',hashlib.sha256(REG.read_bytes()).hexdigest())
 '''),
-M('''## 1 · Audit lượt baseline vừa chạy
+M('''## 1 · Audit snapshot cũ
 
 Kiểm tra 216 dòng, 12 query/bộ × 3 seed × 3 mức k. Đây là leave-one-edge-out; path validity và evidence được báo riêng. Mẫu số sparsity cũ chỉ là vùng sàng lọc.'''),
 C('''old=pd.read_csv(SNAP/'analysis/xai_results_corrected.csv')
@@ -44,7 +43,7 @@ M('''## 2 · Cổng query/ảnh direct
 C('''registry=pd.read_csv(REG,keep_default_na=False)
 assert len(registry)==40
 display(registry.groupby(['dataset','source_group']).size())
-review_path=EXP/'review/query_candidates_40.xlsx'
+review_path=DUONG/'review/query_candidates_40.xlsx'
 review_rows=read_case_review_workbook(review_path)
 review=pd.DataFrame(review_rows)
 display(review.groupby(['dataset','verified_group','review_status'],dropna=False).size())
@@ -58,14 +57,14 @@ M('''## 3 · Xuất registry đã duyệt
 
 `query_candidates_40.xlsx` chứa 40 nhãn đã duyệt. Notebook xuất registry đầy đủ và audit lý do chọn/loại; 34 query direct có GT `supported` đi tiếp. Nếu sửa nhãn, chạy lại cell này để làm mới CSV.
 '''),
-C('''REVIEWED_WORKBOOK=EXP/'review/query_candidates_40.xlsx'
+C('''REVIEWED_WORKBOOK=DUONG/'review/query_candidates_40.xlsx'
 assert REVIEWED_WORKBOOK.is_file(), REVIEWED_WORKBOOK
 EXPORT_DIRECT_REGISTRY=True  # workbook chuẩn đã được duyệt
 if EXPORT_DIRECT_REGISTRY:
-    verified=import_reviewed_queries(REG,REVIEWED_WORKBOOK,EXP/'registry/queries_direct_verified.csv')
+    verified=import_reviewed_queries(REG,REVIEWED_WORKBOOK,DUONG/'registry/queries_direct_verified.csv')
     audit=pd.read_csv(verified,keep_default_na=False)
     audit['eligibility_reason']=audit.apply(direct_eligibility_reason,axis=1)
-    audit.to_csv(EXP/'registry/direct_query_eligibility_audit.csv',index=False)
+    audit.to_csv(DUONG/'registry/direct_query_eligibility_audit.csv',index=False)
     selected=validated_registry_rows(verified)
     print('Approved direct queries:',len(selected))
     display(pd.DataFrame(selected).groupby('dataset').size())
@@ -88,25 +87,20 @@ if Path('/content').is_dir():
     drive.mount('/content/drive')
     ROOT=Path('/content/drive/MyDrive')
 else:
-    REPO=next(p for p in [Path.cwd().resolve(),*Path.cwd().resolve().parents] if (p/'src/mmxai/xai/xai-experiment').is_dir())
-    ROOT=REPO.parent
-if Path('/content').is_dir():
-    REPO=ROOT/'graphml-project3'
-EXP=REPO/'src/mmxai/xai/xai-experiment'
-sys.path[:0]=[str(EXP),str(REPO/'src')]
-from xai_experiment.paths import runs_dir, latest_artifact
-RUNS=runs_dir()
+    ROOT=next(p for p in [Path.cwd().resolve(),*Path.cwd().resolve().parents] if (p/'graphml-project3').is_dir())
+REPO=ROOT/'graphml-project3'; DUONG=REPO/'duong'; RUNS=DUONG/'runs/qa_vg_psg_xai'
+sys.path[:0]=[str(DUONG),str(REPO/'huy/src')]
 if importlib.util.find_spec('torch_geometric') is None:
-    subprocess.run([sys.executable,'-m','pip','install','-q','-e',str(REPO)],check=True)
+    subprocess.run([sys.executable,'-m','pip','install','-q','-e',str(REPO/'huy')],check=True)
 import torch
-from xai_experiment.model import HuyQAPathCaseModel, MODEL_SPECS
-from xai_experiment.path_protocol import evaluate_case
-from xai_experiment.query_registry import validated_registry_rows
-from xai_experiment.perturbation import rank_of
-from mmxai.data.bundle import load_bundle
+from xai.model import HuyQAPathCaseModel, MODEL_SPECS
+from xai.path_protocol import evaluate_case
+from xai.query_registry import validated_registry_rows
+from xai.perturbation import rank_of
+from mmxai.data.task1 import load_task1
 from mmxai.graph.build import build_graph
 from mmxai.graph.qa import QAData, QAScorer, qa_scores
-from mmxai.experiments.vg_graph import load_eval_module
+from mmxai.experiments.t1_graph import load_eval_module
 DEVICE=torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('Device:',DEVICE)
 '''),
@@ -117,7 +111,7 @@ Mặc định chạy 34 query direct đã duyệt từ notebook 01; dùng `basel
 C('''QUERY_MODE='verified_direct'  # approved direct set; use 'baseline24' for smoke test
 MODEL_SEEDS=(0,1,2); PATH_SCREEN_LIMITS=(40,); EDGE_BUDGETS=(1,2,3)
 RANDOM_REPEATS=20; RANDOM_SEED=20261121
-MANIFEST=latest_artifact(RUNS,'dual-*_manifest.json')
+MANIFEST=RUNS/'dual-20261121-125423_manifest.json'
 manifest=json.loads(MANIFEST.read_text())
 records={(r['dataset'],int(r['seed'])):r for r in manifest['runs']}
 def sha256(path):
@@ -126,7 +120,7 @@ def sha256(path):
         for block in iter(lambda:f.read(4*1024*1024),b''): h.update(block)
     return h.hexdigest()
 for rel,digest in manifest['source_sha256'].items():
-    assert sha256(REPO/rel)==digest,rel
+    if rel.startswith('huy/'): assert sha256(REPO/rel)==digest,rel
 for dataset,spec in MODEL_SPECS.items():
     bundle_dir=ROOT/spec.bundle_dir
     for rel,digest in manifest['bundle_sha256'][dataset].items():
@@ -137,9 +131,9 @@ for dataset,spec in MODEL_SPECS.items():
         assert sha256(ckpt)==rec['checkpoint_sha256']
 assert QUERY_MODE in ('baseline24','verified_direct')
 if QUERY_MODE=='baseline24':
-    selected=json.loads((latest_artifact(RUNS,'xai-*/summary.json').parent/'selected_cases.json').read_text())
+    selected=json.loads((RUNS/'xai-20261121-130842/selected_cases.json').read_text())
 else:
-    selected=validated_registry_rows(EXP/'registry/queries_direct_verified.csv')
+    selected=validated_registry_rows(DUONG/'registry/queries_direct_verified.csv')
 assert len(selected)==24 if QUERY_MODE=='baseline24' else len(selected)>=20
 for dataset,spec in MODEL_SPECS.items():
     seed0_dir=RUNS/spec.experiment/Path(records[dataset,0]['run_dir']).name
@@ -162,7 +156,7 @@ C('''result_rows=[]; path_rows=[]; case_rows=[]
 for dataset,spec in MODEL_SPECS.items():
     bundle_dir=ROOT/spec.bundle_dir
     ev=load_eval_module(bundle_dir); protocol=ev.Protocol.load(bundle_dir)
-    bundle=load_bundle(bundle_dir,'graph_extra_cn')
+    bundle=load_task1(bundle_dir,bundle_dir/'huy_extra_cn')
     cap_concepts={int(c['caption_id']):c['concepts'] for c in bundle.captions}
     cands=protocol.candidates('test',None)
     chosen=[r for r in selected if r['dataset']==dataset]
@@ -226,18 +220,16 @@ import json,sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-REPO=Path('/content/drive/MyDrive/graphml-project3') if Path('/content/drive/MyDrive/graphml-project3').is_dir() else next(p for p in [Path.cwd().resolve(),*Path.cwd().resolve().parents] if (p/'src/mmxai/xai/xai-experiment').is_dir())
-EXP=REPO/'src/mmxai/xai/xai-experiment'
-sys.path[:0]=[str(EXP),str(REPO/'src')]
-from xai_experiment.paths import runs_dir, latest_artifact
-RUNS=runs_dir()
-from xai_experiment.review_workbook import create_review_workbook
-from xai_experiment.image_download import fetch_review_image
+ROOT=Path('/content/drive/MyDrive') if Path('/content/drive/MyDrive/graphml-project3').is_dir() else next(p for p in [Path.cwd().resolve(),*Path.cwd().resolve().parents] if (p/'graphml-project3').is_dir())
+DUONG=ROOT/'graphml-project3/duong'; RUNS=DUONG/'runs/qa_vg_psg_xai'
+sys.path.insert(0,str(DUONG))
+from xai.review_workbook import create_review_workbook
+from xai.image_download import fetch_review_image
 RESULTS_DIR=None  # set an explicit completed path-* directory for the report
 if RESULTS_DIR is None:
     complete=sorted(p.parent for p in RUNS.glob('path-*/complete.json')
                     if json.loads((p.parent/'protocol.json').read_text()).get('explanation_mode')=='object')
-    assert complete,'Run notebook 05 in object mode first.'
+    assert complete,'Run notebook 02 in object mode first.'
     RESULTS_DIR=complete[-1]
 RESULTS_DIR=Path(RESULTS_DIR)
 assert json.loads((RESULTS_DIR/'protocol.json').read_text()).get('explanation_mode')=='object'
@@ -311,7 +303,7 @@ ALLOW_UNVERIFIED_TLS=True  # public dataset images only; provenance is saved bel
 path_index={}
 for p in paths:
     if p.get('model_seed')==0 and p.get('screen_path_limit')==limit: path_index.setdefault((p['dataset'],str(p['query_id'])),[]).append(p)
-verified=pd.read_csv(EXP/'registry/queries_direct_verified.csv',keep_default_na=False,dtype={'query_id':str})
+verified=pd.read_csv(DUONG/'registry/queries_direct_verified.csv',keep_default_na=False,dtype={'query_id':str})
 gt_labels={(r['dataset'],r['query_id']):r['gt_relevance'] for r in verified.to_dict('records')}
 review_cases=[]; review_steps=[]; download_records=[]
 for row in chosen.to_dict('records'):

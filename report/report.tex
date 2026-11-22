@@ -472,7 +472,7 @@ boy watching tv (5) & broccoli sitting on plate (38)\\\bottomrule
 \end{table}
 
 \section*{Phụ lục B: Hướng dẫn chạy lại}
-Toàn bộ quy trình được điều phối bằng \texttt{make} tại thư mục gốc của kho mã (nhánh \texttt{final}), với tham số \texttt{DS=vg} cho VG$\cap$COCO hoặc \texttt{DS=psg} cho PSG$\cap$COCO; lệnh \texttt{make help} liệt kê các mục tiêu khả dụng. Các tác vụ cần GPU được gửi lên Kaggle thông qua Kaggle CLI (đẩy kernel, theo dõi và tải kết quả về) thay vì thao tác thủ công trên giao diện web. Chi tiết được mô tả trong \texttt{docs/PIPELINE.md}.
+Các bước chung được điều phối bằng \texttt{make} tại thư mục gốc của kho mã (nhánh \texttt{final}), với tham số \texttt{DS=vg} cho VG$\cap$COCO hoặc \texttt{DS=psg} cho PSG$\cap$COCO; lệnh \texttt{make help} liệt kê các mục tiêu khả dụng. Phần XAI định lượng dùng bộ notebook riêng ở bước 7 bên dưới. Các tác vụ cần GPU của pipeline chung được gửi lên Kaggle thông qua Kaggle CLI (đẩy kernel, theo dõi và tải kết quả về). Chi tiết được mô tả trong \texttt{docs/PIPELINE.md}.
 
 \textbf{Thiết lập ban đầu.} Lệnh \texttt{make setup} khởi tạo môi trường Python (PyTorch, OpenCLIP, PyTorch Geometric, FAISS). Token Kaggle đặt tại \texttt{\textasciitilde/.kaggle/}, và tên tài khoản Kaggle được khai báo trong tệp \texttt{local.mk} (tham khảo \texttt{local.mk.example}).
 
@@ -484,12 +484,12 @@ Toàn bộ quy trình được điều phối bằng \texttt{make} tại thư m�
 \item \texttt{make train DS=vg} (Kaggle T4$\times$2, khoảng 3 giờ, 12 cấu hình $\times$ 3 seed) và \texttt{make train DS=psg} (chạy cục bộ, khoảng 2 giờ, 8 cấu hình $\times$ 3 seed): kết quả lưu vào \texttt{runs/} và \texttt{results/}.
 \item \texttt{make adamf DS=..} (Kaggle T4$\times$2, khoảng 5 giờ): huấn luyện AdaMF-MAT cùng các thí nghiệm ablation xáo quan hệ và bỏ quan hệ, lưu kết quả vào \texttt{results/adamf\_<ds>/}.
 \item \texttt{make tables} (dưới 1 phút): tổng hợp các bảng kết quả chính và kiểm định ghép cặp trong \texttt{results/}.
-\item \texttt{make xai DS=..} chạy phép kiểm tra giải thích theo quy trình chung; các bảng XAI trong báo cáo dùng lượt đánh giá trên ba seed và bộ truy vấn đã duyệt, với notebook phân tích và kết quả lưu cùng dự án.
+\item \texttt{make xai DS=..} chạy phép kiểm tra giải thích theo quy trình chung trên seed 0. Số liệu Bảng~\ref{tab:xai-direct} và Hình~\ref{fig:xai-baseline}--\ref{fig:xai-direct} được tạo bằng bộ notebook 01--06 của Dương trong \texttt{xai-experiment}, trên ba seed và bộ truy vấn đã duyệt. Bản mã, notebook có output lịch sử, checkpoint và toàn bộ artifacts của hai lượt chạy nằm trong \path{src/mmxai/xai/xai-experiment/}; các bảng và hình đối chiếu cũng được lưu tại \path{results/xai/qa_vg_psg_xai/}. Thứ tự chạy và tệp đối chiếu được ghi trong \path{docs/PIPELINE.md}.
 \item \texttt{make ui} và \texttt{make web}: khởi chạy MMXAI Lab (\texttt{apps/lab}, cổng 8765) và Observatory (\texttt{apps/observatory}).
 \item \texttt{make report}: vẽ biểu đồ và biên dịch báo cáo bằng XeLaTeX ra tệp \texttt{build/report/report.pdf}.
 \end{enumerate}
 
-\textbf{Chạy gộp, kiểm thử nhanh và đường tắt.} Toàn bộ chuỗi cho từng bộ dữ liệu có thể chạy bằng \texttt{make all-vg} hoặc \texttt{make all-psg}. Để kiểm tra nhanh luồng thực thi, có thể dùng \texttt{make data DS=vg SMOKE=1} (vài trăm ảnh, khoảng 5 phút) hoặc \texttt{make adamf DS=psg SMOKE=1} (2 epoch). Trường hợp không muốn chạy lại các bước 2-5, lệnh \texttt{make setup fetch-prebuilt} tải bundle dựng sẵn và 4 checkpoint seed 0 (riêng tư của nhóm), sau đó chạy tiếp các bước tổng hợp bảng, giải thích và giao diện web bằng \texttt{make tables xai web}.
+\textbf{Chạy gộp, kiểm thử nhanh và đường tắt.} Các bước chung cho từng bộ dữ liệu có thể chạy bằng \texttt{make all-vg} hoặc \texttt{make all-psg}; bộ notebook XAI được chạy riêng. Để kiểm tra nhanh luồng thực thi, có thể dùng \texttt{make data DS=vg SMOKE=1} (vài trăm ảnh, khoảng 5 phút) hoặc \texttt{make adamf DS=psg SMOKE=1} (2 epoch). Trường hợp không muốn chạy lại các bước 2-5, lệnh \texttt{make setup fetch-prebuilt} tải bundle dựng sẵn và 4 checkpoint seed 0 (riêng tư của nhóm), sau đó chạy tiếp các bước tổng hợp bảng, kiểm tra XAI chung và giao diện web bằng \texttt{make tables xai web}.
 
 \section*{Phụ lục C: Đối chiếu yêu cầu đề bài}
 Bảng~\ref{tab:req} đối chiếu mức độ hoàn thiện của hệ thống theo từng cấp yêu cầu của đề bài tại thời điểm viết báo cáo. Bảng ghi nhận cả những hạng mục đã hoàn tất lẫn những phần còn dang dở hoặc chưa có số liệu định lượng.

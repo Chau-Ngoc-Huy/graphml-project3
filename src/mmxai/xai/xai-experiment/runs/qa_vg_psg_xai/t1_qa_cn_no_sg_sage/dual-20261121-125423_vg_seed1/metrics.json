@@ -1,0 +1,387 @@
+{
+ "metrics": {
+  "test": {
+   "seed": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "gallery_size": {
+    "mean": 1000.0,
+    "std": 0.0,
+    "values": [
+     1000.0
+    ]
+   },
+   "R@1": {
+    "mean": 61.255497800879645,
+    "std": 0.0,
+    "values": [
+     61.255497800879645
+    ]
+   },
+   "R@5": {
+    "mean": 87.64494202319072,
+    "std": 0.0,
+    "values": [
+     87.64494202319072
+    ]
+   },
+   "R@10": {
+    "mean": 94.38224710115954,
+    "std": 0.0,
+    "values": [
+     94.38224710115954
+    ]
+   },
+   "MRR": {
+    "mean": 72.93819057280028,
+    "std": 0.0,
+    "values": [
+     72.93819057280028
+    ]
+   },
+   "nDCG@10": {
+    "mean": 77.90208573082865,
+    "std": 0.0,
+    "values": [
+     77.90208573082865
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "n": 5002
+  },
+  "test_full": {
+   "gallery_size": {
+    "mean": 2138.0,
+    "std": 0.0,
+    "values": [
+     2138.0
+    ]
+   },
+   "R@1": {
+    "mean": 52.83283470456245,
+    "std": 0.0,
+    "values": [
+     52.83283470456245
+    ]
+   },
+   "R@5": {
+    "mean": 80.0392670157068,
+    "std": 0.0,
+    "values": [
+     80.0392670157068
+    ]
+   },
+   "R@10": {
+    "mean": 87.87397157816005,
+    "std": 0.0,
+    "values": [
+     87.87397157816005
+    ]
+   },
+   "MRR": {
+    "mean": 64.803039521385,
+    "std": 0.0,
+    "values": [
+     64.803039521385
+    ]
+   },
+   "nDCG@10": {
+    "mean": 69.90711247297267,
+    "std": 0.0,
+    "values": [
+     69.90711247297267
+    ]
+   },
+   "MedR": {
+    "mean": 1.0,
+    "std": 0.0,
+    "values": [
+     1.0
+    ]
+   },
+   "n": 10696
+  },
+  "by_group": {
+   "direct": {
+    "R@1": {
+     "mean": 67.5475687103594,
+     "std": 0.0,
+     "values": [
+      67.5475687103594
+     ]
+    },
+    "R@5": {
+     "mean": 90.9090909090909,
+     "std": 0.0,
+     "values": [
+      90.9090909090909
+     ]
+    },
+    "R@10": {
+     "mean": 97.04016913319239,
+     "std": 0.0,
+     "values": [
+      97.04016913319239
+     ]
+    },
+    "MRR": {
+     "mean": 77.91819020831464,
+     "std": 0.0,
+     "values": [
+      77.91819020831464
+     ]
+    },
+    "nDCG@10": {
+     "mean": 82.43875583248324,
+     "std": 0.0,
+     "values": [
+      82.43875583248324
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 946
+   },
+   "indirect": {
+    "R@1": {
+     "mean": 59.79228486646885,
+     "std": 0.0,
+     "values": [
+      59.79228486646885
+     ]
+    },
+    "R@5": {
+     "mean": 86.9188921859545,
+     "std": 0.0,
+     "values": [
+      86.9188921859545
+     ]
+    },
+    "R@10": {
+     "mean": 93.81800197823937,
+     "std": 0.0,
+     "values": [
+      93.81800197823937
+     ]
+    },
+    "MRR": {
+     "mean": 71.79578584413213,
+     "std": 0.0,
+     "values": [
+      71.79578584413213
+     ]
+    },
+    "nDCG@10": {
+     "mean": 76.87093888049421,
+     "std": 0.0,
+     "values": [
+      76.87093888049421
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 4044
+   },
+   "no_concept": {
+    "R@1": {
+     "mean": 58.333333333333336,
+     "std": 0.0,
+     "values": [
+      58.333333333333336
+     ]
+    },
+    "R@5": {
+     "mean": 75.0,
+     "std": 0.0,
+     "values": [
+      75.0
+     ]
+    },
+    "R@10": {
+     "mean": 75.0,
+     "std": 0.0,
+     "values": [
+      75.0
+     ]
+    },
+    "MRR": {
+     "mean": 65.33861286758021,
+     "std": 0.0,
+     "values": [
+      65.33861286758021
+     ]
+    },
+    "nDCG@10": {
+     "mean": 67.75774794642882,
+     "std": 0.0,
+     "values": [
+      67.75774794642882
+     ]
+    },
+    "MedR": {
+     "mean": 1.0,
+     "std": 0.0,
+     "values": [
+      1.0
+     ]
+    },
+    "n": 12
+   }
+  },
+  "alpha": {
+   "mean": 0.3,
+   "values": [
+    0.3
+   ]
+  }
+ },
+ "n": 10696,
+ "paper": {
+  "table": "gnn",
+  "row": "t1_qa_cn_no_sg SAGE — VG∩COCO"
+ },
+ "run": {
+  "exp": "t1_qa_cn_no_sg_sage",
+  "run_id": "dual-20261121-125423_vg_seed1",
+  "tag": null,
+  "user": "duong",
+  "args": {
+   "exp": "t1_qa_cn_no_sg_sage",
+   "config": null,
+   "config_dir": "/content/drive/MyDrive/graphml-project3/huy/configs",
+   "set": [
+    "data=/content/drive/MyDrive/mmxai_vg_bundle",
+    "extra=/content/drive/MyDrive/mmxai_vg_bundle/huy_extra_cn",
+    "save_model=true"
+   ],
+   "limit": null,
+   "seed": 1,
+   "tag": null,
+   "runs_dir": "/content/drive/MyDrive/graphml-project3/duong/runs/qa_vg_psg_xai",
+   "run_id": "dual-20261121-125423_vg_seed1",
+   "no_publish": true,
+   "dry_run": false
+  },
+  "config": {
+   "data": "/content/drive/MyDrive/mmxai_vg_bundle",
+   "fake": {},
+   "max_images": null,
+   "topk": 100,
+   "seed": 1,
+   "paper": {
+    "table": "gnn",
+    "row": "t1_qa_cn_no_sg SAGE — VG∩COCO"
+   },
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "graph": {
+    "variant": "no_sg",
+    "min_rel_count": 1
+   },
+   "gnn": {
+    "kind": "sage",
+    "hidden": 256,
+    "layers": 2,
+    "heads": 4,
+    "dropout": 0.1,
+    "arch": "split",
+    "adapter": true,
+    "graph_weight": 1.0,
+    "tau_match": 0.1
+   },
+   "train": {
+    "epochs": 20,
+    "patience": 4,
+    "batch_size": 512,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "tau": 0.05
+   },
+   "alpha_step": 0.05,
+   "n_explain": 0,
+   "explain_top_m": 3,
+   "save_model": true,
+   "extra": "/content/drive/MyDrive/mmxai_vg_bundle/huy_extra_cn",
+   "mode": "graph",
+   "exp": "t1_qa_cn_no_sg_sage"
+  },
+  "started_at": "2026-11-21T12:57:55+00:00",
+  "finished_at": "2026-11-21T12:58:49+00:00",
+  "wall_time_s": 54.57,
+  "sec_per_sample": 0.005,
+  "peak_vram_gb": 4.29,
+  "error": null,
+  "extra": {
+   "seeds": [
+    1
+   ],
+   "graph": {
+    "n_img": 19264,
+    "n_label": 3000,
+    "variant": "no_sg",
+    "E_contains": 336581,
+    "E_sg_rel": 0,
+    "E_concept": 32826,
+    "missing_labels": 23406,
+    "missing_top": [
+     "overall",
+     "ski goggle",
+     "destination",
+     "wire fence",
+     "waterway",
+     "spotlight",
+     "little boy",
+     "life preserver",
+     "parade",
+     "udder"
+    ],
+    "lab_edges": 32826,
+    "contains": 336581,
+    "labels_per_img_max": 52,
+    "imgs_without_labels": 174,
+    "caps_without_concepts": 224,
+    "concepts_dropped": 0
+   },
+   "device": "cuda"
+  }
+ },
+ "environment": {
+  "python": "3.13.16",
+  "platform": "Linux-6.6.159+-x86_64-with-glibc2.39",
+  "compute": "colab",
+  "gpu": "Tesla T4",
+  "packages": {
+   "torch": "2.14.1+cu130",
+   "numpy": "2.4.6",
+   "pyyaml": "6.0.3",
+   "torch_geometric": "2.8.1",
+   "open_clip_torch": null,
+   "faiss-cpu": null
+  },
+  "git_commit": "a8789ff02134c86a17a5dab4ce25ad5ec96927e3",
+  "vendor_commit": null
+ }
+}

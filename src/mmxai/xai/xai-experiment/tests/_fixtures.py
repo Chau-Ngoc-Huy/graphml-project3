@@ -1,7 +1,7 @@
 """Small scorer and graph for testing the XAI contracts."""
 
-from xai_experiment.graph import Edge, GraphSchema, KnowledgeGraph, Node, RelationRule
-from xai_experiment.scorer_adapter import CallableScorerAdapter, ScoreComponents
+from xai.graph import Edge, GraphSchema, KnowledgeGraph, Node, RelationRule
+from xai.scorer_adapter import CallableScorerAdapter, ScoreComponents
 
 
 def tiny_graph():
