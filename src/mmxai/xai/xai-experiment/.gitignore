@@ -1,0 +1,5 @@
+.local/
+review/vlm_runs/
+runs/
+reports/
+experiments/

@@ -1,0 +1,9 @@
+{
+  "node_types": ["image", "concept"],
+  "relations": {
+    "contains": {"source_types": ["concept"], "target_types": ["image"]},
+    "sg_rel": {"source_types": ["concept"], "target_types": ["concept"]},
+    "concept": {"source_types": ["concept"], "target_types": ["concept"]},
+    "related_to": {"source_types": ["concept"], "target_types": ["concept"]}
+  }
+}
